@@ -55,7 +55,8 @@
         "ability": "vfx.hero.lin_yue.moon_circle",
         "hit": "vfx.hero.lin_yue.hit_seal_break",
         "death": "vfx.hero.lin_yue.seal_dissolve"
-      }
+      },
+      "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
     },
     {
       "hero_id": "soyeon_han",
@@ -109,7 +110,8 @@
         "ability": "vfx.hero.soyeon_han.red_breakthrough",
         "hit": "vfx.hero.soyeon_han.armor_sparks",
         "death": "vfx.hero.soyeon_han.ribbon_fade"
-      }
+      },
+      "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
     }
   ],
   "selection_screen": "layers/STAGE03_HEROES_SELECTION_v01.png",
@@ -151,7 +153,7 @@
     "asset_status": "CANDIDATE",
     "artistic_status": "PENDING",
     "runtime_status": "NOT_PROMOTED",
-    "producing_commit": null
+    "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
   },
   "gameplay_scale_review": {
     "true_1x": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
@@ -172,5 +174,6 @@
     "STAGE03_HEROES_VFX_BINDINGS_v01.json",
     "STAGE03_HEROES_PROVENANCE_v01.json"
   ],
-  "next_stage": 4
+  "next_stage": 4,
+  "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
 }

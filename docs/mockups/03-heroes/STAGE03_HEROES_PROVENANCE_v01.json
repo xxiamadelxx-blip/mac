@@ -6,7 +6,7 @@
   "visual_status": "CANDIDATE",
   "artistic_status": "PENDING",
   "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
-  "source_commit": null,
+  "source_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
   "entries": [
     {
       "candidate_id": "vl-20260909-hero-combat-lin-yue-states-v01",
@@ -86,7 +86,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -168,7 +168,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -251,7 +251,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -333,7 +333,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -413,7 +413,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -483,7 +483,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
