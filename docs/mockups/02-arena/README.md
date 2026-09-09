@@ -46,3 +46,21 @@
 - повторить проверку на Android и подтвердить производительность.
 
 Пока Godot не установлен в текущей среде, APK-прогон отсутствует; статус честно остаётся `IN PROGRESS`.
+
+## Активный пакет v02 — soft tonal arena
+
+Статус: **USER REVIEW / CANDIDATE**. Пять контрольных кадров используют одну камеру, один масштаб героя и одну мягкую цветовую семью. Давление на поздних минутах растёт за счёт количества противников, теней и следа боя, а не за счёт кислотных зелёных/циановых/красных вспышек.
+
+- [STAGE02_ARENA_COMPOSITE_0M_v02.png](./layers/STAGE02_ARENA_COMPOSITE_0M_v02.png)
+- [STAGE02_ARENA_COMPOSITE_5M_v02.png](./layers/STAGE02_ARENA_COMPOSITE_5M_v02.png)
+- [STAGE02_ARENA_COMPOSITE_10M_v02.png](./layers/STAGE02_ARENA_COMPOSITE_10M_v02.png)
+- [STAGE02_ARENA_COMPOSITE_15M_v02.png](./layers/STAGE02_ARENA_COMPOSITE_15M_v02.png)
+- [STAGE02_ARENA_COMPOSITE_20M_v02.png](./layers/STAGE02_ARENA_COMPOSITE_20M_v02.png)
+- [STAGE02_ARENA_REVIEW_STRIP_v02.png](./STAGE02_ARENA_REVIEW_STRIP_v02.png)
+- [STAGE02_ARENA_VISUAL_FAMILY_v02.md](./STAGE02_ARENA_VISUAL_FAMILY_v02.md)
+- [STAGE02_ARENA_CANDIDATE_PROVENANCE_v02.json](./STAGE02_ARENA_CANDIDATE_PROVENANCE_v02.json)
+- [STAGE02_ARENA_LAYER_MAP_v02.json](./STAGE02_ARENA_LAYER_MAP_v02.json)
+- [STAGE02_ARENA_VERIFICATION_v02.md](./STAGE02_ARENA_VERIFICATION_v02.md)
+- [STAGE02_ARENA_REVIEW_PACK_v02.md](./STAGE02_ARENA_REVIEW_PACK_v02.md)
+
+Все новые composite PNG — **390×844 sRGB**. Арена сохраняет open-field принцип: компактный спрайт в центре, свободный маршрут для кругового движения и волна по внешнему кольцу. v01 не удалён и обозначен как история.

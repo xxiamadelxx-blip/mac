@@ -47,3 +47,23 @@ PNG в этой папке — визуальный референс, а не ф
 ## Критерий DONE
 
 Этап закрывается только после утверждения направления, создания всех обязательных экранов и состояний, проверки читаемости на телефоне, проверки безопасную зону и фиксации навигационного маршрута без тупиков.
+
+## Активный пакет v02 — soft tonal family
+
+Статус: **USER REVIEW / CANDIDATE**. Пакет v02 унифицирует меню с референсами Линь Юэ и Соён Хан: мягкая живописная anime-fantasy подача, сине-серо-бирюзовая вода, дымчатый нефрит, тёплая слоновая кость, приглушённая латунь и малиново-винный акцент без кислотной насыщенности.
+
+- [STAGE01_MENU_HOME_v02.png](./layers/STAGE01_MENU_HOME_v02.png)
+- [STAGE01_MENU_HEROES_v02.png](./layers/STAGE01_MENU_HEROES_v02.png) — используется нейтральная категория **ПЕРСОНАЖИ**;
+- [STAGE01_MENU_RUN_SETUP_v02.png](./layers/STAGE01_MENU_RUN_SETUP_v02.png)
+- [STAGE01_MENU_LOADING_v02.png](./layers/STAGE01_MENU_LOADING_v02.png)
+- [STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png](./layers/STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png)
+- [STAGE01_MENU_RESULT_VICTORY_LIN_v02.png](./layers/STAGE01_MENU_RESULT_VICTORY_LIN_v02.png)
+- [STAGE01_MENU_RESULT_DEFEAT_LIN_v02.png](./layers/STAGE01_MENU_RESULT_DEFEAT_LIN_v02.png)
+- [STAGE01_MENU_RESULT_DEFEAT_SOYEON_v02.png](./layers/STAGE01_MENU_RESULT_DEFEAT_SOYEON_v02.png)
+- [STAGE01_MENU_REVIEW_GRID_v02.png](./STAGE01_MENU_REVIEW_GRID_v02.png)
+- [STAGE01_MENU_UI_CONTRACT_v02.md](./STAGE01_MENU_UI_CONTRACT_v02.md)
+- [STAGE01_MENU_VISUAL_FAMILY_v02.md](./STAGE01_MENU_VISUAL_FAMILY_v02.md)
+- [STAGE01_MENU_CANDIDATE_PROVENANCE_v02.json](./STAGE01_MENU_CANDIDATE_PROVENANCE_v02.json)
+- [STAGE01_MENU_REVIEW_PACK_v02.md](./STAGE01_MENU_REVIEW_PACK_v02.md)
+
+Все новые PNG — **390×844 sRGB**. Файлы v01 остаются историей и fallback; v02 ещё не является утверждённым production art.
