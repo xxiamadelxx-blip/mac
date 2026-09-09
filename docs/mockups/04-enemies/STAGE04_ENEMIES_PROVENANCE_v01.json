@@ -80,7 +80,7 @@
       "dimensions": "1024x1024 RGBA",
       "gameplay_preview": null,
       "parent_approved_master": null,
-      "producing_commit": "PENDING_COMMIT_SHA",
+      "producing_commit": "6a951c8e17e23726675fec2c76d5968c48232c2d",
       "notes": "Replacement for rejected generation 02 / move_01.png. The previous blob remains preserved in Git history. Candidate is not artistic approval or runtime promotion."
     }
   ]
