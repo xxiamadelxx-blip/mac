@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1170" height="844" viewBox="0 0 1170 844">
+  <rect width="1170" height="844" fill="#202b31"/>
+  <text x="48" y="64" fill="#e7e0cf" font-family="sans-serif" font-size="28">MOONVEIL · STAGE 04 · ENEMY SILHOUETTE BOARD v01</text>
+  <text x="48" y="94" fill="#9fb4b4" font-family="sans-serif" font-size="16">Soft-tonal family · role readability before color</text>
+  <g fill="#10181c" stroke="#9aa6a4" stroke-width="2">
+    <g transform="translate(55 140)"><ellipse cx="82" cy="70" rx="55" ry="28"/><path d="M30 70L0 50M35 82L2 95M50 92L25 125M134 70L164 50M129 82L162 95M114 92L139 125M48 52L30 26M116 52L134 26"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Чернильный жук</text></g>
+    <g transform="translate(280 140)"><path d="M80 72C48 28 8 35 15 82C45 103 64 100 80 85C96 100 115 103 145 82C152 35 112 28 80 72Z"/><ellipse cx="80" cy="99" rx="16" ry="33"/><path d="M70 40L55 8M90 40L105 8"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Фонарь-мотылёк</text></g>
+    <g transform="translate(505 140)"><path d="M10 78C45 38 108 38 145 70L176 45L168 86L190 105L160 106C125 135 50 132 10 92Z"/><path d="M45 65L55 99M75 55L80 106M105 54L105 106M135 63L128 103"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Костяной карп</text></g>
+    <g transform="translate(765 140)"><path d="M65 18L105 18L120 58L108 138L85 118L62 138L50 58Z"/><path d="M50 58L15 95L36 110M120 58L155 95L134 110"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Бумажный призрак</text></g>
+    <g transform="translate(970 140)"><ellipse cx="80" cy="92" rx="58" ry="40"/><circle cx="80" cy="55" r="30"/><path d="M35 100L4 130M125 100L156 130M54 50L36 25M106 50L124 25"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Нефритовая жаба</text></g>
+    <g transform="translate(55 420)"><path d="M35 100C55 60 95 50 122 74C146 96 128 126 98 128C68 132 42 124 35 100Z"/><path d="M105 80C145 42 186 54 169 94C153 128 121 125 108 113Z"/><path d="M48 72L38 48L58 57M78 63L78 37L94 55"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Зеркальный лисёнок</text></g>
+    <g transform="translate(280 420)"><path d="M32 60C35 22 125 22 128 60L118 112C101 132 59 132 42 112Z"/><path d="M35 82L0 62L12 112L45 100M125 82L160 62L148 112L115 100"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Колокольный краб</text></g>
+    <g transform="translate(505 420)"><circle cx="80" cy="45" r="22"/><path d="M62 67L48 120L80 138L112 120L98 67Z"/><path d="M55 76L20 126M105 76L140 126M65 122L45 155M95 122L115 155"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Нитяная кукла</text></g>
+    <g transform="translate(765 420)"><path d="M44 72L60 28L80 8L100 28L116 72L132 130L28 130Z"/><path d="M62 26L50 0M98 26L115 5M28 85L0 120M132 85L160 120"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Каменный они</text></g>
+    <g transform="translate(955 420)"><path d="M0 112C28 52 58 52 82 92C103 125 131 118 157 70C173 42 194 46 212 72" fill="none" stroke="#10181c" stroke-width="24" stroke-linecap="round"/><path d="M195 55L214 30L223 62Z"/><text x="0" y="165" fill="#e7e0cf" stroke="none" font-size="16" font-family="sans-serif">Змей затмения</text></g>
+  </g>
+  <text x="48" y="812" fill="#9fb4b4" font-family="sans-serif" font-size="15">CANDIDATE BOARD · not runtime art · silhouettes are family calibration only</text>
+</svg>
