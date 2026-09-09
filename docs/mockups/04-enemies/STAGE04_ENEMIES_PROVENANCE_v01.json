@@ -53,6 +53,35 @@
       "parent_approved_master": null,
       "producing_commit": "PENDING_FINAL_STAGE04_COMMIT_CAPTURE",
       "notes": "Silhouette calibration board, not individual production enemy assets."
+    },
+    {
+      "asset_id": "enemy.lantern_moth.move_01",
+      "asset_kind": "combat_sprite_animation_state",
+      "candidate_id": "vl-20260909-lantern-moth-move-01-v02",
+      "status": "CANDIDATE",
+      "technical_status": "PNG_ALPHA_DIMENSIONS_PASS; TRUE_1X_MAP_PREVIEW_PENDING",
+      "artistic_status": "PENDING",
+      "editable_source_path": null,
+      "runtime_export_path": "docs/mockups/04-enemies/lantern_moth/move_01.png",
+      "runtime_status": "NOT_PROMOTED",
+      "tool": "built-in image_gen + ImageMagick technical alpha cleanup",
+      "model": "built-in image_gen; model/version not exposed",
+      "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+      "seed": null,
+      "source_refs": [
+        "user-provided Lantern Moth mockup board (attached)",
+        "replaces previous blob 530ee780e8941c6abae8d2e559b8f85a23d9f78d"
+      ],
+      "post_processing": [
+        "removed generated checkerboard raster from enclosed gap by bounded flood-fill",
+        "padded and normalized to 1024x1024 RGBA",
+        "PNG optimization"
+      ],
+      "dimensions": "1024x1024 RGBA",
+      "gameplay_preview": null,
+      "parent_approved_master": null,
+      "producing_commit": "PENDING_COMMIT_SHA",
+      "notes": "Replacement for rejected generation 02 / move_01.png. The previous blob remains preserved in Git history. Candidate is not artistic approval or runtime promotion."
     }
   ]
 }
