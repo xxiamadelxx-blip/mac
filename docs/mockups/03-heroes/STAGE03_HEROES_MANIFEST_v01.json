@@ -26,10 +26,10 @@
       "basic_attack_id": "jade_seal",
       "active_ability_id": "moon_circle",
       "assets": {
-        "fullbody": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
-        "portrait": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
-        "combat_states": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
-        "direction_kit": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png"
+        "fullbody": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+        "portrait": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+        "combat_states": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+        "direction_kit": "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png"
       },
       "animation_states": [
         "idle",
@@ -82,9 +82,9 @@
       "active_ability_id": "red_breakthrough",
       "assets": {
         "fullbody": null,
-        "portrait": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
-        "combat_states": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
-        "direction_kit": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png"
+        "portrait": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+        "combat_states": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+        "direction_kit": "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png"
       },
       "animation_states": [
         "idle",
@@ -115,7 +115,7 @@
       "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
     }
   ],
-  "selection_screen": "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
+  "selection_screen": "layers/STAGE03_HEROES_SELECTION_v02.png",
   "readability_rules": [
     "Hero silhouette must remain readable at the 390x844 target camera scale.",
     "Hero identity must not depend on UI text alone.",
@@ -160,8 +160,8 @@
     "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
   },
   "gameplay_scale_review": {
-    "lin_yue": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
-    "soyeon_han": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+    "lin_yue": "layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+    "soyeon_han": "layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
     "logical_viewport": "390x844 target",
     "source_canvas": "711x1536",
     "scene_or_fixture": "ChatGPT Images user-provided gameplay mockups; not Godot runtime"
@@ -169,16 +169,16 @@
   "vfx_bindings": "STAGE03_HEROES_VFX_BINDINGS_v01.json",
   "provenance": "STAGE03_HEROES_PROVENANCE_v01.json",
   "closure_evidence": [
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
-    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+    "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+    "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+    "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+    "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
+    "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+    "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+    "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
+    "layers/STAGE03_HEROES_SELECTION_v02.png",
+    "layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+    "layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
     "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
     "STAGE03_HEROES_VFX_BINDINGS_v01.json",
     "STAGE03_HEROES_PROVENANCE_v01.json"

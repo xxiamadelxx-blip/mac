@@ -16,11 +16,11 @@
       "asset_id": "asset.hero.lin_yue.fullbody.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "fullbody_reference",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+      "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
       "input_attachment": "1000046654.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "identity and silhouette rules"
         }
@@ -84,16 +84,16 @@
       "asset_id": "asset.hero.lin_yue.portrait.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "portrait_reference",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+      "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
       "input_attachment": "1000046656.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
           "kind": "reference",
           "relation": "identity anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "identity rules"
         }
@@ -157,11 +157,11 @@
       "asset_id": "asset.hero.soyeon_han.portrait.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "portrait_reference",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
       "input_attachment": "1000046657.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "identity rules"
         }
@@ -225,21 +225,21 @@
       "asset_id": "asset.hero.lin_yue.combat_states.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "combat_state_board",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+      "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
       "input_attachment": "1000046658.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
           "kind": "reference",
           "relation": "identity anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "face and hair anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "state and silhouette rules"
         }
@@ -280,7 +280,7 @@
         "frame_layout": "six horizontal state panels"
       },
       "gameplay_preview": {
-        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+        "path": "layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
           711,
           1536
@@ -315,16 +315,16 @@
       "asset_id": "asset.hero.soyeon_han.combat_states.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "combat_state_board",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
       "input_attachment": "1000046659.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "identity anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "state and silhouette rules"
         }
@@ -365,7 +365,7 @@
         "frame_layout": "six horizontal state panels"
       },
       "gameplay_preview": {
-        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+        "path": "layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
           711,
           1536
@@ -400,16 +400,16 @@
       "asset_id": "asset.hero.soyeon_han.direction_kit.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "direction_kit",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
       "input_attachment": "1000046661.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "silhouette and face anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "movement readability"
         }
@@ -450,7 +450,7 @@
         "frame_layout": "four horizontal direction panels"
       },
       "gameplay_preview": {
-        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+        "path": "layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
           711,
           1536
@@ -485,21 +485,21 @@
       "asset_id": "asset.hero.lin_yue.direction_kit.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "direction_kit",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
+      "path": "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
       "input_attachment": "1000046660.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
           "kind": "reference",
           "relation": "silhouette anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "face and hair anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "movement readability"
         }
@@ -540,7 +540,7 @@
         "frame_layout": "four horizontal direction panels"
       },
       "gameplay_preview": {
-        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+        "path": "layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
           711,
           1536
@@ -575,16 +575,16 @@
       "asset_id": "asset.hero.selection_screen.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "selection_screen",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
+      "path": "layers/STAGE03_HEROES_SELECTION_v02.png",
       "input_attachment": "1000046662.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "menu identity anchor"
         },
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "menu identity anchor"
         }
@@ -650,11 +650,11 @@
       "asset_id": "asset.hero.lin_yue.gameplay_review.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "gameplay_review",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+      "path": "layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
       "input_attachment": "1000046663.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+          "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
           "kind": "candidate",
           "relation": "Lin Yue combat evidence"
         },
@@ -725,11 +725,11 @@
       "asset_id": "asset.hero.soyeon_han.gameplay_review.v02",
       "family_id": "family.hero.combat.v01",
       "asset_kind": "gameplay_review",
-      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
       "input_attachment": "1000046664.png",
       "source_references": [
         {
-          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
           "kind": "candidate",
           "relation": "Soyeon Han combat evidence"
         },
