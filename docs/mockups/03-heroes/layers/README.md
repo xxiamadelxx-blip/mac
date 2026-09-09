@@ -1,21 +1,20 @@
 # Слои героинь — этап 03
 
-Изображения ниже — версионируемые Visual Lab candidates/mockups. Они не являются финальными production `SpriteFrames2D` и не подключаются к runtime автоматически.
+Актуальная визуальная ревизия: **v02**. Все файлы ниже — предоставленные пользователем PNG из ChatGPT Images, сохранённые без resize, crop, compositing или удаления фона.
 
-| Файл | Назначение | Размер |
-|---|---|---:|
-| `STAGE03_HERO_LIN_YUE_FULLBODY_v01.png` | full-body референс Линь Юэ | 768×1152 |
-| `STAGE03_HERO_LIN_YUE_PORTRAIT_v01.png` | портретный crop Линь Юэ | 512×512 |
-| `STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png` | full-body референс Соён Хан | 768×1152 |
-| `STAGE03_HERO_SOYEON_HAN_PORTRAIT_v01.png` | портретный crop Соён Хан | 512×512 |
-| `STAGE03_HEROES_SELECTION_v01.png` | русский экран выбора двух героинь | 390×844 |
-| `STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png` | state board: 6 состояний Линь Юэ | 1024×342 |
-| `STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png` | state board: 6 состояний Соён Хан | 1024×342 |
-| `STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png` | direction kit: front/back/left/right | 1024×377 |
-| `STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png` | direction kit: front/back/left/right | 1024×432 |
-| `STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg` | true 1× gameplay-scale review | 390×844 |
-| `STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg` | enlarged context review | 853×1844 |
+| Файл | Размер | Назначение |
+|---|---:|---|
+| STAGE03_HERO_LIN_YUE_FULLBODY_v02.png | 1024×1536 | full-body identity anchor Линь Юэ |
+| STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png | 1536×1536 | portrait Линь Юэ |
+| STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png | 1536×1536 | portrait Соён Хан |
+| STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png | 1536×512 | шесть боевых состояний Линь Юэ |
+| STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png | 1536×512 | шесть боевых состояний Соён Хан |
+| STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png | 1536×559 | четыре направления Соён Хан |
+| STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png | 1536×559 | четыре направления Линь Юэ |
+| STAGE03_HEROES_SELECTION_v02.png | 711×1536 | экран выбора героинь |
+| STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png | 711×1536 | gameplay mockup Линь Юэ |
+| STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png | 711×1536 | gameplay mockup Соён Хан |
 
-Порядок кадров state board: `idle → move → basic_attack → ability → hit → death`. Визуальные эффекты вынесены в `../STAGE03_HEROES_VFX_BINDINGS_v01.json`; названия и механические связи — в `../STAGE03_HEROES_MANIFEST_v01.json` и `../STAGE03_HEROES_COMBAT_CONTRACT_v01.md`.
+Техническая заметка: все десять PNG — sRGB без alpha-канала. Combat/direction boards имеют непрозрачный чёрный фон; это референсные листы, не готовые runtime sprite sheets. Извлечение кадров, очистка фона, pivot и отдельные VFX выполняются после art approval.
 
-Текущий статус новых PNG/JPEG: `CANDIDATE`, технический file-level review — `TECHNICAL PASS`, художественная приёмка — `PENDING`.
+Старые v01 PNG/JPG в этой папке удалены в рамках замены набора.

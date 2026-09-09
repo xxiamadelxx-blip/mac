@@ -2,357 +2,734 @@
   "schema": "moonveil.visual_lab.stage03.heroes.provenance",
   "version": 1,
   "stage": 3,
+  "visual_revision": "v02",
   "stage_status": "DONE",
   "visual_status": "CANDIDATE",
   "artistic_status": "PENDING",
   "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
-  "source_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
+  "source_commit": null,
+  "source_policy": "User-provided ChatGPT Images PNG set; Codex preserved source bytes and did not promote runtime assets.",
   "entries": [
     {
-      "candidate_id": "vl-20260909-hero-combat-lin-yue-states-v01",
+      "candidate_id": "vl-20260909-hero-fullbody-lin-yue-v02",
       "status": "CANDIDATE",
-      "asset_id": "asset.hero.lin_yue.combat_states.v01",
+      "asset_id": "asset.hero.lin_yue.fullbody.v02",
       "family_id": "family.hero.combat.v01",
-      "asset_kind": "combat_state_board",
-      "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
+      "asset_kind": "fullbody_reference",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+      "input_attachment": "1000046654.png",
       "source_references": [
         {
-          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v01.png",
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "identity and silhouette rules"
+        }
+      ],
+      "art_direction": "Full-body identity anchor for Lin Yue: jade/black flowing costume, fan and floating jade seals.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1024,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "light opaque"
+      },
+      "content_sha256": "d011b81de57f20ea6987240d6dd4f1e4f7d57a479a94091974e05da7131129c4",
+      "git_blob_sha": "1a184c430957b0d50145d114fa21db3240c6ba4c",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1024,
+          1536
+        ],
+        "source_only": true,
+        "sprite_frames": false
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "1024x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-portrait-lin-yue-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.lin_yue.portrait.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "portrait_reference",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+      "input_attachment": "1000046656.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
           "kind": "reference",
           "relation": "identity anchor"
         },
         {
-          "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v01.png",
-          "kind": "reference",
-          "relation": "face and hair anchor"
-        },
-        {
-          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
-          "relation": "state and silhouette rules"
+          "relation": "identity rules"
         }
       ],
-      "art_direction": "Compact 2D survivors-like combat sprite with high-contrast jade silhouette, fan and floating seals.",
+      "art_direction": "Portrait identity anchor for Lin Yue: face, hair, jade palette and fan motif.",
       "generator_or_tool": {
-        "tool": "built-in image_gen",
-        "version": null,
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
         "model": null,
-        "prompt_revision": "stage03-combat-sprite-v01"
+        "prompt_revision": "stage03-user-image-set-v02"
       },
       "editable_source": {
         "path": null,
         "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
+        "notes": "Raster reference only; no layered editable source was supplied."
       },
-      "post_processing": [
-        {
-          "step": "resize long edge to 1024px and strip metadata",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "light opaque"
+      },
+      "content_sha256": "ad964b012d839fea2968a58b6db3dae894e309b82454d1f7882ef38b66af6bd2",
+      "git_blob_sha": "b69f36894758e28e35f5d43ea6368f6af28f130d",
       "runtime_export": {
         "status": "NOT_PROMOTED",
         "format": "PNG",
         "dimensions_px": [
-          1024,
-          342
+          1536,
+          1536
         ],
-        "alpha": "true",
-        "sprite_frames": false,
-        "pivot": "TBD in Godot"
-      },
-      "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-        "dimensions_px": [
-          390,
-          844
-        ],
-        "scale": "true_1x",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
-      },
-      "review": {
-        "technical_status": "TECHNICAL PASS",
-        "artistic_status": "PENDING",
-        "checks": [
-          "PNG RGBA",
-          "dimensions verified",
-          "state order documented",
-          "390x844 review linked"
-        ],
-        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
-        "creative_director_decision": null
-      },
-      "promotion": {
-        "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
-        "consumer_scene_or_ui": null,
-        "status": "NOT_PROMOTED"
-      }
-    },
-    {
-      "candidate_id": "vl-20260909-hero-directions-lin-yue-v01",
-      "status": "CANDIDATE",
-      "asset_id": "asset.hero.lin_yue.direction_kit.v01",
-      "family_id": "family.hero.combat.v01",
-      "asset_kind": "direction_kit",
-      "path": "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png",
-      "source_references": [
-        {
-          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v01.png",
-          "kind": "reference",
-          "relation": "silhouette anchor"
-        },
-        {
-          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
-          "kind": "contract",
-          "relation": "movement readability"
-        }
-      ],
-      "art_direction": "Four explicit directions with preserved fan, sleeves, ribbons and seal silhouette.",
-      "generator_or_tool": {
-        "tool": "built-in image_gen",
-        "version": null,
-        "model": null,
-        "prompt_revision": "stage03-direction-kit-v01"
-      },
-      "editable_source": {
-        "path": null,
-        "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
-      },
-      "post_processing": [
-        {
-          "step": "resize long edge to 1024px and strip metadata",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
-      "runtime_export": {
-        "status": "NOT_PROMOTED",
-        "format": "PNG",
-        "dimensions_px": [
-          1024,
-          377
-        ],
-        "alpha": "true",
-        "direction_order": [
-          "front",
-          "back",
-          "left",
-          "right"
-        ],
+        "source_only": true,
         "sprite_frames": false
       },
-      "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-        "dimensions_px": [
-          390,
-          844
-        ],
-        "scale": "true_1x",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
-      },
       "review": {
-        "technical_status": "TECHNICAL PASS",
+        "technical_status": "REFERENCE PASS",
         "artistic_status": "PENDING",
         "checks": [
-          "PNG RGBA",
-          "dimensions verified",
-          "four directions documented"
+          "PNG decodes",
+          "1536x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded"
         ],
         "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
         "creative_director_decision": null
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
+        "producing_commit": null,
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
     },
     {
-      "candidate_id": "vl-20260909-hero-combat-soyeon-han-states-v01",
+      "candidate_id": "vl-20260909-hero-portrait-soyeon-han-v02",
       "status": "CANDIDATE",
-      "asset_id": "asset.hero.soyeon_han.combat_states.v01",
+      "asset_id": "asset.hero.soyeon_han.portrait.v02",
       "family_id": "family.hero.combat.v01",
-      "asset_kind": "combat_state_board",
-      "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
+      "asset_kind": "portrait_reference",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+      "input_attachment": "1000046657.png",
       "source_references": [
         {
-          "path": "layers/STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png",
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "identity rules"
+        }
+      ],
+      "art_direction": "Portrait identity anchor for Soyeon Han: high ponytail, crimson ribbon, short blade and red-black palette.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "light opaque"
+      },
+      "content_sha256": "7b5a5b829a09f481a157667fd48fb2d68d7db0372af0b42efb40cabd275f6bc2",
+      "git_blob_sha": "1d32a9370fc602f5abfede916c57e8736c5b51ae",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1536,
+          1536
+        ],
+        "source_only": true,
+        "sprite_frames": false
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "1536x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-combat-lin-yue-states-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.lin_yue.combat_states.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "combat_state_board",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+      "input_attachment": "1000046658.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
           "kind": "reference",
           "relation": "identity anchor"
         },
         {
-          "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v01.png",
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
           "kind": "reference",
           "relation": "face and hair anchor"
         },
         {
-          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "state and silhouette rules"
         }
       ],
-      "art_direction": "Compact 2D survivors-like combat sprite with high-contrast crimson silhouette, short blade and ribbon.",
+      "art_direction": "Compact 2D survivors-like combat reference with high-contrast jade silhouette, fan and floating seals.",
       "generator_or_tool": {
-        "tool": "built-in image_gen",
-        "version": null,
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
         "model": null,
-        "prompt_revision": "stage03-combat-sprite-v01"
+        "prompt_revision": "stage03-user-image-set-v02"
       },
       "editable_source": {
         "path": null,
         "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
+        "notes": "Raster reference only; no layered editable source was supplied."
       },
-      "post_processing": [
-        {
-          "step": "resize long edge to 1024px and strip metadata",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          512
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "black opaque"
+      },
+      "content_sha256": "0664ff39f7cc25853da7c2c7acb0b5582bd38ca062284b8c5911b17a78872c36",
+      "git_blob_sha": "f3c16b330fea21c41725c51d0cc9d106a7039427",
       "runtime_export": {
         "status": "NOT_PROMOTED",
         "format": "PNG",
         "dimensions_px": [
-          1024,
-          342
+          1536,
+          512
         ],
-        "alpha": "true",
+        "source_only": true,
         "sprite_frames": false,
-        "pivot": "TBD in Godot"
+        "frame_layout": "six horizontal state panels"
       },
       "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
-          390,
-          844
+          711,
+          1536
         ],
-        "scale": "true_1x",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+        "scale": "portrait aspect-ratio reference",
+        "scene_or_fixture": "ChatGPT Images user-provided gameplay mockup; not Godot runtime",
+        "content_sha256": "52a0566c4dbe5cf0281c2e96692b0fa19b23debf9bce7688c3c31536001a1964"
       },
       "review": {
-        "technical_status": "TECHNICAL PASS",
+        "technical_status": "REFERENCE PASS",
         "artistic_status": "PENDING",
         "checks": [
-          "PNG RGBA",
-          "dimensions verified",
-          "state order documented",
-          "390x844 review linked"
+          "PNG decodes",
+          "1536x512 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "board order documented"
         ],
         "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
         "creative_director_decision": null
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
+        "producing_commit": null,
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
     },
     {
-      "candidate_id": "vl-20260909-hero-directions-soyeon-han-v01",
+      "candidate_id": "vl-20260909-hero-combat-soyeon-han-states-v02",
       "status": "CANDIDATE",
-      "asset_id": "asset.hero.soyeon_han.direction_kit.v01",
+      "asset_id": "asset.hero.soyeon_han.combat_states.v02",
       "family_id": "family.hero.combat.v01",
-      "asset_kind": "direction_kit",
-      "path": "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png",
+      "asset_kind": "combat_state_board",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+      "input_attachment": "1000046659.png",
       "source_references": [
         {
-          "path": "layers/STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png",
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
           "kind": "reference",
-          "relation": "silhouette anchor"
+          "relation": "identity anchor"
         },
         {
-          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "state and silhouette rules"
+        }
+      ],
+      "art_direction": "Compact 2D survivors-like combat reference with crimson silhouette, short blade, ponytail and ribbon.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          512
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "black opaque"
+      },
+      "content_sha256": "bdbc18d07db86fbcfb8f9eaf6f70882807c0801fa7a907a2edb3fc3994725955",
+      "git_blob_sha": "01368da3e66a8295b49a24bad6824647ff359255",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1536,
+          512
+        ],
+        "source_only": true,
+        "sprite_frames": false,
+        "frame_layout": "six horizontal state panels"
+      },
+      "gameplay_preview": {
+        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "scale": "portrait aspect-ratio reference",
+        "scene_or_fixture": "ChatGPT Images user-provided gameplay mockup; not Godot runtime",
+        "content_sha256": "84f715be3f7ed4592a67ca3f382316c3cd6bd758a93a68988a3d2f44c80117ed"
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "1536x512 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "board order documented"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-directions-soyeon-han-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.soyeon_han.direction_kit.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "direction_kit",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
+      "input_attachment": "1000046661.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+          "kind": "reference",
+          "relation": "silhouette and face anchor"
+        },
+        {
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
           "kind": "contract",
           "relation": "movement readability"
         }
       ],
-      "art_direction": "Four explicit directions with preserved ponytail, crimson ribbon, short blade, shoulder guard and sash.",
+      "art_direction": "Four explicit movement directions preserving ponytail, crimson ribbon, short blade, shoulder guard and sash.",
       "generator_or_tool": {
-        "tool": "built-in image_gen",
-        "version": null,
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
         "model": null,
-        "prompt_revision": "stage03-direction-kit-v01"
+        "prompt_revision": "stage03-user-image-set-v02"
       },
       "editable_source": {
         "path": null,
         "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
+        "notes": "Raster reference only; no layered editable source was supplied."
       },
-      "post_processing": [
-        {
-          "step": "resize long edge to 1024px and strip metadata",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          559
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "black opaque"
+      },
+      "content_sha256": "f187130103e7fc3c4b4630a05b7631613fadff595344cbf2a5adaa1c4d8ac254",
+      "git_blob_sha": "86d85c014641fb0191f40a6dccf445509076656b",
       "runtime_export": {
         "status": "NOT_PROMOTED",
         "format": "PNG",
         "dimensions_px": [
-          1024,
-          432
+          1536,
+          559
         ],
-        "alpha": "true",
-        "direction_order": [
-          "front",
-          "back",
-          "left",
-          "right"
-        ],
-        "sprite_frames": false
+        "source_only": true,
+        "sprite_frames": false,
+        "frame_layout": "four horizontal direction panels"
       },
       "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
         "dimensions_px": [
-          390,
-          844
+          711,
+          1536
         ],
-        "scale": "true_1x",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+        "scale": "portrait aspect-ratio reference",
+        "scene_or_fixture": "ChatGPT Images user-provided gameplay mockup; not Godot runtime",
+        "content_sha256": "84f715be3f7ed4592a67ca3f382316c3cd6bd758a93a68988a3d2f44c80117ed"
       },
       "review": {
-        "technical_status": "TECHNICAL PASS",
+        "technical_status": "REFERENCE PASS",
         "artistic_status": "PENDING",
         "checks": [
-          "PNG RGBA",
-          "dimensions verified",
-          "four directions documented"
+          "PNG decodes",
+          "1536x559 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "board order documented"
         ],
         "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
         "creative_director_decision": null
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
+        "producing_commit": null,
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
     },
     {
-      "candidate_id": "vl-20260909-hero-gameplay-review-390-v01",
+      "candidate_id": "vl-20260909-hero-directions-lin-yue-v02",
       "status": "CANDIDATE",
-      "asset_id": "asset.hero.combat.gameplay_scale_review.v01",
+      "asset_id": "asset.hero.lin_yue.direction_kit.v02",
       "family_id": "family.hero.combat.v01",
-      "asset_kind": "gameplay_scale_review",
-      "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+      "asset_kind": "direction_kit",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
+      "input_attachment": "1000046660.png",
       "source_references": [
         {
-          "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+          "kind": "reference",
+          "relation": "silhouette anchor"
+        },
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+          "kind": "reference",
+          "relation": "face and hair anchor"
+        },
+        {
+          "path": "docs/mockups/03-heroes/STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "movement readability"
+        }
+      ],
+      "art_direction": "Four explicit movement directions preserving fan, sleeves, ribbons and floating jade seals.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          1536,
+          559
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "black opaque"
+      },
+      "content_sha256": "3deee78dcd818033d446bb362daa08a0d879c5af8af6b02ddf1804ff1d48ce46",
+      "git_blob_sha": "2d3a39f280ae2ea0087ebe51638acd7b0c3e59e3",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1536,
+          559
+        ],
+        "source_only": true,
+        "sprite_frames": false,
+        "frame_layout": "four horizontal direction panels"
+      },
+      "gameplay_preview": {
+        "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "scale": "portrait aspect-ratio reference",
+        "scene_or_fixture": "ChatGPT Images user-provided gameplay mockup; not Godot runtime",
+        "content_sha256": "52a0566c4dbe5cf0281c2e96692b0fa19b23debf9bce7688c3c31536001a1964"
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "1536x559 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "board order documented"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-heroes-selection-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.selection_screen.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "selection_screen",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
+      "input_attachment": "1000046662.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+          "kind": "reference",
+          "relation": "menu identity anchor"
+        },
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+          "kind": "reference",
+          "relation": "menu identity anchor"
+        }
+      ],
+      "art_direction": "Russian mobile hero selection screen using the v02 identity anchors.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "light opaque"
+      },
+      "content_sha256": "b3c35e8217169d69a726a604cf011d5630ec2975a616059d64ded5f6e677563f",
+      "git_blob_sha": "fe5b86e02db5ebb176542b1f9a167f5bcb494fef",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "source_only": true,
+        "sprite_frames": false,
+        "logical_viewport_target": "390x844; source canvas is 711x1536"
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "711x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "portrait gameplay/UI composition linked"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-gameplay-lin-yue-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.lin_yue.gameplay_review.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "gameplay_review",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+      "input_attachment": "1000046663.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
           "kind": "candidate",
           "relation": "Lin Yue combat evidence"
         },
         {
-          "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
+          "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_OPEN_FIELD_ART_v02.png",
+          "kind": "context reference",
+          "relation": "arena atmosphere anchor"
+        }
+      ],
+      "art_direction": "Portrait gameplay mockup of Lin Yue readable inside a dark flooded garden mass-wave scene with jade control VFX.",
+      "generator_or_tool": {
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
+        "model": null,
+        "prompt_revision": "stage03-user-image-set-v02"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster reference only; no layered editable source was supplied."
+      },
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "illustrated opaque"
+      },
+      "content_sha256": "52a0566c4dbe5cf0281c2e96692b0fa19b23debf9bce7688c3c31536001a1964",
+      "git_blob_sha": "a806e43c6503e66e0ddbe544d04693e3955803bb",
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "source_only": true,
+        "sprite_frames": false,
+        "logical_viewport_target": "390x844; source canvas is 711x1536"
+      },
+      "review": {
+        "technical_status": "REFERENCE PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG decodes",
+          "711x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "portrait gameplay/UI composition linked"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-gameplay-soyeon-han-v02",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.soyeon_han.gameplay_review.v02",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "gameplay_review",
+      "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+      "input_attachment": "1000046664.png",
+      "source_references": [
+        {
+          "path": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
           "kind": "candidate",
           "relation": "Soyeon Han combat evidence"
         },
@@ -362,128 +739,57 @@
           "relation": "arena atmosphere anchor"
         }
       ],
-      "art_direction": "390x844 true 1x composite readability board with a mass wave, XP, telegraphs and role color contrast.",
+      "art_direction": "Portrait gameplay mockup of Soyeon Han readable inside a dark flooded garden mass-wave scene with crimson dash VFX.",
       "generator_or_tool": {
-        "tool": "built-in image_gen plus ImageMagick resize",
-        "version": null,
+        "tool": "ChatGPT Images",
+        "version": "user-provided",
         "model": null,
-        "prompt_revision": "stage03-gameplay-scale-review-v01"
+        "prompt_revision": "stage03-user-image-set-v02"
       },
       "editable_source": {
         "path": null,
         "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
+        "notes": "Raster reference only; no layered editable source was supplied."
       },
-      "post_processing": [
-        {
-          "step": "resize to exact 390x844 and JPEG quality 78",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
+      "post_processing": [],
+      "source_metadata": {
+        "dimensions_px": [
+          711,
+          1536
+        ],
+        "color_space": "sRGB",
+        "alpha": "false",
+        "background": "illustrated opaque"
+      },
+      "content_sha256": "84f715be3f7ed4592a67ca3f382316c3cd6bd758a93a68988a3d2f44c80117ed",
+      "git_blob_sha": "092fd86919087f92095887fddb1d269262f6c499",
       "runtime_export": {
         "status": "NOT_PROMOTED",
-        "format": "JPEG",
+        "format": "PNG",
         "dimensions_px": [
-          390,
-          844
+          711,
+          1536
         ],
-        "runtime_capture": false
-      },
-      "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-        "dimensions_px": [
-          390,
-          844
-        ],
-        "scale": "true_1x",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+        "source_only": true,
+        "sprite_frames": false,
+        "logical_viewport_target": "390x844; source canvas is 711x1536"
       },
       "review": {
-        "technical_status": "TECHNICAL PASS",
+        "technical_status": "REFERENCE PASS",
         "artistic_status": "PENDING",
         "checks": [
-          "exact 390x844",
-          "JPEG decodes",
-          "mass-wave context visible"
+          "PNG decodes",
+          "711x1536 dimensions verified",
+          "sRGB recorded",
+          "opaque background recorded",
+          "portrait gameplay/UI composition linked"
         ],
         "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
         "creative_director_decision": null
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
-        "consumer_scene_or_ui": null,
-        "status": "NOT_PROMOTED"
-      }
-    },
-    {
-      "candidate_id": "vl-20260909-hero-gameplay-review-enlarged-v01",
-      "status": "CANDIDATE",
-      "asset_id": "asset.hero.combat.gameplay_scale_review.enlarged.v01",
-      "family_id": "family.hero.combat.v01",
-      "asset_kind": "gameplay_context_review",
-      "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
-      "source_references": [
-        {
-          "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-          "kind": "review",
-          "relation": "same board at true 1x"
-        }
-      ],
-      "art_direction": "Enlarged context view for inspecting hero/enemy/VFX separation.",
-      "generator_or_tool": {
-        "tool": "ImageMagick",
-        "version": null,
-        "model": null,
-        "prompt_revision": "stage03-gameplay-scale-review-v01"
-      },
-      "editable_source": {
-        "path": null,
-        "status": "NOT_SUPPLIED",
-        "notes": "Raster candidate only; no layered editable source is promoted."
-      },
-      "post_processing": [
-        {
-          "step": "preserve 853x1844 and JPEG quality 78",
-          "tool": "ImageMagick",
-          "version": "runtime-provided"
-        }
-      ],
-      "runtime_export": {
-        "status": "NOT_PROMOTED",
-        "format": "JPEG",
-        "dimensions_px": [
-          853,
-          1844
-        ],
-        "runtime_capture": false
-      },
-      "gameplay_preview": {
-        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
-        "dimensions_px": [
-          853,
-          1844
-        ],
-        "scale": "enlarged_context",
-        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
-        "sha256": "41974be5350b2c14d003e8a5e3c2f1ce233040cc4aac935c24b7fd193a10b74e"
-      },
-      "review": {
-        "technical_status": "TECHNICAL PASS",
-        "artistic_status": "PENDING",
-        "checks": [
-          "853x1844",
-          "JPEG decodes",
-          "context readable"
-        ],
-        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
-        "creative_director_decision": null
-      },
-      "promotion": {
-        "runtime_manifest_path": null,
-        "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b",
+        "producing_commit": null,
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }

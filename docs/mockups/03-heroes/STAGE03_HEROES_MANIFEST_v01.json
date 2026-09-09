@@ -2,6 +2,7 @@
   "schema": "moonveil.heroes.manifest",
   "version": 1,
   "stage": 3,
+  "visual_revision": "v02",
   "status": "DONE",
   "heroes": [
     {
@@ -25,10 +26,10 @@
       "basic_attack_id": "jade_seal",
       "active_ability_id": "moon_circle",
       "assets": {
-        "fullbody": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v01.png",
-        "portrait": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v01.png",
-        "combat_states": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
-        "direction_kit": "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png"
+        "fullbody": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+        "portrait": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+        "combat_states": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+        "direction_kit": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png"
       },
       "animation_states": [
         "idle",
@@ -38,8 +39,8 @@
         "hit",
         "death"
       ],
-      "combat_sprite_candidate_id": "vl-20260909-hero-combat-lin-yue-states-v01",
-      "direction_kit_candidate_id": "vl-20260909-hero-directions-lin-yue-v01",
+      "combat_sprite_candidate_id": "vl-20260909-hero-combat-lin-yue-states-v02",
+      "direction_kit_candidate_id": "vl-20260909-hero-directions-lin-yue-v02",
       "direction_count": 4,
       "direction_semantics": [
         "front",
@@ -48,7 +49,7 @@
         "right"
       ],
       "asset_status": "CANDIDATE",
-      "technical_status": "TECHNICAL PASS",
+      "technical_status": "REFERENCE PASS",
       "artistic_status": "PENDING",
       "vfx_binding_ids": {
         "basic_attack": "vfx.hero.lin_yue.jade_seal",
@@ -56,7 +57,7 @@
         "hit": "vfx.hero.lin_yue.hit_seal_break",
         "death": "vfx.hero.lin_yue.seal_dissolve"
       },
-      "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
+      "producing_commit": null
     },
     {
       "hero_id": "soyeon_han",
@@ -80,10 +81,10 @@
       "basic_attack_id": "crimson_slash",
       "active_ability_id": "red_breakthrough",
       "assets": {
-        "fullbody": "layers/STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png",
-        "portrait": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v01.png",
-        "combat_states": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
-        "direction_kit": "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png"
+        "fullbody": null,
+        "portrait": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+        "combat_states": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+        "direction_kit": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png"
       },
       "animation_states": [
         "idle",
@@ -93,8 +94,8 @@
         "hit",
         "death"
       ],
-      "combat_sprite_candidate_id": "vl-20260909-hero-combat-soyeon-han-states-v01",
-      "direction_kit_candidate_id": "vl-20260909-hero-directions-soyeon-han-v01",
+      "combat_sprite_candidate_id": "vl-20260909-hero-combat-soyeon-han-states-v02",
+      "direction_kit_candidate_id": "vl-20260909-hero-directions-soyeon-han-v02",
       "direction_count": 4,
       "direction_semantics": [
         "front",
@@ -103,7 +104,7 @@
         "right"
       ],
       "asset_status": "CANDIDATE",
-      "technical_status": "TECHNICAL PASS",
+      "technical_status": "REFERENCE PASS",
       "artistic_status": "PENDING",
       "vfx_binding_ids": {
         "basic_attack": "vfx.hero.soyeon_han.crimson_slash",
@@ -111,15 +112,16 @@
         "hit": "vfx.hero.soyeon_han.armor_sparks",
         "death": "vfx.hero.soyeon_han.ribbon_fade"
       },
-      "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
+      "producing_commit": null
     }
   ],
-  "selection_screen": "layers/STAGE03_HEROES_SELECTION_v01.png",
+  "selection_screen": "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
   "readability_rules": [
-    "Hero silhouette must remain readable at the 390x844 camera scale.",
+    "Hero silhouette must remain readable at the 390x844 target camera scale.",
     "Hero identity must not depend on UI text alone.",
     "Basic attack and active ability use separate shapes and telegraph colors.",
-    "Portrait, fullbody and combat sprite preserve face, hair, costume and main silhouette."
+    "Portrait, fullbody and combat reference preserve face, hair, costume and main silhouette where the corresponding source asset is supplied.",
+    "Opaque reference backgrounds must be removed before runtime import."
   ],
   "stage_status": "DONE",
   "visual_candidate_status": "CANDIDATE",
@@ -143,9 +145,11 @@
       "hit",
       "death"
     ],
-    "gameplay_viewport": "390x844",
-    "sprite_mode": "animated_2d_sprite",
-    "vfx_separate": true
+    "gameplay_viewport": "390x844 target",
+    "source_canvas": "711x1536",
+    "sprite_mode": "animated_2d_sprite_reference",
+    "vfx_separate": true,
+    "alpha_extraction_required": true
   },
   "visual_lab": {
     "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
@@ -153,27 +157,32 @@
     "asset_status": "CANDIDATE",
     "artistic_status": "PENDING",
     "runtime_status": "NOT_PROMOTED",
-    "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
+    "producing_commit": null
   },
   "gameplay_scale_review": {
-    "true_1x": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-    "enlarged": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
-    "logical_viewport": "390x844",
-    "scene_or_fixture": "Visual Lab composite review board; not Godot runtime"
+    "lin_yue": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+    "soyeon_han": "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
+    "logical_viewport": "390x844 target",
+    "source_canvas": "711x1536",
+    "scene_or_fixture": "ChatGPT Images user-provided gameplay mockups; not Godot runtime"
   },
   "vfx_bindings": "STAGE03_HEROES_VFX_BINDINGS_v01.json",
   "provenance": "STAGE03_HEROES_PROVENANCE_v01.json",
   "closure_evidence": [
-    "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
-    "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
-    "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png",
-    "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png",
-    "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
-    "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
+    "docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png",
     "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
     "STAGE03_HEROES_VFX_BINDINGS_v01.json",
     "STAGE03_HEROES_PROVENANCE_v01.json"
   ],
   "next_stage": 4,
-  "producing_commit": "cf1a6894a386b826f8305fc40ab1e3e743dcb42b"
+  "producing_commit": null
 }

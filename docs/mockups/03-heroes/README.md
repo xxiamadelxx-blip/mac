@@ -1,54 +1,42 @@
 # Этап 03 — героини
 
-Статус: **DONE** — пакет visual mockup/evidence закрыт.
+Статус: **DONE** — пакет Visual Lab mockup/evidence заменён на художественную ревизию **v02**.
 
-Этап разрешён до технического прогона этапа 2 по явному решению пользователя. Godot/Android-проверка арены остаётся отдельной технической задачей; её отсутствие не отменяет закрытие визуального пакета этапа 3.
+## Что заменено
 
-## Канон двух героинь
+Старые визуальные PNG/JPG из layers удалены. Вместо них добавлены десять предоставленных пользователем PNG из ChatGPT Images:
 
-| Героиня | Роль | Главное ощущение | Цветовой код |
-|---|---|---|---|
-| Линь Юэ — Нефритовая ведьма | дальний бой и контроль | спокойная точность, печати, замедление | нефрит / мятный / лунное серебро |
-| Соён Хан — Алый клинок | ближний бой и критические рывки | скорость, риск, резкий вход в толпу | багровый / угольный / приглушённое золото |
+- full-body и portrait для меню;
+- combat-state boards для боевой анимационной разметки;
+- четыре направления движения;
+- экран выбора героинь;
+- два отдельных gameplay mockup среди массовой волны.
 
-## Закрытые deliverables
+Документы этапа сохранены и синхронизированы с новым набором. VFX bindings не менялись: их ID остаются контрактом для арены.
 
-- full-body референсы, портреты и русский мокап выбора 390×844;
-- manifest ролей, цветов, силуэтов, состояний и candidate IDs;
-- боевой контракт `idle/move/basic_attack/ability/hit/death`;
-- state-board кандидаты для всех шести состояний каждой героини;
-- direction kit кандидаты `front/back/left/right` для каждой героини;
-- true 1× и enlarged gameplay-scale review в массовой волне;
-- отдельные VFX bindings и provenance-пакет Visual Lab.
+## Карта героинь
 
-## Файлы закрытия
+| Героиня | Menu anchors | Combat board | Direction kit | Gameplay |
+|---|---|---|---|---|
+| Линь Юэ — Нефритовая ведьма | fullbody v02, portrait v02 | combat states v02 | direction kit v02 | gameplay review v02 |
+| Соён Хан — Алый клинок | portrait v02; fullbody reference отсутствует в новом наборе | combat states v02 | direction kit v02 | gameplay review v02 |
 
-| Файл | Назначение |
-|---|---|
-| `STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md` | контракт 2D-спрайта, масштаба и handoff |
-| `STAGE03_HEROES_VFX_BINDINGS_v01.json` | отдельные VFX для атак, способностей, hit/death |
-| `STAGE03_HEROES_PROVENANCE_v01.json` | candidate IDs, источники, хэши и статусы |
-| `layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png` | шесть боевых состояний Линь Юэ |
-| `layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png` | шесть боевых состояний Соён Хан |
-| `layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png` | четыре направления Линь Юэ |
-| `layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png` | четыре направления Соён Хан |
-| `layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg` | exact 390×844 true 1× review |
-| `layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg` | enlarged 853×1844 context review |
+Полные пути и размеры зафиксированы в STAGE03_HEROES_MANIFEST_v01.json и STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md.
 
-## Инварианты образа
+## Важная техническая граница
 
-- Линь Юэ сохраняет длинные чёрные волосы с нефритовым оттенком, лунное украшение, светлое многослойное одеяние и веер-печать.
-- Соён Хан сохраняет высокий хвост с красной лентой, чёрно-багровый костюм, красный пояс и короткий алый клинок.
-- Лицо, причёска, костюм и основной силуэт не меняются между портретом, full-body, боевым спрайтом и UI.
-- На арене идентичность должна читаться без текста и без обязательного VFX.
+Новые изображения сохранены без преобразований. Все PNG имеют opaque canvas без alpha-канала; combat/direction boards используют чёрный фон. Поэтому они являются Visual Lab candidates/references. До использования в игре нужны background removal, frame extraction, pivot, VFX separation и Godot/Android-проверка.
 
-## Evidence и границы
+Gameplay и selection images имеют размер 711×1536. Это портретный source canvas с пропорцией целевого viewport 390×844, но не точный runtime screenshot 390×844.
 
-- Проверены наличие файлов, JSON-валидность, размеры PNG/JPEG и сохранение RGBA у state/direction candidates.
-- На review board героини различаются среди массовой волны по силуэту, цветовой роли и механическому телеграфу.
-- Кандидаты имеют статус `CANDIDATE`; художественная приёмка — `PENDING`. Они не являются `APPROVED GOLDEN` или `PRODUCTION`.
-- State boards не являются готовыми Godot `SpriteFrames2D`; Android, runtime import, touch и APK остаются вне этого visual closure.
+## Состояния
 
-## Handoff
+Для обеих героинь зафиксирован порядок: idle, move, basic_attack, ability, hit, death.
 
-Следующий содержательный этап — **4. Мокапы противников**. Перед runtime-продакшеном этапы 6/11 должны привязать оружие и VFX через IDs из manifest и отдельного VFX binding-файла.
+## Документы
+
+- STAGE03_HEROES_MANIFEST_v01.json — карта ассетов и статусы.
+- STAGE03_HEROES_COMBAT_CONTRACT_v01.md — identity, состояния, направления и VFX contract.
+- STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md — размеры, фон и runtime handoff.
+- STAGE03_HEROES_VFX_BINDINGS_v01.json — отдельные VFX bindings.
+- STAGE03_HEROES_PROVENANCE_v01.json — источник, SHA-256 и Git blob SHA новых файлов.

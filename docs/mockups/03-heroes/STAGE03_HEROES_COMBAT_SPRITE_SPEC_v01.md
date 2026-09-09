@@ -1,51 +1,55 @@
 # Этап 03 — боевые 2D-спрайты героинь v01
 
-Статус этапа: **DONE** — пакет мокапов и evidence закрыт.
-Статус Visual Lab: `CANDIDATE`; художественное утверждение: `PENDING`.
-Статус runtime: `NOT_PROMOTED`; импорт в Godot/Android: `UNVERIFIED`.
+Статус пакета: **DONE** — Visual Lab mockup/evidence обновлён до художественной ревизии **v02**.  
+Статус ассетов: **CANDIDATE**.  
+Runtime promotion: **NOT_PROMOTED**.
 
-## Решение арены
+## Источник и границы
 
-В бою героиня представлена компактным анимированным 2D-спрайтом, а не 3D-моделью и не full-body иллюстрацией. Меню и выбор используют большие референсы; арена использует отдельные боевые кандидаты.
+Десять PNG предоставлены пользователем как результаты ChatGPT Images. Codex не менял их размеры, фон, палитру или композицию. Это референсные boards/mockups для дальнейшего production pipeline, а не готовые игровые текстуры.
 
-| Параметр | Контракт |
-|---|---|
-| Логический экран | 390×844, portrait |
-| Направления | 4: `front`, `back`, `left`, `right` |
-| Состояния | `idle`, `move`, `basic_attack`, `ability`, `hit`, `death` |
-| VFX | отдельный слой, не запечённый в identity sprite |
-| Приоритет | читаемость силуэта в массовой волне |
+Все новые изображения имеют цветовое пространство sRGB и не содержат alpha-канала. Чёрный фон combat/direction boards и светлый фон иллюстрационных листов сохраняются намеренно как часть исходного референса.
 
-## Кандидаты боевых состояний
+## Файловая карта
 
-| Героиня | Candidate ID | Файл | Размер |
-|---|---|---|---:|
-| Линь Юэ | `vl-20260909-hero-combat-lin-yue-states-v01` | `layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png` | 1024×342 |
-| Соён Хан | `vl-20260909-hero-combat-soyeon-han-states-v01` | `layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png` | 1024×342 |
+| Назначение | Файл | Размер |
+|---|---|---:|
+| Линь Юэ full-body | docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_FULLBODY_v02.png | 1024×1536 |
+| Линь Юэ portrait | docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png | 1536×1536 |
+| Соён Хан portrait | docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png | 1536×1536 |
+| Линь Юэ combat states | docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v02.png | 1536×512 |
+| Соён Хан combat states | docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v02.png | 1536×512 |
+| Соён Хан direction kit | docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v02.png | 1536×559 |
+| Линь Юэ direction kit | docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v02.png | 1536×559 |
+| Экран выбора | docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png | 711×1536 |
+| Gameplay: Линь Юэ | docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png | 711×1536 |
+| Gameplay: Соён Хан | docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_GAMEPLAY_REVIEW_v02.png | 711×1536 |
 
-Порядок кадров на каждой панели: `idle → move → basic_attack → ability → hit → death`. Панели являются state-board preview/evidence, а не готовыми `SpriteFrames2D`.
+## Разметка boards
 
-## Кандидаты четырёх направлений
+Combat states — горизонтальная доска из шести состояний в порядке idle, move, basic_attack, ability, hit, death. Direction kit — горизонтальная доска из четырёх направлений в порядке front, back, left, right. Эти boards не считаются спрайт-листами с готовыми рамками: координаты кадров и pivot будут назначены после art approval.
 
-| Героиня | Candidate ID | Файл | Размер |
-|---|---|---|---:|
-| Линь Юэ | `vl-20260909-hero-directions-lin-yue-v01` | `layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png` | 1024×377 |
-| Соён Хан | `vl-20260909-hero-directions-soyeon-han-v01` | `layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png` | 1024×432 |
+Для runtime-подготовки требуется:
 
-Каждый direction kit содержит front/back/left/right. Направления зафиксированы как отдельные варианты для последующей сборки анимации; автоматическое зеркалирование не считается финальным runtime-решением.
+- выделить каждый кадр;
+- убрать непрозрачный фон и сохранить корректный alpha-канал;
+- проверить читаемость силуэта на целевом масштабе;
+- вынести отдельные VFX;
+- импортировать в Godot как AnimatedSprite2D/AnimationPlayer с pivot под основанием персонажа;
+- выполнить Android-проверку после появления сборочной среды.
 
-## Проверка игрового масштаба
+## Gameplay scale evidence
 
-- `STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg` — true 1× preview 390×844.
-- `STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg` — enlarged context review 853×1844.
-- Это составная review-доска, а не захват Godot: Линь Юэ показана в верхней половине, Соён Хан — в нижней.
-- В затопленном Lotus Garden обе героини различимы среди массовой волны: нефритовый дальний контроль и печати Линь Юэ отделяются от алого ближнего разреза/рывка Соён; XP, телеграфы и тёмные силуэты врагов не сливаются с героями.
-- Review board подтверждает визуальную читаемость направления, но не заменяет Android/Godot runtime-проверку.
+Два gameplay mockup имеют canvas 711×1536. Его пропорция практически совпадает с целевым 390×844, но это не точный runtime capture и не доказательство работы Godot. На сценах должны читаться:
 
-## Разделение VFX
+- Линь Юэ: нефритовая аура, веер, печати и контрольная зона;
+- Соён Хан: красный след клинка, рывок и контрастный силуэт;
+- массовая волна врагов и раздельные телеграфы/VFX.
 
-Привязки вынесены в `STAGE03_HEROES_VFX_BINDINGS_v01.json`. Веер/печати и алый след клинка являются отдельными effect bindings; герой должен оставаться узнаваемым при отключённом VFX.
+## Visual Lab status
 
-## Граница закрытия
-
-Этап 3 закрыт как visual mockup/evidence package. Кандидаты остаются `CANDIDATE`, художественная приёмка — `PENDING`; они не promoted в `APPROVED GOLDEN` или `PRODUCTION`. Runtime `SpriteFrames2D`, сцены Godot, Android import и APK относятся к следующей технической проверке.
+- Stage: DONE.
+- Asset status: CANDIDATE.
+- Artistic approval: PENDING.
+- Runtime status: NOT_PROMOTED.
+- Следующий обязательный шаг: art review, alpha/frame extraction и Godot/Android smoke test.
