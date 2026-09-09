@@ -54,6 +54,7 @@ Status: IN PROGRESS.
 - [Direction B рекомендовано как база](docs/mockups/01-menu/STAGE01_MENU_DIRECTION_SELECTION_v01.md), но финальное утверждение и implementation-ready состояния ещё впереди;
 - screen-flow mockups Heroes, Run Setup, Loading, Victory и Defeat добавлены в `docs/mockups/01-menu/`;
 - Godot navigation prototype добавлен: `project.godot`, `scenes/menu/menu.tscn`, `scripts/menu/menu_controller.gd`;
+- русские UI-слои добавлены в `docs/mockups/01-menu/layers/`: ART, UI_RU и COMPOSITE_RU для шести состояний меню;
 - generated PNG трактуются как art-direction reference, а не как готовый интерактивный UI.
 
 Deliverables:
