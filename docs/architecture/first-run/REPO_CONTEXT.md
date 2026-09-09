@@ -6,11 +6,11 @@
 
 Этот файл — статический context packet, а не live-указатель на ветку. В нём сохранены исторические параметры, на которых пакет был собран:
 
-- prepared_from_main_sha: 9590ad3739ec77295f453fe09ffd2e5e7f153fba;
-- prepared_from_main_commit: art: add lantern moth PNG state mockups;
+- prepared_baseline: snapshot of the repository before the latest documentation/art follow-up commits;
+- prepared_baseline_commit: art: add lantern moth PNG state mockups;
 - prepared_at: 2026-09-09.
 
-Эти значения нужны для происхождения контекста и не являются текущим HEAD. Перед каждой работой агент обязан самостоятельно определить фактические repository, branch и HEAD. Отличие live HEAD от prepared_from_main_sha само по себе не является ошибкой, drift или блокером и не требует переписывать этот файл. В отчёте достаточно указать фактический HEAD и существенные изменения, влияющие на задачу.
+Эти значения нужны только для происхождения контекста и не являются текущим состоянием ветки. Перед каждой работой агент обязан самостоятельно определить фактические repository, branch и HEAD. Отличие live HEAD от этого исторического baseline само по себе не является ошибкой, drift или блокером и не требует переписывать этот файл. В отчёте достаточно указать фактический HEAD и существенные изменения, влияющие на задачу.
 
 ## Технологический контракт
 
