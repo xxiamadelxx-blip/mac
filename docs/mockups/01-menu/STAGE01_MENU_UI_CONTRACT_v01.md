@@ -95,7 +95,18 @@ Status: **IN PROGRESS** — visual screen-flow mockups exist; implementation in 
 
 Сгенерированные изображения используются для направления композиции и палитры. В финальной сцене нельзя оставлять PNG единственным слоем интерактивного меню.
 
-## 7. Stage 01 closure
+## 7. Navigation prototype status
+
+A first Godot navigation prototype is present:
+
+- `project.godot` sets Godot 4.x, portrait 390×844 viewport and mobile-compatible renderer;
+- `scenes/menu/menu.tscn` is the entry scene;
+- `scripts/menu/menu_controller.gd` creates real buttons and routes Home, Heroes, Run Setup, Loading, preview result states and placeholder sections;
+- the Loading route intentionally stops at an Arena handoff because Stage 02 gameplay is not implemented yet.
+
+The prototype is evidence of route wiring only. It is not evidence of a finished menu, APK, reward ledger or arena.
+
+## 8. Stage 01 closure
 
 Stage 01 можно перевести в DONE только после:
 
