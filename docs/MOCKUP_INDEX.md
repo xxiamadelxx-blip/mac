@@ -18,7 +18,7 @@
 | 1 | `docs/mockups/01-menu/` | Главное меню и навигация | IN PROGRESS |
 | 2 | `docs/mockups/02-arena/` | Живой ландшафт, вода, растения, частицы и след боя | IN PROGRESS |
 | 3 | `docs/mockups/03-heroes/` | Две героини, 2D-спрайты, состояния и боевые силуэты | DONE |
-| 4 | `docs/mockups/04-enemies/` | Десять противников | PLANNED |
+| 4 | `docs/mockups/04-enemies/` | Десять противников, силуэты и телеграфы | IN PROGRESS |
 | 5 | `docs/mockups/05-bosses/` | Четыре босса и фазы | PLANNED |
 | 6 | `docs/mockups/06-weapons/` | Иконки, атаки и эволюции оружия | PLANNED |
 | 7 | `docs/mockups/07-passives/` | Иконки и карточки пассивок | PLANNED |
@@ -40,13 +40,6 @@
 
 Формат: `STAGE##_AREA_TYPE_v##.ext`.
 
-Примеры:
-
-- `STAGE01_MENU_HOME_v01.png`
-- `STAGE03_HERO_LIN_YUE_v01.md`
-- `STAGE11_WEAPON_JADE_TALISMANS_v01.json`
-- `STAGE13_AUDIO_EVENT_TABLE_v01.md`
-
 ## Текущий активный результат
 
-Этапы 1 и 2 остаются IN PROGRESS. Этап 3 закрыт как visual mockup/evidence package: `docs/mockups/03-heroes/` содержит full-body/portrait/selection, state boards шести состояний, direction kits четырёх направлений, true 1×/enlarged gameplay-scale review, manifest, VFX bindings и provenance. Новые кандидаты остаются `CANDIDATE`/`PENDING`; Godot runtime и Android-проверка выполняются отдельно.
+Этапы 1 и 2 остаются IN PROGRESS. Этап 3 закрыт как visual mockup/evidence package и не promoted автоматически в production. Этап 4 начат по Visual Lab route `MOCKUP` + secondary `SPRITE`: создан канонический roster manifest десяти противников, soft-tonal enemy family contract и representative-master gate для Чернильного жука. Следующий evidence — enlarged + true 1x representative master, затем review перед batch остальных девяти врагов.
