@@ -13,6 +13,7 @@ Status: **IN PROGRESS** — три визуальных направления �
 - [STAGE01_MENU_LOADING_v01.png](./STAGE01_MENU_LOADING_v01.png) — loading перед ареной;
 - [STAGE01_MENU_RESULT_VICTORY_v01.png](./STAGE01_MENU_RESULT_VICTORY_v01.png) — успешное завершение;
 - [STAGE01_MENU_RESULT_DEFEAT_v01.png](./STAGE01_MENU_RESULT_DEFEAT_v01.png) — поражение и сохранённая контрольная точка.
+- [STAGE01_MENU_UI_CONTRACT_v01.md](./STAGE01_MENU_UI_CONTRACT_v01.md) — экранный маршрут, string keys, button states и критерии реализации.
 
 Target preview: **390×844**, вертикальный экран.
 
