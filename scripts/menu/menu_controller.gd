@@ -189,7 +189,7 @@ func _show_home() -> void:
     _clear_screen()
     _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _hit("Начать забег", Rect2(56, 560, 278, 70), Callable(self, "_show_run_setup"))
-    _bottom_nav("Home")
+    _bottom_nav("ГЛАВНАЯ")
 
 
 func _show_heroes() -> void:
@@ -198,7 +198,7 @@ func _show_heroes() -> void:
     _background("res://docs/mockups/01-menu/layers/STAGE01_HEROES_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HEROES_UI_RU_v01.png")
     _hit("Выбрать героиню", Rect2(68, 590, 254, 68), Callable(self, "_show_run_setup"))
     _hit("Назад", Rect2(14, 684, 96, 48), Callable(self, "_show_home"))
-    _bottom_nav("Heroes")
+    _bottom_nav("ГЕРОИНИ")
 
 
 func _show_run_setup() -> void:
@@ -207,7 +207,7 @@ func _show_run_setup() -> void:
     _background("res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_UI_RU_v01.png")
     _hit("Начать забег", Rect2(86, 655, 218, 66), Callable(self, "_show_loading"))
     _hit("Назад", Rect2(14, 655, 70, 66), Callable(self, "_show_home"))
-    _bottom_nav("Home")
+    _bottom_nav("ГЛАВНАЯ")
 
 
 func _show_loading() -> void:
