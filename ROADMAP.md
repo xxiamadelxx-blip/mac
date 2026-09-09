@@ -45,7 +45,14 @@ Status: PLANNED — числовая база задокументирована
 
 ### 1. Создание меню
 
-Status: PLANNED.
+Status: IN PROGRESS.
+
+Фактическое evidence на текущую итерацию:
+
+- созданы три визуальных направления в размере 390×844;
+- [Direction A](docs/mockups/01-menu/STAGE01_MENU_DIRECTION_A_v01.png), [Direction B](docs/mockups/01-menu/STAGE01_MENU_DIRECTION_B_v01.png) и [Direction C](docs/mockups/01-menu/STAGE01_MENU_DIRECTION_C_v01.png) добавлены в репозиторий;
+- [Direction B рекомендовано как база](docs/mockups/01-menu/STAGE01_MENU_DIRECTION_SELECTION_v01.md), но финальное утверждение и implementation-ready состояния ещё впереди;
+- generated PNG трактуются как art-direction reference, а не как готовый интерактивный UI.
 
 Deliverables:
 
