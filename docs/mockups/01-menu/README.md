@@ -1,59 +1,15 @@
 # Stage 01 — Menu
 
-Status: **IN PROGRESS** — три визуальных направления главного меню созданы; Direction B рекомендовано как база для следующей итерации.
+Status: **IN PROGRESS / USER REVIEW**.
 
-## Текущие deliverables
+Активное визуальное семейство: `moonveil-menu-soft-tonal-v02`.
 
-- [STAGE01_MENU_DIRECTION_A_v01.png](./STAGE01_MENU_DIRECTION_A_v01.png) — лунный сад, кинематографичная подача;
-- [STAGE01_MENU_DIRECTION_B_v01.png](./STAGE01_MENU_DIRECTION_B_v01.png) — основной кандидат с валютами, START RUN и нижней навигацией;
-- [STAGE01_MENU_DIRECTION_C_v01.png](./STAGE01_MENU_DIRECTION_C_v01.png) — чернильно-фонарная тёмная подача;
-- [STAGE01_MENU_DIRECTION_SELECTION_v01.md](./STAGE01_MENU_DIRECTION_SELECTION_v01.md) — сравнение вариантов и критерии утверждения.
-- [STAGE01_MENU_HEROES_v01.png](./STAGE01_MENU_HEROES_v01.png) — экран выбора героини;
-- [STAGE01_MENU_RUN_SETUP_v01.png](./STAGE01_MENU_RUN_SETUP_v01.png) — экран подготовки забега;
-- [STAGE01_MENU_LOADING_v01.png](./STAGE01_MENU_LOADING_v01.png) — loading перед ареной;
-- [STAGE01_MENU_RESULT_VICTORY_v01.png](./STAGE01_MENU_RESULT_VICTORY_v01.png) — успешное завершение;
-- [STAGE01_MENU_RESULT_DEFEAT_v01.png](./STAGE01_MENU_RESULT_DEFEAT_v01.png) — поражение и сохранённая контрольная точка.
-- [STAGE01_MENU_UI_CONTRACT_v01.md](./STAGE01_MENU_UI_CONTRACT_v01.md) — экранный маршрут, string keys, button states и критерии реализации.
+## Активный пакет v02
 
-Target preview: **390×844**, вертикальный экран.
-
-## Следующая работа
-
-- утвердить или скорректировать базовое направление;
-- подготовить готовые к реализации экраны Home, Heroes, Run Setup, Loading и Result;
-- заменить весь placeholder-текст на утверждённые строки и локализационные ключи;
-- описать normal, pressed, disabled и locked states;
-- разложить композицию на слои и зафиксировать переходы Home → Heroes → Run Setup → Arena.
-
-## Прототип навигации
-
-- [project.godot](../../../project.godot) — Godot 4.x, portrait viewport 390×844;
-- [menu.tscn](../../../scenes/menu/menu.tscn) — main scene;
-- [menu_controller.gd](../../../scripts/menu/menu_controller.gd) — real controls and screen transitions.
-
-Прототип использует PNG как временный art-direction background, но навигационные кнопки являются реальными Godot controls. Arena не подменяется готовой игрой: после Loading показывается честный Stage 02 handoff с preview-only Victory/Run Ended.
-
-## Русские слои UI
-
-- [layers/README.md](./layers/README.md) — схема слоёв и соответствие экранов;
-- *_ART_v01.png — неизменённый арт персонажей и окружения;
-- *_UI_RU_v01.png — отдельный прозрачный слой с русскими панелями и текстом;
-- *_COMPOSITE_RU_v01.png — контрольный русский preview.
-
-Исходные лица, причёски, костюмы и позы не перегенерировались. Генератор больше не используется как источник текста.
-
-PNG в этой папке — визуальный референс, а не финальный интерактивный UI.
-
-## Критерий DONE
-
-Этап закрывается только после утверждения направления, создания всех обязательных экранов и состояний, проверки читаемости на телефоне, проверки безопасную зону и фиксации навигационного маршрута без тупиков.
-
-## Активный пакет v02 — soft tonal family
-
-Статус: **USER REVIEW / CANDIDATE**. Пакет v02 унифицирует меню с референсами Линь Юэ и Соён Хан: мягкая живописная anime-fantasy подача, сине-серо-бирюзовая вода, дымчатый нефрит, тёплая слоновая кость, приглушённая латунь и малиново-винный акцент без кислотной насыщенности.
+Пакет использует мягкую живописную anime-fantasy подачу: глубокий сине-серый фон, дымчатый teal, тёплый ivory, приглушённую brass-фурнитуру и мягкий jade как основной акцент. Категория персонажей в интерфейсе — **ПЕРСОНАЖИ**.
 
 - [STAGE01_MENU_HOME_v02.png](./layers/STAGE01_MENU_HOME_v02.png)
-- [STAGE01_MENU_HEROES_v02.png](./layers/STAGE01_MENU_HEROES_v02.png) — используется нейтральная категория **ПЕРСОНАЖИ**;
+- [STAGE01_MENU_HEROES_v02.png](./layers/STAGE01_MENU_HEROES_v02.png)
 - [STAGE01_MENU_RUN_SETUP_v02.png](./layers/STAGE01_MENU_RUN_SETUP_v02.png)
 - [STAGE01_MENU_LOADING_v02.png](./layers/STAGE01_MENU_LOADING_v02.png)
 - [STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png](./layers/STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png)
@@ -66,4 +22,20 @@ PNG в этой папке — визуальный референс, а не ф
 - [STAGE01_MENU_CANDIDATE_PROVENANCE_v02.json](./STAGE01_MENU_CANDIDATE_PROVENANCE_v02.json)
 - [STAGE01_MENU_REVIEW_PACK_v02.md](./STAGE01_MENU_REVIEW_PACK_v02.md)
 
-Все новые PNG — **390×844 sRGB**. Файлы v01 остаются историей и fallback; v02 ещё не является утверждённым production art.
+Все v02 preview — 390×844 sRGB. Они остаются visual candidates/review evidence и не считаются автоматически `APPROVED GOLDEN` или `PRODUCTION`.
+
+## Godot navigation prototype
+
+- [project.godot](../../../project.godot)
+- [menu.tscn](../../../scenes/menu/menu.tscn)
+- [menu_controller.gd](../../../scripts/menu/menu_controller.gd)
+
+Прототип навигации пока использует часть старых v01 art/UI layers как временные backgrounds. Эти файлы перенесены в [`../_archive/family-v01/01-menu/`](../_archive/family-v01/01-menu/) и помечены как `LEGACY_RUNTIME_DEPENDENCY`; пути в контроллере обновлены на архив. Это не делает v01 активным visual family.
+
+## Архив
+
+Старые направления A/B/C, экраны v01, UI contract v01 и старые ART/UI_RU/COMPOSITE_RU слои больше не лежат в активной stage-папке. Они сохранены в [`_archive/family-v01`](../_archive/family-v01/README.md) только для истории и provenance.
+
+## Критерий DONE
+
+Этап закрывается только после явного утверждения выбранного visual family, проверки всех обязательных состояний, читаемости на телефоне, safe area и навигационного маршрута без тупиков, а также требуемого runtime/Android evidence.

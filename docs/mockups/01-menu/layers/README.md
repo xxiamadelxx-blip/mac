@@ -1,31 +1,20 @@
-# Слои меню v01
+# Слои меню — active v02
 
-Все файлы рассчитаны на вертикальный экран **390×844**.
+Эта папка содержит только активные visual candidates семейства `moonveil-menu-soft-tonal-v02`.
 
-Для каждого состояния меню используются три слоя:
+Target viewport: **390×844**, sRGB.
 
-- *_ART_v01.png — исходный арт без перерисовки персонажей;
-- *_UI_RU_v01.png — прозрачный PNG-слой с масками, панелями и русским интерфейсом;
-- *_COMPOSITE_RU_v01.png — контрольный preview: арт + русский UI.
+## Активные файлы
 
-Исходный арт намеренно не изменяется. Это сохраняет лица, причёски, костюмы и позы без новых мутаций. Английские подписи закрываются непрозрачными UI-панелями, а русский текст лежит отдельным слоем.
+- `STAGE01_MENU_HOME_v02.png`
+- `STAGE01_MENU_HEROES_v02.png`
+- `STAGE01_MENU_RUN_SETUP_v02.png`
+- `STAGE01_MENU_LOADING_v02.png`
+- `STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png`
+- `STAGE01_MENU_RESULT_VICTORY_LIN_v02.png`
+- `STAGE01_MENU_RESULT_DEFEAT_LIN_v02.png`
+- `STAGE01_MENU_RESULT_DEFEAT_SOYEON_v02.png`
 
-## Набор экранов
+Старые v01 `ART / UI_RU / COMPOSITE_RU` слои и их SVG-исходники перенесены в `docs/mockups/_archive/family-v01/01-menu/layers/`.
 
-| Состояние | Арт | UI-слой | Preview |
-|---|---|---|---|
-| Главная | STAGE01_HOME_ART_v01.png | STAGE01_HOME_UI_RU_v01.png | STAGE01_HOME_COMPOSITE_RU_v01.png |
-| Героини | STAGE01_HEROES_ART_v01.png | STAGE01_HEROES_UI_RU_v01.png | STAGE01_HEROES_COMPOSITE_RU_v01.png |
-| Подготовка забега | STAGE01_RUN_SETUP_ART_v01.png | STAGE01_RUN_SETUP_UI_RU_v01.png | STAGE01_RUN_SETUP_COMPOSITE_RU_v01.png |
-| Загрузка | STAGE01_LOADING_ART_v01.png | STAGE01_LOADING_UI_RU_v01.png | STAGE01_LOADING_COMPOSITE_RU_v01.png |
-| Победа | STAGE01_VICTORY_ART_v01.png | STAGE01_VICTORY_UI_RU_v01.png | STAGE01_VICTORY_COMPOSITE_RU_v01.png |
-| Забег завершён | STAGE01_DEFEAT_ART_v01.png | STAGE01_DEFEAT_UI_RU_v01.png | STAGE01_DEFEAT_COMPOSITE_RU_v01.png |
-
-SVG-файлы рядом — редактируемые исходники UI-слоёв. PNG используются Godot-прототипом и подходят для проверки на телефоне.
-
-## Ограничения v01
-
-- это визуальный слой и navigation prototype, а не окончательный интерактивный интерфейс;
-- точные кнопки, локализация, safe area и reward ledger дополнительно проверяются в Godot;
-- текст больше не берётся из генератора изображений;
-- переход к реальной арене остаётся заглушкой до этапа 2.
+Часть архивных v01-слоёв временно остаётся технической зависимостью navigation prototype. Это `LEGACY_RUNTIME_DEPENDENCY`, а не активный art direction. Новый production/runtime UI должен переходить на утверждённый v02 family через отдельный integration gate.

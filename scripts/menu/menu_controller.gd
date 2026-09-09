@@ -2,6 +2,8 @@ extends Control
 ## Stage 01 navigation prototype.
 ## This scene uses concept PNGs as art-direction backgrounds and real Godot controls
 ## for navigation. It is intentionally not marked as the finished menu.
+## Legacy v01 backgrounds are kept under docs/mockups/_archive as an explicit
+## LEGACY_RUNTIME_DEPENDENCY until the approved v02 family is integrated.
 
 const VIEWPORT_SIZE := Vector2(390.0, 844.0)
 
@@ -187,7 +189,7 @@ func _bottom_nav(active: String) -> void:
 func _show_home() -> void:
     current_screen = "home"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _hit("Начать забег", Rect2(56, 560, 278, 70), Callable(self, "_show_run_setup"))
     _bottom_nav("ГЛАВНАЯ")
 
@@ -195,7 +197,7 @@ func _show_home() -> void:
 func _show_heroes() -> void:
     current_screen = "heroes"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_HEROES_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HEROES_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HEROES_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HEROES_UI_RU_v01.png")
     _hit("Выбрать героиню", Rect2(68, 590, 254, 68), Callable(self, "_show_run_setup"))
     _hit("Назад", Rect2(14, 684, 96, 48), Callable(self, "_show_home"))
     _bottom_nav("ГЕРОИНИ")
@@ -204,7 +206,7 @@ func _show_heroes() -> void:
 func _show_run_setup() -> void:
     current_screen = "run_setup"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_RUN_SETUP_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_RUN_SETUP_UI_RU_v01.png")
     _hit("Начать забег", Rect2(86, 655, 218, 66), Callable(self, "_show_loading"))
     _hit("Назад", Rect2(14, 655, 70, 66), Callable(self, "_show_home"))
     _bottom_nav("ГЛАВНАЯ")
@@ -213,7 +215,7 @@ func _show_run_setup() -> void:
 func _show_loading() -> void:
     current_screen = "loading"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_LOADING_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_LOADING_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_LOADING_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_LOADING_UI_RU_v01.png")
     _label("ЗАГРУЗКА", Rect2(90, 620, 210, 40), 18, JADE)
     _label("ГЛАВА 1 — ПЕРВАЯ ВОЛНА", Rect2(62, 660, 266, 32), 12, MOON)
     get_tree().create_timer(1.2).timeout.connect(_on_loading_complete)
@@ -231,7 +233,7 @@ func _open_arena_preview() -> void:
 func _show_arena_handoff() -> void:
     current_screen = "arena_handoff"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _panel(Rect2(28, 250, 334, 300), Color("#061416ee"), JADE_DARK)
     _label("ПЕРЕХОД К АРЕНЕ", Rect2(48, 278, 294, 42), 24, JADE)
     _label(
@@ -248,7 +250,7 @@ func _show_arena_handoff() -> void:
 func _show_victory() -> void:
     current_screen = "victory"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_VICTORY_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_VICTORY_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_VICTORY_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_VICTORY_UI_RU_v01.png")
     _hit("Забрать награды", Rect2(64, 677, 262, 58), Callable(self, "_show_home"))
     _hit("В меню", Rect2(112, 742, 166, 42), Callable(self, "_show_home"))
 
@@ -256,7 +258,7 @@ func _show_victory() -> void:
 func _show_run_ended() -> void:
     current_screen = "run_ended"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_DEFEAT_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_DEFEAT_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_DEFEAT_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_DEFEAT_UI_RU_v01.png")
     _hit("Забрать награды", Rect2(62, 674, 266, 58), Callable(self, "_show_home"))
     _hit("Повторить", Rect2(104, 740, 182, 44), Callable(self, "_show_run_setup"))
     _hit("В меню", Rect2(118, 790, 154, 34), Callable(self, "_show_home"))
@@ -277,7 +279,7 @@ func _show_settings() -> void:
 func _show_section_placeholder(title: String, detail: String) -> void:
     current_screen = title.to_lower()
     _clear_screen()
-    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
+    _background("res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/_archive/family-v01/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _panel(Rect2(28, 310, 334, 224), Color("#061416ee"), JADE_DARK)
     _label(title, Rect2(50, 344, 290, 44), 24, JADE)
     _label(detail, Rect2(56, 404, 278, 58), 14, MOON)
