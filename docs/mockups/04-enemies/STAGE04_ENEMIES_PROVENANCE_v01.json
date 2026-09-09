@@ -1,0 +1,58 @@
+{
+  "schema": "visual_lab.candidate_provenance.collection",
+  "version": 1,
+  "stage": 4,
+  "family_id": "family.enemy.moonveil_soft_tonal.v01",
+  "source_refs": [
+    "GAME_MANIFEST.md",
+    "docs/BALANCE_ECONOMY_SPEC.md",
+    "AGENT_CONTEXT.md",
+    "visual_lab/REVIEW_CHECKLIST.md",
+    "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md"
+  ],
+  "candidates": [
+    {
+      "asset_id": "enemy.ink_beetle.master",
+      "asset_kind": "representative_enemy_master",
+      "candidate_id": "vl-20260909-enemy-ink-beetle-master-v01",
+      "status": "CANDIDATE",
+      "technical_status": "REFERENCE_PASS_PENDING_RUNTIME",
+      "artistic_status": "PENDING",
+      "editable_source_path": "docs/mockups/04-enemies/STAGE04_ENEMY_INK_BEETLE_MASTER_v01.svg",
+      "runtime_export_path": null,
+      "runtime_status": "NOT_PROMOTED",
+      "tool": "manual SVG authored through ChatGPT repository workflow",
+      "model": "GPT-5.6 Sol",
+      "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+      "seed": null,
+      "post_processing": [],
+      "dimensions": "1024x1024",
+      "gameplay_preview": "docs/mockups/04-enemies/STAGE04_ENEMY_INK_BEETLE_GAMEPLAY_REVIEW_v01.svg",
+      "gameplay_preview_dimensions": "390x844",
+      "parent_approved_master": null,
+      "producing_commit": "PENDING_FINAL_STAGE04_COMMIT_CAPTURE",
+      "notes": "Representative family calibration candidate only. No runtime promotion or artistic approval claimed."
+    },
+    {
+      "asset_id": "enemy.roster.silhouette_board",
+      "asset_kind": "roster_readability_board",
+      "candidate_id": "vl-20260909-enemy-roster-silhouettes-v01",
+      "status": "CANDIDATE",
+      "technical_status": "REFERENCE_PASS",
+      "artistic_status": "PENDING",
+      "editable_source_path": "docs/mockups/04-enemies/STAGE04_ENEMY_ROSTER_SILHOUETTES_v01.svg",
+      "runtime_export_path": null,
+      "runtime_status": "NOT_PROMOTED",
+      "tool": "manual SVG authored through ChatGPT repository workflow",
+      "model": "GPT-5.6 Sol",
+      "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+      "seed": null,
+      "post_processing": [],
+      "dimensions": "1170x844",
+      "gameplay_preview": null,
+      "parent_approved_master": null,
+      "producing_commit": "PENDING_FINAL_STAGE04_COMMIT_CAPTURE",
+      "notes": "Silhouette calibration board, not individual production enemy assets."
+    }
+  ]
+}
