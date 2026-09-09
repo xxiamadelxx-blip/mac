@@ -97,4 +97,4 @@ Godot выбран потому, что он подходит для 2D-игры
 - docs/BALANCE_ECONOMY_SPEC.md — баланс волн, поведения, XP, наград и валют.
 - README.md — краткое описание проекта и критерии готовности.
 
-Статус: этап 1 меню остаётся IN PROGRESS; этап 2 арены начат и содержит визуальные слои и Godot runtime-preview. Полноценный gameplay, APK и playtest ещё не выполнены.
+Статус: этапы 1 и 2 остаются IN PROGRESS; этап 3 героинь начат и содержит первые full-body/portrait mockups, русский экран выбора и manifest. Полноценный gameplay, APK и playtest ещё не выполнены.
