@@ -191,6 +191,8 @@
 
 Текущие screen-flow evidence: Home, Heroes, Run Setup, Loading, Victory и Defeat/Run Ended созданы в `docs/mockups/01-menu/`. Они остаются art-direction reference до прохождения текстовой, state-машинной и implementation-ready проверки.
 
-Следующее действие: заменить временные art-direction backgrounds на разложенные UI-слои, подключить локализационные строки и проверить normal/pressed/disabled/locked states; затем закрыть этап 1 evidence и начать Stage 02 Arena.
+Текущая работа этапа 1: русские ART/UI_RU/COMPOSITE_RU PNG-слои добавлены, а Godot-прототип переключён на ART + UI_RU. Персонажи не перегенерируются без отдельного решения.
+
+Следующее действие: заменить preview-слой на настоящие Godot UI-узлы, подключить локализационные строки, проверить normal/pressed/disabled/locked states и только затем закрыть этап 1 evidence и начать Stage 02 Arena.
 
 После завершения меню не переходить к арене автоматически, пока критерии этапа 1 не отмечены как DONE и не приложено evidence.
