@@ -2,7 +2,7 @@
   "schema": "visual_lab.candidate_provenance.collection",
   "version": 1,
   "stage": 4,
-  "family_id": "family.enemy.moonveil_soft_tonal.v01",
+  "family_id": "family.enemy.moonveil-soft-tonal.v01",
   "source_refs": [
     "GAME_MANIFEST.md",
     "docs/BALANCE_ECONOMY_SPEC.md",
