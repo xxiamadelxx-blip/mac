@@ -1,7 +1,7 @@
 
 # FIRST_RUN_EVENT_CATALOG — события и команды
 
-Статус: **SPECIFIED_WITH_PENDING_DECISIONS**  
+Статус: **SPECIFIED_WITH_PENDING_DECISIONS**
 Формат envelope для domain events описан в FIRST_RUN_DATA_CONTRACT.json. Для одного run события упорядочиваются по revision; retries сохраняют event_id и idempotency_key.
 
 ## 1. Общие правила
