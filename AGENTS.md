@@ -79,3 +79,14 @@ Technical PASS и artistic approval — разные состояния. Про�
 - следующий агент может продолжить без догадок.
 
 План, имя файла, созданная папка или красивый preview сами по себе не являются evidence готовности.
+## 7. Специализированный маршрут UI / art / sprite / mockup
+
+Для задач UI, UI-art, art, sprite и mockup после `visual_lab/REVIEW_CHECKLIST.md` обязательно прочитай `visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md` и следуй его маршруту.
+
+- Выбери один primary route: `UI_ART`, `SPRITE`, `ART` или `MOCKUP`; укажи точную stage-папку, `asset_id`, `family_id`, `candidate_id` и статус.
+- Для UI проверяй реальный `390x844`, safe area, localization, touch-target и состояния; для sprite/art — enlarged, true `1x` и representative scene/map context.
+- Mockup, PNG, screenshot и технический pass остаются proposal/candidate/evidence, пока Creative Director явно не утвердил exact candidate.
+- Default handoff для запроса только на визуал останавливается на `USER REVIEW`; runtime integration требует отдельного явного запроса, approval и manifest linkage.
+- Если creative decision не зафиксировано, batch не начинай: вынеси открытые варианты и запроси выбор пользователя/Creative Director.
+
+Обязательный handoff содержит: `route`, `stage_path`, `asset_kind`, `asset_id`, `family_id`, `candidate_id`, `status`, `technical_status`, `artistic_status`, `manifest/consumer`, `open_decisions` и `next_action`.

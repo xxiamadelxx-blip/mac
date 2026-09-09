@@ -14,7 +14,8 @@ Visual Lab — это отдельный процессный пакет реп�
 4. VISUAL_LAB_PRODUCTION_LAW.md;
 5. ASSET_PIPELINE_CODE.md;
 6. REVIEW_CHECKLIST.md;
-7. канонические документы Moonveil и локальную stage-папку.
+7. для задач UI, UI-art, art, sprite и mockup — `UI_ART_SPRITE_MOCKUP_WORKFLOW.md`;
+8. канонические документы Moonveil и локальную stage-папку.
 
 Если задача создаёт новую существенную пользовательскую визуальную единицу, агент сначала выявляет открытые решения и получает выбор Creative Director. Уже утверждённые решения не переоткрываются без реального конфликта.
 
@@ -26,6 +27,7 @@ Visual Lab — это отдельный процессный пакет реп�
 | VISUAL_LAB_PRODUCTION_LAW.md | Канонический порядок master, provenance, QA, review и promotion |
 | ASSET_PIPELINE_CODE.md | Производство от full-game census до runtime manifest |
 | REVIEW_CHECKLIST.md | Практический пакет проверки кандидата и условия promotion |
+| UI_ART_SPRITE_MOCKUP_WORKFLOW.md | Обязательная маршрутизация агента для UI, art, sprite и mockup задач |
 | CANDIDATE_PROVENANCE_TEMPLATE.json | Машиночитаемый шаблон provenance |
 | SOURCE_TRANSFER.md | Происхождение и адаптация перенесённого пакета |
 
