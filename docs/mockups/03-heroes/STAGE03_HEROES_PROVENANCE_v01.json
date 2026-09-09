@@ -1,0 +1,492 @@
+{
+  "schema": "moonveil.visual_lab.stage03.heroes.provenance",
+  "version": 1,
+  "stage": 3,
+  "stage_status": "DONE",
+  "visual_status": "CANDIDATE",
+  "artistic_status": "PENDING",
+  "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+  "source_commit": null,
+  "entries": [
+    {
+      "candidate_id": "vl-20260909-hero-combat-lin-yue-states-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.lin_yue.combat_states.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "combat_state_board",
+      "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v01.png",
+          "kind": "reference",
+          "relation": "identity anchor"
+        },
+        {
+          "path": "layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v01.png",
+          "kind": "reference",
+          "relation": "face and hair anchor"
+        },
+        {
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "state and silhouette rules"
+        }
+      ],
+      "art_direction": "Compact 2D survivors-like combat sprite with high-contrast jade silhouette, fan and floating seals.",
+      "generator_or_tool": {
+        "tool": "built-in image_gen",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-combat-sprite-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "resize long edge to 1024px and strip metadata",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1024,
+          342
+        ],
+        "alpha": "true",
+        "sprite_frames": false,
+        "pivot": "TBD in Godot"
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "scale": "true_1x",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG RGBA",
+          "dimensions verified",
+          "state order documented",
+          "390x844 review linked"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-directions-lin-yue-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.lin_yue.direction_kit.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "direction_kit",
+      "path": "layers/STAGE03_HERO_LIN_YUE_DIRECTION_KIT_v01.png",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HERO_LIN_YUE_FULLBODY_v01.png",
+          "kind": "reference",
+          "relation": "silhouette anchor"
+        },
+        {
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "movement readability"
+        }
+      ],
+      "art_direction": "Four explicit directions with preserved fan, sleeves, ribbons and seal silhouette.",
+      "generator_or_tool": {
+        "tool": "built-in image_gen",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-direction-kit-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "resize long edge to 1024px and strip metadata",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1024,
+          377
+        ],
+        "alpha": "true",
+        "direction_order": [
+          "front",
+          "back",
+          "left",
+          "right"
+        ],
+        "sprite_frames": false
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "scale": "true_1x",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG RGBA",
+          "dimensions verified",
+          "four directions documented"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-combat-soyeon-han-states-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.soyeon_han.combat_states.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "combat_state_board",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png",
+          "kind": "reference",
+          "relation": "identity anchor"
+        },
+        {
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v01.png",
+          "kind": "reference",
+          "relation": "face and hair anchor"
+        },
+        {
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "state and silhouette rules"
+        }
+      ],
+      "art_direction": "Compact 2D survivors-like combat sprite with high-contrast crimson silhouette, short blade and ribbon.",
+      "generator_or_tool": {
+        "tool": "built-in image_gen",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-combat-sprite-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "resize long edge to 1024px and strip metadata",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1024,
+          342
+        ],
+        "alpha": "true",
+        "sprite_frames": false,
+        "pivot": "TBD in Godot"
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "scale": "true_1x",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG RGBA",
+          "dimensions verified",
+          "state order documented",
+          "390x844 review linked"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-directions-soyeon-han-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.soyeon_han.direction_kit.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "direction_kit",
+      "path": "layers/STAGE03_HERO_SOYEON_HAN_DIRECTION_KIT_v01.png",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_FULLBODY_v01.png",
+          "kind": "reference",
+          "relation": "silhouette anchor"
+        },
+        {
+          "path": "STAGE03_HEROES_COMBAT_CONTRACT_v01.md",
+          "kind": "contract",
+          "relation": "movement readability"
+        }
+      ],
+      "art_direction": "Four explicit directions with preserved ponytail, crimson ribbon, short blade, shoulder guard and sash.",
+      "generator_or_tool": {
+        "tool": "built-in image_gen",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-direction-kit-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "resize long edge to 1024px and strip metadata",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "PNG",
+        "dimensions_px": [
+          1024,
+          432
+        ],
+        "alpha": "true",
+        "direction_order": [
+          "front",
+          "back",
+          "left",
+          "right"
+        ],
+        "sprite_frames": false
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "scale": "true_1x",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "PNG RGBA",
+          "dimensions verified",
+          "four directions documented"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-gameplay-review-390-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.combat.gameplay_scale_review.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "gameplay_scale_review",
+      "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HERO_LIN_YUE_COMBAT_STATES_v01.png",
+          "kind": "candidate",
+          "relation": "Lin Yue combat evidence"
+        },
+        {
+          "path": "layers/STAGE03_HERO_SOYEON_HAN_COMBAT_STATES_v01.png",
+          "kind": "candidate",
+          "relation": "Soyeon Han combat evidence"
+        },
+        {
+          "path": "STAGE02_ARENA_OPEN_FIELD_ART_v02.png",
+          "kind": "context reference",
+          "relation": "arena atmosphere anchor"
+        }
+      ],
+      "art_direction": "390x844 true 1x composite readability board with a mass wave, XP, telegraphs and role color contrast.",
+      "generator_or_tool": {
+        "tool": "built-in image_gen plus ImageMagick resize",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-gameplay-scale-review-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "resize to exact 390x844 and JPEG quality 78",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "JPEG",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "runtime_capture": false
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+        "dimensions_px": [
+          390,
+          844
+        ],
+        "scale": "true_1x",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "32b44e5fd7aeda7e7ba7047c40e650a7b7b28919826cb4cab073e6fd7ba3dae7"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "exact 390x844",
+          "JPEG decodes",
+          "mass-wave context visible"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    },
+    {
+      "candidate_id": "vl-20260909-hero-gameplay-review-enlarged-v01",
+      "status": "CANDIDATE",
+      "asset_id": "asset.hero.combat.gameplay_scale_review.enlarged.v01",
+      "family_id": "family.hero.combat.v01",
+      "asset_kind": "gameplay_context_review",
+      "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
+      "source_references": [
+        {
+          "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_v01.jpg",
+          "kind": "review",
+          "relation": "same board at true 1x"
+        }
+      ],
+      "art_direction": "Enlarged context view for inspecting hero/enemy/VFX separation.",
+      "generator_or_tool": {
+        "tool": "ImageMagick",
+        "version": null,
+        "model": null,
+        "prompt_revision": "stage03-gameplay-scale-review-v01"
+      },
+      "editable_source": {
+        "path": null,
+        "status": "NOT_SUPPLIED",
+        "notes": "Raster candidate only; no layered editable source is promoted."
+      },
+      "post_processing": [
+        {
+          "step": "preserve 853x1844 and JPEG quality 78",
+          "tool": "ImageMagick",
+          "version": "runtime-provided"
+        }
+      ],
+      "runtime_export": {
+        "status": "NOT_PROMOTED",
+        "format": "JPEG",
+        "dimensions_px": [
+          853,
+          1844
+        ],
+        "runtime_capture": false
+      },
+      "gameplay_preview": {
+        "path": "layers/STAGE03_HEROES_GAMEPLAY_SCALE_REVIEW_ENLARGED_v01.jpg",
+        "dimensions_px": [
+          853,
+          1844
+        ],
+        "scale": "enlarged_context",
+        "scene_or_fixture": "Visual Lab composite review board; not Godot runtime",
+        "sha256": "41974be5350b2c14d003e8a5e3c2f1ce233040cc4aac935c24b7fd193a10b74e"
+      },
+      "review": {
+        "technical_status": "TECHNICAL PASS",
+        "artistic_status": "PENDING",
+        "checks": [
+          "853x1844",
+          "JPEG decodes",
+          "context readable"
+        ],
+        "review_pack_path": "STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md",
+        "creative_director_decision": null
+      },
+      "promotion": {
+        "runtime_manifest_path": null,
+        "producing_commit": null,
+        "consumer_scene_or_ui": null,
+        "status": "NOT_PROMOTED"
+      }
+    }
+  ]
+}
