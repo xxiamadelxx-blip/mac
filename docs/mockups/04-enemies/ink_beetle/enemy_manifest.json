@@ -1,0 +1,38 @@
+{
+  "schema": "moonveil.enemy.asset_manifest",
+  "version": 1,
+  "enemy_id": "ink_beetle",
+  "name_ru": "Чернильный жук",
+  "family_id": "family.enemy.moonveil-soft-tonal.v01",
+  "stage": 4,
+  "status": "CANDIDATE",
+  "artistic_status": "PENDING",
+  "runtime_status": "NOT_PROMOTED",
+  "role": "fast_rusher",
+  "first_appearance": "0-2 min",
+  "durability_multiplier": 1.0,
+  "xp_band": "1-5",
+  "telegraph": "body pitch forward + short ink streak before contact rush",
+  "vulnerability": "low durability; no guard",
+  "mockup_frame_size": "96x96",
+  "files": {
+    "idle": "idle.png",
+    "move": [
+      "move_01.png",
+      "move_02.png",
+      "move_03.png"
+    ],
+    "attack": [
+      "attack_01.png",
+      "attack_02.png"
+    ],
+    "hit": "hit.png",
+    "death": [
+      "death_01.png",
+      "death_02.png"
+    ],
+    "shadow": "shadow.png"
+  },
+  "source": "ChatGPT Images stage-04 generated Ink Beetle state set",
+  "notes": "Stage-04 PNG mockup states. Transparent runtime extraction, true-1x approval and Godot import are separate steps."
+}
