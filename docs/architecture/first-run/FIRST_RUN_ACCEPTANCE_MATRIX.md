@@ -1,7 +1,7 @@
 
 # FIRST_RUN_ACCEPTANCE_MATRIX — трассировка требований
 
-Статус документа: **SPECIFIED_WITH_PENDING_DECISIONS**  
+Статус документа: **SPECIFIED_WITH_PENDING_DECISIONS**
 Статусы строк:
 
 - SPECIFIED — логика и ownership определены, runtime ещё не доказан;
