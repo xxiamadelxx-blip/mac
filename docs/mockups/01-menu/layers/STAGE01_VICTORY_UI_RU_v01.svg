@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <style>
+    .panel{fill:#061416;fill-opacity:1;stroke:#78cfc1;stroke-opacity:.72;stroke-width:1}
+    .soft{fill:#291313;fill-opacity:1;stroke:#d7c28a;stroke-opacity:.9;stroke-width:1}
+    .title{font-family:'DejaVu Serif';font-weight:bold;fill:#f5ead2;letter-spacing:1px}
+    .body{font-family:'DejaVu Sans';fill:#f5ead2;letter-spacing:.25px}
+    .jade{font-family:'DejaVu Sans';fill:#a8fff0;letter-spacing:.3px}
+    .muted{font-family:'DejaVu Sans';fill:#b5c1bd;letter-spacing:.2px}
+  </style>
+  <rect class="panel" x="0" y="0" width="116" height="72" rx="0"/>
+  <rect class="panel" x="0" y="54" width="116" height="104" rx="0"/>
+  <rect class="panel" x="281" y="0" width="109" height="145" rx="0"/>
+  <rect class="panel" x="278" y="202" width="112" height="94" rx="0"/>
+  <rect class="panel" x="0" y="270" width="390" height="117" rx="0"/>
+  <rect class="panel" x="0" y="389" width="390" height="77" rx="0"/>
+  <rect class="panel" x="18" y="466" width="354" height="94" rx="9"/>
+  <rect class="panel" x="18" y="565" width="354" height="91" rx="9"/>
+  <rect class="panel" x="18" y="653" width="354" height="48" rx="8"/>
+  <rect class="soft" x="61" y="705" width="268" height="58" rx="16"/>
+  <rect class="panel" x="111" y="766" width="168" height="42" rx="12"/>
+  <rect class="panel" x="0" y="810" width="390" height="34"/>
+
+  <text class="title" x="16" y="25" font-size="13">ЛУННАЯ</text>
+  <text class="title" x="16" y="44" font-size="13">ВУАЛЬ</text>
+  <text class="muted" x="16" y="61" font-size="7">ЗАТМЕНИЕ</text>
+  <text class="title" x="195" y="321" font-size="37" text-anchor="middle">ПОБЕДА</text>
+  <text class="jade" x="195" y="349" font-size="12" text-anchor="middle">САД ПОМНИТ ТЕБЯ</text>
+  <text class="body" x="65" y="416" font-size="8">ВРЕМЯ</text>
+  <text class="title" x="65" y="446" font-size="22" text-anchor="middle">20:00</text>
+  <text class="body" x="195" y="416" font-size="8" text-anchor="middle">УРОВЕНЬ</text>
+  <text class="title" x="195" y="446" font-size="22" text-anchor="middle">24</text>
+  <text class="body" x="323" y="416" font-size="8" text-anchor="middle">ПОБЕЖДЕНО</text>
+  <text class="title" x="323" y="446" font-size="22" text-anchor="middle">3 842</text>
+
+  <text class="body" x="195" y="486" font-size="9" text-anchor="middle">ТВОЯ СБОРКА</text>
+  <text class="muted" x="53" y="533" font-size="7" text-anchor="middle">АЛЫЙ ЛУННЫЙ КЛИНОК</text>
+  <text class="muted" x="113" y="533" font-size="7" text-anchor="middle">ЦВЕТЕНИЕ</text>
+  <text class="muted" x="171" y="533" font-size="7" text-anchor="middle">НЕФРИТ</text>
+  <text class="muted" x="226" y="533" font-size="7" text-anchor="middle">АЛЫЙ ШАР</text>
+  <text class="muted" x="282" y="533" font-size="7" text-anchor="middle">БЫСТРЫЕ ШАГИ</text>
+  <text class="muted" x="336" y="533" font-size="7" text-anchor="middle">ЛУННАЯ ГРАЦИЯ</text>
+
+  <text class="body" x="195" y="585" font-size="9" text-anchor="middle">НАГРАДЫ</text>
+  <text class="jade" x="76" y="617" font-size="8" text-anchor="middle">ЗОЛОТО</text>
+  <text class="title" x="76" y="642" font-size="16" text-anchor="middle">+1 200</text>
+  <text class="jade" x="195" y="617" font-size="8" text-anchor="middle">ЛУННЫЕ ПЕЧАТИ</text>
+  <text class="title" x="195" y="642" font-size="16" text-anchor="middle">+30</text>
+  <text class="jade" x="314" y="617" font-size="8" text-anchor="middle">ЭССЕНЦИЯ БОССА</text>
+  <text class="title" x="314" y="642" font-size="16" text-anchor="middle">+4</text>
+  <text class="muted" x="195" y="684" font-size="8" text-anchor="middle">05:00   •   10:00   •   15:00   •   20:00   —   ВСЁ ЗАВЕРШЕНО</text>
+  <text class="title" x="195" y="741" font-size="17" text-anchor="middle">ЗАБРАТЬ НАГРАДЫ</text>
+  <text class="body" x="195" y="792" font-size="10" text-anchor="middle">ВЕРНУТЬСЯ В МЕНЮ</text>
+  <text class="muted" x="195" y="830" font-size="8" text-anchor="middle">ЛУНА ОСТАЁТСЯ</text>
+</svg>
