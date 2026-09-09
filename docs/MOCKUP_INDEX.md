@@ -16,20 +16,20 @@
 | Этап | Каталог | Содержание | Статус |
 |---:|---|---|---|
 | 1 | `docs/mockups/01-menu/` | Главное меню и навигация | PLANNED |
-| 2 | `docs/mockups/02-arena/` | Мокап карты и композиции арены | PLANNED |
+| 2 | `docs/mockups/02-arena/` | Живой ландшафт, вода, растения, частицы и след боя | PLANNED |
 | 3 | `docs/mockups/03-heroes/` | Две героини и боевые силуэты | PLANNED |
 | 4 | `docs/mockups/04-enemies/` | Десять противников | PLANNED |
 | 5 | `docs/mockups/05-bosses/` | Четыре босса и фазы | PLANNED |
 | 6 | `docs/mockups/06-weapons/` | Иконки, атаки и эволюции оружия | PLANNED |
 | 7 | `docs/mockups/07-passives/` | Иконки и карточки пассивок | PLANNED |
 | 8 | `docs/mockups/08-artifacts/` | Артефакты и Кодекс реликвий | PLANNED |
-| 9 | `docs/mockups/09-xp/` | Опыт, градации и подбор | PLANNED |
+| 9 | `docs/mockups/09-xp/` | XP-точки/кристаллы, магнитный подбор и шкала | PLANNED |
 | 10 | `docs/mockups/10-hud/` | HUD игрового забега | PLANNED |
 | 11 | `docs/manifests/11-weapon-animation/` | Manifest анимаций и привязок оружия | PLANNED |
 | 12 | `docs/manifests/12-passive-binding/` | Manifest пассивок и привязок | PLANNED |
 | 13 | `docs/audio/13-plan/` | Аудиоплан, naming и лицензии | PLANNED |
-| 14 | `docs/mockups/14-enemy-death/` | Смерть противников | PLANNED |
-| 15 | `docs/mockups/15-boss-death/` | Смерть боссов | PLANNED |
+| 14 | `docs/mockups/14-enemy-death/` | Смерть, трупы, конечности и накопленный след боя | PLANNED |
+| 15 | `docs/mockups/15-boss-death/` | Распад боссов и изменение состояния арены | PLANNED |
 | 16 | `docs/mockups/16-upgrade-offers/` | Карточки предложений улучшений | PLANNED |
 | 17 | `docs/mockups/17-artifact-ui/` | Интерфейс артефактов | PLANNED |
 | 18 | `docs/manifests/18-synergy-logic/` | Логика синергий | PLANNED |
