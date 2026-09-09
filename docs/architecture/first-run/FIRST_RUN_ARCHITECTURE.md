@@ -1,8 +1,8 @@
 
 # FIRST_RUN_ARCHITECTURE — логическая архитектура
 
-Статус: **SPECIFIED_WITH_PENDING_DECISIONS**  
-Назначение: контракт для следующего runtime-агента.  
+Статус: **SPECIFIED_WITH_PENDING_DECISIONS**
+Назначение: контракт для следующего runtime-агента.
 Запрещённая интерпретация: этот документ не означает, что M1, APK или production runtime уже реализованы.
 
 ## 1. Архитектурное решение
