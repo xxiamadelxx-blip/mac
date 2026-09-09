@@ -227,7 +227,7 @@ func _on_loading_complete() -> void:
 
 
 func _open_arena_preview() -> void:
-    get_tree().change_scene_to_file("res://scenes/arena/arena.tscn")
+    get_tree().change_scene_to_file("res://scenes/first_run/run_slice.tscn")
 
 
 func _show_arena_handoff() -> void:
