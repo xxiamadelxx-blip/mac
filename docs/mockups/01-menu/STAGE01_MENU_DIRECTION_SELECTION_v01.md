@@ -21,6 +21,29 @@ Status: **REVIEW** — три визуальных направления соз
 - нижняя навигация естественно раскладывается на Heroes, Arsenal, Artifacts и Settings;
 - визуальный язык подходит для премиальной японско-корейско-китайской fantasy gacha-подачи.
 
+## Экранный пакет Direction B v01
+
+Рекомендованное направление расширено связанными состояниями меню:
+
+| Состояние | Файл | Назначение |
+|---|---|---|
+| Home / направление B | [STAGE01_MENU_DIRECTION_B_v01.png](./STAGE01_MENU_DIRECTION_B_v01.png) | Точка входа, валюты, START RUN и навигация |
+| Heroes | [STAGE01_MENU_HEROES_v01.png](./STAGE01_MENU_HEROES_v01.png) | Выбор Линь Юэ/Соён Хан, роли и характеристики |
+| Run Setup | [STAGE01_MENU_RUN_SETUP_v01.png](./STAGE01_MENU_RUN_SETUP_v01.png) | Карта, сложность, длительность, checkpoint, артефакты и стартовое оружие |
+| Loading | [STAGE01_MENU_LOADING_v01.png](./STAGE01_MENU_LOADING_v01.png) | Переход в первый забег и короткая подсказка |
+| Victory | [STAGE01_MENU_RESULT_VICTORY_v01.png](./STAGE01_MENU_RESULT_VICTORY_v01.png) | Успешный результат, reward ledger preview и Claim Rewards |
+| Defeat / Run Ended | [STAGE01_MENU_RESULT_DEFEAT_v01.png](./STAGE01_MENU_RESULT_DEFEAT_v01.png) | Поражение, сохранённый checkpoint и Try Again |
+
+Навигационный контракт v01:
+
+`Home → Heroes → Run Setup → Loading → Arena`
+
+`Arena → Victory/Run Ended → Claim Rewards → Home`
+
+`Run Ended → Try Again → Run Setup`
+
+Эти PNG показывают композицию и иерархию. Точные тексты, числовые значения наград, состояния кнопок и идемпотентное начисление наград должны быть реализованы по каноническим документам, а не считаны из сгенерированного изображения.
+
 ## Обязательная корректировка перед финальным UI
 
 - заменить весь сгенерированный placeholder-текст на точные локализованные строки;
