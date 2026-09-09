@@ -1,0 +1,88 @@
+{
+  "schema": "moonveil.first_run.architecture_contract",
+  "version": 1,
+  "status": "DRAFT",
+  "source_refs": [
+    "GAME_MANIFEST.md",
+    "AGENT_CONTEXT.md",
+    "docs/BALANCE_ECONOMY_SPEC.md"
+  ],
+  "run": {
+    "duration_seconds": 1200,
+    "boss_checkpoints_seconds": [300, 600, 900, 1200],
+    "wave_bands_ref": "docs/BALANCE_ECONOMY_SPEC.md",
+    "selected_hero_id": null,
+    "run_id": null,
+    "seed": null,
+    "current_state": null,
+    "current_stage": null,
+    "checkpoint_id": null
+  },
+  "content": {
+    "hero_ids": [],
+    "weapon_ids": [],
+    "passive_ids": [],
+    "synergy_ids": [],
+    "artifact_ids": [],
+    "boss_ids": [],
+    "wave_band_ids": []
+  },
+  "build": {
+    "weapon_slots": null,
+    "passive_slots": null,
+    "weapons": [],
+    "passives": [],
+    "artifacts": [],
+    "claimed_synergies": []
+  },
+  "stats": {
+    "hp": null,
+    "attack": null,
+    "critical_chance": null,
+    "critical_multiplier": null,
+    "movement_speed": null,
+    "cooldown": null,
+    "xp": null,
+    "level": null,
+    "kills": 0,
+    "bonus_state": null
+  },
+  "drops": {
+    "xp_items": [],
+    "chest_offers": [],
+    "aftermath_items": []
+  },
+  "reward_ledger": {
+    "entries": [],
+    "idempotency_key_format": null
+  },
+  "save_snapshot": {
+    "schema_version": 1,
+    "revision": null,
+    "saved_at": null,
+    "restore_policy": null
+  },
+  "event_envelope": {
+    "event_id": null,
+    "event_name": null,
+    "event_version": 1,
+    "occurred_at": null,
+    "run_id": null,
+    "idempotency_key": null,
+    "payload": {}
+  },
+  "invariants": [
+    "XP and aftermath are separate entity types",
+    "checkpoint rewards are idempotent",
+    "unknown numeric values remain pending until confirmed by B1",
+    "UI does not own authoritative run state"
+  ],
+  "open_questions": [
+    {
+      "id": "U-01",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "bonus_state",
+      "value": null
+    }
+  ]
+}
