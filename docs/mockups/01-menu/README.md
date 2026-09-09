@@ -8,6 +8,11 @@ Status: **IN PROGRESS** — три визуальных направления �
 - [STAGE01_MENU_DIRECTION_B_v01.png](./STAGE01_MENU_DIRECTION_B_v01.png) — основной кандидат с валютами, START RUN и нижней навигацией;
 - [STAGE01_MENU_DIRECTION_C_v01.png](./STAGE01_MENU_DIRECTION_C_v01.png) — чернильно-фонарная тёмная подача;
 - [STAGE01_MENU_DIRECTION_SELECTION_v01.md](./STAGE01_MENU_DIRECTION_SELECTION_v01.md) — сравнение вариантов и критерии утверждения.
+- [STAGE01_MENU_HEROES_v01.png](./STAGE01_MENU_HEROES_v01.png) — экран выбора героини;
+- [STAGE01_MENU_RUN_SETUP_v01.png](./STAGE01_MENU_RUN_SETUP_v01.png) — экран подготовки забега;
+- [STAGE01_MENU_LOADING_v01.png](./STAGE01_MENU_LOADING_v01.png) — loading перед ареной;
+- [STAGE01_MENU_RESULT_VICTORY_v01.png](./STAGE01_MENU_RESULT_VICTORY_v01.png) — успешное завершение;
+- [STAGE01_MENU_RESULT_DEFEAT_v01.png](./STAGE01_MENU_RESULT_DEFEAT_v01.png) — поражение и сохранённая контрольная точка.
 
 Target preview: **390×844**, вертикальный экран.
 
