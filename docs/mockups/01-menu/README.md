@@ -25,6 +25,14 @@ Target preview: **390×844**, вертикальный экран.
 - описать normal, pressed, disabled и locked states;
 - разложить композицию на слои и зафиксировать переходы Home → Heroes → Run Setup → Arena.
 
+## Navigation prototype
+
+- [project.godot](../../../project.godot) — Godot 4.x, portrait viewport 390×844;
+- [menu.tscn](../../../scenes/menu/menu.tscn) — main scene;
+- [menu_controller.gd](../../../scripts/menu/menu_controller.gd) — real controls and screen transitions.
+
+Прототип использует PNG как временный art-direction background, но навигационные кнопки являются реальными Godot controls. Arena не подменяется готовой игрой: после Loading показывается честный Stage 02 handoff с preview-only Victory/Run Ended.
+
 PNG в этой папке — art-direction reference, а не финальный интерактивный UI.
 
 ## Критерий DONE
