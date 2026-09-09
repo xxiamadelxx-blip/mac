@@ -1,0 +1,977 @@
+
+{
+  "schema": "moonveil.first_run.architecture_contract",
+  "version": 1,
+  "status": "SPECIFIED_WITH_PENDING_DECISIONS",
+  "contract_kind": "logical_runtime_data_contract",
+  "source_refs": [
+    "docs/architecture/first-run/AGENT_TASK.md",
+    "docs/architecture/first-run/DECISIONS_AND_UNKNOWNS.md",
+    "GAME_MANIFEST.md",
+    "AGENT_CONTEXT.md",
+    "docs/BALANCE_ECONOMY_SPEC.md"
+  ],
+  "stable_id_policy": {
+    "rule": "IDs are lowercase ASCII slugs, immutable after first save, and never derived from display text at runtime.",
+    "formats": {
+      "run_id": "run_<uuid>",
+      "hero_id": "<hero_slug>",
+      "weapon_id": "<weapon_slug>",
+      "passive_id": "<passive_slug>",
+      "synergy_id": "evo_<slug>",
+      "artifact_id": "artifact_<slug>",
+      "wave_band_id": "wave_<start>_<end>m",
+      "boss_id": "<boss_slug>",
+      "chest_id": "chest_<run_id>_<boss_id>",
+      "chest_offer_id": "offer_<chest_id>_<revision>",
+      "reward_entry_id": "reward_<stable_hash>",
+      "event_id": "event_<uuid>",
+      "idempotency_key": "<operation>:<scope_id>"
+    },
+    "unknown_content_rule": "Use a PENDING_B1 or PENDING_PRODUCT_DECISION token; never invent a numeric default."
+  },
+  "canonical_values": {
+    "run_duration_seconds": 1200,
+    "boss_checkpoints_seconds": [
+      300,
+      600,
+      900,
+      1200
+    ],
+    "weapon_slot_capacity": 6,
+    "passive_slot_capacity": 6,
+    "artifact_slot_capacity": 3,
+    "weapon_max_level": 6,
+    "passive_max_level": 5,
+    "level_up_offer_count": 3,
+    "source_status": "CANONICAL_DESIGN_BASELINE"
+  },
+  "content_catalog": {
+    "heroes": [
+      {
+        "id": "lin_yue",
+        "name_ru": "Линь Юэ",
+        "role": "ranged_control",
+        "starting_weapon_id": "jade_talismans",
+        "source_status": "CANONICAL_NAME_AND_ROLE",
+        "numeric_stats": "PENDING_B1"
+      },
+      {
+        "id": "soyeon_han",
+        "name_ru": "Соён Хан",
+        "role": "melee_mobility_crit",
+        "starting_weapon_id": "moon_blade",
+        "source_status": "CANONICAL_NAME_AND_ROLE",
+        "numeric_stats": "PENDING_B1"
+      }
+    ],
+    "weapons": [
+      {
+        "id": "moon_blade",
+        "name_ru": "Лунный клинок",
+        "passive_id": "wind_of_journeys",
+        "evolution_id": "evo_moon_dance",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "jade_talismans",
+        "name_ru": "Нефритовые талисманы",
+        "passive_id": "jade_focus",
+        "evolution_id": "evo_heavenly_seals",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "crimson_flame_fan",
+        "name_ru": "Веер багрового пламени",
+        "passive_id": "ember_heart",
+        "evolution_id": "evo_scarlet_phoenix",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "ice_pearl",
+        "name_ru": "Ледяная жемчужина",
+        "passive_id": "frost_thread",
+        "evolution_id": "evo_eternal_winter_palace",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "thunder_needles",
+        "name_ru": "Иглы грома",
+        "passive_id": "heavenly_seal",
+        "evolution_id": "evo_heavenly_judgment",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "spirit_bell",
+        "name_ru": "Колокол духов",
+        "passive_id": "iron_bell",
+        "evolution_id": "evo_guardian_bell",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "fox_mirage",
+        "name_ru": "Лисий мираж",
+        "passive_id": "mirror_shard",
+        "evolution_id": "evo_nine_reflections",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "lotus_mines",
+        "name_ru": "Лотосовые мины",
+        "passive_id": "lotus_heart",
+        "evolution_id": "evo_lotus_shrine",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "star_bow",
+        "name_ru": "Звёздный лук",
+        "passive_id": "star_compass",
+        "evolution_id": "evo_constellation_rain",
+        "source_status": "CANONICAL_PAIR"
+      },
+      {
+        "id": "eclipse_black_umbrella",
+        "name_ru": "Чёрный зонт затмения",
+        "passive_id": "spirit_lens",
+        "evolution_id": "evo_eclipse_vortex",
+        "source_status": "CANONICAL_PAIR"
+      }
+    ],
+    "passives": [
+      {
+        "id": "wind_of_journeys",
+        "name_ru": "Ветер странствий",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "jade_focus",
+        "name_ru": "Нефритовый фокус",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "ember_heart",
+        "name_ru": "Сердце углей",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "frost_thread",
+        "name_ru": "Морозная нить",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "heavenly_seal",
+        "name_ru": "Небесная печать",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "iron_bell",
+        "name_ru": "Железный колокол",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "mirror_shard",
+        "name_ru": "Осколок зеркала",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "lotus_heart",
+        "name_ru": "Сердце лотоса",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "star_compass",
+        "name_ru": "Звёздный компас",
+        "source_status": "CANONICAL_NAME"
+      },
+      {
+        "id": "spirit_lens",
+        "name_ru": "Духовная линза",
+        "source_status": "CANONICAL_NAME"
+      }
+    ],
+    "synergies": [
+      {
+        "id": "evo_moon_dance",
+        "weapon_id": "moon_blade",
+        "passive_id": "wind_of_journeys",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_heavenly_seals",
+        "weapon_id": "jade_talismans",
+        "passive_id": "jade_focus",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_scarlet_phoenix",
+        "weapon_id": "crimson_flame_fan",
+        "passive_id": "ember_heart",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_eternal_winter_palace",
+        "weapon_id": "ice_pearl",
+        "passive_id": "frost_thread",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_heavenly_judgment",
+        "weapon_id": "thunder_needles",
+        "passive_id": "heavenly_seal",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_guardian_bell",
+        "weapon_id": "spirit_bell",
+        "passive_id": "iron_bell",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_nine_reflections",
+        "weapon_id": "fox_mirage",
+        "passive_id": "mirror_shard",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_lotus_shrine",
+        "weapon_id": "lotus_mines",
+        "passive_id": "lotus_heart",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_constellation_rain",
+        "weapon_id": "star_bow",
+        "passive_id": "star_compass",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "evo_eclipse_vortex",
+        "weapon_id": "eclipse_black_umbrella",
+        "passive_id": "spirit_lens",
+        "eligibility": {
+          "weapon_level": 6,
+          "passive_level": 5,
+          "requires_chest": true,
+          "claimed_once_per_run": true
+        },
+        "source_status": "CANONICAL_PAIR_PENDING_EXACT_EFFECT"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "artifact_jade_compass",
+        "name_ru": "Нефритовый компас",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_mirror_shard",
+        "name_ru": "Осколок зеркала",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_phoenix_feather",
+        "name_ru": "Перо феникса",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_frost_bead",
+        "name_ru": "Бусина мороза",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_bell_fragment",
+        "name_ru": "Фрагмент колокола",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_lotus_seed",
+        "name_ru": "Семя лотоса",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_moon_crown",
+        "name_ru": "Корона Луны",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      },
+      {
+        "id": "artifact_black_bead",
+        "name_ru": "Чёрная бусина",
+        "source_status": "CANONICAL_NAME_PENDING_EXACT_EFFECT"
+      }
+    ],
+    "bosses": [
+      {
+        "id": "hua_lin",
+        "name_ru": "Хуа Линь",
+        "checkpoint_id": "boss_01_5m",
+        "checkpoint_seconds": 300,
+        "source_status": "CANONICAL"
+      },
+      {
+        "id": "miyon",
+        "name_ru": "Миён",
+        "checkpoint_id": "boss_02_10m",
+        "checkpoint_seconds": 600,
+        "source_status": "CANONICAL"
+      },
+      {
+        "id": "seika",
+        "name_ru": "Сэйка",
+        "checkpoint_id": "boss_03_15m",
+        "checkpoint_seconds": 900,
+        "source_status": "CANONICAL"
+      },
+      {
+        "id": "black_moon_empress",
+        "name_ru": "Императрица Чёрной Луны",
+        "checkpoint_id": "boss_04_20m",
+        "checkpoint_seconds": 1200,
+        "source_status": "CANONICAL"
+      }
+    ]
+  },
+  "wave_bands": [
+    {
+      "id": "wave_0_2m",
+      "start_seconds": 0,
+      "end_seconds": 120,
+      "spawn_budget_per_second": 6,
+      "active_cap": 40,
+      "enemy_hp_multiplier": 1.0,
+      "enemy_damage_multiplier": 0.7,
+      "enemy_speed_multiplier": 0.9,
+      "source_status": "B1"
+    },
+    {
+      "id": "wave_2_5m",
+      "start_seconds": 120,
+      "end_seconds": 300,
+      "spawn_budget_per_second": 10,
+      "active_cap": 80,
+      "enemy_hp_multiplier": 1.1,
+      "enemy_damage_multiplier": 0.85,
+      "enemy_speed_multiplier": 1.0,
+      "source_status": "B1"
+    },
+    {
+      "id": "wave_5_10m",
+      "start_seconds": 300,
+      "end_seconds": 600,
+      "spawn_budget_per_second": 15,
+      "active_cap": 130,
+      "enemy_hp_multiplier": 1.35,
+      "enemy_damage_multiplier": 1.0,
+      "enemy_speed_multiplier": 1.02,
+      "source_status": "B1"
+    },
+    {
+      "id": "wave_10_15m",
+      "start_seconds": 600,
+      "end_seconds": 900,
+      "spawn_budget_per_second": 22,
+      "active_cap": 200,
+      "enemy_hp_multiplier": 1.7,
+      "enemy_damage_multiplier": 1.25,
+      "enemy_speed_multiplier": 1.05,
+      "source_status": "B1"
+    },
+    {
+      "id": "wave_15_20m",
+      "start_seconds": 900,
+      "end_seconds": 1200,
+      "spawn_budget_per_second": 30,
+      "active_cap": 280,
+      "enemy_hp_multiplier": 2.2,
+      "enemy_damage_multiplier": 1.55,
+      "enemy_speed_multiplier": 1.08,
+      "source_status": "B1"
+    }
+  ],
+  "boss_spawn_policy": {
+    "normal_spawn_reduction_seconds": 8,
+    "recovery_start_fraction": 0.7,
+    "recovery_end_fraction": 1.0,
+    "recovery_duration_seconds": 20,
+    "source_status": "B1"
+  },
+  "reward_policy": {
+    "checkpoint_rewards": [
+      {
+        "checkpoint_id": "boss_01_5m",
+        "gold": 50,
+        "lunar_seals": 15,
+        "boss_essence": 1
+      },
+      {
+        "checkpoint_id": "boss_02_10m",
+        "gold": 75,
+        "lunar_seals": 20,
+        "boss_essence": 1
+      },
+      {
+        "checkpoint_id": "boss_03_15m",
+        "gold": 100,
+        "lunar_seals": 25,
+        "boss_essence": 1
+      },
+      {
+        "checkpoint_id": "boss_04_20m",
+        "gold": 200,
+        "lunar_seals": 60,
+        "boss_essence": 2
+      }
+    ],
+    "first_clear_bonus": {
+      "gold": 300,
+      "lunar_seals": 180,
+      "boss_essence": 1,
+      "requires_full_first_clear": true
+    },
+    "defeat_after_checkpoint": {
+      "gold_formula": "checkpoint_gold * 0.5",
+      "gold_rounding": "PENDING_B1",
+      "lunar_seals": "only_for_defeated_bosses",
+      "boss_essence": "already_earned_essence",
+      "source_status": "B1_WITH_ROUNDING_PENDING"
+    },
+    "normal_enemy_gold": "not_defined_and_not_introduced"
+  },
+  "run_session_contract": {
+    "name": "RunSession",
+    "version": 1,
+    "required_fields": [
+      "run_id",
+      "seed",
+      "content_version",
+      "phase",
+      "revision",
+      "elapsed_seconds",
+      "current_wave_band_id",
+      "checkpoint_id",
+      "selected_hero_id",
+      "build",
+      "stats",
+      "counters",
+      "drops",
+      "pending_offer",
+      "pending_chest",
+      "diagnostics"
+    ],
+    "fields": {
+      "run_id": {
+        "type": "string",
+        "format": "run_<uuid>"
+      },
+      "seed": {
+        "type": "string_or_uint64",
+        "purpose": "deterministic offers/spawns where product rules permit"
+      },
+      "content_version": {
+        "type": "string"
+      },
+      "phase": {
+        "type": "string",
+        "enum": [
+          "RUN_LOADING",
+          "RUN_ACTIVE",
+          "UPGRADE_CHOICE",
+          "BOSS_TELEGRAPH",
+          "BOSS_ACTIVE",
+          "CHEST_PENDING",
+          "CHECKPOINT_RESOLVED",
+          "PAUSED",
+          "BACKGROUND_SUSPENDED",
+          "DEFEAT",
+          "VICTORY",
+          "RESULTS_PENDING",
+          "RESULTS_CLAIMED"
+        ]
+      },
+      "revision": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "elapsed_seconds": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1200,
+        "source": "RunClock"
+      },
+      "current_wave_band_id": {
+        "type": "string",
+        "ref": "wave_bands[].id"
+      },
+      "checkpoint_id": {
+        "type": "string_or_null",
+        "ref": "bosses[].checkpoint_id"
+      },
+      "selected_hero_id": {
+        "type": "string",
+        "ref": "content_catalog.heroes[].id"
+      },
+      "build": {
+        "type": "BuildState",
+        "slot_capacities": {
+          "weapons": 6,
+          "passives": 6,
+          "artifacts": 3
+        },
+        "weapon_level_range": [
+          1,
+          6
+        ],
+        "passive_level_range": [
+          1,
+          5
+        ],
+        "fields": [
+          "weapons",
+          "passives",
+          "artifacts",
+          "claimed_synergy_ids"
+        ]
+      },
+      "stats": {
+        "type": "StatsState",
+        "fields": {
+          "hp": "number_or_PENDING_B1",
+          "max_hp": "number_or_PENDING_B1",
+          "attack": "number_or_PENDING_B1",
+          "critical_chance": "number_or_PENDING_B1",
+          "critical_multiplier": "number_or_PENDING_B1",
+          "movement_speed": "number_or_PENDING_B1",
+          "cooldown": "number_or_PENDING_B1",
+          "armor": "number_or_PENDING_B1",
+          "pickup_radius": "number_or_PENDING_B1",
+          "bonus_state": "object_or_null_PENDING_PRODUCT_DECISION"
+        }
+      },
+      "counters": {
+        "type": "CountersState",
+        "fields": {
+          "level": "integer",
+          "xp_current": "integer_or_number",
+          "xp_to_next": "integer_or_number",
+          "kills": "integer",
+          "bosses_defeated": "integer",
+          "checkpoints_resolved": "integer"
+        },
+        "xp_formula": "round(30 + 12 * (L - 1) + 3 * (L - 1)^1.35)",
+        "source_status": "B1"
+      },
+      "drops": {
+        "type": "TypedDropState",
+        "xp_items": {
+          "type": "array",
+          "item_fields": [
+            "drop_id",
+            "value",
+            "source_enemy_id",
+            "collectible",
+            "merge_key"
+          ],
+          "collectible": true
+        },
+        "aftermath_items": {
+          "type": "array",
+          "item_fields": [
+            "aftermath_id",
+            "source_enemy_id",
+            "visual_kind",
+            "collectible",
+            "collision",
+            "xp_value",
+            "cluster_state"
+          ],
+          "collectible": false,
+          "collision": false,
+          "xp_value": 0
+        },
+        "separation_invariant": "XP items change counters; aftermath items never do."
+      },
+      "pending_offer": {
+        "type": "UpgradeOfferSet_or_null",
+        "fields": [
+          "offer_id",
+          "generation_seed",
+          "offers",
+          "expires_on",
+          "selected_offer_id"
+        ],
+        "offer_count": 3
+      },
+      "pending_chest": {
+        "type": "ChestOffer_or_null",
+        "fields": [
+          "chest_id",
+          "offer_id",
+          "boss_id",
+          "checkpoint_id",
+          "eligible_synergy_ids",
+          "fallback_outcome",
+          "claim_status"
+        ]
+      },
+      "diagnostics": {
+        "type": "array",
+        "item_fields": [
+          "diagnostic_id",
+          "reason_code",
+          "operation",
+          "affected_id",
+          "content_version",
+          "recoverability",
+          "user_action"
+        ]
+      }
+    }
+  },
+  "build_state_contract": {
+    "weapons": [
+      {
+        "weapon_id": "string_ref",
+        "level": "integer_1_to_6",
+        "evolution_id": "string_or_null",
+        "evolved": "boolean"
+      }
+    ],
+    "passives": [
+      {
+        "passive_id": "string_ref",
+        "level": "integer_1_to_5"
+      }
+    ],
+    "artifacts": [
+      {
+        "artifact_id": "string_ref",
+        "level": "integer_or_pending_content",
+        "source_chest_id": "string_ref"
+      }
+    ],
+    "claimed_synergy_ids": [
+      "synergy_id"
+    ],
+    "slot_rule": "A new weapon/passive is legal only when its respective capacity is not full; upgrades remain legal at capacity."
+  },
+  "synergy_resolution_contract": {
+    "input": [
+      "build_state",
+      "chest_id",
+      "content_version"
+    ],
+    "eligible_synergy_ids": [
+      "synergy_id"
+    ],
+    "eligibility_rules": [
+      "weapon level equals 6",
+      "paired passive level equals 5",
+      "synergy not already claimed",
+      "chest claim not already committed",
+      "pair resolves in content registry"
+    ],
+    "outcome": {
+      "kind": "synergy_selection_or_fallback",
+      "selected_synergy_id": "string_or_null",
+      "fallback_kind": "PENDING_PRODUCT_DECISION",
+      "fallback_payload": null
+    },
+    "duplicate_policy": "Same chest_id returns the original outcome and cannot apply a second evolution."
+  },
+  "chest_offer_contract": {
+    "chest_id": "chest_<run_id>_<boss_id>",
+    "offer_id": "offer_<chest_id>_<revision>",
+    "boss_id": "boss_id",
+    "checkpoint_id": "checkpoint_id",
+    "eligible_synergy_ids": [
+      "synergy_id"
+    ],
+    "fallback_outcome": {
+      "kind": "PENDING_PRODUCT_DECISION",
+      "payload": null
+    },
+    "claim_status": [
+      "OPEN",
+      "CLAIMED",
+      "REPLAYED",
+      "BLOCKED_PENDING_DECISION"
+    ],
+    "close_behavior": "Closing the UI does not change claim_status; reopening uses the same offer_id."
+  },
+  "reward_ledger_contract": {
+    "entry_fields": [
+      "entry_id",
+      "idempotency_key",
+      "source_event_id",
+      "run_id",
+      "scope",
+      "reward_kind",
+      "amounts",
+      "status",
+      "formula_version",
+      "created_revision",
+      "receipt"
+    ],
+    "idempotency_key_formats": [
+      "checkpoint:<run_id>:<checkpoint_id>",
+      "chest:<run_id>:<chest_id>",
+      "synergy:<run_id>:<synergy_id>",
+      "result:<run_id>:defeat",
+      "result:<run_id>:victory",
+      "result:<run_id>:first_clear"
+    ],
+    "statuses": [
+      "PLANNED",
+      "GRANTED",
+      "CLAIMED",
+      "REPLAYED",
+      "BLOCKED",
+      "CONFLICT"
+    ],
+    "atomic_rule": "First compatible write for an idempotency_key owns the entry; a compatible retry returns the same entry and receipt.",
+    "conflict_rule": "Same key with incompatible payload is a diagnostic conflict and never creates a second grant.",
+    "amounts": {
+      "gold": "integer_or_pending_rounding",
+      "lunar_seals": "integer",
+      "boss_essence": "integer",
+      "artifact_id": "string_or_null",
+      "synergy_id": "string_or_null"
+    }
+  },
+  "save_snapshot_contract": {
+    "name": "SaveSnapshot",
+    "schema_version": 1,
+    "required_fields": [
+      "snapshot_id",
+      "schema_version",
+      "content_version",
+      "revision",
+      "saved_at",
+      "save_reason",
+      "run_session",
+      "reward_ledger",
+      "checksum",
+      "restore_policy"
+    ],
+    "save_reasons": [
+      "CHECKPOINT_REWARD",
+      "TERMINAL_RESULT",
+      "ANDROID_BACKGROUND",
+      "EXPLICIT_RECOVERY_BOUNDARY"
+    ],
+    "restore_policy": {
+      "algorithm": [
+        "validate checksum",
+        "validate schema and migrate known versions",
+        "resolve all referenced content IDs",
+        "verify ledger key/payload consistency",
+        "rebuild read model",
+        "return validated snapshot or diagnostic"
+      ],
+      "reward_claim_during_restore": false,
+      "invalid_snapshot": "Offer a validated older snapshot or fresh menu; never trust partial bytes."
+    },
+    "mid_run_resume_policy": "PENDING_PRODUCT_DECISION_U-06_U-07"
+  },
+  "event_envelope_contract": {
+    "required_fields": [
+      "event_id",
+      "event_name",
+      "event_version",
+      "occurred_at",
+      "run_id",
+      "revision",
+      "causation_id",
+      "correlation_id",
+      "idempotency_key",
+      "payload"
+    ],
+    "event_name_format": "domain.object.action.v1",
+    "kinds": [
+      "AUTHORITATIVE_COMMAND",
+      "DOMAIN_EVENT",
+      "UI_PROJECTION"
+    ],
+    "ordering_rule": "Domain events for one run are ordered by revision; retries retain event_id and idempotency_key.",
+    "duplicate_rule": "Consumers must be idempotent by idempotency_key where the event has side effects."
+  },
+  "example_run_session": {
+    "run_id": "run_<uuid>",
+    "seed": "<deterministic-seed>",
+    "content_version": "<registry-version>",
+    "phase": "RUN_ACTIVE",
+    "revision": 0,
+    "elapsed_seconds": 0,
+    "current_wave_band_id": "wave_0_2m",
+    "checkpoint_id": null,
+    "selected_hero_id": "lin_yue",
+    "build": {
+      "weapons": [],
+      "passives": [],
+      "artifacts": [],
+      "claimed_synergy_ids": []
+    },
+    "stats": {
+      "hp": "PENDING_B1",
+      "max_hp": "PENDING_B1",
+      "attack": "PENDING_B1",
+      "critical_chance": "PENDING_B1",
+      "critical_multiplier": "PENDING_B1",
+      "movement_speed": "PENDING_B1",
+      "cooldown": "PENDING_B1",
+      "armor": "PENDING_B1",
+      "pickup_radius": "PENDING_B1",
+      "bonus_state": "PENDING_PRODUCT_DECISION"
+    },
+    "counters": {
+      "level": 1,
+      "xp_current": 0,
+      "xp_to_next": 30,
+      "kills": 0,
+      "bosses_defeated": 0,
+      "checkpoints_resolved": 0
+    },
+    "drops": {
+      "xp_items": [],
+      "aftermath_items": []
+    },
+    "pending_offer": null,
+    "pending_chest": null,
+    "diagnostics": []
+  },
+  "invariants": [
+    "UI never owns authoritative run state.",
+    "XP and aftermath are distinct entity types and layers.",
+    "Pause, upgrade choice and Android background freeze the game clock.",
+    "Checkpoint, chest, synergy and terminal reward operations are idempotent.",
+    "Reward claims never happen during snapshot validation.",
+    "Unknown numeric values remain PENDING_B1 until confirmed.",
+    "Unknown product rules remain PENDING_PRODUCT_DECISION until confirmed.",
+    "No asset path is required for the logical contract."
+  ],
+  "pending_decisions": [
+    {
+      "id": "U-01",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "stats.bonus_state",
+      "current_handling": "Typed extension point and HUD projection; no formula invented.",
+      "owner_next_action": "Product/B1 balance decision."
+    },
+    {
+      "id": "U-02",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "build.slot_semantics",
+      "current_handling": "Capacity is fixed at 6 weapons and 6 passives from GAME_MANIFEST; exact offer replacement/slot UX remains open.",
+      "owner_next_action": "Product/runtime contract review."
+    },
+    {
+      "id": "U-03",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "synergy.exact_conditions_and_effects",
+      "current_handling": "Ten canonical direct pairs and max levels 6/5 are present; exact evaluator/fallback/effect data is not invented.",
+      "owner_next_action": "B1 content registry approval."
+    },
+    {
+      "id": "U-04",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "chest.fallback_outcome",
+      "current_handling": "Fallback outcome is explicit and blocks silent random grant.",
+      "owner_next_action": "Product decision for fallback reward."
+    },
+    {
+      "id": "U-05",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "stage.transition",
+      "current_handling": "Logical wave/checkpoint transition inside one arena.",
+      "owner_next_action": "Confirm whether future stage means scene or logical band."
+    },
+    {
+      "id": "U-06",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "save.incomplete_run_timing",
+      "current_handling": "Snapshot seam supports checkpoint/background/terminal reasons; continuous mid-run resume is not promised.",
+      "owner_next_action": "Choose allowed save points."
+    },
+    {
+      "id": "U-07",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "menu_exit_and_process_kill",
+      "current_handling": "Explicit abandon/recovery prompt; invalid snapshot never auto-restores.",
+      "owner_next_action": "Confirm abandon/recovery UX."
+    },
+    {
+      "id": "U-08",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "hud_and_result_presentation",
+      "current_handling": "Required fields are defined in RunReadModel; exact layout remains open.",
+      "owner_next_action": "UX/runtime review."
+    },
+    {
+      "id": "U-09",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "unlock_and_replay_semantics",
+      "current_handling": "Ledger supports first-clear and repeat keys; new unlock rules are not invented.",
+      "owner_next_action": "Meta progression decision."
+    },
+    {
+      "id": "U-10",
+      "status": "WORKING_ASSUMPTION",
+      "field": "prototype_runtime_seam",
+      "current_handling": "Wrap/replace current menu and arena prototypes behind AppFlowCoordinator and RunFacade.",
+      "owner_next_action": "Runtime slice implementation."
+    }
+  ]
+}
