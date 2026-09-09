@@ -6,7 +6,7 @@
 
 Репозиторий: xxiamadelxx-blip/mac.
 Ветка по умолчанию: main.
-Проект в начале разработки; код игры ещё не создан. Первые фактические визуальные артефакты этапа 1 уже добавлены:
+Проект в начале разработки; основной gameplay-код ещё не создан. Для этапа 1 уже добавлены фактические visual assets и первый Godot navigation prototype. Первые визуальные артефакты:
 
 - три menu art-direction mockup в `docs/mockups/01-menu/`;
 - Direction B рекомендовано как база;
@@ -191,6 +191,6 @@
 
 Текущие screen-flow evidence: Home, Heroes, Run Setup, Loading, Victory и Defeat/Run Ended созданы в `docs/mockups/01-menu/`. Они остаются art-direction reference до прохождения текстовой, state-машинной и implementation-ready проверки.
 
-Следующее действие: зафиксировать точные строки, состояния normal/pressed/disabled/locked, safe area, слои композиции, навигационный контракт и затем собрать эти экраны в Godot.
+Следующее действие: заменить временные art-direction backgrounds на разложенные UI-слои, подключить локализационные строки и проверить normal/pressed/disabled/locked states; затем закрыть этап 1 evidence и начать Stage 02 Arena.
 
 После завершения меню не переходить к арене автоматически, пока критерии этапа 1 не отмечены как DONE и не приложено evidence.
