@@ -1,0 +1,42 @@
+{
+  "schema": "moonveil.arena.layer-map",
+  "version": 1,
+  "viewport": { "width": 390, "height": 844, "orientation": "portrait" },
+  "map_id": "flooded_lotus_moon_garden",
+  "layers": [
+    { "id": "background", "asset": "layers/STAGE02_ARENA_ART_v01.png", "z": 0, "collision": false },
+    { "id": "gameplay_terrain", "asset": "runtime/procedural", "z": 10, "collision": true, "notes": "Walkable earth/path, shallow water, bridges, stones and roots." },
+    { "id": "ambient_vfx", "asset": "layers/STAGE02_ARENA_AMBIENT_VFX_v01.png", "z": 20, "collision": false, "runtime": true, "pooling": true },
+    { "id": "remains", "asset": "layers/STAGE02_ARENA_REMAINS_20M_v01.png", "z": 30, "collision": false, "runtime": true, "pooling": true },
+    { "id": "xp", "asset": "stage-09", "z": 40, "collision": false, "runtime": true, "notes": "Separate luminous pickup layer; never merge with remains." },
+    { "id": "foreground", "asset": "runtime/procedural", "z": 50, "collision": false, "notes": "Only edge foliage; never cover hero, telegraphs or XP." },
+    { "id": "hud_safe_area", "asset": "stage-10", "z": 100, "collision": false, "notes": "Reserved top boss area and bottom control area; not part of Stage 02 final HUD." }
+  ],
+  "zones": {
+    "top_hud_safe": { "rect": [0, 0, 390, 112], "rule": "No critical gameplay objects in this area." },
+    "bottom_hud_safe": { "rect": [0, 728, 390, 116], "rule": "Keep a readable lane behind future controls." },
+    "hero_start": { "center": [195, 422], "radius": 30 },
+    "clear_play_lane": { "rect": [96, 112, 198, 610], "rule": "Decorative density may increase outside the lane first." },
+    "spawn_rings": [[42, 180, 28], [348, 210, 28], [36, 620, 28], [352, 665, 28]]
+  },
+  "reactions": [
+    { "id": "puddle_ripple", "trigger": "actor_step_or_attack", "duration_ms": 650, "pool_key": "ripple_small" },
+    { "id": "plant_sway", "trigger": "wind_or_nearby_actor", "duration_ms": 900, "pool_key": "plant_sway_a" },
+    { "id": "leaf_dust", "trigger": "ambient_tick_or_heavy_attack", "duration_ms": 1200, "pool_key": "air_particle" },
+    { "id": "eclipse_motes", "trigger": "phase_10_plus", "duration_ms": 1800, "pool_key": "eclipse_mote" }
+  ],
+  "aftermath_states": [
+    { "minutes": 0, "remains_alpha": 0.0, "cluster_limit": 0 },
+    { "minutes": 5, "remains_alpha": 0.18, "cluster_limit": 10 },
+    { "minutes": 10, "remains_alpha": 0.40, "cluster_limit": 20 },
+    { "minutes": 15, "remains_alpha": 0.70, "cluster_limit": 32 },
+    { "minutes": 20, "remains_alpha": 1.0, "cluster_limit": 44 }
+  ],
+  "readability_rules": [
+    "Remains never participate in collision or pathfinding.",
+    "XP uses a separate luminous layer and remains visible above aftermath.",
+    "No decorative object may cover the hero, enemy silhouette or danger telegraph.",
+    "The central lane stays navigable at every aftermath state.",
+    "A mobile preview must show at least three independent environmental reactions."
+  ]
+}

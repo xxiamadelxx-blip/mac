@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <!-- Stylized, non-collision battle aftermath. Keep the central lane readable. -->
+  <g fill="#241A25" opacity="0.76">
+    <ellipse cx="30" cy="150" rx="17" ry="7" transform="rotate(-18 30 150)"/>
+    <ellipse cx="68" cy="260" rx="19" ry="7" transform="rotate(24 68 260)"/>
+    <ellipse cx="31" cy="389" rx="16" ry="6" transform="rotate(-12 31 389)"/>
+    <ellipse cx="77" cy="474" rx="20" ry="7" transform="rotate(17 77 474)"/>
+    <ellipse cx="34" cy="588" rx="18" ry="7" transform="rotate(-28 34 588)"/>
+    <ellipse cx="74" cy="739" rx="21" ry="7" transform="rotate(14 74 739)"/>
+    <ellipse cx="351" cy="132" rx="19" ry="7" transform="rotate(21 351 132)"/>
+    <ellipse cx="322" cy="240" rx="17" ry="6" transform="rotate(-20 322 240)"/>
+    <ellipse cx="356" cy="374" rx="21" ry="7" transform="rotate(13 356 374)"/>
+    <ellipse cx="317" cy="481" rx="18" ry="7" transform="rotate(-24 317 481)"/>
+    <ellipse cx="356" cy="575" rx="17" ry="6" transform="rotate(25 356 575)"/>
+    <ellipse cx="310" cy="698" rx="21" ry="7" transform="rotate(-13 310 698)"/>
+    <ellipse cx="352" cy="790" rx="19" ry="7" transform="rotate(19 352 790)"/>
+    <ellipse cx="103" cy="314" rx="11" ry="5" transform="rotate(-8 103 314)"/>
+    <ellipse cx="284" cy="416" rx="12" ry="5" transform="rotate(12 284 416)"/>
+    <ellipse cx="112" cy="646" rx="13" ry="5" transform="rotate(21 112 646)"/>
+    <ellipse cx="274" cy="625" rx="13" ry="5" transform="rotate(-17 274 625)"/>
+  </g>
+
+  <g stroke="#8D4D53" stroke-width="3" stroke-linecap="round" opacity="0.72">
+    <path d="M19 166l18 9M51 251l21 12M24 405l18-7M63 488l22-9M22 602l20 11M62 756l20-8"/>
+    <path d="M341 148l20-12M306 250l23-8M344 392l18 10M304 497l23 11M345 590l19-6M298 714l25-9M341 805l20 9"/>
+  </g>
+
+  <g fill="#D1C2A2" opacity="0.72">
+    <path d="M43 180l5-2 7 5-4 4-7-2z"/>
+    <path d="M84 277l4-4 7 2 1 5-7 2z"/>
+    <path d="M43 426l5-3 7 4-3 5-8-1z"/>
+    <path d="M58 626l5-4 7 3-2 5-8 1z"/>
+    <path d="M337 178l5-3 8 4-2 5-8-1z"/>
+    <path d="M300 295l5-4 7 3-2 5-8 1z"/>
+    <path d="M334 430l5-3 8 4-3 5-8-1z"/>
+    <path d="M294 548l4-4 8 2 1 5-8 2z"/>
+    <path d="M333 653l5-3 7 3-2 5-8 0z"/>
+  </g>
+
+  <g fill="#4A2631" opacity="0.48">
+    <circle cx="22" cy="224" r="6"/><circle cx="54" cy="340" r="5"/><circle cx="22" cy="535" r="7"/>
+    <circle cx="79" cy="811" r="6"/><circle cx="367" cy="208" r="6"/><circle cx="333" cy="334" r="5"/>
+    <circle cx="371" cy="532" r="7"/><circle cx="294" cy="765" r="6"/>
+  </g>
+</svg>

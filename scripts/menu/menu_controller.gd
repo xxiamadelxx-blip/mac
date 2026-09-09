@@ -221,7 +221,11 @@ func _show_loading() -> void:
 
 func _on_loading_complete() -> void:
     if current_screen == "loading":
-        _show_arena_handoff()
+        _open_arena_preview()
+
+
+func _open_arena_preview() -> void:
+    get_tree().change_scene_to_file("res://scenes/arena/arena.tscn")
 
 
 func _show_arena_handoff() -> void:
