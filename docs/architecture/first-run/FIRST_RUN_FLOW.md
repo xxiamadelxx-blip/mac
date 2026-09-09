@@ -1,8 +1,8 @@
 
 # FIRST_RUN_FLOW — целевой путь первого забега
 
-Статус: **SPECIFIED_WITH_PENDING_DECISIONS**  
-Область: один 20-минутный забег Moonveil: Eclipse, от boot до возврата в меню.  
+Статус: **SPECIFIED_WITH_PENDING_DECISIONS**
+Область: один 20-минутный забег Moonveil: Eclipse, от boot до возврата в меню.
 Тип документа: логическая спецификация, не runtime-реализация.
 
 ## 1. Границы и источники
@@ -12,6 +12,7 @@
 Источники с приоритетом:
 
 - docs/architecture/first-run/AGENT_TASK.md — обязательная цепочка и границы;
+- docs/architecture/first-run/DELIVERABLES.md — состав и критерии deliverables;
 - GAME_MANIFEST.md — продуктовый цикл, content roster, 20 минут, слоты и герои;
 - AGENT_CONTEXT.md — RunState, Android/offline-first и разделение XP/aftermath;
 - docs/BALANCE_ECONOMY_SPEC.md — временные полосы, XP, награды и ограничения;
