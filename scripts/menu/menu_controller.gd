@@ -31,7 +31,7 @@ func _clear_screen() -> void:
         child.free()
 
 
-func _background(asset_path: String) -> void:
+func _background(asset_path: String, ui_asset_path := "") -> void:
     var background := TextureRect.new()
     background.name = "ArtDirectionBackground"
     background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -47,6 +47,20 @@ func _background(asset_path: String) -> void:
 
     screen_layer.add_child(background)
     screen_layer.move_child(background, 0)
+
+    if ui_asset_path.is_empty():
+        return
+
+    var ui_layer := TextureRect.new()
+    ui_layer.name = "RussianUiLayer"
+    ui_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+    ui_layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    ui_layer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+    ui_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    var ui_texture := load(ui_asset_path) as Texture2D
+    if ui_texture:
+        ui_layer.texture = ui_texture
+        screen_layer.add_child(ui_layer)
 
 
 func _fallback_texture() -> GradientTexture2D:
@@ -137,58 +151,71 @@ func _button(
     return button
 
 
+func _hit(value: String, rect: Rect2, callback: Callable) -> Button:
+    var button := Button.new()
+    button.text = ""
+    button.tooltip_text = value
+    button.position = rect.position
+    button.size = rect.size
+    button.focus_mode = Control.FOCUS_ALL
+    button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+    button.add_theme_stylebox_override("hover", _style(Color("#a8fff033"), JADE, 14))
+    button.add_theme_stylebox_override("pressed", _style(Color("#a8fff066"), JADE, 14))
+    button.pressed.connect(callback)
+    screen_layer.add_child(button)
+    return button
+
+
 func _bottom_nav(active: String) -> void:
     var items := [
-        ["Home", Callable(self, "_show_home")],
-        ["Heroes", Callable(self, "_show_heroes")],
-        ["Arsenal", Callable(self, "_show_arsenal")],
-        ["Artifacts", Callable(self, "_show_artifacts")],
-        ["Settings", Callable(self, "_show_settings")]
+        ["ГЛАВНАЯ", Callable(self, "_show_home")],
+        ["ГЕРОИНИ", Callable(self, "_show_heroes")],
+        ["АРСЕНАЛ", Callable(self, "_show_arsenal")],
+        ["АРТЕФАКТЫ", Callable(self, "_show_artifacts")],
+        ["НАСТРОЙКИ", Callable(self, "_show_settings")]
     ]
     var width := 78.0
     for index in range(items.size()):
         var item: Array = items[index]
         var name: String = item[0]
         var action: Callable = item[1]
-        var color := JADE if name == active else MOON
-        var button := _button(name, Rect2(width * index, 764, width, 70), action, false, true)
-        button.add_theme_color_override("font_color", color)
-        button.add_theme_color_override("font_hover_color", color)
-        button.add_theme_color_override("font_pressed_color", color)
+        var button := _hit(name, Rect2(width * index, 764, width, 70), action)
+        if name == active:
+            button.add_theme_stylebox_override("hover", _style(Color("#a8fff022"), JADE, 10))
 
 
 func _show_home() -> void:
     current_screen = "home"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_DIRECTION_B_v01.png")
-    _button("START RUN", Rect2(56, 560, 278, 70), Callable(self, "_show_run_setup"), true)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
+    _hit("Начать забег", Rect2(56, 560, 278, 70), Callable(self, "_show_run_setup"))
     _bottom_nav("Home")
 
 
 func _show_heroes() -> void:
     current_screen = "heroes"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_HEROES_v01.png")
-    _button("SELECT HERO", Rect2(68, 590, 254, 68), Callable(self, "_show_run_setup"), true)
-    _button("BACK", Rect2(14, 684, 96, 48), Callable(self, "_show_home"), false, true)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_HEROES_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HEROES_UI_RU_v01.png")
+    _hit("Выбрать героиню", Rect2(68, 590, 254, 68), Callable(self, "_show_run_setup"))
+    _hit("Назад", Rect2(14, 684, 96, 48), Callable(self, "_show_home"))
     _bottom_nav("Heroes")
 
 
 func _show_run_setup() -> void:
     current_screen = "run_setup"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_RUN_SETUP_v01.png")
-    _button("START RUN", Rect2(86, 655, 218, 66), Callable(self, "_show_loading"), true)
-    _button("BACK", Rect2(14, 655, 70, 66), Callable(self, "_show_home"), false, true)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_RUN_SETUP_UI_RU_v01.png")
+    _hit("Начать забег", Rect2(86, 655, 218, 66), Callable(self, "_show_loading"))
+    _hit("Назад", Rect2(14, 655, 70, 66), Callable(self, "_show_home"))
     _bottom_nav("Home")
 
 
 func _show_loading() -> void:
     current_screen = "loading"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_LOADING_v01.png")
-    _label("LOADING", Rect2(90, 620, 210, 40), 18, JADE)
-    _label("M1 — THE FIRST TIDE", Rect2(62, 660, 266, 32), 12, MOON)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_LOADING_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_LOADING_UI_RU_v01.png")
+    _label("ЗАГРУЗКА", Rect2(90, 620, 210, 40), 18, JADE)
+    _label("ГЛАВА 1 — ПЕРВАЯ ВОЛНА", Rect2(62, 660, 266, 32), 12, MOON)
     get_tree().create_timer(1.2).timeout.connect(_on_loading_complete)
 
 
@@ -200,54 +227,54 @@ func _on_loading_complete() -> void:
 func _show_arena_handoff() -> void:
     current_screen = "arena_handoff"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_DIRECTION_B_v01.png")
+    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _panel(Rect2(28, 250, 334, 300), Color("#061416ee"), JADE_DARK)
-    _label("ARENA HANDOFF", Rect2(48, 278, 294, 42), 24, JADE)
+    _label("ПЕРЕХОД К АРЕНЕ", Rect2(48, 278, 294, 42), 24, JADE)
     _label(
-        "The Stage 02 arena scene is not connected yet.\nThis preview keeps the menu route testable.",
+        "Сцена арены этапа 2 ещё не подключена.\nЭтот экран нужен только для проверки маршрута меню.",
         Rect2(54, 330, 282, 74),
         14,
         MOON
     )
-    _button("PREVIEW VICTORY", Rect2(54, 424, 282, 48), Callable(self, "_show_victory"), false, true)
-    _button("PREVIEW RUN ENDED", Rect2(54, 480, 282, 48), Callable(self, "_show_run_ended"), false, true)
-    _button("RETURN TO SETUP", Rect2(54, 548, 282, 44), Callable(self, "_show_run_setup"), false, true)
+    _button("ПРЕДПРОСМОТР ПОБЕДЫ", Rect2(54, 424, 282, 48), Callable(self, "_show_victory"), false, true)
+    _button("ПРЕДПРОСМОТР ПОРАЖЕНИЯ", Rect2(54, 480, 282, 48), Callable(self, "_show_run_ended"), false, true)
+    _button("К ПОДГОТОВКЕ", Rect2(54, 548, 282, 44), Callable(self, "_show_run_setup"), false, true)
 
 
 func _show_victory() -> void:
     current_screen = "victory"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_RESULT_VICTORY_v01.png")
-    _button("CLAIM REWARDS", Rect2(64, 677, 262, 58), Callable(self, "_show_home"), true)
-    _button("RETURN HOME", Rect2(112, 742, 166, 42), Callable(self, "_show_home"), false, true)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_VICTORY_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_VICTORY_UI_RU_v01.png")
+    _hit("Забрать награды", Rect2(64, 677, 262, 58), Callable(self, "_show_home"))
+    _hit("В меню", Rect2(112, 742, 166, 42), Callable(self, "_show_home"))
 
 
 func _show_run_ended() -> void:
     current_screen = "run_ended"
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_RESULT_DEFEAT_v01.png")
-    _button("CLAIM REWARDS", Rect2(62, 674, 266, 58), Callable(self, "_show_home"), true)
-    _button("TRY AGAIN", Rect2(104, 740, 182, 44), Callable(self, "_show_run_setup"), false, true)
-    _button("RETURN HOME", Rect2(118, 790, 154, 34), Callable(self, "_show_home"), false, true)
+    _background("res://docs/mockups/01-menu/layers/STAGE01_DEFEAT_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_DEFEAT_UI_RU_v01.png")
+    _hit("Забрать награды", Rect2(62, 674, 266, 58), Callable(self, "_show_home"))
+    _hit("Повторить", Rect2(104, 740, 182, 44), Callable(self, "_show_run_setup"))
+    _hit("В меню", Rect2(118, 790, 154, 34), Callable(self, "_show_home"))
 
 
 func _show_arsenal() -> void:
-    _show_section_placeholder("ARSENAL", "Weapon cards and evolutions are planned for Stage 06.")
+    _show_section_placeholder("АРСЕНАЛ", "Карточки оружия и эволюции относятся к этапу 6.")
 
 
 func _show_artifacts() -> void:
-    _show_section_placeholder("ARTIFACTS", "Artifact Codex is planned for Stage 08.")
+    _show_section_placeholder("АРТЕФАКТЫ", "Кодекс артефактов относится к этапу 8.")
 
 
 func _show_settings() -> void:
-    _show_section_placeholder("SETTINGS", "Audio, accessibility and haptics settings are planned for Stage 13 and Stage 20.")
+    _show_section_placeholder("НАСТРОЙКИ", "Звук, доступность и вибрация относятся к этапам 13 и 20.")
 
 
 func _show_section_placeholder(title: String, detail: String) -> void:
     current_screen = title.to_lower()
     _clear_screen()
-    _background("res://docs/mockups/01-menu/STAGE01_MENU_DIRECTION_B_v01.png")
+    _background("res://docs/mockups/01-menu/layers/STAGE01_HOME_ART_v01.png", "res://docs/mockups/01-menu/layers/STAGE01_HOME_UI_RU_v01.png")
     _panel(Rect2(28, 310, 334, 224), Color("#061416ee"), JADE_DARK)
     _label(title, Rect2(50, 344, 290, 44), 24, JADE)
     _label(detail, Rect2(56, 404, 278, 58), 14, MOON)
-    _button("RETURN HOME", Rect2(76, 478, 238, 48), Callable(self, "_show_home"), false)
+    _button("В МЕНЮ", Rect2(76, 478, 238, 48), Callable(self, "_show_home"), false)
