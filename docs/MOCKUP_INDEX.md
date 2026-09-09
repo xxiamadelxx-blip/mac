@@ -42,4 +42,15 @@
 
 ## Текущий активный результат
 
-Этапы 1 и 2 остаются IN PROGRESS. Этап 3 закрыт как visual mockup/evidence package и не promoted автоматически в production. Этап 4 начат по Visual Lab route `MOCKUP` + secondary `SPRITE`: создан канонический roster manifest десяти противников, soft-tonal enemy family contract и representative-master gate для Чернильного жука. Следующий evidence — enlarged + true 1x representative master, затем review перед batch остальных девяти врагов.
+Этапы 1 и 2 остаются IN PROGRESS. Этап 3 закрыт как visual mockup/evidence package и не promoted автоматически в production. Этап 4 активно выполняется по Visual Lab route `MOCKUP` + secondary `SPRITE`.
+
+Уже создано:
+
+- roster manifest десяти stable enemy_id;
+- soft-tonal enemy visual contract;
+- silhouette calibration board полного roster;
+- representative master Чернильного жука;
+- true 1× 390×844 gameplay review;
+- provenance текущих candidates.
+
+Текущий gate: artistic review representative master. После него выпускаются девять derived enemy candidates и полный telegraph/readability board. Отдельный блокер закрытия этапа: абсолютные base HP/damage/speed ещё должны быть зафиксированы в `docs/BALANCE_ECONOMY_SPEC.md` и синхронизированы с Stage 04 manifest.
