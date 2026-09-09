@@ -1033,10 +1033,18 @@
   },
   "audit_reference": "docs/agents/balance-economy/BALANCE_AUDIT.md",
   "runtime_status": "NOT_IMPLEMENTED",
-  "simulation_status": "PENDING_SIMULATION",
+  "simulation_status": "SIMULATED",
   "contract_notes": [
     "Materialized from the B1 design baseline; this file is a contract, not runtime data.",
     "Null values and PENDING_* statuses are intentional and must not be replaced by unsourced estimates.",
     "TEST_PLACEHOLDER values are permitted only in the simulator and its report."
-  ]
+  ],
+  "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
+  "verification": {
+    "json_parse": "PASS",
+    "deterministic_contract_simulation": "PASS",
+    "runtime_integration": "NOT_IMPLEMENTED",
+    "android_performance": "BLOCKED",
+    "overall": "PARTIAL"
+  }
 }
