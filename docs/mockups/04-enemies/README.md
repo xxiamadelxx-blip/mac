@@ -63,6 +63,17 @@ Scale class — относительная визуальная категори
 - stone oni: большой ground circle до slam;
 - eclipse serpent: dark trail не маскирует damaging arcs; дуги имеют отдельный warning edge.
 
+## Фактическое evidence текущей итерации
+
+Созданы и лежат в stage-папке:
+
+- `STAGE04_ENEMIES_MANIFEST_v01.json` — stable enemy_id, роли, фазы, B1 durability/XP, silhouette keys и telegraph contracts для всех 10 врагов;
+- `STAGE04_ENEMIES_VISUAL_CONTRACT_v01.md` — единая soft-tonal family, scale/readability и representative-master gate;
+- `STAGE04_ENEMY_ROSTER_SILHOUETTES_v01.svg` — silhouette calibration board полного roster;
+- `STAGE04_ENEMY_INK_BEETLE_MASTER_v01.svg` — enlarged representative master Чернильного жука;
+- `STAGE04_ENEMY_INK_BEETLE_GAMEPLAY_REVIEW_v01.svg` — true 1× 390×844 gameplay review;
+- `STAGE04_ENEMIES_PROVENANCE_v01.json` — provenance и раздельные technical/artistic statuses.
+
 ## Representative master gate
 
 Первый representative master: `ink_beetle` / Чернильный жук.
@@ -70,25 +81,25 @@ Scale class — относительная визуальная категори
 Asset ID: `enemy.ink_beetle.master`  
 Candidate ID: `vl-20260909-enemy-ink-beetle-master-v01`  
 Asset kind: `enemy master mockup / sprite direction`  
-Status: `PROPOSAL`  
-Technical status: `PENDING`  
+Status: `CANDIDATE`  
+Technical status: `REFERENCE_PASS_PENDING_RUNTIME`  
 Artistic status: `PENDING`  
 Runtime: `NOT_PROMOTED`
 
-До review representative master не запускается production batch остальных девяти врагов. Это Visual Lab gate, а не отсутствие плана.
+Representative master и true 1× evidence уже созданы. До artistic review production batch остальных девяти врагов не получает статус `APPROVED GOLDEN`/`PRODUCTION`.
 
 ## Deliverables этапа
 
-- source/canon audit;
-- enemy family contract;
-- roster manifest с десятью stable enemy_id;
-- silhouette/readability board;
-- representative master + enlarged inspection + true 1x arena context;
-- после review master: девять derived enemy candidates;
-- telegraph board полного roster;
-- provenance для конкретных candidates;
-- B1 reconciliation для HP/damage/speed/spawn/XP;
-- stage handoff.
+- [x] source/canon audit;
+- [x] enemy family contract;
+- [x] roster manifest с десятью stable enemy_id;
+- [x] silhouette/readability board;
+- [x] representative master + enlarged inspection + true 1x arena context;
+- [ ] девять derived enemy candidates;
+- [ ] telegraph board полного roster;
+- [x] provenance для текущих candidates;
+- [ ] B1 reconciliation для абсолютных HP/damage/speed;
+- [ ] финальный stage handoff и closure evidence.
 
 ## Handoff
 
@@ -97,9 +108,9 @@ Runtime: `NOT_PROMOTED`
 - `asset_kind`: enemy family / enemy master / sprite mockup
 - `family_id`: family.enemy.moonveil-soft-tonal.v01
 - `candidate_id`: vl-20260909-enemy-ink-beetle-master-v01
-- `status`: PROPOSAL
-- `technical_status`: PENDING
+- `status`: CANDIDATE
+- `technical_status`: REFERENCE_PASS_PENDING_RUNTIME
 - `artistic_status`: PENDING
-- `manifest/consumer`: stage manifest planned; runtime not promoted
-- `open_decisions`: representative master visual approval; exact runtime footprint; B1 absolute base HP/damage/speed
-- `next_action`: create and review the Ink Beetle representative master in enlarged and true 1x arena context
+- `manifest/consumer`: STAGE04_ENEMIES_MANIFEST_v01.json; runtime not promoted
+- `open_decisions`: artistic review representative master; exact runtime footprint; B1 absolute base HP/damage/speed
+- `next_action`: generate nine derived enemy candidates under the locked family contract, then assemble the complete telegraph/readability board
