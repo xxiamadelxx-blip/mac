@@ -38,3 +38,33 @@
 - Stage assets имеют candidate/pending statuses; архитектурный агент не должен повышать их статус.
 
 После аудита агент обновляет таблицы, добавляет обнаруженные конфликты и указывает, какие вопросы можно закрыть только пользователем, B1 или runtime-тестом.
+
+
+## Результат аудита первого забега (2026-09-09)
+
+| ID | Статус после аудита | Что подтверждено | Что остаётся открытым | Evidence |
+|---|---|---|---|---|
+| U-01 | PENDING_PRODUCT_DECISION | RunSession/HUD extension point обязателен | exact meaning/formula of bonus or series | GAME_MANIFEST.md, AGENT_TASK.md |
+| U-02 | PARTIALLY_RESOLVED | GAME_MANIFEST фиксирует 6 weapon slots и 6 passive slots; уровни 6/5 | replacement/offer legality при заполненном слоте | GAME_MANIFEST.md §4/§6 |
+| U-03 | PARTIALLY_RESOLVED | проверены 10 прямых weapon/passive pairs и условия max weapon/passive + chest | exact effect data, evaluator details и fallback | GAME_MANIFEST.md §6 |
+| U-04 | PENDING_PRODUCT_DECISION | chest outcome и idempotent chest_id зафиксированы в архитектуре | exact fallback reward при отсутствии eligible synergy | AGENT_TASK.md, FIRST_RUN_DATA_CONTRACT.json |
+| U-05 | WORKING_ASSUMPTION | для M1 stage трактуется как logical wave/checkpoint band внутри одной арены | нужна ли отдельная scene/stage boundary | GAME_MANIFEST.md §4, FIRST_RUN_FLOW.md |
+| U-06 | PENDING_PRODUCT_DECISION | snapshot seam описан для checkpoint/background/terminal | разрешённые точки incomplete-run save | GAME_MANIFEST.md, AGENT_TASK.md |
+| U-07 | PENDING_PRODUCT_DECISION | exit требует confirmation; invalid snapshot не восстанавливается молча | abandon/process-kill UX и retention | AGENT_TASK.md, FIRST_RUN_STATE_MACHINE.md |
+| U-08 | PENDING_PRODUCT_DECISION | обязательный набор HUD/result fields перечислен | exact presentation/layout | AGENT_TASK.md |
+| U-09 | PENDING_PRODUCT_DECISION | first-clear/repeat ledger keys предусмотрены | unlock/replay semantics и новые meta rules | GAME_MANIFEST.md, BALANCE_ECONOMY_SPEC.md |
+| U-10 | WORKING_ASSUMPTION | current menu/arena остаются prototype evidence; seam — AppFlowCoordinator/RunFacade | конкретная migration strategy runtime agent | scripts/menu/menu_controller.gd, scripts/arena/arena_controller.gd |
+
+### Зафиксированный document drift
+
+- AGENT_CONTEXT.md и ROADMAP.md расходятся в статусе этапа 4; архитектура не объявляет этап завершённым и оставляет это внешним release/product решением.
+- menu prototype использует архивные v01 пути и старый пользовательский label; каноническая архитектура использует нейтральный раздел ПЕРСОНАЖИ, не исправляя runtime в рамках этого задания.
+- arena controller ускоряет 20 минут до 60 секунд и рисует visual preview; это не доказательство runtime simulation.
+- visual assets и mockups имеют candidate/evidence статус; архитектурный пакет не повышает их статус и не добавляет ссылки на них как runtime dependencies.
+
+### Решения агента, применённые только к контракту
+
+- reward ledger key и duplicate policy определены как обязательный boundary, даже если adapter ещё не написан;
+- fallback chest outcome оставлен явным pending вместо выдуманной награды;
+- абсолютные enemy base HP/damage/speed не добавлены; B1 multipliers сохранены;
+- JSON использует stable slug IDs для уже названного canonical roster; это naming convention для будущего registry, а не утверждение о готовом runtime content.
