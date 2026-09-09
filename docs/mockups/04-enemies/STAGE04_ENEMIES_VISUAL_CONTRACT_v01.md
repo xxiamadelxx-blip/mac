@@ -3,7 +3,7 @@
 Status: IN PROGRESS  
 Primary route: MOCKUP  
 Secondary route: SPRITE  
-Family ID: `family.enemy.moonveil_soft_tonal.v01`
+Family ID: `family.enemy.moonveil-soft-tonal.v01`
 
 ## Purpose
 
@@ -113,7 +113,7 @@ Therefore:
 - secondary route: `SPRITE`
 - stage_path: `docs/mockups/04-enemies/`
 - asset_kind: enemy family + representative master
-- family_id: `family.enemy.moonveil_soft_tonal.v01`
+- family_id: `family.enemy.moonveil-soft-tonal.v01`
 - representative asset_id: `enemy.ink_beetle.master`
 - candidate_id: `vl-20260909-enemy-ink-beetle-master-v01`
 - status: `CANDIDATE`
