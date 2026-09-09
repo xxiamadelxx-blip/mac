@@ -7,7 +7,7 @@
   "visual_status": "CANDIDATE",
   "artistic_status": "PENDING",
   "workflow": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
-  "source_commit": null,
+  "source_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
   "source_policy": "User-provided ChatGPT Images PNG set; Codex preserved source bytes and did not promote runtime assets.",
   "entries": [
     {
@@ -73,7 +73,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -146,7 +146,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -214,7 +214,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -304,7 +304,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -389,7 +389,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -474,7 +474,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -564,7 +564,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -639,7 +639,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -714,7 +714,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }
@@ -789,7 +789,7 @@
       },
       "promotion": {
         "runtime_manifest_path": null,
-        "producing_commit": null,
+        "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b",
         "consumer_scene_or_ui": null,
         "status": "NOT_PROMOTED"
       }

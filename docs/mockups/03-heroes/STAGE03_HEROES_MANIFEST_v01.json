@@ -57,7 +57,7 @@
         "hit": "vfx.hero.lin_yue.hit_seal_break",
         "death": "vfx.hero.lin_yue.seal_dissolve"
       },
-      "producing_commit": null
+      "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
     },
     {
       "hero_id": "soyeon_han",
@@ -112,7 +112,7 @@
         "hit": "vfx.hero.soyeon_han.armor_sparks",
         "death": "vfx.hero.soyeon_han.ribbon_fade"
       },
-      "producing_commit": null
+      "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
     }
   ],
   "selection_screen": "docs/mockups/03-heroes/layers/STAGE03_HEROES_SELECTION_v02.png",
@@ -157,7 +157,7 @@
     "asset_status": "CANDIDATE",
     "artistic_status": "PENDING",
     "runtime_status": "NOT_PROMOTED",
-    "producing_commit": null
+    "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
   },
   "gameplay_scale_review": {
     "lin_yue": "docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_GAMEPLAY_REVIEW_v02.png",
@@ -184,5 +184,5 @@
     "STAGE03_HEROES_PROVENANCE_v01.json"
   ],
   "next_stage": 4,
-  "producing_commit": null
+  "producing_commit": "7aac68f7cd46da2109d29ff7a25b884a9c97387b"
 }
