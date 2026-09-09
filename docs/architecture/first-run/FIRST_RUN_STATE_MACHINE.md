@@ -1,7 +1,7 @@
 
 # FIRST_RUN_STATE_MACHINE — состояния и переходы
 
-Статус: **SPECIFIED_WITH_PENDING_DECISIONS**  
+Статус: **SPECIFIED_WITH_PENDING_DECISIONS**
 Модель: экранные состояния оркестрирует AppFlowCoordinator, доменные состояния принадлежат RunSession, side effects с идемпотентностью принадлежат RewardLedger и SaveRepository.
 
 ## 1. Ownership model
