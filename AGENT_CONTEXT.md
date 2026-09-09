@@ -189,6 +189,8 @@
 
 Текущая точка: три независимых визуальных направления главного меню в размере 390×844 созданы и сохранены в `docs/mockups/01-menu/`. Direction B рекомендовано как базовое направление, но статус этапа остаётся IN PROGRESS.
 
-Следующее действие: подготовить implementation-ready набор Home, Heroes, Run Setup, Loading и Result, зафиксировать точные строки, состояния normal/pressed/disabled/locked, safe area, слои композиции и навигационный контракт.
+Текущие screen-flow evidence: Home, Heroes, Run Setup, Loading, Victory и Defeat/Run Ended созданы в `docs/mockups/01-menu/`. Они остаются art-direction reference до прохождения текстовой, state-машинной и implementation-ready проверки.
+
+Следующее действие: зафиксировать точные строки, состояния normal/pressed/disabled/locked, safe area, слои композиции, навигационный контракт и затем собрать эти экраны в Godot.
 
 После завершения меню не переходить к арене автоматически, пока критерии этапа 1 не отмечены как DONE и не приложено evidence.
