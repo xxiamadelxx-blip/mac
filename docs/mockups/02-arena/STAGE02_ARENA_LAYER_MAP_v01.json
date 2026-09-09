@@ -1,23 +1,51 @@
 {
   "schema": "moonveil.arena.layer-map",
-  "version": 1,
+  "version": 2,
   "viewport": { "width": 390, "height": 844, "orientation": "portrait" },
+  "world": {
+    "width": 1560,
+    "height": 2532,
+    "screen_columns": 4,
+    "screen_rows": 3,
+    "camera_mode": "follow_with_dead_zone",
+    "macro_layout": "STAGE02_ARENA_MACRO_LAYOUT_v01.svg",
+    "open_playfield_ratio_min": 0.65,
+    "open_playfield_ratio_target": [0.65, 0.75],
+    "spawn_ring_min_distance_viewports": 1
+  },
   "map_id": "flooded_lotus_moon_garden",
+  "zones": [
+    { "id": "north_shrine", "name_ru": "Северное святилище", "role": "landmark_and_edge_decor" },
+    { "id": "moon_meadow", "name_ru": "Лунный луг", "role": "primary_open_combat_field" },
+    { "id": "broken_bridge", "name_ru": "Разрушенный мост", "role": "landmark_and_route_loop" },
+    { "id": "lower_pools", "name_ru": "Нижние пруды", "role": "water_edge_and_route_loop" }
+  ],
   "layers": [
-    { "id": "background", "asset": "layers/STAGE02_ARENA_ART_v01.png", "z": 0, "collision": false },
-    { "id": "gameplay_terrain", "asset": "runtime/procedural", "z": 10, "collision": true, "notes": "Walkable earth/path, shallow water, bridges, stones and roots." },
+    { "id": "background", "asset": "layers/STAGE02_ARENA_OPEN_FIELD_ART_v02.png", "z": 0, "collision": false, "scope": "camera_sector" },
+    { "id": "legacy_sector_reference", "asset": "layers/STAGE02_ARENA_ART_v01.png", "z": 0, "collision": false, "scope": "reference_only" },
+    { "id": "gameplay_terrain", "asset": "runtime/procedural", "z": 10, "collision": true, "notes": "Open connected field; shallow water and landmarks are data-driven edges, not a central corridor." },
     { "id": "ambient_vfx", "asset": "layers/STAGE02_ARENA_AMBIENT_VFX_v01.png", "z": 20, "collision": false, "runtime": true, "pooling": true },
     { "id": "remains", "asset": "layers/STAGE02_ARENA_REMAINS_20M_v01.png", "z": 30, "collision": false, "runtime": true, "pooling": true },
     { "id": "xp", "asset": "stage-09", "z": 40, "collision": false, "runtime": true, "notes": "Separate luminous pickup layer; never merge with remains." },
     { "id": "foreground", "asset": "runtime/procedural", "z": 50, "collision": false, "notes": "Only edge foliage; never cover hero, telegraphs or XP." },
     { "id": "hud_safe_area", "asset": "stage-10", "z": 100, "collision": false, "notes": "Reserved top boss area and bottom control area; not part of Stage 02 final HUD." }
   ],
-  "zones": {
-    "top_hud_safe": { "rect": [0, 0, 390, 112], "rule": "No critical gameplay objects in this area." },
-    "bottom_hud_safe": { "rect": [0, 728, 390, 116], "rule": "Keep a readable lane behind future controls." },
-    "hero_start": { "center": [195, 422], "radius": 30 },
-    "clear_play_lane": { "rect": [96, 112, 198, 610], "rule": "Decorative density may increase outside the lane first." },
-    "spawn_rings": [[42, 180, 28], [348, 210, 28], [36, 620, 28], [352, 665, 28]]
+  "camera": {
+    "start_center_world": [780, 1266],
+    "dead_zone": { "width": 150, "height": 260 },
+    "visible_rect_at_start": [585, 844, 390, 844],
+    "follow_target": "hero",
+    "clamp_to_world": true
+  },
+  "spawn": {
+    "mode": "outside_camera_ring",
+    "ring_rect_at_start": [425, 684, 710, 1164],
+    "min_distance_from_camera_edge": 390,
+    "never_spawn_inside_viewport": true
+  },
+  "hud_safe_areas_in_viewport": {
+    "top": { "rect": [0, 0, 390, 112], "rule": "No critical gameplay objects in this interface band." },
+    "bottom": { "rect": [0, 728, 390, 116], "rule": "Keep a readable lane behind future controls." }
   },
   "reactions": [
     { "id": "puddle_ripple", "trigger": "actor_step_or_attack", "duration_ms": 650, "pool_key": "ripple_small" },
@@ -36,7 +64,8 @@
     "Remains never participate in collision or pathfinding.",
     "XP uses a separate luminous layer and remains visible above aftermath.",
     "No decorative object may cover the hero, enemy silhouette or danger telegraph.",
-    "The central lane stays navigable at every aftermath state.",
+    "The player must be able to circle a wave through the open field without a forced corridor.",
+    "The camera sector is not the world boundary.",
     "A mobile preview must show at least three independent environmental reactions."
   ]
 }

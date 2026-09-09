@@ -1,12 +1,18 @@
 extends Node2D
 ## Stage 02 arena proof-of-concept.
 ##
-## The background is a fixed art-direction reference. The independent ambient,
-## ripple, plant, particle and aftermath layers are driven here so the scene can
-## be tested without waiting for a full 20-minute gameplay implementation.
+## This scene renders one 390x844 camera sector of a much larger connected
+## arena. The macro world and camera contract live in the stage 02 layer map;
+## this preview proves the environmental reactions without waiting for the
+## full 20-minute gameplay implementation.
 
 const VIEWPORT_SIZE := Vector2(390.0, 844.0)
-const ART_PATH := "res://docs/mockups/02-arena/layers/STAGE02_ARENA_ART_v01.png"
+const WORLD_SIZE := Vector2(1560.0, 2532.0)
+const CAMERA_START_WORLD := Vector2(780.0, 1266.0)
+const CAMERA_DEAD_ZONE := Vector2(150.0, 260.0)
+const OPEN_PLAYFIELD_RATIO_MIN := 0.65
+const SPAWN_RING_MIN_DISTANCE_VIEWPORTS := 1.0
+const ART_PATH := "res://docs/mockups/02-arena/layers/STAGE02_ARENA_OPEN_FIELD_ART_v02.png"
 const AMBIENT_PATH := "res://docs/mockups/02-arena/layers/STAGE02_ARENA_AMBIENT_VFX_v01.png"
 const PREVIEW_DURATION_SECONDS := 60.0
 
@@ -107,7 +113,7 @@ func _process(delta: float) -> void:
 
     if preview_label and show_preview_overlay:
         var total_seconds := int(run_minutes * 60.0)
-        preview_label.text = "ПРЕДПРОСМОТР АРЕНЫ  ·  %02d:%02d" % [total_seconds / 60, total_seconds % 60]
+        preview_label.text = "ПРЕДПРОСМОТР АРЕНЫ  ·  %02d:%02d  ·  МИР 4×3" % [total_seconds / 60, total_seconds % 60]
     queue_redraw()
 
 
