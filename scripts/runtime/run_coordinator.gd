@@ -214,7 +214,7 @@ func spawn_wave_fixture() -> Dictionary:
     var composition: Variant = band.get("composition", {}).get("value", [])
     var enemy_id := ""
     if composition is Array and not composition.is_empty():
-        var spawn_index := int(session.stats.get("fixture_spawn_count", 0)) % composition.size()
+        var spawn_index: int = int(session.stats.get("fixture_spawn_count", 0)) % composition.size()
         enemy_id = str(composition[spawn_index])
     elif typeof(composition) == TYPE_STRING:
         var enemy_stats: Dictionary = registry.get_model_field(["simulation_model", "enemy_stats"], {})
@@ -288,7 +288,7 @@ func resolve_fixture_attack() -> Dictionary:
     var damage_multiplier := float(session.stats.get("damage_multiplier", 1.0))
     var damage := base_damage * damage_multiplier
     var before_hp := float(session.active_enemy.get("hp_current", 0.0))
-    var after_hp := max(0.0, before_hp - damage)
+    var after_hp: float = maxf(0.0, before_hp - damage)
     session.active_enemy["hp_current"] = after_hp
     session.last_hit_at = clock.run_seconds
     session.bump_revision()
