@@ -5,12 +5,14 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 ## Audit snapshot
 
 - Repository: xxiamadelxx-blip/mac
-- Live main HEAD at audit start: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
+- Historical live main HEAD at audit start: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
+- Latest verified live main HEAD before this audit revision: b4b2c66a91b5df9c6e00871bd6ee015514a3a902
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
 - Architecture contract revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0
 - Balance model commit: 094a544d09635e855f84bf46ae53bf225d37cfe4
-- Data-driven simulator commit: 57ae67766ef7f5b5e25779ecd210d4127de4da8c
+- Data-driven simulator commit used for the 30-run evidence: 57ae67766ef7f5b5e25779ecd210d4127de4da8c
+- Current simulator HEAD commit (default model path fix): b4b2c66a91b5df9c6e00871bd6ee015514a3a902
 - Simulation status: SIMULATED_MODEL_ONLY
 - Runtime status: NOT_IMPLEMENTED
 
