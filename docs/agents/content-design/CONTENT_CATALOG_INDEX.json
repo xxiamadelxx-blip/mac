@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "17803bde8e38dbf07a72e4033beacf2de5e29281",
+  "source_head": "9a025c2186ba30280f1e68e122a554fa262bd0f8",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -73,7 +73,10 @@
     ],
     "mini_boss_ids": [
       "miniboss_ink_jade_warden",
-      "miniboss_veil_harvester"
+      "miniboss_veil_harvester",
+      "miniboss_lotus_ritekeeper",
+      "miniboss_bell_rhythm_ascetic",
+      "miniboss_moonroot_ferryman"
     ],
     "limits": {
       "weapon_slots": 6,
@@ -97,17 +100,27 @@
       450,
       600,
       750,
-      900
+      900,
+      1050,
+      1200,
+      1350,
+      1500,
+      1650
     ],
     "mini_boss_checkpoints_seconds": [
       450,
-      750
+      750,
+      1050,
+      1350,
+      1650
     ],
     "main_boss_checkpoints_seconds": [
       300,
       600,
       900,
-      1200
+      1200,
+      1500,
+      1800
     ],
     "final_boss_chest": "FORBIDDEN",
     "cross_system_target": {
@@ -130,31 +143,132 @@
       "main_boss_clock": "FREEZE_PER_RUNTIME_ACCEPTANCE_PENDING_DATA_CONTRACT_RECONCILIATION",
       "mini_boss_clock": "ADVANCES_PER_RUNTIME_ACCEPTANCE",
       "mini_boss_count": {
-        "c3_named_content": 2,
+        "c3_named_content": 5,
         "data_contract_records": 3,
         "runtime_acceptance_target": 5,
         "b1_registry_records": 0,
-        "status": "PRODUCT_DECISION_REQUIRED"
+        "status": "CANONICAL_CONTENT_TARGET_5_REGISTRY_SYNC_PENDING",
+        "content_ids": [
+          "miniboss_ink_jade_warden",
+          "miniboss_veil_harvester",
+          "miniboss_lotus_ritekeeper",
+          "miniboss_bell_rhythm_ascetic",
+          "miniboss_moonroot_ferryman"
+        ],
+        "approved_additional_ids": [
+          "miniboss_lotus_ritekeeper",
+          "miniboss_bell_rhythm_ascetic",
+          "miniboss_moonroot_ferryman"
+        ]
       },
       "legacy_content_snapshot": {
         "content_defined_main_boss_checkpoints_seconds": [
           300,
           600,
           900,
-          1200
+          1200,
+          1500,
+          1800
         ],
         "content_defined_mini_boss_checkpoints_seconds": [
           450,
-          750
+          750,
+          1050,
+          1350,
+          1650
         ],
         "content_defined_synergy_checkpoints_seconds": [
           300,
           450,
           600,
           750,
-          900
+          900,
+          1050,
+          1200,
+          1350,
+          1500,
+          1650
         ]
+      },
+      "content_proposal": {
+        "envelope_target_seconds": 1800,
+        "main_boss_non_final_checkpoints_seconds": [
+          300,
+          600,
+          900,
+          1200,
+          1500
+        ],
+        "main_boss_extension_ids": [
+          "boss_tideglass_regent",
+          "boss_omen_paper_archivist"
+        ],
+        "mini_boss_ids": [
+          "miniboss_ink_jade_warden",
+          "miniboss_veil_harvester",
+          "miniboss_lotus_ritekeeper",
+          "miniboss_bell_rhythm_ascetic",
+          "miniboss_moonroot_ferryman"
+        ],
+        "mini_boss_checkpoints_seconds": [
+          450,
+          750,
+          1050,
+          1350,
+          1650
+        ],
+        "content_status": "CONTENT_SPECIFIED",
+        "external_sync_status": "ARCHITECTURE_RUNTIME_REGISTRY_PENDING"
       }
+    },
+    "main_boss_extension_ids": [
+      "boss_tideglass_regent",
+      "boss_omen_paper_archivist"
+    ],
+    "main_boss_non_final_checkpoints_seconds": [
+      300,
+      600,
+      900,
+      1200,
+      1500
+    ],
+    "content_reward_window_proposal": {
+      "status": "CONTENT_PROPOSAL_FOR_RECONCILIATION",
+      "total_windows": 15,
+      "boss_chest_windows": {
+        "source_kind": "MAIN_BOSS_NON_FINAL_OR_INTERMEDIATE_BOSS",
+        "window_groups": {
+          "main_boss_non_final": [
+            "C01",
+            "C02",
+            "C03",
+            "C04",
+            "C05"
+          ],
+          "intermediate_boss": [
+            "C06",
+            "C07",
+            "C08",
+            "C09",
+            "C10"
+          ]
+        },
+        "synergy_capable": true,
+        "max_synergy_claims_per_run": 5
+      },
+      "elite_chest_windows": {
+        "source_kind": "ELITE_VARIANT",
+        "window_ids": [
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15"
+        ],
+        "outcome_policy": "ARTIFACT_OFFER_OR_UPGRADE_FALLBACK",
+        "synergy_capable": false
+      },
+      "final_boss_chest": "FORBIDDEN"
     }
   },
   "arena_drops": {
@@ -175,7 +289,14 @@
     "currency_target_proposal": "GOLD",
     "resource_semantics": "XP_CANONICAL_MANA_LABEL_PENDING_PRODUCT_DECISION",
     "registry_sync": "PENDING_ARCHITECTURE",
-    "additional_proposals": []
+    "additional_proposals": [],
+    "content_reward_window_groups": [
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15"
+    ]
   },
   "meta_passive_tree": {
     "branch_ids": [
@@ -251,7 +372,15 @@
     "arena_drop_registry",
     "arena_drop_events",
     "main_boss_clock_policy_reconciliation",
-    "balance_30_minute_extension"
+    "balance_30_minute_extension",
+    "miniboss_lotus_ritekeeper",
+    "miniboss_bell_rhythm_ascetic",
+    "miniboss_moonroot_ferryman",
+    "boss_tideglass_regent",
+    "boss_omen_paper_archivist",
+    "five_mini_boss_content_roster",
+    "c3_content_reward_window_map_c01_to_c15",
+    "artifact_semantic_effect_keys_01_to_10"
   ],
   "no_mockups_created": true,
   "future_content": {
@@ -263,21 +392,32 @@
     ],
     "boss_ids": [
       "miniboss_ink_jade_warden",
-      "miniboss_veil_harvester"
+      "miniboss_veil_harvester",
+      "miniboss_lotus_ritekeeper",
+      "miniboss_bell_rhythm_ascetic",
+      "miniboss_moonroot_ferryman"
     ],
     "status": "CONTENT_SPECIFIED",
     "registry_sync": "PENDING_ARCHITECTURE",
     "not_part_of_run_1_registry": true,
     "no_existing_first_run_replacement": true,
     "roster_reconciliation": {
-      "status": "PRODUCT_DECISION_REQUIRED",
-      "c3_named_mini_boss_count": 2,
+      "status": "CONTENT_TARGET_5_REGISTRY_SYNC_PENDING",
+      "c3_named_mini_boss_count": 5,
       "data_contract_intermediate_boss_count": 3,
       "runtime_acceptance_mini_boss_count": 5,
       "b1_registry_records": 0,
-      "approved_additional_ids": [],
+      "approved_additional_ids": [
+        "miniboss_lotus_ritekeeper",
+        "miniboss_bell_rhythm_ascetic",
+        "miniboss_moonroot_ferryman"
+      ],
       "do_not_create_speculative_ids": true
-    }
+    },
+    "main_boss_extension_ids": [
+      "boss_tideglass_regent",
+      "boss_omen_paper_archivist"
+    ]
   },
   "c5_cross_system_handoff": {
     "stage": "C5",
@@ -301,7 +441,9 @@
       "artifacts": 10,
       "arena_drops": 7,
       "meta_branches": 6,
-      "meta_stat_nodes": 17
+      "meta_stat_nodes": 17,
+      "mini_bosses": 5,
+      "main_boss_extensions": 2
     },
     "architecture_snapshot": {
       "artifact_registry_records": 8,
@@ -309,7 +451,9 @@
       "intermediate_boss_records": 3,
       "chest_window_records": 15,
       "typed_arena_drop_session_records": false,
-      "artifact_effect_definitions": 0
+      "artifact_effect_definitions": 0,
+      "content_mini_boss_records": 3,
+      "content_main_boss_extension_records": 0
     },
     "b1_runtime_registry_boundary": "20_MINUTE_FOUR_MAIN_ZERO_MINI_PER_R3_HANDOFF",
     "evidence_source_shas": {
@@ -342,7 +486,44 @@
       "runtime_implementation_changed": false,
       "balance_values_changed": false,
       "visual_policy_changed": false,
-      "approved": false
+      "approved": false,
+      "content_counts": {
+        "weapons": 10,
+        "passives": 10,
+        "synergies": 10,
+        "artifacts": 10,
+        "mini_bosses": 5,
+        "main_boss_extensions": 2,
+        "arena_drops": 7,
+        "meta_stat_nodes": 17
+      }
+    },
+    "content_proposal": {
+      "envelope_target_seconds": 1800,
+      "mini_boss_count": 5,
+      "main_boss_extension_ids": [
+        "boss_tideglass_regent",
+        "boss_omen_paper_archivist"
+      ],
+      "content_reward_windows": 15,
+      "status": "CONTENT_SPECIFIED_REGISTRY_SYNC_PENDING"
     }
+  },
+  "artifact_effect_catalog": {
+    "content_semantic_effect_definitions": 10,
+    "runtime_registry_definitions": 0,
+    "status": "CONTENT_SPECIFIED_RUNTIME_SYNC_PENDING",
+    "keys": [
+      "aura.drop_route_compass",
+      "trigger.critical_echo",
+      "trigger.elite_ember_path",
+      "modifier.control_bloom",
+      "trigger.guard_resonance",
+      "trigger.overheal_ward",
+      "target.boss_phase_window",
+      "modifier.elite_polarity",
+      "aura.drop_tide_path",
+      "target.threat_telegraph"
+    ]
   }
 }
