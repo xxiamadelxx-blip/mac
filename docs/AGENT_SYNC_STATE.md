@@ -2,8 +2,8 @@
 
 > **Operational router, not a release/approval claim.** Read this file from the current `main` before any work. Re-check `main` immediately before writing.
 
-- Snapshot HEAD: `601c6b57137e4e9807e3b8fbb419b106916fb06f`
-- Snapshot tree: `e23776525046744584a65c7f18e21e7dea768d6d`
+- Snapshot HEAD: `75bd31041eb65c30ef2c0358dcffef2c37ea0139`
+- Snapshot tree: `fbc57e525f36035f2c33f24ae4002738d45de470`
 - Snapshot date: 2026-09-10 UTC
 - Repository: `xxiamadelxx-blip/mac`, branch `main`
 
@@ -26,7 +26,7 @@ Before work: read this file; claim one task ID; record the parent SHA; edit only
 | Runtime registry | Targets 1800s, 6 main, 5 mini; current JSON shape does not expose consumable `mini_bosses` or `elite_variants` arrays | **R2/R3 BLOCKED** |
 | CI/Godot | No current R2/R3 or Android proof; recent evidence is incomplete/failing | **NO RELEASE EVIDENCE** |
 
-Tree entries at snapshot: 338.
+Tree entries at snapshot: 346.
 
 ## 2. Active locks for continuation
 
