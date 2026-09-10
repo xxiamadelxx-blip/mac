@@ -10,7 +10,7 @@ Runtime implemented: NO
 |---|---|---|---|---|---|
 | Boot и splash/loading | AGENT_TASK §2; GAME_MANIFEST | AppShell загружает registry/save и показывает error без blank screen | FIRST_RUN_FLOW §§3, 10; event catalog content_load_* | SPECIFIED | Runtime Iteration 1: AppShell/ContentLoader |
 | Главный экран | AGENT_TASK §2 | MAIN_MENU имеет навигацию и read model | FLOW step 3; STATE T-04/T-05 | SPECIFIED | Runtime Iteration 1 |
-| Settings и возврат | AGENT_TASK §2 | Settings доступен из menu и pause, invalid values не меняют valid state | FLOW step 4/23; STATE T-04 | SPECIFIED | Runtime Iteration 2 |
+| Settings и возврат | AGENT_TASK §2 | Settings доступен из menu и pause, invalid values не меняют valid state | FLOW step 4/23; STATE T-04/T-20 | SPECIFIED | Runtime Iteration 2 |
 | ПЕРСОНАЖИ | AGENT_CONTEXT; AGENT_TASK | Нейтральный label, карточки character и selected state | FLOW step 5/6; DATA content_registry.characters | SPECIFIED | Runtime Iteration 1 |
 | Создание RunSession | AGENT_TASK §2 | Confirm start создаёт новый run_id, seed, content version и revision | FLOW step 8; STATE T-07/T-08; DATA run_session | SPECIFIED | Runtime Iteration 1 |
 | Menu/run bridge | AGENT_TASK §3 | MenuFlow отправляет command, RunCoordinator создаёт session; UI не владеет state | ARCHITECTURE §§2–3 | SPECIFIED | Runtime Iteration 1 |
@@ -34,17 +34,17 @@ Runtime implemented: NO
 | HUD/read model | AGENT_TASK §4 | UI can show HP, attack, crit, speed, cooldown, build, artifacts, XP, time, stage, kills, rewards | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Pause | AGENT_TASK §4 | Manual pause freezes clock and preserves resume_state | STATE RUN_PAUSED/T-18/T-19; EVENT run_paused | SPECIFIED | Runtime Iteration 1 |
 | Settings from pause | AGENT_TASK | Settings returns to exact blocking/resume context | FLOW §7; STATE pause model | SPECIFIED | Runtime Iteration 2 |
-| Exit to menu | AGENT_TASK | Confirmation distinguishes cancel from abandon; no unearned rewards | FLOW §7; STATE T-21 | SPECIFIED | Runtime Iteration 2 |
+| Exit to menu | AGENT_TASK | Confirmation distinguishes cancel from abandon; no unearned rewards | FLOW §7; STATE T-22 | SPECIFIED | Runtime Iteration 2 |
 | Android background/resume | GAME_MANIFEST; AGENT_TASK | Background forces pause; restore validates snapshot/checksum/content | ARCHITECTURE §6; EVENT run_resumed | SPECIFIED | Runtime Iteration 3 |
 | Save boundary | GAME_MANIFEST; DECISIONS U-06/U-07 | Checkpoint/explicit pause/terminal snapshots are versioned and atomic; arbitrary frame not promised | DATA save_snapshot; ARCHITECTURE §6 | PENDING | Product/runtime owner confirms recovery policy |
 | Death | GAME_MANIFEST; B1 | HP zero yields one terminal defeat result and allowed partial rewards | FLOW §8; STATE T-16; EVENT run_defeated | SPECIFIED | Runtime Iteration 2 |
-| Victory | GAME_MANIFEST | Final victory requires final boss defeat, not timer alone | FLOW §8; STATE T-17 | SPECIFIED | Runtime Iteration 2 |
+| Victory | GAME_MANIFEST | Final victory requires final boss defeat, not timer alone | FLOW §8; STATE T-17/T-15; invariant 6 | SPECIFIED | Runtime Iteration 2 |
 | Result stats | AGENT_TASK | Result projection contains build, kills, XP, stats, checkpoints and reward status | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Reward bundles | B1 §§7–9 | RewardCalculator reads deterministic bundles and separate wallets | DATA reward_bundles; ARCHITECTURE §5 | SPECIFIED | Runtime Iteration 2 |
 | Checkpoint ledger | GAME_MANIFEST; B1 | 5/10/15/20 checkpoint reward settles once | STATE T-14; EVENT checkpoint_reward_* | SPECIFIED | Runtime Iteration 2 |
 | First clear/repeat/defeat | B1 §7 | Scopes are separate; defeat after checkpoint uses allowed partial path | FLOW §8; DATA reward ledger | SPECIFIED | Runtime Iteration 2 |
 | Ledger idempotency | AGENT_TASK; GAME_MANIFEST | Duplicate checkpoint/chest/result commands return existing outcome without wallet mutation | ARCHITECTURE §5; EVENT §2/§4 | SPECIFIED | Runtime Iteration 1 test then 2 |
-| Save restore idempotency | AGENT_TASK | Restore cannot replay settled ledger entries | STATE T-20; DATA reward_ledger_ref | SPECIFIED | Runtime Iteration 2 |
+| Save restore idempotency | AGENT_TASK | Restore cannot replay settled ledger entries | STATE T-19/T-21; DATA reward_ledger_ref | SPECIFIED | Runtime Iteration 2 |
 | Diagnostics/fallback | GAME_MANIFEST; AGENT_CONTEXT | Missing resources produce code/path/severity/recovery, never blank screen | ARCHITECTURE §7; EVENT content_load_failed | SPECIFIED | Runtime Iteration 1 |
 | Data-driven content | GAME_MANIFEST; AGENT_TASK | Registry owns content and version; UI does not encode invariants | ARCHITECTURE §4; DATA registry | SPECIFIED | Runtime Iteration 1/2 |
 | Controlled spawn/pooling | GAME_MANIFEST; B1 | Enemy/projectile/XP/aftermath pools enforce cap and do not drop XP silently | ARCHITECTURE Simulation; DATA entity shapes | SPECIFIED | Runtime Iteration 2/3 |
