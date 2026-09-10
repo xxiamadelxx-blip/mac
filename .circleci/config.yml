@@ -12,7 +12,7 @@ jobs:
             - godot-import-v1-{{ checksum "project.godot" }}
             - godot-import-v1-
       - run:
-          name: Validate Godot project
+          name: Validate Godot project and R1 runtime
           command: |
             set -euo pipefail
             test -f project.godot
@@ -20,7 +20,9 @@ jobs:
             test -f scenes/arena/arena.tscn
             test -f scripts/menu/menu_controller.gd
             test -f scripts/arena/arena_controller.gd
+            godot --headless --path . --script scripts/runtime/r1_runtime_test.gd
             godot --headless --path . --editor --quit
+            godot --headless --path . res://scenes/arena/arena.tscn --quit-after 1
       - save_cache:
           key: godot-import-v1-{{ checksum "project.godot" }}
           paths:
