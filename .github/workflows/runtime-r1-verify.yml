@@ -34,6 +34,15 @@ jobs:
           mkdir -p build/verification
           failed=0
 
+          # Bootstrap Godot's project and global-script cache before direct script execution.
+          godot --headless --path . --editor --quit \
+            2>&1 | tee build/verification/godot-import.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/godot-import.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+
           godot --headless --path . --script scripts/runtime/r1_runtime_test.gd \
             2>&1 | tee build/verification/r1-runtime-test.log
           status=${PIPESTATUS[0]}
@@ -41,16 +50,8 @@ jobs:
           if [ "${status}" -ne 0 ]; then
             failed=1
           fi
-          if ! grep -Fq 'R1_RUNTIME_TEST {"ok":true' build/verification/r1-runtime-test.log; then
+          if ! grep -Eq 'R1_RUNTIME_TEST \{.*"ok":true' build/verification/r1-runtime-test.log; then
             echo "Required R1_RUNTIME_TEST success marker was not found."
-            failed=1
-          fi
-
-          godot --headless --path . --editor --quit \
-            2>&1 | tee build/verification/godot-import.log
-          status=${PIPESTATUS[0]}
-          printf '%s\n' "${status}" > build/verification/godot-import.exit
-          if [ "${status}" -ne 0 ]; then
             failed=1
           fi
 
