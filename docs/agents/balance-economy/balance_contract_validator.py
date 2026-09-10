@@ -69,7 +69,7 @@ def main() -> int:
     simulation = model.get("simulation_model", {})
     integration = model.get("runtime_integration", {})
     join_policy = integration.get("join_policy", {})
-    clock_policy = simulation.get("final_boss_clock_policy", {})
+    clock_policy = simulation.get("boss_clock_policy", {})
 
     record_error(errors, model.get("status") == "PARTIAL", "model status must remain PARTIAL")
     record_error(
@@ -80,18 +80,23 @@ def main() -> int:
     record_error(
         errors,
         clock_policy.get("status") == "CANON",
-        "final boss clock policy must be explicit CANON product behavior",
+        "boss clock policy must be explicit CANON product behavior",
     )
     record_error(
         errors,
-        clock_policy.get("checkpoint_seconds") == 1200,
-        "final boss clock policy must bind to the 20-minute checkpoint",
+        clock_policy.get("applies_to") == "ALL_BOSS_CHECKPOINTS",
+        "boss clock policy must apply to all boss checkpoints",
     )
     record_error(
         errors,
-        clock_policy.get("run_clock_stops_at_final_checkpoint") is True
+        clock_policy.get("checkpoint_seconds") == [300, 600, 900, 1200],
+        "boss clock policy must bind to 5/10/15/20 minute checkpoints",
+    )
+    record_error(
+        errors,
+        clock_policy.get("run_clock_stops_at_boss_checkpoint") is True
         and clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is False,
-        "final boss clock policy must freeze the run/wave/XP/spawn clock",
+        "boss clock policy must freeze the run/wave/XP/spawn clock",
     )
     record_error(
         errors,
