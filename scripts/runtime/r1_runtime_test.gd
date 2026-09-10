@@ -16,7 +16,7 @@ func _init() -> void:
 
 
 func _run_acceptance_fixture() -> void:
-    var coordinator: RunCoordinator = RunCoordinatorType.new()
+    var coordinator = RunCoordinatorType.new()
     var boot_result: Dictionary = coordinator.boot()
     _check(bool(boot_result.get("ok", false)), "Content Registry boots BALANCE_MODEL.json")
     _check(not coordinator.registry.content_version.is_empty(), "Registry derives a content version")
@@ -64,7 +64,7 @@ func _run_acceptance_fixture() -> void:
     _check(coordinator.session.state == RunSessionType.STATE_UPGRADE_OFFER, "XP pickup opens a blocking level-up offer")
     var offer: Dictionary = coordinator.session.pending_offer.duplicate(true)
     _check(offer.get("choice_ids", []).size() == coordinator.registry.get_upgrade_choice_count(), "Upgrade offer uses Registry-defined choice count")
-    var frozen_run_seconds := coordinator.clock.run_seconds
+    var frozen_run_seconds: float = float(coordinator.clock.run_seconds)
     coordinator.advance(coordinator.registry.get_contact_damage_cooldown())
     _check(is_equal_approx(coordinator.clock.run_seconds, frozen_run_seconds), "Level-up offer freezes the run clock")
 
@@ -86,7 +86,7 @@ func _run_acceptance_fixture() -> void:
 
     var pause_result: Dictionary = coordinator.pause("R1_TEST")
     _check(bool(pause_result.get("ok", false)), "Pause creates a coherent snapshot")
-    var paused_seconds := coordinator.clock.run_seconds
+    var paused_seconds: float = float(coordinator.clock.run_seconds)
     coordinator.advance(coordinator.registry.get_contact_damage_cooldown())
     _check(is_equal_approx(coordinator.clock.run_seconds, paused_seconds), "Paused run clock does not advance")
     var resume_result: Dictionary = coordinator.resume_from_snapshot(pause_result.get("snapshot", {}))
@@ -114,7 +114,7 @@ func _run_acceptance_fixture() -> void:
 
 
 func _run_deterministic_trace(seed: int) -> String:
-    var coordinator: RunCoordinator = RunCoordinatorType.new()
+    var coordinator = RunCoordinatorType.new()
     coordinator.boot()
     coordinator.start_run("hero_lin_yue", seed, "determinism-start")
     coordinator.spawn_wave_fixture()
