@@ -4,7 +4,7 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 
 Source baseline: docs/BALANCE_ECONOMY_SPEC.md, revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 Current model: BALANCE_MODEL.json, simulation_model version 0.2.
-Live main HEAD observed before the model update: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
+Live main HEAD verified before this documentation refresh: 0536f182c1ae8876b9213e0c2fb761793e503a66.
 
 ## Canonical wave bands
 
