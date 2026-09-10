@@ -404,7 +404,8 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         focused_start = entity.get("first_damage_time")
         focused_ttk = elapsed - focused_start if focused_start is not None else spawn_ttk
         enemy_id = entity["enemy_id"]
-        kind = "elite" if enemy_id.startswith("elite_") else "ordinary"
+        role = str(archetypes[enemy_id].get("role", ""))
+        kind = "elite" if "elite" in role else "ordinary"
         kills.append({
             "enemy_id": enemy_id,
             "kind": kind,
