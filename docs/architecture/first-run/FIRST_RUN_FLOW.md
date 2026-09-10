@@ -1,7 +1,7 @@
 # FIRST_RUN_FLOW — логический пользовательский маршрут первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION  
-Runtime implemented: NO  
+Статус: DRAFT ARCHITECTURE SPECIFICATION
+Runtime implemented: NO
 Android acceptance: NOT_PERFORMED
 
 Документ описывает наблюдаемое поведение от включения игры до возврата в меню. Он не утверждает, что описанные состояния уже реализованы в Godot.
