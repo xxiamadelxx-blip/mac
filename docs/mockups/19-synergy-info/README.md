@@ -42,6 +42,7 @@ Naming: STAGE##_AREA_TYPE_v##.
 - Counter gate: claimed_synergy_count < 5. Ten non-final boss chest windows create opportunities, not guaranteed claims.
 - If no pair is eligible, or the cap is reached, the chest must resolve to documented fallback without consuming a synergy claim.
 - Final boss at 1800 s / 30:00 has no boss chest and cannot claim an evolution.
+- Evolved damage, cadence, lane/field duration, target rules, power budget, priority when several pairs are eligible and fallback presentation are PENDING_BALANCE/PENDING_ARCHITECTURE/PENDING_PRODUCT.
 
 ### Required info states
 
