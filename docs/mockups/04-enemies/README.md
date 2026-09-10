@@ -1,116 +1,141 @@
-# Stage 04 — Enemies
+# Этап 04 — Противники
 
-Status: **IN PROGRESS**.
+Состояние этапа: IN PROGRESS (в работе).
 
-Primary route: `MOCKUP`  
-Secondary route: `SPRITE`  
-Stage path: `docs/mockups/04-enemies/`  
-Family ID: `family.enemy.moonveil-soft-tonal.v01`
+Основной маршрут: MOCKUP  
+Дополнительный маршрут: SPRITE  
+Папка этапа: docs/mockups/04-enemies/  
+ID визуального семейства: family.enemy.moonveil-soft-tonal.v01
 
 ## Цель
 
-Создать единый читаемый roster из десяти противников для массового top-down survivors-like боя. Враг должен распознаваться по силуэту, движению и телеграфу на true 1x камере 390×844, а не только по цвету или подписи.
+Создать единый читаемый набор из десяти противников для массового боя сверху в жанре выживания. Враг должен распознаваться по силуэту, движению и сигналу атаки на настоящем масштабе 1× в области 390×844, а не только по цвету или подписи.
 
-## Канонический roster
+## Канонический набор противников
 
-| enemy_id | Имя | Роль | B1 durability | XP | Первая полоса |
+| enemy_id | Имя | Роль | Живучесть B1 | XP | Первая полоса появления |
 |---|---|---|---:|---:|---|
-| `ink_beetle` | Чернильный жук | прямой быстрый rusher | ×1.0 | 1–5 | 0–2 мин |
-| `lantern_moth` | Фонарь-мотылёк | ranged, медленные снаряды | ×1.2 | 5 | 2–5 мин |
-| `bone_carp` | Костяной карп | line-lock dash | ×1.4 | 5–15 | 2–5 мин |
-| `paper_ghost` | Бумажный призрак | telegraphed teleport | ×1.3 | 5–15 | 5–10 мин |
-| `jade_toad` | Нефритовая жаба | leap + poison landing zone | ×1.6 | 15 | 5–10 мин |
-| `mirror_fox` | Зеркальный лисёнок | decoy / direction confusion | ×1.5 | 15 | 5–10 мин |
-| `bell_crab` | Колокольный краб | frontal guard / rear weakness | ×2.4 | 15–40 | 10–15 мин |
-| `thread_doll` | Нитяная кукла | slow beam / distance control | ×1.8 | 15–40 | 10–15 мин |
-| `stone_oni` | Каменный они | slow elite / ground slam | ×7.0 | 40–80 | 10–15 мин |
-| `eclipse_serpent` | Змей затмения | fast elite / dark trail + arcs | ×8.0 | 80 | 15–20 мин |
+| ink_beetle | Чернильный жук | быстрый прямой натиск | ×1.0 | 1–5 | 0–2 мин |
+| lantern_moth | Фонарь-мотылёк | дальняя атака, медленные снаряды | ×1.2 | 5 | 2–5 мин |
+| bone_carp | Костяной карп | рывок с фиксацией линии | ×1.4 | 5–15 | 2–5 мин |
+| paper_ghost | Бумажный призрак | телепорт с предупреждением | ×1.3 | 5–15 | 5–10 мин |
+| jade_toad | Нефритовая жаба | прыжок и ядовитая зона приземления | ×1.6 | 15 | 5–10 мин |
+| mirror_fox | Зеркальный лисёнок | приманка и путаница направления | ×1.5 | 15 | 5–10 мин |
+| bell_crab | Колокольный краб | фронтальная защита, слабость сзади | ×2.4 | 15–40 | 10–15 мин |
+| thread_doll | Нитяная кукла | луч замедления, контроль дистанции | ×1.8 | 15–40 | 10–15 мин |
+| stone_oni | Каменный они | медленная элита, удар по земле | ×7.0 | 40–80 | 10–15 мин |
+| eclipse_serpent | Змей затмения | быстрая элита, тёмный след и дуги | ×8.0 | 80 | 15–20 мин |
 
-Источник чисел и поведения: `docs/BALANCE_ECONOMY_SPEC.md`. Абсолютные base HP/damage/speed по enemy_id в текущем B1 не заданы, поэтому они остаются `PENDING_B1` и не выдумываются в visual package.
+Источник чисел и поведения: docs/BALANCE_ECONOMY_SPEC.md. Абсолютные здоровье, урон и скорость по enemy_id в текущем B1 не заданы, поэтому они остаются PENDING_B1 и не выдумываются в визуальном наборе.
 
-## Visual family v01
+## Состав встреч первого забега
 
-Общее направление наследует актуальную soft-tonal family проекта:
+Набор противников должен быть согласован с расширенным ритмом встреч:
 
-- тёмный сине-серый/чернильный body mass;
-- дымчатый teal и muted jade для сверхъестественных деталей;
-- warm ivory для бумаги, кости и слабых зон;
-- muted brass для колоколов/фурнитуры;
-- приглушённый crimson только для опасных телеграфов и eclipse corruption;
-- никаких кислотных cyan/green/red заливок;
-- silhouette-first: форма тела и способ движения различаются сильнее, чем hue;
-- combat sprite проще портретного арта и не превращается в крупного персонажа, забивающего поле.
+| Состав | Количество | Контрольные точки | Правило |
+|---|---:|---|---|
+| Главные боссы, MAIN_BOSS | 6 | 300, 600, 900, 1200, 1500, 1800 с | первые пять нефинальных встреч могут создать BOSS_CHEST; финальный босс на 1800 с сундук не создаёт |
+| Мини-боссы, MINI_BOSS | 5 | 450, 750, 1050, 1350, 1650 с | часы забега, волны, опыт и обычное появление продолжаются; каждая встреча имеет отдельный BOSS_CHEST |
 
-## Scale classes
+Защищённые существующие записи главных боссов не заменяются. Две новые контентные записи имеют статус PROPOSAL:
 
-- `S`: ink_beetle, lantern_moth.
-- `M`: bone_carp, paper_ghost, jade_toad, mirror_fox, thread_doll.
-- `L`: bell_crab.
-- `XL_ELITE`: stone_oni, eclipse_serpent.
+- 1200 с — boss_tideglass_regent, Регент Чёрного Прилива;
+- 1500 с — boss_omen_paper_archivist, Архивариус Лунных Знаков.
 
-Scale class — относительная визуальная категория, не абсолютный pixel size. Точный runtime footprint фиксируется после representative true 1x review и не должен лгать о collision.
+Пять мини-боссов:
 
-## Telegraph language
+- 450 с — miniboss_ink_jade_warden, Чернильный Нефритовый Страж;
+- 750 с — miniboss_veil_harvester, Жнец Завесы;
+- 1050 с — miniboss_lotus_ritekeeper, Хранительница Лотосового Обряда;
+- 1350 с — miniboss_bell_rhythm_ascetic, Колокольный аскет;
+- 1650 с — miniboss_moonroot_ferryman, Луннокорневой перевозчик.
 
-- rusher: короткий body lean / ink wake, без большой warning zone;
-- ranged moth: warm-ivory lantern pulse перед projectile;
-- carp dash: тонкая line-lock полоса до рывка;
-- ghost teleport: flicker + paper fragments в точке исчезновения/появления;
-- toad leap: landing circle появляется до приземления;
-- mirror fox: копия визуально слабее по value/opacity, но силуэт тот же;
-- crab: frontal shell plate читается как блок, rear seam как weakness;
-- thread doll: тонкий beam-telegraph до slow connection;
-- stone oni: большой ground circle до slam;
-- eclipse serpent: dark trail не маскирует damaging arcs; дуги имеют отдельный warning edge.
+Главный босс замораживает видимые часы забега, часы волн, опыт и обычное появление от вступления до завершения встречи. Мини-босс этого не делает. Точная реализация границы принадлежит архитектуре и выполнению в игре.
 
-## Фактическое evidence текущей итерации
+## Визуальная семья версии 01
 
-Созданы и лежат в stage-папке:
+Общее направление наследует актуальную мягкую тональную палитру проекта:
 
-- `STAGE04_ENEMIES_MANIFEST_v01.json` — stable enemy_id, роли, фазы, B1 durability/XP, silhouette keys и telegraph contracts для всех 10 врагов;
-- `STAGE04_ENEMIES_VISUAL_CONTRACT_v01.md` — единая soft-tonal family, scale/readability и representative-master gate;
-- `STAGE04_ENEMY_ROSTER_SILHOUETTES_v01.svg` — silhouette calibration board полного roster;
-- `STAGE04_ENEMY_INK_BEETLE_MASTER_v01.svg` — enlarged representative master Чернильного жука;
-- `STAGE04_ENEMY_INK_BEETLE_GAMEPLAY_REVIEW_v01.svg` — true 1× 390×844 gameplay review;
-- `STAGE04_ENEMIES_PROVENANCE_v01.json` — provenance и раздельные technical/artistic statuses.
+- тёмная сине-серая или чернильная масса тела;
+- дымчатая бирюза и приглушённый нефрит для сверхъестественных деталей;
+- тёплый светлый цвет для бумаги, кости и слабых зон;
+- приглушённая латунь для колоколов и фурнитуры;
+- приглушённый багровый только для опасных сигналов и искажений затмения;
+- форма тела и способ движения различаются сильнее, чем оттенок;
+- боевой спрайт проще портретного рисунка и не превращается в крупную фигуру, закрывающую поле.
 
-## Representative master gate
+Кислотные заливки cyan, green и red запрещены как визуальная замена формы; эти слова являются только техническими цветовыми маркерами старой палитры и не должны попадать в пользовательский текст.
 
-Первый representative master: `ink_beetle` / Чернильный жук.
+## Классы масштаба
 
-Asset ID: `enemy.ink_beetle.master`  
-Candidate ID: `vl-20260909-enemy-ink-beetle-master-v01`  
-Asset kind: `enemy master mockup / sprite direction`  
-Status: `CANDIDATE`  
-Technical status: `REFERENCE_PASS_PENDING_RUNTIME`  
-Artistic status: `PENDING`  
-Runtime: `NOT_PROMOTED`
+- S: ink_beetle, lantern_moth.
+- M: bone_carp, paper_ghost, jade_toad, mirror_fox, thread_doll.
+- L: bell_crab.
+- XL_ELITE: stone_oni, eclipse_serpent.
 
-Representative master и true 1× evidence уже созданы. До artistic review production batch остальных девяти врагов не получает статус `APPROVED GOLDEN`/`PRODUCTION`.
+Класс масштаба — относительная визуальная категория, а не абсолютный размер в точках. Точный занимаемый объём в игре фиксируется после проверки настоящего масштаба 1× и не должен искажать столкновение.
 
-## Deliverables этапа
+## Язык сигналов атаки
 
-- [x] source/canon audit;
-- [x] enemy family contract;
-- [x] roster manifest с десятью stable enemy_id;
-- [x] silhouette/readability board;
-- [x] representative master + enlarged inspection + true 1x arena context;
-- [ ] девять derived enemy candidates;
-- [ ] telegraph board полного roster;
-- [x] provenance для текущих candidates;
-- [ ] B1 reconciliation для абсолютных HP/damage/speed;
-- [ ] финальный stage handoff и closure evidence.
+- Чернильный жук: короткий наклон корпуса и чернильный след, без большой зоны предупреждения.
+- Фонарь-мотылёк: тёплый светлый импульс фонаря перед снарядом.
+- Костяной карп: тонкая полоса фиксации линии перед рывком.
+- Бумажный призрак: мерцание и бумажные фрагменты в точке исчезновения и появления.
+- Нефритовая жаба: круг приземления появляется до прыжка вниз.
+- Зеркальный лисёнок: копия слабее по яркости и прозрачности, но сохраняет тот же силуэт.
+- Колокольный краб: передняя пластина панциря читается как блок, задний шов — как слабое место.
+- Нитяная кукла: тонкий сигнал луча появляется до соединения замедления.
+- Каменный они: большой круг на земле появляется до удара.
+- Змей затмения: тёмный след не маскирует опасные дуги; у дуг есть отдельный край предупреждения.
 
-## Handoff
+## Фактические подтверждающие материалы текущей итерации
 
-- `route`: MOCKUP + secondary SPRITE
-- `stage_path`: docs/mockups/04-enemies/
-- `asset_kind`: enemy family / enemy master / sprite mockup
-- `family_id`: family.enemy.moonveil-soft-tonal.v01
-- `candidate_id`: vl-20260909-enemy-ink-beetle-master-v01
-- `status`: CANDIDATE
-- `technical_status`: REFERENCE_PASS_PENDING_RUNTIME
-- `artistic_status`: PENDING
-- `manifest/consumer`: STAGE04_ENEMIES_MANIFEST_v01.json; runtime not promoted
-- `open_decisions`: artistic review representative master; exact runtime footprint; B1 absolute base HP/damage/speed
-- `next_action`: generate nine derived enemy candidates under the locked family contract, then assemble the complete telegraph/readability board
+Созданы и лежат в папке этапа:
+
+- STAGE04_ENEMIES_MANIFEST_v01.json — стабильные enemy_id, роли, фазы, живучесть B1, XP, ключи силуэтов и договоры сигналов для всех 10 врагов;
+- STAGE04_ENEMIES_VISUAL_CONTRACT_v01.md — единая мягкая тональная семья, масштаб, читаемость и условие показа;
+- STAGE04_ENEMY_ROSTER_SILHOUETTES_v01.svg — доска проверки силуэтов всего набора;
+- STAGE04_ENEMY_INK_BEETLE_MASTER_v01.svg — увеличенный показательный мастер Чернильного жука;
+- STAGE04_ENEMY_INK_BEETLE_GAMEPLAY_REVIEW_v01.svg — проверка настоящего масштаба 1× в области 390×844;
+- STAGE04_ENEMIES_PROVENANCE_v01.json — происхождение и раздельные техническое и художественное состояния текущих вариантов.
+
+## Условие показательного мастера
+
+Первый показательный мастер: ink_beetle / Чернильный жук.
+
+ID ресурса: enemy.ink_beetle.master  
+ID варианта: vl-20260909-enemy-ink-beetle-master-v01  
+Вид ресурса: показательный мастер противника / направление боевого спрайта  
+Состояние: CANDIDATE  
+Техническое состояние: REFERENCE_PASS_PENDING_RUNTIME  
+Художественное состояние: PENDING  
+Выполнение в игре: NOT_PROMOTED
+
+Показательный мастер и подтверждение настоящего масштаба 1× уже созданы. До художественной проверки остальные девять врагов не получают состояние APPROVED GOLDEN или PRODUCTION.
+
+## Результаты этапа
+
+- [x] проверка источников и канона;
+- [x] договор визуальной семьи противников;
+- [x] манифест набора из десяти стабильных enemy_id;
+- [x] доска силуэтов и читаемости;
+- [x] показательный мастер, увеличенная проверка и контекст арены в масштабе 1×;
+- [ ] девять производных вариантов противников;
+- [ ] доска сигналов атаки всего набора;
+- [x] происхождение текущих вариантов;
+- [ ] согласование B1 для абсолютных здоровья, урона и скорости;
+- [ ] итоговая передача этапа и подтверждение закрытия.
+
+## Передача
+
+- маршрут: MOCKUP + дополнительный SPRITE;
+- папка этапа: docs/mockups/04-enemies/;
+- вид ресурса: семейство противников / показательный мастер / мокап спрайта;
+- family_id: family.enemy.moonveil-soft-tonal.v01;
+- candidate_id: vl-20260909-enemy-ink-beetle-master-v01;
+- состояние: CANDIDATE;
+- техническое состояние: REFERENCE_PASS_PENDING_RUNTIME;
+- художественное состояние: PENDING;
+- привязка и потребитель: STAGE04_ENEMIES_MANIFEST_v01.json; в игру не передано;
+- открытые решения: художественная проверка показательного мастера, точный занимаемый объём, абсолютные базовые здоровье/урон/скорость B1;
+- следующее действие: создать девять производных вариантов в утверждённой визуальной семье, затем собрать полную доску сигналов атаки и читаемости.
