@@ -214,6 +214,92 @@ func get_contact_damage_cooldown() -> float:
     return float(record.get("value", -1.0))
 
 
+func get_main_bosses() -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    var records: Variant = data.get("boss_checkpoints", [])
+    if records is Array:
+        for record in records:
+            if record is Dictionary:
+                result.append(record.duplicate(true))
+    return result
+
+
+func get_mini_bosses() -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    var sources: Array = [data.get("mini_bosses", [])]
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    sources.append(simulation_model.get("mini_bosses", []))
+    for source in sources:
+        if not (source is Array):
+            continue
+        for record in source:
+            if record is Dictionary:
+                result.append(record.duplicate(true))
+    return result
+
+
+func get_checkpoint_reward(checkpoint_id: String) -> Dictionary:
+    var rewards: Dictionary = data.get("rewards", {})
+    var records: Variant = rewards.get("checkpoint_rewards", [])
+    if records is Array:
+        for record in records:
+            if record is Dictionary and str(record.get("checkpoint_id", "")) == checkpoint_id:
+                return record.duplicate(true)
+    return {}
+
+
+func is_final_checkpoint(checkpoint_id: String) -> bool:
+    var records := get_main_bosses()
+    if records.is_empty():
+        return false
+    return str(records.back().get("checkpoint_id", "")) == checkpoint_id
+
+
+func get_boss_wave_ramp() -> Dictionary:
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    var ramp: Variant = simulation_model.get("boss_wave_ramp", {})
+    return ramp.duplicate(true) if ramp is Dictionary else {}
+
+
+func get_artifact_offer_model() -> Dictionary:
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    var build_catalog: Dictionary = simulation_model.get("build_catalog", {})
+    var offer_model: Dictionary = build_catalog.get("offer_model", {})
+    var artifact_offer: Variant = offer_model.get("artifact_offer", {})
+    if artifact_offer is Dictionary and not artifact_offer.is_empty():
+        return artifact_offer.duplicate(true)
+    var artifact_model: Variant = simulation_model.get("artifact_offer_model", {})
+    if artifact_model is Dictionary:
+        return artifact_model.duplicate(true)
+    return {}
+
+
+func get_artifact_effect_types() -> Array:
+    var model := get_artifact_offer_model()
+    var effect_types: Variant = model.get("effect_types", [])
+    return effect_types.duplicate(true) if effect_types is Array else []
+
+
+func get_run_duration_seconds() -> float:
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    var record: Variant = simulation_model.get("main_run_duration_seconds", {})
+    return float(_record_value(record, 0.0))
+
+
+func get_elite_variants() -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    var sources: Array = [data.get("elite_variants", [])]
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    sources.append(simulation_model.get("elite_variants", []))
+    for source in sources:
+        if not (source is Array):
+            continue
+        for record in source:
+            if record is Dictionary:
+                result.append(record.duplicate(true))
+    return result
+
+
 func get_model_field(path: Array[String], fallback: Variant = null) -> Variant:
     var current: Variant = data
     for segment in path:

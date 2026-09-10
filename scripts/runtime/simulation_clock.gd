@@ -10,6 +10,7 @@ class_name SimulationClock
 const MODE_STOPPED := "STOPPED"
 const MODE_RUN_ACTIVE := "RUN_ACTIVE"
 const MODE_ENCOUNTER_ACTIVE := "ENCOUNTER_ACTIVE"
+const MODE_MINI_BOSS_ACTIVE := "MINI_BOSS_ACTIVE"
 const MODE_PAUSED := "PAUSED"
 const MODE_FROZEN := "FROZEN"
 
@@ -26,8 +27,15 @@ func start_run() -> void:
 
 
 func start_encounter() -> void:
+    encounter_seconds = 0.0
     mode = MODE_ENCOUNTER_ACTIVE
     paused_from_mode = MODE_ENCOUNTER_ACTIVE
+
+
+func start_mini_boss() -> void:
+    encounter_seconds = 0.0
+    mode = MODE_MINI_BOSS_ACTIVE
+    paused_from_mode = MODE_MINI_BOSS_ACTIVE
 
 
 func freeze() -> void:
@@ -58,6 +66,9 @@ func advance(delta_seconds: float) -> Dictionary:
         MODE_RUN_ACTIVE:
             run_seconds += delta_seconds
         MODE_ENCOUNTER_ACTIVE:
+            encounter_seconds += delta_seconds
+        MODE_MINI_BOSS_ACTIVE:
+            run_seconds += delta_seconds
             encounter_seconds += delta_seconds
         MODE_PAUSED, MODE_FROZEN, MODE_STOPPED:
             pass
@@ -105,7 +116,7 @@ func clear_diagnostics() -> void:
 
 
 func _is_known_mode(value: String) -> bool:
-    return value in [MODE_STOPPED, MODE_RUN_ACTIVE, MODE_ENCOUNTER_ACTIVE, MODE_PAUSED, MODE_FROZEN]
+    return value in [MODE_STOPPED, MODE_RUN_ACTIVE, MODE_ENCOUNTER_ACTIVE, MODE_MINI_BOSS_ACTIVE, MODE_PAUSED, MODE_FROZEN]
 
 
 func _add_diagnostic(code: String, message: String, details: Dictionary = {}) -> void:

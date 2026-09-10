@@ -13,6 +13,15 @@ const STATE_UPGRADE_OFFER := "UPGRADE_OFFER"
 const STATE_RUN_PAUSED := "RUN_PAUSED"
 const STATE_RECOVERY_REVIEW := "RECOVERY_REVIEW"
 const STATE_CONTENT_ERROR := "CONTENT_ERROR"
+const STATE_MAIN_BOSS_INTRO := "MAIN_BOSS_INTRO"
+const STATE_MAIN_BOSS_ACTIVE := "MAIN_BOSS_ACTIVE"
+const STATE_MINI_BOSS_INTRO := "MINI_BOSS_INTRO"
+const STATE_MINI_BOSS_ACTIVE := "MINI_BOSS_ACTIVE"
+const STATE_CHECKPOINT_SETTLEMENT := "CHECKPOINT_SETTLEMENT"
+const STATE_BOSS_CHEST := "BOSS_CHEST"
+const STATE_ARTIFACT_OFFER := "ARTIFACT_OFFER"
+const STATE_RUN_VICTORY := "RUN_VICTORY"
+const STATE_RUN_DEFEAT := "RUN_DEFEAT"
 
 var schema_version := 1
 var run_id := ""
@@ -31,7 +40,15 @@ var stats: Dictionary = {}
 var xp_drops: Dictionary = {}
 var aftermath_items: Dictionary = {}
 var pending_offer: Dictionary = {}
+var pending_chest_offer: Dictionary = {}
+var pending_artifact_offer: Dictionary = {}
 var completed_offer_outcomes: Dictionary = {}
+var completed_chest_outcomes: Dictionary = {}
+var completed_artifact_outcomes: Dictionary = {}
+var artifact_refresh_outcomes: Dictionary = {}
+var active_boss_encounter: Dictionary = {}
+var reward_ledger_entries: Dictionary = {}
+var artifact_sequence := 0
 var active_enemy: Dictionary = {}
 var diagnostics: Array[Dictionary] = []
 
@@ -136,7 +153,15 @@ func to_snapshot(clock_snapshot: Dictionary) -> Dictionary:
         "xp_drops": xp_drops.duplicate(true),
         "aftermath_items": aftermath_items.duplicate(true),
         "pending_offer": pending_offer.duplicate(true),
+        "pending_chest_offer": pending_chest_offer.duplicate(true),
+        "pending_artifact_offer": pending_artifact_offer.duplicate(true),
         "completed_offer_outcomes": completed_offer_outcomes.duplicate(true),
+        "completed_chest_outcomes": completed_chest_outcomes.duplicate(true),
+        "completed_artifact_outcomes": completed_artifact_outcomes.duplicate(true),
+        "artifact_refresh_outcomes": artifact_refresh_outcomes.duplicate(true),
+        "active_boss_encounter": active_boss_encounter.duplicate(true),
+        "reward_ledger_entries": reward_ledger_entries.duplicate(true),
+        "artifact_sequence": artifact_sequence,
         "active_enemy": active_enemy.duplicate(true),
         "drop_sequence": drop_sequence,
         "offer_sequence": offer_sequence,
@@ -174,7 +199,15 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
     xp_drops = snapshot.get("xp_drops", {}).duplicate(true)
     aftermath_items = snapshot.get("aftermath_items", {}).duplicate(true)
     pending_offer = snapshot.get("pending_offer", {}).duplicate(true)
+    pending_chest_offer = snapshot.get("pending_chest_offer", {}).duplicate(true)
+    pending_artifact_offer = snapshot.get("pending_artifact_offer", {}).duplicate(true)
     completed_offer_outcomes = snapshot.get("completed_offer_outcomes", {}).duplicate(true)
+    completed_chest_outcomes = snapshot.get("completed_chest_outcomes", {}).duplicate(true)
+    completed_artifact_outcomes = snapshot.get("completed_artifact_outcomes", {}).duplicate(true)
+    artifact_refresh_outcomes = snapshot.get("artifact_refresh_outcomes", {}).duplicate(true)
+    active_boss_encounter = snapshot.get("active_boss_encounter", {}).duplicate(true)
+    reward_ledger_entries = snapshot.get("reward_ledger_entries", {}).duplicate(true)
+    artifact_sequence = int(snapshot.get("artifact_sequence", artifact_sequence))
     active_enemy = snapshot.get("active_enemy", {}).duplicate(true)
     drop_sequence = int(snapshot.get("drop_sequence", drop_sequence))
     offer_sequence = int(snapshot.get("offer_sequence", offer_sequence))
