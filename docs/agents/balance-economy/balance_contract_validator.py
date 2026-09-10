@@ -70,6 +70,7 @@ def main() -> int:
     integration = model.get("runtime_integration", {})
     join_policy = integration.get("join_policy", {})
     clock_policy = simulation.get("boss_clock_policy", {})
+    wave_ramp = simulation.get("boss_wave_ramp", {})
 
     record_error(errors, model.get("status") == "PARTIAL", "model status must remain PARTIAL")
     record_error(
@@ -97,6 +98,13 @@ def main() -> int:
         clock_policy.get("run_clock_stops_at_boss_checkpoint") is True
         and clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is False,
         "boss clock policy must freeze the run/wave/XP/spawn clock",
+    )
+    record_error(
+        errors,
+        wave_ramp.get("status") == "PROPOSED"
+        and wave_ramp.get("applies_to") == "POST_BOSS_CYCLES_BEFORE_EVERY_NEXT_BOSS"
+        and wave_ramp.get("ramp_curve", {}).get("value") == "LINEAR",
+        "post-boss wave ramp must be explicit PROPOSED linear recovery/ramp/siege behavior",
     )
     record_error(
         errors,
@@ -193,6 +201,47 @@ def main() -> int:
         record_error(errors, wave.get("wave_band_id") == expected_id, f"wave range {key} has wrong stable ID")
     record_error(errors, model_wave_ids == set(wave_by_range.values()), "model wave IDs do not cover architecture wave IDs")
     record_error(errors, declared_wave_ids == set(wave_by_range.values()), "handoff wave mapping is incomplete")
+
+    ramp_cycles = wave_ramp.get("cycle_band_mapping", [])
+    checkpoint_ids = [str(row.get("checkpoint_id")) for row in model.get("boss_checkpoints", [])]
+    checkpoint_times = {
+        str(row.get("checkpoint_id")): int(row.get("time_seconds"))
+        for row in model.get("boss_checkpoints", [])
+    }
+    record_error(
+        errors,
+        len(ramp_cycles) == max(0, len(checkpoint_ids) - 1),
+        "post-boss wave ramp must cover every non-final boss interval",
+    )
+    for index, cycle in enumerate(ramp_cycles):
+        from_id = str(cycle.get("from_checkpoint_id"))
+        to_id = str(cycle.get("to_checkpoint_id"))
+        entry_id = str(cycle.get("entry_band_id"))
+        peak_id = str(cycle.get("peak_band_id"))
+        record_error(errors, index + 1 < len(checkpoint_ids) and from_id == checkpoint_ids[index], f"wave ramp cycle {index} has wrong source checkpoint")
+        record_error(errors, index + 2 <= len(checkpoint_ids) and to_id == checkpoint_ids[index + 1], f"wave ramp cycle {index} has wrong target checkpoint")
+        record_error(errors, from_id in checkpoint_times and to_id in checkpoint_times and checkpoint_times[to_id] > checkpoint_times[from_id], f"wave ramp cycle {index} has invalid checkpoint order")
+        record_error(errors, entry_id in model_wave_ids, f"wave ramp cycle {index} uses unknown entry wave ID")
+        record_error(errors, peak_id in model_wave_ids, f"wave ramp cycle {index} uses unknown peak wave ID")
+    suppression = simulation.get("boss_interruption", {}).get("suppression_seconds", 0)
+    recovery = simulation.get("boss_interruption", {}).get("recovery_duration_seconds", 0)
+    siege = wave_ramp.get("siege_duration_seconds", 0)
+    try:
+        suppression_value = float(suppression.get("value", suppression))
+        recovery_value = float(recovery.get("value", recovery))
+        siege_value = float(siege.get("value", siege))
+        reset_value = float(wave_ramp.get("post_boss_reset_factor", {}).get("value", 0))
+    except (TypeError, ValueError):
+        suppression_value = recovery_value = siege_value = -1
+        reset_value = 0
+    record_error(errors, siege_value > 0, "wave ramp siege duration must be positive")
+    record_error(errors, 0 < reset_value < 1, "wave ramp reset factor must be between zero and one")
+    for from_id, to_id in zip(checkpoint_ids[:-1], checkpoint_ids[1:]):
+        record_error(
+            errors,
+            checkpoint_times[to_id] - checkpoint_times[from_id] > suppression_value + recovery_value + siege_value,
+            f"wave ramp leaves no positive linear-ramp window between {from_id} and {to_id}",
+        )
 
     record_error(
         errors,
