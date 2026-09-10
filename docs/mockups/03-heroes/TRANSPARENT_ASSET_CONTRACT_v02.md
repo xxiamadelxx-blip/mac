@@ -1,3 +1,6 @@
+<!-- LIVE-AGENT-SYNC: this is a target/reference document, not binary or runtime proof -->
+> **Status correction:** read [`docs/AGENT_SYNC_STATE.md`](../../AGENT_SYNC_STATE.md). This file does not prove that runtime PNGs, Godot import, artistic approval, or Android evidence exist.
+
 # Stage 03 transparent asset contract v02
 
 Статус: **CANDIDATE**. Этот пакет добавляет runtime-ориентированные прозрачные PNG для двух героинь. Исторические v01 boards остаются в `layers/` как visual references.

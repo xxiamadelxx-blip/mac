@@ -1,3 +1,6 @@
+<!-- LIVE-AGENT-SYNC: this is a target/reference document, not binary or runtime proof -->
+> **Status correction:** read [`docs/AGENT_SYNC_STATE.md`](../../AGENT_SYNC_STATE.md). This file does not prove that runtime PNGs, Godot import, artistic approval, or Android evidence exist.
+
 # Этап 03 — героини
 
 Статус: **CANDIDATE** — добавлен прозрачный runtime-oriented пакет v02 поверх исторических Visual Lab boards v02.

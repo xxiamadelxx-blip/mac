@@ -1,3 +1,6 @@
+<!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
+> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](docs/AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
+
 # Moonveil: Eclipse
 
 Оригинальная мобильная 2D-игра в жанре survivors-like / bullet heaven: героиня выживает среди орд врагов, автоматически применяет оружие, собирает опыт и строит синергии из оружия, пассивных навыков и артефактов.

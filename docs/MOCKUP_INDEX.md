@@ -1,3 +1,6 @@
+<!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
+> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](docs/AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
+
 # MOCKUP INDEX — Moonveil: Eclipse
 
 Этот файл является индексом визуальных и производственных артефактов. Каждая папка получает реальные файлы по мере закрытия соответствующего этапа ROADMAP.md.
