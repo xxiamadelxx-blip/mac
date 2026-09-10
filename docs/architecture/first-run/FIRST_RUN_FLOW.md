@@ -1,6 +1,6 @@
 # FIRST_RUN_FLOW — логический пользовательский маршрут первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION
+Статус: VERIFIED ARCHITECTURE SPECIFICATION
 Runtime implemented: NO
 Android acceptance: NOT_PERFORMED
 
@@ -51,8 +51,8 @@ Android acceptance: NOT_PERFORMED
 | 13. Upgrade offer | Level-up command | Simulation can freeze; content offer pool valid | UPGRADE_OFFER, ProgressionSystem | Ровно три offer projection, current/new values и slot state | Невалидная карта отклоняется; offer сохраняется до выбора/отмены по policy |
 | 14. Upgrade chosen | Пользователь выбирает карточку | Offer open, choice belongs to offer | RUN_ACTIVE или UPGRADE_OFFER | Изменившийся build и stats | Повторный выбор того же offer → duplicate/no-op; stale offer требует открыть новый valid projection |
 | 15. Weapon/passive slot | Chosen offer adds content | Slot available or upgrade target exists | RUN_ACTIVE, BuildInventory | Weapon/passive level и доступные слоты | Полный слот исключает illegal new-item offer; если pool исчерпан, fallback outcome помечен в offer contract |
-| 16. Boss checkpoint | Clock достигает B1 checkpoint | Нужная boss record и wave band loaded | BOSS_INTRO → BOSS_ACTIVE, BossDirector | Босс, health bar, telegraph и временно сниженный обычный spawn | Босс не может появиться внутри персонажа; invalid spawn → deterministic safe spawn retry и diagnostic |
-| 17. Boss combat | Boss pattern event | Boss active | BOSS_ACTIVE, Combat/BossDirector | Wind-up, telegraph, reaction window, damage | Повторный boss spawn с тем же checkpoint_id ignored; отсутствие telegraph — contract failure |
+| 16. Boss checkpoint | Clock достигает B1 checkpoint | Нужная boss record и wave band loaded; boss state не останавливает elapsed time | BOSS_INTRO → BOSS_ACTIVE, BossDirector | Босс, health bar, telegraph и временно сниженный обычный spawn | Босс не может появиться внутри персонажа; invalid spawn → deterministic safe spawn retry и diagnostic |
+| 17. Boss combat | Boss pattern event | Boss active; elapsed time continues for every boss | BOSS_ACTIVE, Combat/BossDirector | Wind-up, telegraph, reaction window, damage | Повторный boss spawn с тем же checkpoint_id ignored; отсутствие telegraph — contract failure |
 | 18. Boss defeated | Authoritative defeat | Boss active и HP <= zero | CHECKPOINT_SETTLEMENT, RunCoordinator | Death beat; settlement промежуточного или финального босса | Повторный defeat event не повторяет rewards; повреждённое result → recoverable checkpoint state |
 | 19. Checkpoint reward | Settlement command | checkpoint_id not settled | CHECKPOINT_SETTLEMENT, RewardLedger | Gold, Lunar Seals, Boss Essence и ledger status | Для финального босса это последняя награда перед victory; idempotency key не допускает повтор |
 | 20. Boss chest (non-final checkpoints) | Reward settlement completed | Нефинальный boss checkpoint разрешает boss chest | CHEST_OFFER, BossChestSystem | Сундук босса, synergy/evolution eligibility и fallback explanation | Финальный босс boss chest не создаёт; закрытие без claim не теряет pending offer |
@@ -65,7 +65,7 @@ Android acceptance: NOT_PERFORMED
 | 27. Exit attempt | User chooses menu from pause | Confirmation required for active run | Exit confirmation overlay | Ясно указано: abandon или recoverable save policy | Cancel returns to pause; confirm follows abandon policy and не выдаёт незаработанные rewards |
 | 28. Death | HP reaches zero | Run active; death not already settled | RUN_DEFEAT → RESULT_REVIEW | Причина смерти, stats, partial rewards | Repeated death event ignored; partial rewards считаются один раз |
 | 29. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; финальный босс не создаёт сундук |
-| 30. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_FINALIZED / REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards | Повторное открытие read-only; claim использует ledger idempotency |
+| 30. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_REVIEW → REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards; result_finalized.v1 marks the immutable result boundary | Повторное открытие read-only; claim использует ledger idempotency |
 | 31. Return to menu | Result claim or explicit menu action | Result settlement committed or abandon confirmed | MAIN_MENU, MenuFlow | Updated wallets/unlocks and start options | Неудача save → result остаётся recoverable; возврат не теряет committed ledger |
 | 32. New run | User starts another run | Previous result committed/abandoned | New RUN_LOADING | New run_id и fresh session | Старый RunSession не переиспользуется |
 
@@ -82,7 +82,7 @@ RunSession создаётся только на шаге 8 после подтв
 - XP drops, aftermath items и их pooling/aggregation status;
 - reward ledger reference и diagnostics.
 
-Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он останавливается на UPGRADE_OFFER, CHEST_OFFER, ARTIFACT_OFFER и RUN_PAUSED. Exact pause/background save policy описана как working assumption и вынесена в pending decisions.
+Game clock движется в RUN_ACTIVE, BOSS_INTRO и BOSS_ACTIVE для каждого босса. Он останавливается только на UPGRADE_OFFER, CHEST_OFFER, ARTIFACT_OFFER, RUN_PAUSED и CHECKPOINT_SETTLEMENT; после terminal/transaction states остаётся frozen. BOSS_INTRO не останавливает elapsed time. Exact pause/background save policy описана как working assumption и вынесена в pending decisions.
 
 Временные полосы, spawn budget, active cap, boss interruption и восстановление после boss берутся только из B1. Архитектура не дублирует их как второй источник чисел.
 

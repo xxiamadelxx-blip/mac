@@ -1,6 +1,6 @@
 # FIRST_RUN_ARCHITECTURE — логические границы и data flow
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION
+Статус: VERIFIED ARCHITECTURE SPECIFICATION
 Runtime implemented: NO
 Цель: контракт для следующего runtime-агента, а не список классов и не доказательство APK.
 
@@ -10,7 +10,7 @@ Runtime implemented: NO
 
 Защищённый scope этого задания:
 
-- основной scope — docs/architecture/first-run/; явно синхронизируются только документы, затронутые утверждённым artifact-offer product decision;
+- эта финализация изменяет только docs/architecture/first-run/; корневые, балансные, runtime и visual paths для этой задачи read-only;
 - scripts, scenes, project.godot, B1, visual assets и runtime manifests не изменяются;
 - точные числа берутся из [BALANCE_ECONOMY_SPEC.md](../../../docs/BALANCE_ECONOMY_SPEC.md);
 - текущие menu/arena scripts — evidence прототипа, не готовый runtime.
@@ -103,10 +103,10 @@ RunSession does not reference Godot UI nodes, textures, scene paths or network s
 
 #### SimulationClock
 
-- consumes delta only while RUN_ACTIVE or BOSS_ACTIVE;
+- consumes delta while RUN_ACTIVE, BOSS_INTRO and BOSS_ACTIVE for every boss;
 - derives elapsed_seconds;
 - emits boundary candidate, never settles reward itself;
-- freezes on pause, upgrade offer, boss-chest offer, artifact offer and terminal states;
+- freezes only on upgrade offer, boss-chest offer, artifact offer, pause, settlement and terminal/transaction states;
 - uses a monotonic run clock, not wall-clock time, for gameplay.
 
 #### WaveDirector

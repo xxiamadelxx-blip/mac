@@ -1,7 +1,7 @@
 {
   "schema": "moonveil.first_run.architecture_contract",
   "version": 1,
-  "status": "DRAFT",
+  "status": "VERIFIED_ARCHITECTURE",
   "runtime_implemented": false,
   "source_refs": [
     "../../../GAME_MANIFEST.md",
@@ -96,8 +96,27 @@
       }
     ],
     "checkpoint_outcome_policy": {
-      "non_final_boss": "CHECKPOINT_REWARD_THEN_CHEST_THEN_NEXT_STAGE",
-      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST"
+      "non_final_boss": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
+      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST"
+    },
+    "clock_policy": {
+      "advances_in": [
+        "RUN_ACTIVE",
+        "BOSS_INTRO",
+        "BOSS_ACTIVE"
+      ],
+      "freezes_in": [
+        "UPGRADE_OFFER",
+        "CHEST_OFFER",
+        "ARTIFACT_OFFER",
+        "RUN_PAUSED",
+        "CHECKPOINT_SETTLEMENT",
+        "RUN_DEFEAT",
+        "RUN_VICTORY",
+        "RESULT_REVIEW",
+        "REWARD_COMMITTING"
+      ],
+      "boss_rule": "Elapsed time continues through BOSS_INTRO and BOSS_ACTIVE for every boss; final boss does not pause the run clock."
     },
     "artifact_offer_choice_count": 3,
     "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
@@ -636,7 +655,7 @@
       "active": true
     }
   },
-  "chest_offer": {
+  "boss_chest_offer": {
     "chest_offer_id": null,
     "run_id": null,
     "boss_encounter_id": null,
@@ -757,13 +776,13 @@
     "RunSession is the source of truth for an active run.",
     "Content Registry is immutable and versioned during a run.",
     "XP drops and aftermath items are separate entity types.",
-    "Clock does not advance in paused, blocking or terminal states.",
+    "Clock advances in RUN_ACTIVE, BOSS_INTRO and BOSS_ACTIVE for every boss; it freezes in offer, pause, settlement and terminal/transaction states.",
     "Final victory requires authoritative final boss defeat.",
     "Rewards are committed atomically with the corresponding wallet/unlock revision.",
     "Unknown numeric values remain pending until confirmed by B1.",
     "Unknown product rules remain pending until confirmed by the product owner.",
     "Missing resource errors produce diagnostics, never a blank screen.",
-    "Final boss settlement creates no chest_offer and transitions to victory after ledger commit.",
+    "Final boss settlement creates no boss_chest_offer and transitions to victory after ledger commit.",
     "Non-final boss-chest, artifact-offer and result effects are idempotent.",
     "A boss chest is only a non-final checkpoint synergy/evolution/fallback offer; the final boss never creates one.",
     "Every artifact offer contains exactly three candidates and one chosen candidate becomes one active run effect.",
@@ -781,7 +800,7 @@
     {
       "id": "U-04",
       "status": "PENDING_PRODUCT_DECISION",
-      "field": "chest_offer.fallback_policy",
+      "field": "boss_chest_offer.fallback_policy",
       "owner": "product owner"
     },
     {

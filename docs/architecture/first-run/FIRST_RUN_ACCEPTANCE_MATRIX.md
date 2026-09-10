@@ -1,6 +1,6 @@
 # FIRST_RUN_ACCEPTANCE_MATRIX — traceability первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION
+Статус: VERIFIED ARCHITECTURE SPECIFICATION
 Runtime implemented: NO
 Правило: VERIFIED_BY_DOC_CHECK означает проверку архитектурного артефакта/ссылки, а не работу Godot runtime или Android APK.
 
@@ -10,7 +10,7 @@ Runtime implemented: NO
 |---|---|---|---|---|---|
 | Boot и splash/loading | AGENT_TASK §2; GAME_MANIFEST | AppShell загружает registry/save и показывает error без blank screen | FIRST_RUN_FLOW §§3, 10; event catalog content_load_* | SPECIFIED | Runtime Iteration 1: AppShell/ContentLoader |
 | Главный экран | AGENT_TASK §2 | MAIN_MENU имеет навигацию и read model | FLOW step 3; STATE T-04/T-05 | SPECIFIED | Runtime Iteration 1 |
-| Settings и возврат | AGENT_TASK §2 | Settings доступен из menu и pause, invalid values не меняют valid state | FLOW step 4/23; STATE T-04/T-20 | SPECIFIED | Runtime Iteration 2 |
+| Settings и возврат | AGENT_TASK §2 | Settings доступен из menu и pause, invalid values не меняют valid state | FLOW steps 4, 7, 25–27; STATE T-04/T-18/T-20 | SPECIFIED | Runtime Iteration 2 |
 | ПЕРСОНАЖИ | AGENT_CONTEXT; AGENT_TASK | Нейтральный label, карточки character и selected state | FLOW step 5/6; DATA content_registry.characters | SPECIFIED | Runtime Iteration 1 |
 | Создание RunSession | AGENT_TASK §2 | Confirm start создаёт новый run_id, seed, content version и revision | FLOW step 8; STATE T-07/T-08; DATA run_session | SPECIFIED | Runtime Iteration 1 |
 | Menu/run bridge | AGENT_TASK §3 | MenuFlow отправляет command, RunCoordinator создаёт session; UI не владеет state | ARCHITECTURE §§2–3 | SPECIFIED | Runtime Iteration 1 |
@@ -29,12 +29,12 @@ Runtime implemented: NO
 | Slot limits | GAME_MANIFEST; AGENT_TASK | Six weapon and six passive slots; artifacts have no fixed slot capacity and do not consume either build slot type | DATA canonical/build; ARCHITECTURE BuildInventory | SPECIFIED | Runtime Iteration 2 |
 | Artifact offer choice | GAME_MANIFEST; product decision | An elite-pack or first-clear source opens an offer with exactly three cards; `Get` selects one effect | DATA artifact_offer; EVENT artifact_offer_created/artifact_chosen | SPECIFIED | Runtime Iteration 2 |
 | Artifact refresh | Product decision | `Refresh` is a separate idempotent command; cost, limit and reroll policy remain explicit pending fields | DATA artifact_offer.refresh_policy; EVENT artifact_offer_refresh_* | PENDING | Product owner |
-| Artifact effect boundary | GAME_MANIFEST; AGENT_TASK | Active artifact effects are typed run modifiers (aura, derived stat, target, weapon or triggered effect), separate from ordinary passive modifiers | DATA content_registry.artifact_effects; ARCHITECTURE ArtifactEffectSystem | SPECIFIED / PENDING_DEFINITIONS | Product + runtime |
-| Artifact sources | Product decision; B1 first-clear reward | Elite packs may create offers between bosses; first-clear creates a separate post-result offer; boss chest remains synergy/fallback only | FLOW; STATE; EVENT elite_pack_defeated/artifact_offer_created | SPECIFIED / PENDING_CADENCE | Product + balance |
+| Artifact effect boundary | GAME_MANIFEST; AGENT_TASK | Active artifact effects are typed run modifiers (aura, derived stat, target, weapon or triggered effect), separate from ordinary passive modifiers | DATA content_registry.artifact_effects; ARCHITECTURE ArtifactEffectSystem | PENDING | Product owner defines typed effects; runtime validates contract |
+| Artifact sources | Product decision; B1 first-clear reward | Elite packs may create offers between bosses; first-clear creates a separate post-result offer; boss chest remains synergy/fallback only | FLOW; STATE; EVENT elite_pack_defeated/artifact_offer_created | PENDING | Product owner + balance owner define cadence and pool before runtime Iteration 2 |
 | Synergy eligibility | GAME_MANIFEST; AGENT_TASK | Matching pair, max weapon/passive, non-evolved, non-final boss-chest context and claim guard are checked | DATA synergy_evaluator; FLOW §5 | SPECIFIED | Runtime Iteration 2 |
 | Synergy/evolution duplicate guard | AGENT_TASK | Repeated claim returns existing outcome; no second evolution | STATE T-15; EVENT synergy_claimed | SPECIFIED | Runtime Iteration 2 |
-| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Only non-final boss settlement creates a stable boss-chest offer; eligible synergy/evolution or fallback can be claimed once; final boss chest отсутствует | FLOW §6; STATE T-14/T-15; EVENT chest_* | SPECIFIED | Runtime Iteration 2 |
-| Chest fallback path | AGENT_TASK; DECISIONS U-04 | Для нефинального chest fallback_required is representable but exact value is not fabricated; final boss has no fallback chest | DATA chest_offer.fallback_policy | PENDING | Product owner confirms U-04 |
+| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Only non-final boss settlement creates a stable boss-chest offer; eligible synergy/evolution or fallback can be claimed once; final boss chest отсутствует | FLOW §6; STATE T-14/T-15; EVENT boss_chest_* | SPECIFIED | Runtime Iteration 2 |
+| Chest fallback path | AGENT_TASK; DECISIONS U-04 | Для нефинального chest fallback_required is representable but exact value is not fabricated; final boss has no fallback chest | DATA boss_chest_offer.fallback_policy | PENDING | Product owner confirms U-04 |
 | HUD/read model | AGENT_TASK §4 | UI can show HP, attack, crit, speed, cooldown, build, active artifact effects, pending three-card offer, XP, time, stage, kills, rewards | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Pause | AGENT_TASK §4 | Manual pause freezes clock and preserves resume_state | STATE RUN_PAUSED/T-18/T-19; EVENT run_paused | SPECIFIED | Runtime Iteration 1 |
 | Settings from pause | AGENT_TASK | Settings returns to exact blocking/resume context | FLOW §7; STATE pause model | SPECIFIED | Runtime Iteration 2 |
@@ -57,7 +57,13 @@ Runtime implemented: NO
 | Current prototype distinction | REPO_CONTEXT; live code | Menu/arena prototypes are adapters/evidence, not target runtime | ARCHITECTURE §3 and FLOW §10 | VERIFIED_BY_DOC_CHECK | Runtime migration review |
 | JSON schema validity | DELIVERABLES; AGENT_TASK | Contract parses without comments/trailing comma | json validator after commit | VERIFIED_BY_DOC_CHECK | Architecture verification |
 | Internal path validity | README; AGENT_TASK | Links point to existing repository paths or same-folder deliverables | repository path audit after commit | VERIFIED_BY_DOC_CHECK | Architecture verification |
-| Scope boundary | README; AGENT_TASK; explicit product decision | Only the architecture package plus explicitly synchronized canonical/balance documents changed; no runtime/scenes/assets | changed-path inspection | VERIFIED_BY_DOC_CHECK | Architecture verification |
+| Scope boundary | README; AGENT_TASK; explicit product decision | This finalization commit changes only docs/architecture/first-run; pre-existing external commits are reported but not modified | changed-path inspection against parent HEAD | VERIFIED_BY_DOC_CHECK | Architecture verification |
+| No pre-run artifact loadout | GAME_MANIFEST; AGENT_TASK | Run setup rejects artifact selection before run; artifact capacity is unbounded only after a source offer | FLOW step 7; STATE T-07; DATA canonical/artifact_offer | SPECIFIED | Runtime Iteration 1/2 |
+| Boss telegraph/reaction | AGENT_TASK; GAME_MANIFEST; B1 | Boss shows telegraph and reaction window before damage and spawns safely outside the player model | FLOW steps 16/17; STATE T-12; EVENT boss_spawned.v1 | SPECIFIED | Runtime Iteration 2 |
+| Run clock during every boss | Explicit current task decision; AGENT_TASK; B1 boundary | Elapsed time continues in BOSS_INTRO/BOSS_ACTIVE for all bosses and freezes only at offer, pause or settlement boundaries | FLOW clock; STATE BOSS_INTRO/BOSS_ACTIVE; DATA clock_policy | SPECIFIED | Runtime Iteration 2 |
+| Ownership and dependency direction | AGENT_TASK §3 | Coordinator orchestrates, domain owners mutate, UI/projections remain read-only | ARCHITECTURE §§2–3; STATE ownership | VERIFIED_BY_DOC_CHECK | Architecture verification |
+| Unfinished run continuation/new run | AGENT_TASK | Cancel returns to pause; abandon gives no unearned rewards; later start creates a new run_id and follows recovery policy | FLOW steps 26–32; STATE T-19/T-22/T-26 | SPECIFIED | Runtime Iteration 2 |
+| Transition/event/data traceability | AGENT_TASK §§2–3 | Every transition has trigger, guard, owner, side effects, failure/recovery and duplicate policy; event names map to state/data contracts | STATE table; EVENT catalog; DATA envelope | VERIFIED_BY_DOC_CHECK | Architecture verification |
 
 ## 2. Status interpretation
 

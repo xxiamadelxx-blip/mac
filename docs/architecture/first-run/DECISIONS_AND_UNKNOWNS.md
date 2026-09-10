@@ -17,6 +17,7 @@
 | C-07 | Артефакты не выбираются и не экипируются до старта забега; фиксированных artifact slots нет | Product decision; Magic Survival reference |
 | C-08 | Каждый artifact source показывает три карты; игрок выбирает одну, и эффект активен до конца текущего забега | Product decision |
 | C-09 | Boss chest — отдельная нефинальная награда для synergy/evolution/fallback; elite pack и first-clear reward могут открывать отдельные artifact offers; final boss не создаёт boss chest | Product decision; B1 reward boundary |
+| C-10 | Game clock продолжает идти через BOSS_INTRO и BOSS_ACTIVE для каждого босса; останавливается только на offer/pause/settlement и terminal/transaction boundaries | Explicit current task decision |
 
 ## Вопросы, которые агент обязан проверить
 
@@ -48,12 +49,12 @@
 Дата проверки: 2026-09-10
 Repository: xxiamadelxx-blip/mac
 Branch: main
-HEAD at inspection: b8b4ad022af80217652c1f38a3d341d47af18e2b
+HEAD at inspection: 54b5932605691be0aad3ccdd490710e727a641c8
 
 - Прямой локальный checkout в текущем окружении отсутствует, поэтому git status/branch/дословный локальный diff не выполнялись.
 - Atlas Scout capability в текущем окружении не опубликована; использован разрешённый fallback: GitHub tree, точечное чтение живых файлов и repository search.
 - Фактически проверены project.godot, menu/arena scenes and controllers, B1, живой stage manifest и архитектурные инструкции.
-- docs/architecture/first-run/ — основная рабочая зона; runtime и visual package не изменяются. Синхронизация корневых/балансовых документов допускается только для утверждённого product decision об artifact offers.
+- В рамках этой финализации изменяется только docs/architecture/first-run/; корневые, балансные, runtime и visual paths остаются read-only. Более ранние внешние коммиты не откатываются и не переписываются.
 - AGENT_CONTEXT/ROADMAP/MOCKUP_INDEX имеют drift по status этапа 4; для архитектуры это не блокер, поскольку current task не меняет visual stage и не повышает его статус.
 
 ## Архитектурные решения текущего задания
@@ -67,9 +68,10 @@ HEAD at inspection: b8b4ad022af80217652c1f38a3d341d47af18e2b
 | A-05 | RESOLVED_BY_AGENT | Reward Ledger commit атомарен с wallet/unlock revision | Повторные checkpoint/chest/result events не удваивают валюту |
 | A-06 | WORKING_ASSUMPTION | Safe save points: checkpoint, explicit pause, terminal/reward boundary | Снижает data-loss risk без обещания произвольного mid-frame resume; требует product confirmation |
 | A-07 | WORKING_ASSUMPTION | Stage — logical wave/checkpoint projection внутри одной карты, не обязательная отдельная scene | Позволяет закрыть M1 одним runtime path; отдельная scene остаётся будущим seam |
-| A-08 | WORKING_ASSUMPTION | Final victory только после defeat финального босса и final settlement; без финального сундука | GAME_MANIFEST описывает boss на 20-й минуте; timer alone не должен выдавать победу |
+| A-08 | CONFIRMED | Final victory только после defeat финального босса и final settlement; без финального сундука | Это явно закреплённое текущее product decision; timer alone не выдаёт победу |
 | A-09 | RESOLVED_BY_AGENT | Duplicate effects защищаются idempotency key + state revision + owned entity ID | Одинаково покрывает ledger, chest, offer, XP pickup и terminal result |
 | A-10 | RESOLVED_BY_AGENT | Events are transport/diagnostic contract, not second source of truth | Offline M1 получает replay protection без full event-sourcing complexity |
+| A-11 | CONFIRMED | Game clock advances through BOSS_INTRO and BOSS_ACTIVE for every boss and freezes at offers, pause, settlement and terminal/transaction boundaries | Runtime uses one clock contract for all bosses |
 
 ## Уточнённые открытые вопросы
 

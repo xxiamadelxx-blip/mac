@@ -1,6 +1,6 @@
 # FIRST_RUN_STATE_MACHINE — состояния и переходы первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION
+Статус: VERIFIED ARCHITECTURE SPECIFICATION
 Runtime implemented: NO
 Источник истины переходов: RunSession + RunCoordinator; UI не владеет переходами.
 
@@ -35,7 +35,7 @@ Runtime implemented: NO
 | RUN_LOADING | run lifecycle | Confirm start | Arena and session ready | Not started |
 | RUN_ACTIVE | simulation | Session ready/resume | Level-up, boss checkpoint, pause, death | Running |
 | UPGRADE_OFFER | blocking run state | Level-up | Offer chosen/cancel policy | Frozen |
-| BOSS_INTRO | blocking run state | Boss checkpoint reached | Intro complete | Frozen |
+| BOSS_INTRO | boss presentation state | Boss checkpoint reached | Intro complete | Running |
 | BOSS_ACTIVE | simulation | Boss intro complete | Boss defeated/death/pause | Running |
 | CHECKPOINT_SETTLEMENT | transaction state | Boss defeated | Ledger committed; final branch or non-final chest selected | Frozen |
 | CHEST_OFFER | blocking run state | Non-final boss-chest settlement committed | Boss-chest synergy/evolution/fallback claimed/closed by policy; no victory transition | Frozen |
@@ -97,42 +97,42 @@ Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second
 
 ## 4. Transition contract
 
-Каждый transition выполняется через RunCoordinator, который вызывает доменный owner. Таблица использует stable transition IDs.
+Каждый transition выполняется через RunCoordinator, который вызывает доменный owner. Таблица использует stable transition IDs и отдельно фиксирует trigger, guard, owner, side effects, failure path, recovery path и duplicate/idempotency behavior.
 
-| ID | From → To | Trigger | Guard | Owner/side effects | Failure/recovery |
-|---|---|---|---|---|---|
-| T-01 | APP_BOOT → CONTENT_LOADING | boot_ready | AppShell initialized | ContentLoader starts versioned load | Diagnostic boot error; retry has new load attempt |
-| T-02 | CONTENT_LOADING → MAIN_MENU | content_loaded | Required records valid; save migrated or absent | Build menu read model | Invalid optional record is quarantined; required failure → T-03 |
-| T-03 | CONTENT_LOADING → CONTENT_ERROR | content_load_failed | Required content/schema missing | DiagnosticReporter records code/path/version | Retry or return; no RunSession |
-| T-04 | MAIN_MENU ↔ SETTINGS | open/back settings | Menu context valid | SettingsFlow reads/writes validated settings | Invalid value rejected; previous valid value remains |
-| T-05 | MAIN_MENU → CHARACTER_SELECT | open characters | Registry has selectable records | Character read model | Missing card shown as non-selectable diagnostic |
-| T-06 | CHARACTER_SELECT → RUN_SETUP | select_character | character_id exists and unlocked | RunSetupModel stores selection | Unknown/stale ID is no-op with error |
-| T-07 | RUN_SETUP → RUN_LOADING | confirm_start | Character, no pre-run artifact selection, and content version valid | RunCoordinator creates run_id/seed and provisional RunSession | Any artifact_ids/pre-run loadout is rejected; validation failure returns to setup |
-| T-08 | RUN_LOADING → RUN_ACTIVE | arena_ready | Session schema and required gameplay content validated | Clock starts; first wave band derived | Resource failure → recoverable run error; no false reward |
-| T-09 | RUN_ACTIVE → UPGRADE_OFFER | level_up | Offer generator can produce valid projection | Freeze clock; persist pending offer if policy requires | Invalid pool → deterministic fallback or diagnostic, never illegal card |
-| T-10 | UPGRADE_OFFER → RUN_ACTIVE | offer_chosen | offer_id belongs to open offer and not claimed | Apply BuildInventory/Stats mutation; clear offer | Duplicate/stale choice is rejected/no-op |
-| T-11 | RUN_ACTIVE → BOSS_INTRO | checkpoint_reached | checkpoint_id matches next unhandled B1 boundary | Freeze normal spawn, create boss encounter | Duplicate boundary ignored |
-| T-12 | BOSS_INTRO → BOSS_ACTIVE | intro_complete | Boss record and safe spawn available | Start boss pattern/telegraph contract | Safe spawn retry; failure → paused diagnostic |
-| T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Non-final encounter active; final boss uses T-17 | Freeze; create checkpoint settlement command | Duplicate defeat ignored by encounter id |
-| T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Non-final checkpoint; ledger commit succeeded | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable |
-| T-14F | CHECKPOINT_SETTLEMENT → RUN_VICTORY | final_settlement_committed | Final checkpoint; ledger commit succeeded; no boss chest pending | Mark terminal victory and build result projection; first-clear artifact offer is opened only after result finalization | Persistence failure keeps settlement retryable |
-| T-15 | CHEST_OFFER → RUN_ACTIVE | boss_chest_claimed | Non-final boss-chest offer valid; evaluator outcome not already claimed | Apply synergy/evolution/fallback; mark boss chest claimed; advance stage | Duplicate claim returns existing outcome |
-| T-15E | RUN_ACTIVE → ARTIFACT_OFFER | elite_pack_defeated | Elite-pack source is authoritative and offer policy allows it | ArtifactOfferSystem creates exactly three candidate cards and freezes clock | Duplicate elite encounter does not create a second offer |
-| T-15R | ARTIFACT_OFFER → ARTIFACT_OFFER | artifact_offer_refresh_requested | Refresh policy allows it; expected revision/idempotency key valid | Reroll three cards and increment refresh count; no artifact instance yet | Duplicate refresh returns the stored offer without a second charge/reroll |
-| T-15A | ARTIFACT_OFFER → RUN_ACTIVE | artifact_chosen | Selected ID belongs to the three-card offer; choice not claimed | ArtifactEffectSystem creates one active run effect/instance; close offer | Duplicate choice returns the same artifact instance |
-| T-15F | RESULT_REVIEW → ARTIFACT_OFFER | first_clear_artifact_offer_requested | Result finalized and first-clear reward is eligible | Create separate post-result three-card artifact offer; no boss chest is involved | Repeat clear does not create first-clear offer |
-| T-15FR | ARTIFACT_OFFER → RESULT_REVIEW | artifact_chosen after first-clear result | Offer source is FIRST_CLEAR_REWARD; selected ID belongs to offer | Commit one first-clear artifact effect/instance and close offer | Duplicate choice returns same instance |
-| T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | Death not settled | Freeze and create defeat result | Duplicate death ignored |
-| T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | Create final settlement command; do not create chest offer; victory waits for T-14F | Invalid final result returns to checkpoint recovery |
-| T-18 | RUN_ACTIVE/BOSS_ACTIVE → RUN_PAUSED | pause_requested/background | Current state resumable | Freeze clock; write allowed snapshot | Snapshot failure leaves in-memory paused state with diagnostic |
-| T-19 | RUN_PAUSED → RUN_ACTIVE/BOSS_ACTIVE | resume_requested | Snapshot/content/checksum valid | Restore resume_state and continue clock | Invalid snapshot → RECOVERY_REVIEW |
-| T-20 | RUN_PAUSED → SETTINGS | settings_requested | Pause context is valid | Open settings while preserving paused_from_state | Settings failure returns to pause with diagnostic |
-| T-21 | RUN_PAUSED → RECOVERY_REVIEW | restore_needed | Background kill or invalid live state | Show last coherent revision and choices | No valid revision → abandon without rewards |
-| T-22 | RUN_PAUSED/RECOVERY_REVIEW → MAIN_MENU_RETURN | exit_confirmed/abandon_confirmed | User confirms abandon or recovery policy | Mark session abandoned; do not settle unearned rewards | Cancel returns to originating state |
-| T-23 | RUN_DEFEAT/RUN_VICTORY → RESULT_REVIEW | result_opened | Terminal result exists | Build immutable result projection | Missing result → retry from snapshot |
-| T-24 | RESULT_REVIEW → REWARD_COMMITTING | claim_result | Result not committed or ledger has pending entries | Start one atomic reward transaction | Retry same idempotency keys |
-| T-25 | REWARD_COMMITTING → MAIN_MENU_RETURN | reward_commit_succeeded | Ledger and meta save committed | Mark result claimed | Save failure retains retryable transaction |
-| T-26 | MAIN_MENU_RETURN → MAIN_MENU | return_complete | No pending commit | Refresh wallets/unlocks | If refresh fails, keep committed values and show diagnostic |
+| ID | From → To | Trigger | Preconditions/guard | Owner | Side effects | Failure path | Recovery path | Duplicate/idempotency behavior |
+|---|---|---|---|---|---|---|---|---|
+| T-01 | APP_BOOT → CONTENT_LOADING | boot_ready | AppShell initialized | AppShell / ContentLoader | ContentLoader starts versioned load | Diagnostic boot error; retry has new load attempt | Recover from owning boundary: Diagnostic boot error; retry has new load attempt | Duplicate boot creates no second load or RunSession |
+| T-02 | CONTENT_LOADING → MAIN_MENU | content_loaded | Required records valid; save migrated or absent | ContentLoader / AppShell | Build menu read model | Invalid optional record is quarantined; required failure → T-03 | Retry from last coherent state or enter diagnostic recovery | Same load attempt returns existing menu projection |
+| T-03 | CONTENT_LOADING → CONTENT_ERROR | content_load_failed | Required content/schema missing | ContentLoader / DiagnosticReporter | DiagnosticReporter records code/path/version | Retry or return; no RunSession | Recover from owning boundary: Retry or return; no RunSession | Duplicate failure for one load attempt is a no-op |
+| T-04 | MAIN_MENU ↔ SETTINGS | open/back settings | Menu context valid | SettingsFlow | SettingsFlow reads/writes validated settings | Invalid value rejected; previous valid value remains | Retry from last coherent state or enter diagnostic recovery | Repeated settings navigation rebuilds projection without mutation |
+| T-05 | MAIN_MENU → CHARACTER_SELECT | open characters | Registry has selectable records | MenuFlow | Character read model | Missing card shown as non-selectable diagnostic | Recover from owning boundary: Missing card shown as non-selectable diagnostic | Repeated navigation is a no-op |
+| T-06 | CHARACTER_SELECT → RUN_SETUP | select_character | character_id exists and unlocked | RunSetupModel / RunCoordinator | RunSetupModel stores selection | Unknown/stale ID is no-op with error | Recover from owning boundary: Unknown/stale ID is no-op with error | Same character selection is a no-op |
+| T-07 | RUN_SETUP → RUN_LOADING | confirm_start | Character, no pre-run artifact selection, and content version valid | RunCoordinator | RunCoordinator creates run_id/seed and provisional RunSession | Any artifact_ids/pre-run loadout is rejected; validation failure returns to setup | Recover from owning boundary: Any artifact_ids/pre-run loadout is rejected; validation failure returns to setup | client_request_id returns existing start; no second RunSession |
+| T-08 | RUN_LOADING → RUN_ACTIVE | arena_ready | Session schema and required gameplay content validated | RunCoordinator / Arena adapter | Clock starts; first wave band derived | Resource failure → recoverable run error; no false reward | Retry from last coherent state or enter diagnostic recovery | Repeated arena_ready is a no-op |
+| T-09 | RUN_ACTIVE → UPGRADE_OFFER | level_up | Offer generator can produce valid projection | ProgressionSystem / OfferGenerator | Freeze clock; persist pending offer if policy requires | Invalid pool → deterministic fallback or diagnostic, never illegal card | Recover from owning boundary: Invalid pool → deterministic fallback or diagnostic, never illegal card | offer_id plus state_revision returns same offer |
+| T-10 | UPGRADE_OFFER → RUN_ACTIVE | offer_chosen | offer_id belongs to open offer and not claimed | RunCoordinator / BuildInventory | Apply BuildInventory/Stats mutation; clear offer | Duplicate/stale choice is rejected/no-op | Recover from owning boundary: Duplicate/stale choice is rejected/no-op | Repeated choice returns stored outcome; no second mutation |
+| T-11 | RUN_ACTIVE → BOSS_INTRO | checkpoint_reached | checkpoint_id matches next unhandled B1 boundary | WaveDirector / BossDirector | Freeze normal spawn, create boss encounter | Duplicate boundary ignored | Retry from last coherent state or enter diagnostic recovery | checkpoint_id creates one encounter only |
+| T-12 | BOSS_INTRO → BOSS_ACTIVE | intro_complete | Boss record and safe spawn available | BossDirector | Start boss pattern/telegraph contract | Safe spawn retry; failure → paused diagnostic | Recover from owning boundary: Safe spawn retry; failure → paused diagnostic | Existing encounter ID returns existing intro |
+| T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Non-final encounter active; final boss uses T-17 | Combat / BossDirector / RunCoordinator | Freeze; create checkpoint settlement command | Duplicate defeat ignored by encounter id | Retry from last coherent state or enter diagnostic recovery | boss_encounter_id prevents second settlement |
+| T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Non-final checkpoint; ledger commit succeeded | RewardLedger / RunCoordinator | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable | Recover from owning boundary: Persistence failure keeps transaction retryable | checkpoint_id plus ledger key returns existing non-final settlement |
+| T-14F | CHECKPOINT_SETTLEMENT → RUN_VICTORY | final_settlement_committed | Final checkpoint; ledger commit succeeded; no boss chest pending | RewardLedger / RunCoordinator | Mark terminal victory and build result projection; first-clear artifact offer is opened only after result finalization | Persistence failure keeps settlement retryable | Recover from owning boundary: Persistence failure keeps settlement retryable | Final checkpoint plus ledger key returns existing final settlement |
+| T-15 | CHEST_OFFER → RUN_ACTIVE | boss_chest_claimed | Non-final boss-chest offer valid; evaluator outcome not already claimed | BossChestSystem / RunCoordinator | Apply synergy/evolution/fallback; mark boss chest claimed; advance stage | Duplicate claim returns existing outcome | Recover from owning boundary: Duplicate claim returns existing outcome | chest_offer_id returns stored outcome |
+| T-15E | RUN_ACTIVE → ARTIFACT_OFFER | elite_pack_defeated | Elite-pack source is authoritative and offer policy allows it | ArtifactOfferSystem | ArtifactOfferSystem creates exactly three candidate cards and freezes clock | Duplicate elite encounter does not create a second offer | Retry from last coherent state or enter diagnostic recovery | Encounter/offer identity prevents second artifact offer |
+| T-15R | ARTIFACT_OFFER → ARTIFACT_OFFER | artifact_offer_refresh_requested | Refresh policy allows it; expected revision/idempotency key valid | ArtifactOfferSystem | Reroll three cards and increment refresh count; no artifact instance yet | Duplicate refresh returns the stored offer without a second charge/reroll | Recover from owning boundary: Duplicate refresh returns the stored offer without a second charge/reroll | artifact_offer_id plus idempotency key returns stored refresh |
+| T-15A | ARTIFACT_OFFER → RUN_ACTIVE | artifact_chosen | Selected ID belongs to the three-card offer; choice not claimed | ArtifactEffectSystem / RunCoordinator | ArtifactEffectSystem creates one active run effect/instance; close offer | Duplicate choice returns the same artifact instance | Recover from owning boundary: Duplicate choice returns the same artifact instance | Repeated choice returns same artifact instance |
+| T-15F | RESULT_REVIEW → ARTIFACT_OFFER | first_clear_artifact_offer_requested | Result finalized and first-clear reward is eligible | RewardBoundary / ArtifactOfferSystem | Create separate post-result three-card artifact offer; no boss chest is involved | Repeat clear does not create first-clear offer | Retry from last coherent state or enter diagnostic recovery | result_id plus first-clear key prevents repeated offer |
+| T-15FR | ARTIFACT_OFFER → RESULT_REVIEW | artifact_chosen after first-clear result | Offer source is FIRST_CLEAR_REWARD; selected ID belongs to offer | ArtifactEffectSystem / RewardBoundary | Commit one first-clear artifact effect/instance and close offer | Duplicate choice returns same instance | Recover from owning boundary: Duplicate choice returns same instance | artifact_offer_id returns same first-clear instance |
+| T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | Death not settled | Combat / RunCoordinator | Freeze and create defeat result | Duplicate death ignored | Retry from last coherent state or enter diagnostic recovery | Terminal run_id accepts one defeat only |
+| T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | BossDirector / RunCoordinator | Create final settlement command; do not create chest offer; victory waits for T-14F | Invalid final result returns to checkpoint recovery | Recover from owning boundary: Invalid final result returns to checkpoint recovery | Final encounter ID prevents second final settlement |
+| T-18 | RUN_ACTIVE/BOSS_ACTIVE → RUN_PAUSED | pause_requested/background | Current state resumable | RunCoordinator / PersistenceGateway | Freeze clock; write allowed snapshot | Snapshot failure leaves in-memory paused state with diagnostic | Recover from owning boundary: Snapshot failure leaves in-memory paused state with diagnostic | Pause revision prevents second snapshot |
+| T-19 | RUN_PAUSED → RUN_ACTIVE/BOSS_ACTIVE | resume_requested | Snapshot/content/checksum valid | Recovery / PauseFlow | Restore resume_state and continue clock | Invalid snapshot → RECOVERY_REVIEW | Recover from owning boundary: Invalid snapshot → RECOVERY_REVIEW | restored_revision makes resume idempotent |
+| T-20 | RUN_PAUSED → SETTINGS | settings_requested | Pause context is valid | SettingsFlow | Open settings while preserving paused_from_state | Settings failure returns to pause with diagnostic | Recover from owning boundary: Settings failure returns to pause with diagnostic | Repeated settings requests do not mutate run |
+| T-21 | RUN_PAUSED → RECOVERY_REVIEW | restore_needed | Background kill or invalid live state | PersistenceGateway / Recovery | Show last coherent revision and choices | No valid revision → abandon without rewards | Retry from last coherent state or enter diagnostic recovery | snapshot_id plus revision returns same recovery review |
+| T-22 | RUN_PAUSED/RECOVERY_REVIEW → MAIN_MENU_RETURN | exit_confirmed/abandon_confirmed | User confirms abandon or recovery policy | PauseFlow / Recovery | Mark session abandoned; do not settle unearned rewards | Cancel returns to originating state | Recover from owning boundary: Cancel returns to originating state | Abandoned session returns without second settlement |
+| T-23 | RUN_DEFEAT/RUN_VICTORY → RESULT_REVIEW | result_opened | Terminal result exists | ResultProjection / RunCoordinator | Build immutable result projection | Missing result → retry from snapshot | Recover from owning boundary: Missing result → retry from snapshot | result_id reopens same read-only projection |
+| T-24 | RESULT_REVIEW → REWARD_COMMITTING | claim_result | Result not committed or ledger has pending entries | RewardBoundary / RewardLedger | Start one atomic reward transaction | Retry same idempotency keys | Recover from owning boundary: Retry same idempotency keys | result_id plus idempotency key cannot start second reward transaction |
+| T-25 | REWARD_COMMITTING → MAIN_MENU_RETURN | reward_commit_succeeded | Ledger and meta save committed | RewardLedger / PersistenceGateway | Mark result claimed | Save failure retains retryable transaction | Recover from owning boundary: Save failure retains retryable transaction | Ledger key returns existing committed result |
+| T-26 | MAIN_MENU_RETURN → MAIN_MENU | return_complete | No pending commit | MenuFlow | Refresh wallets/unlocks | If refresh fails, keep committed values and show diagnostic | Recover from owning boundary: If refresh fails, keep committed values and show diagnostic | Repeated return command is a no-op |
 
 ## 5. Pause/background model
 
@@ -144,7 +144,7 @@ RUN_PAUSED содержит:
 - whether a pending upgrade, boss-chest or artifact offer exists;
 - diagnostic code, если snapshot/content mismatch.
 
-UPGRADE_OFFER, CHEST_OFFER и ARTIFACT_OFFER сами замораживают simulation; вход в Settings из них возвращается в тот же blocking state. В RUN_PAUSED Settings открывается отдельным transition без возобновления clock; выход ведёт в подтверждение/MAIN_MENU_RETURN. Android background не считается победой, поражением или выходом из забега.
+UPGRADE_OFFER, CHEST_OFFER и ARTIFACT_OFFER сами замораживают simulation; BOSS_INTRO остаётся непаузным presentation state и не останавливает clock. Вход в Settings из offer или RUN_PAUSED возвращается в тот же blocking/resume context. В RUN_PAUSED Settings открывается отдельным transition без возобновления clock; выход ведёт в подтверждение/MAIN_MENU_RETURN. Android background не считается победой, поражением или выходом из забега.
 
 Working assumption: snapshot делается на checkpoint, при явной паузе и в terminal/reward boundary. Полный произвольный mid-frame resume не обещается до отдельного product decision.
 
@@ -161,7 +161,7 @@ Working assumption: snapshot делается на checkpoint, при явной
 
 1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT or RewardLedger; final settlement transitions directly to RUN_VICTORY without CHEST_OFFER or any boss chest.
 2. UI не меняет authoritative state напрямую.
-3. Clock не идёт в paused/blocking states.
+3. Clock advances in RUN_ACTIVE, BOSS_INTRO and BOSS_ACTIVE for every boss; it freezes in offer, pause, settlement and terminal/transaction states.
 4. XPDrop не превращается в AftermathItem и наоборот.
 5. Checkpoint reward не применяется без ledger idempotency key.
 6. Final victory невозможна без final boss defeat и финального settlement; final boss не создаёт boss chest, а first-clear artifact offer создаётся отдельной post-result boundary.
