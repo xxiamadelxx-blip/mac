@@ -1,66 +1,71 @@
-# Balance Wave Table — 30-minute extension
+# Balance Wave Table — 30-minute MAC model
 
-Status: `PARTIAL / SIMULATED_MODEL_ONLY`
+Status: \`PARTIAL / SIMULATED_MODEL_ONLY\`
 
-The live architecture contract is revision `bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00`: it now declares a 1800-second run, six main checkpoint records and six stable wave-cycle IDs. Numeric extension profiles remain Balance-owned proposed values; runtime is not implemented.
+This table is the agreed 30-minute balance shape, not a runtime claim. The numeric source of truth remains \`docs/BALANCE_ECONOMY_SPEC.md\` (B1 revision \`6aa4ec96afc8a8c9e6a35c164c99e7d62910a687\`). The 20:00–30:00 anchors, five-mini schedule and elite overlay remain explicitly proposed/pending where the JSON says so.
 
-Sources: user decision (30-minute run, two additional main bosses, five mini-bosses, finite elite variations); B1 revision `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687`; live architecture revision above.
+Parent HEAD for REF-BALANCE-REF-01: \`488c5bbd6b0ad412f0c1647eb99e17d31a6953a0\`.
+Model consumer: \`docs/agents/balance-economy/BALANCE_MODEL.json\`.
+
+## Shared reference pattern
+
+The three requested repositories show the same useful shape: time/level keyed spawn data, progression separated from spawn control, special encounters as explicit events, and rewards resolved through a distinct loot/offer path. They are reference-only; no foreign number or content ID is imported.
+
+- [VampireSurvivorsClone spawn table](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs): time-keyed rate/composition/HP selection.
+- [20-Minutes-till-dawn monster controller](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java): elapsed-progress gates for pressure and special encounters.
+- [Sentaur difficulty curve and spawn director](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs): separate unlock, wave-size, HP and spawn-rate concerns.
 
 ## Wave bands
 
-| Run clock | Model band | Spawn/s | Active cap | HP mult | Damage mult | Status |
-|---:|---|---:|---:|---:|---:|---|
-| 00:00–02:00 | warmup | 6 | 40 | 1.00 | 0.70 | CANON B1 |
-| 02:00–05:00 | first pressure | 10 | 80 | 1.10 | 0.85 | CANON B1 |
-| 05:00–10:00 | threat expansion | 15 | 130 | 1.35 | 1.00 | CANON B1 |
-| 10:00–15:00 | elite band | 22 | 200 | 1.70 | 1.25 | CANON B1 |
-| 15:00–20:00 | eclipse | 30 | 280 | 2.20 | 1.55 | CANON B1 |
-| 20:00–25:00 | cataclysm extension | 38 | 340 | 2.70 | 1.75 | PROPOSED |
-| 25:00–30:00 | apocalypse extension | 48 | 400 | 3.30 | 2.00 | PROPOSED |
+| Run clock | Model band | Spawn budget/s | Active cap | HP mult | ATK mult | Speed mult | Level target | Status |
+|---:|---|---:|---:|---:|---:|---:|---|---|
+| 00:00–02:00 | warmup | 6 | 40 | 1.00 | 0.70 | 0.90 | 2 | CANON B1 |
+| 02:00–05:00 | first pressure | 10 | 80 | 1.10 | 0.85 | 1.00 | 5 | CANON B1 |
+| 05:00–10:00 | threat expansion | 15 | 130 | 1.35 | 1.00 | 1.02 | 9 | CANON B1 |
+| 10:00–15:00 | elite band | 22 | 200 | 1.70 | 1.25 | 1.05 | 13 | CANON B1 |
+| 15:00–20:00 | eclipse | 30 | 280 | 2.20 | 1.55 | 1.08 | 17–18 | CANON B1 |
+| 20:00–25:00 | cataclysm extension | 38 | 340 | 2.70 | 1.75 | 1.10 | 21–22 | PROPOSED |
+| 25:00–30:00 | apocalypse extension | 48 | 400 | 3.30 | 2.00 | 1.12 | 25–26 | PROPOSED |
 
-Model bands alias to architecture cycles: warmup+first pressure→cycle 01, threat→02, elite→03, eclipse→04, cataclysm→05, apocalypse→06. The 20:00–30:00 composition reuses the canonical roster; elite variants are event-triggered, never permanent wave members.
+Composition follows the B1 roster order through 20:00. The two extension bands reuse the roster and add only finite elite events; no new enemy ID is invented. Spawn overflow is discarded at the active cap with no spawn debt. A runtime safe-mode fallback is required if device occupancy/FPS exceeds the target, but the fallback value is not yet canonical.
 
-## Encounter schedule
+## Main-boss shape: low → peak → siege
 
-| Time | Encounter | Clock rule in balance model | Stable-ID/registry status |
-|---:|---|---|---|
-| 05:00 | Main boss 1 `boss_hua_lin` | freezes | existing architecture record |
-| 07:30 | Mini 1 `miniboss_ink_jade_warden` | continues | architecture C3 target |
-| 10:00 | Main boss 2 `boss_miyeon` | freezes | existing architecture record |
-| 12:30 | Mini 2 `miniboss_veil_harvester` | continues | architecture C3 target |
-| 15:00 | Main boss 3 `boss_seika` | freezes | existing architecture record |
-| 17:30 | Mini 3 `miniboss_pending_03` | continues | model proposal; registry pending |
-| 20:00 | Main boss 4 `boss_extension_slot_04` | freezes | architecture slot ID pending content |
-| 22:30 | Mini 4 `miniboss_extension_slot_03` | continues | architecture intermediate ID pending content |
-| 25:00 | Main boss 5 `boss_extension_slot_05` | freezes | architecture slot ID pending content |
-| 27:30 | Mini 5 `miniboss_pending_05` | continues | model proposal; registry pending |
-| 30:00 | Final `boss_black_moon_empress` | freezes; no boss chest | architecture final ID retimed to 1800 |
+At each main checkpoint, the visible run/wave/XP/ordinary-spawn clocks freeze and a separate encounter clock resolves the boss. After settlement, the next interval is deliberately not a hard jump:
 
-Architecture currently has only three intermediate slots (450/750/1350); the 1050 and 1650 model slots are explicitly proposed. The live architecture clock policy currently says boss time advances, which conflicts with the balance rule above.
+1. 8 seconds of ordinary-spawn suppression;
+2. recovery from 70% to 100% of the current budget over 20 seconds;
+3. enter at 80% of the preceding peak budget/cap;
+4. linearly ramp to the next band peak;
+5. hold the peak for the final 60-second siege before the next main checkpoint.
 
-## Post-main-boss ramp
+The 0.80 reset, 8-second suppression, 20-second recovery, linear curve and 60-second siege are DERIVED/PROPOSED model inputs, not external-game numbers. The formula is stored in \`simulation_model.boss_wave_ramp\`.
 
-Each main-boss interval is: 8s suppression → 20s recovery factor 0.70→1.00 → linear low-to-peak ramp → 60s peak siege. Proposed reset factor: 0.80.
-
-| From | To | Entry band | Peak band | Status |
+| Cycle | From → to | Entry band → peak band | Density behavior | Status |
 |---|---|---|---|---|
-| 05:00 | 10:00 | first pressure | threat expansion | DERIVED |
-| 10:00 | 15:00 | threat expansion | elite band | DERIVED |
-| 15:00 | 20:00 | elite band | eclipse | DERIVED |
-| 20:00 | 25:00 | eclipse | cataclysm | PROPOSED |
-| 25:00 | 30:00 | cataclysm | apocalypse | PROPOSED |
+| 1 | 05:00 → 10:00 | first pressure → threat | recovery, linear ramp, siege | DERIVED |
+| 2 | 10:00 → 15:00 | threat → elite | recovery, linear ramp, siege | DERIVED |
+| 3 | 15:00 → 20:00 | elite → eclipse | recovery, linear ramp, siege | DERIVED |
+| 4 | 20:00 → 25:00 | eclipse → cataclysm | recovery, linear ramp, siege | PROPOSED |
+| 5 | 25:00 → 30:00 | cataclysm → apocalypse | recovery, linear ramp, siege | PROPOSED |
 
-The architecture wave rule says every non-final main/intermediate encounter enters relief. The current model verifies the five main cycles; mini-boss relief/ramp still needs an explicit decision and runtime implementation.
+## Mini-boss and elite windows
 
-## Elite variations
+Mini-bosses are pressure beats inside the wave cadence, not additional main checkpoints:
 
-Elite variations are finite post-mini pressure/reward events:
+| Time | Event | Clock | Ordinary wave | Post-event elite window | Status |
+|---:|---|---|---|---|---|
+| 07:30 | \`miniboss_ink_jade_warden\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
+| 12:30 | \`miniboss_veil_harvester\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
+| 17:30 | \`miniboss_pending_03\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
+| 22:30 | \`miniboss_extension_slot_03\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
+| 27:30 | \`miniboss_pending_05\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
 
-- maximum five events per run, one after each model mini-boss;
-- three members: one seeded elite overlay and two current-wave escorts;
-- stable IDs are `enemy_ink_beetle_variant_01`, `_02`, `_03`, read from the model's registry handoff;
-- overlay: HP ×8, damage ×1.25, speed ×1.05, XP ×2;
-- reward: one three-card `ARTIFACT_OFFER`, no wallet mutation;
-- duplicate resolution returns the stored offer by idempotency key.
+The mini-boss does not reset the main ramp or create an immediate density spike. One finite pack may follow each mini defeat: one seeded variant anchor plus two current-wave escorts. The pack counts against active cap, selection is seeded, and the roster returns to ordinary composition afterward. The model allows at most five events/run; numeric overlays and the two missing mini records remain PROPOSED/PENDING.
 
-Overlay/cadence values are `PROPOSED`; architecture numeric overrides and visual records are pending B1/content work. The active cap counts ordinary and elite entities, discards overflow attempts and accumulates no spawn debt. Maximum proposed cap is 400; Android FPS and runtime readability remain unverified.
+## Provenance and non-import rule
+
+- B1 bands, XP vocabulary, checkpoint/reward rules and acceptance bounds: CANON.
+- 20:00–30:00 bands, reset/ramp values, mini kits, elite overlay and extension rewards: PROPOSED or DERIVED as recorded in JSON.
+- External repositories: REFERENCE_ONLY structural evidence; no numbers, IDs, assets or loot odds copied.
+- Runtime Godot/Android proof: NOT_IMPLEMENTED.
