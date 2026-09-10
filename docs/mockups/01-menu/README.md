@@ -39,3 +39,18 @@ Status: **IN PROGRESS / USER REVIEW**.
 ## Критерий DONE
 
 Этап закрывается только после явного утверждения выбранного visual family, проверки всех обязательных состояний, читаемости на телефоне, safe area и навигационного маршрута без тупиков, а также требуемого runtime/Android evidence.
+
+
+## Candidate package v04 — USER REVIEW
+
+Новая серия экранов и активных UI-ассетов после отклонения v03:
+
+`ГЛАВНОЕ МЕНЮ -> ВЫБОР ЭТАПА -> ВЫБОР ПЕРСОНАЖА -> НАЧАТЬ ЗАБЕГ`
+
+Отдельная ветка: `ГЛАВНОЕ МЕНЮ -> МАГАЗИН` с шестью глобальными пассивными улучшениями:
+`ЖИВУЧЕСТЬ`, `СИЛА`, `ПРОВОРСТВО`, `ФОКУС`, `МАГНИТ`, `ЗАЩИТА`.
+
+- [STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md](./STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md)
+- [STAGE01_MENU_SYSTEM_PROVENANCE_v04.json](./STAGE01_MENU_SYSTEM_PROVENANCE_v04.json)
+
+v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Бинарный delivery должен идти индивидуальными PNG-объектами в приватный Supabase bucket `visual-assets` по зеркальному пути `moonevil-eclipse/docs/mockups/01-menu/layers/`. До доставки и явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
