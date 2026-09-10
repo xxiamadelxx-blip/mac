@@ -1,0 +1,137 @@
+# Content Design — каталог и межагентский handoff
+
+Статус пакета: `CONTENT_SPECIFIED`
+
+Пакет фиксирует контент первого забега и постоянное дерево магазина. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
+
+## 1. Состав среза
+
+| Файл | Назначение | Состояние |
+|---|---|---|
+| `C0_CONTENT_AUDIT.md` | C0 source-of-truth audit, protected scope и gaps | `READ_ONLY_AUDIT_COMPLETE` |
+| `C1_WEAPONS_PASSIVES_SYNERGIES.md` | 10 оружий, 10 run-пассивок, 10 direct pairs/evolutions | `CONTENT_SPECIFIED` |
+| `C2_ARTIFACTS.md` | 10 артефактов, trigger/effect/counterplay и offer contract | `CONTENT_SPECIFIED` |
+| `META_PASSIVE_TREE.md` | 6 ветвей, 17 stat nodes и shop/persistence contract | `CONTENT_SPECIFIED` |
+| `CONTENT_CATALOG_INDEX.json` | машинно читаемый roster/count/limit index | `CONTENT_SPECIFIED` |
+
+## 2. Зафиксированные числа и границы
+
+- 10 weapon IDs и 10 passive IDs из текущего стабильного roster сохранены без переименования.
+- 10 synergy IDs сопоставлены с десятью direct pairs; каждая evolution создаёт новое evolved behavior/weapon state, а не новый slot.
+- В одном Run 1 разрешено **максимум 3 synergy claims**. Четвёртая synergy не появляется даже после финального босса.
+- Для synergy разрешены нефинальные boss chest windows на 300/600/900 секундах; финальный boss chest запрещён. Если eligible content нет или cap достигнут, используется fallback contract.
+- Build ограничен 6 weapon slots и 6 passive slots; weapon max level 6, passive max rank 5 согласно first-run architecture.
+- Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Артефакт — отдельный run layer без slot capacity.
+- Дерево магазина содержит 6 macro branches и 17 stat nodes, покрывающих характеристики из пользовательского stat-screen reference.
+- Покупки meta tree выполняются только в hub/shop за Gold и применяются со следующего забега.
+
+## 3. Handoff для Balance Agent
+
+Balance Agent должен привязать значения к одному источнику данных и не создавать вторую таблицу чисел поверх content docs.
+
+### Weapons, passives, synergies
+
+Нужно закрепить для каждого ID: base damage, cadence, cooldown, target/geometry limits, duration, radius, scaling tags, level/rank curve, damage category, boss/elite behavior, VFX-safe telegraph budget и evolution coefficients. В C1 намеренно оставлены `PENDING_BALANCE` поля.
+
+Отдельно подтвердить:
+
+- цена opportunity cost трёх synergy claims и fallback outcome;
+- deterministic priority, если в одной boss chest одновременно eligible несколько pairs;
+- поведение upgrade offer после evolved weapon;
+- exact max 3 enforcement и duplicate idempotency.
+
+### Artifacts
+
+Нужно закрепить для десяти IDs: rarity/source cadence, trigger cooldown, radius, duration, coefficient, target whitelist, boss/elite resistance, duplicate mode (`UNIQUE`/`STACKABLE`/`UPGRADE`), refresh price/limit и first-clear scope. Пока это `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`.
+
+`artifact_tideglass` и `artifact_silent_lantern` нельзя считать runtime-ready до Registry/Architecture sync.
+
+### Meta tree
+
+Нужно решить, как 10 branch ranks распределяются между 17 node ranks, затем закрепить значения, caps, stacking order и floor. Обязательные semantic checks:
+
+- `attack_power` и `attack_multiplier` — разные axes;
+- `all_magic_damage` — только explicit `MAGIC` tags;
+- `spell_size` меняет geometry вместе с telegraph, а `spell_duration` не продлевает telegraph без решения;
+- `pickup_radius` не проходит через walls;
+- healing mote отделена от XP/mana pickup;
+- `enemy_max_hp` имеет явный sign/floor/whitelist;
+- internal armor не становится дублирующим публичным node.
+
+## 4. Handoff для Architecture/Runtime
+
+### Existing contracts to preserve
+
+- stable semantic IDs и Content Registry data-driven resolution;
+- `BuildInventory`: 6 weapon + 6 passive slots;
+- `SynergyEvaluator`/`BossChestSystem`: weapon/passive gate, non-final boss chest, fallback;
+- `ArtifactOfferSystem`: 3 cards, 1 selection, separate from build slots;
+- `ArtifactEffectSystem`: run-scoped trigger/effect/cleanup;
+- `StatsCalculator`: aggregate persistent meta node ranks with base stats and run modifiers;
+- `MetaProgression`, `SaveSnapshot`, `RewardLedger`: authoritative purchase, save and reward boundaries.
+
+### Events already named by architecture
+
+Content consumes/provides projections around the existing `upgrade_applied.v1`, `synergy_eligibility_evaluated.v1`, `synergy_claimed.v1`, `artifact_offer_created.v1`, `artifact_offer_refresh_requested.v1`, `artifact_chosen.v1`, `artifact_obtained.v1` and `first_clear_artifact_offer_requested.v1`. New event names for meta purchases не объявляются canonical этим пакетом; Architecture должен закрепить их отдельно.
+
+### Required sync decisions
+
+- добавить `artifact_tideglass` и `artifact_silent_lantern` в Registry только после schema/effect mapping review;
+- добавить canonical `max_synergy_claims_per_run: 3` и authoritative run counter;
+- сохранить checkpoint source и final-boss prohibition;
+- определить persistence scope first-clear artifact reward;
+- определить trigger guards для echo/pulse/ward effects, включая replay/idempotency;
+- определить meta tree schema: branch budget, node rank, dependency and purchase result;
+- устранить stale clock-policy conflict в architecture source отдельно, не изменяя его этим content slice.
+
+## 5. Handoff для Visual Lab
+
+Этот пакет передаёт briefs, но не создаёт мокапы.
+
+| Content family | Route | Stage path | Candidate/manifest status |
+|---|---|---|---|
+| weapon origin/combat identity | `SPRITE` + `VFX` | `docs/mockups/06-weapons/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| passive identity/card | `SPRITE` + `UI_ART` | `docs/mockups/07-passives/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| artifact identity/offer | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/08-artifacts/`, `docs/mockups/17-artifact-ui/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| synergy explanation/evolution | `VFX` + `UI_ART` | `docs/mockups/19-synergy-info/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| passive meta tree/shop | `UI_ART` | `docs/mockups/07-passives/`, `docs/mockups/16-upgrade-offers/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+
+Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; muted crimson/violet только для role/status accent. Identity должна читаться по silhouette, shape grammar и interaction, а не только цветом. Нужны проверки 390×844 UI scale, true 1× combat scale, telegraph visibility и no-asset-drift.
+
+## 6. Product decisions still open
+
+| Вопрос | Почему блокирует следующий этап |
+|---|---|
+| B1 flat six branches vs 17 visible stat nodes | нужно выбрать единую economic/progression модель |
+| `mana` vs `XP` label/semantics | иначе `meta_magnet_mana_gain` будет неоднозначен в UI и data |
+| healing mote source | влияет на vitality node, Lotus Seed и pickup contract |
+| enemy max HP sign/floor/boss scope | влияет на баланс, UI и enemy initialization |
+| artifact first-clear scope | Codex unlock или активный run effect |
+| artifact refresh and duplicate policy | влияет на offer economy и save schema |
+| elite pack cadence | определяет реальную частоту десяти artifact effects |
+| simultaneous eligible synergies | нужен deterministic priority/offer rule |
+| meta purchase event and reset/refund | нужен authoritative persistence boundary |
+| boss clock conflict | architecture source contains stale key; must be resolved by owner |
+
+## 7. Acceptance checks for this content slice
+
+- [x] C0 audit выполнен по live main и protected scope.
+- [x] Сохранены все существующие weapon/passive/synergy IDs.
+- [x] Roster содержит ровно 10 оружий, 10 run-пассивок, 10 synergy/evolutions и 10 artifacts.
+- [x] Synergy rule «не более 3 за забег» явно повторена в C1 и index.
+- [x] Полное дерево содержит 6 ветвей и 17 stat nodes из stat-screen reference.
+- [x] Все числовые значения, которые ещё не принадлежат content ownership, помечены `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`.
+- [x] Briefs для Visual Lab есть; mockups, PNG/SVG и candidate IDs не создавались.
+- [ ] Balance Agent должен выполнить numeric binding.
+- [ ] Architecture/Runtime должны синхронизировать Registry/schema/events.
+- [ ] Visual Lab должен отдельно принять briefs и создать свои mockups по master gates.
+
+Локальная проверка JSON, ID uniqueness, required fields и remote path scope выполняется перед commit; production/playable/APPROVED статус этому пакету не присваивается.
+
+## 8. Следующий handoff order
+
+1. Balance Agent: reconcile six B1 branch budgets with 17-node topology and bind numbers.
+2. Architecture/Runtime: sync two artifact proposals, synergy cap, artifact effect schema and meta purchase boundary.
+3. Visual Lab: create master tree/shop and artifact/synergy/weapon visual briefs/mockups in its protected stages.
+4. QA/Integration: validate offer counts, three-synergy cap, stats aggregation and persistence after the preceding decisions are locked.
+

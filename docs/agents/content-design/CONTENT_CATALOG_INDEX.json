@@ -1,0 +1,130 @@
+{
+  "schema": "moonveil.content_design.catalog_index",
+  "version": 1,
+  "status": "CONTENT_SPECIFIED",
+  "repository": "xxiamadelxx-blip/mac",
+  "source_head": "40b00b6a4aa3cbcc98b916912707644c4f11d6d4",
+  "source_refs": [
+    "docs/agents/content-design/C0_CONTENT_AUDIT.md",
+    "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
+    "docs/agents/content-design/C2_ARTIFACTS.md",
+    "docs/agents/content-design/META_PASSIVE_TREE.md",
+    "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+    "docs/BALANCE_ECONOMY_SPEC.md",
+    "GAME_MANIFEST.md"
+  ],
+  "run_1": {
+    "weapon_ids": [
+      "weapon_moon_blade",
+      "weapon_jade_talismans",
+      "weapon_crimson_flame_fan",
+      "weapon_frost_pearl",
+      "weapon_thunder_needles",
+      "weapon_spirit_bell",
+      "weapon_fox_mirage",
+      "weapon_lotus_mines",
+      "weapon_star_bow",
+      "weapon_black_eclipse_umbrella"
+    ],
+    "passive_ids": [
+      "passive_wind_of_travel",
+      "passive_jade_focus",
+      "passive_ember_heart",
+      "passive_frost_thread",
+      "passive_heavenly_seal",
+      "passive_iron_bell",
+      "passive_mirror_shard",
+      "passive_lotus_heart",
+      "passive_star_compass",
+      "passive_spirit_lens"
+    ],
+    "synergy_ids": [
+      "synergy_moon_dance",
+      "synergy_heavenly_seals",
+      "synergy_phoenix_sky",
+      "synergy_winter_palace",
+      "synergy_heavenly_judgment",
+      "synergy_guardian_bell",
+      "synergy_nine_reflections",
+      "synergy_lotus_sanctuary",
+      "synergy_constellation_rain",
+      "synergy_eclipse_vortex"
+    ],
+    "artifact_ids": [
+      "artifact_jade_compass",
+      "artifact_mirror_shard",
+      "artifact_phoenix_feather",
+      "artifact_frost_bead",
+      "artifact_bell_fragment",
+      "artifact_lotus_seed",
+      "artifact_moon_crown",
+      "artifact_black_bead",
+      "artifact_tideglass",
+      "artifact_silent_lantern"
+    ],
+    "limits": {
+      "weapon_slots": 6,
+      "passive_slots": 6,
+      "weapon_max_level": 6,
+      "passive_max_rank": 5,
+      "max_synergy_claims_per_run": 3,
+      "artifact_offer_cards": 3,
+      "artifact_selected_cards": 1,
+      "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
+    },
+    "synergy_sources": ["BOSS_CHEST"],
+    "synergy_checkpoints_seconds": [300, 600, 900],
+    "final_boss_chest": "FORBIDDEN"
+  },
+  "meta_passive_tree": {
+    "branch_ids": [
+      "meta_vitality",
+      "meta_force",
+      "meta_agility",
+      "meta_focus",
+      "meta_magnet",
+      "meta_defense"
+    ],
+    "stat_node_ids": [
+      "meta_vitality_max_hp",
+      "meta_vitality_regen",
+      "meta_vitality_mote_healing",
+      "meta_force_attack_power",
+      "meta_force_attack_multiplier",
+      "meta_force_magic_damage",
+      "meta_agility_move_speed",
+      "meta_agility_evasion",
+      "meta_agility_crit_chance",
+      "meta_agility_crit_power",
+      "meta_focus_cooldown",
+      "meta_focus_duration",
+      "meta_focus_size",
+      "meta_magnet_pickup_radius",
+      "meta_magnet_mana_gain",
+      "meta_defense_damage_taken",
+      "meta_defense_enemy_hp"
+    ],
+    "stat_node_count": 17,
+    "branch_count": 6,
+    "branch_rank_cap": 10,
+    "node_rank_cap": 5,
+    "rank_allocation_status": "PENDING_BALANCE",
+    "currency": "GOLD",
+    "applies": "NEXT_RUN"
+  },
+  "statuses": {
+    "content": "CONTENT_SPECIFIED",
+    "balance": "BALANCE_PENDING",
+    "visual": "VISUAL_BRIEF_READY",
+    "runtime": "RUNTIME_HANDOFF_READY",
+    "artistic": "PENDING"
+  },
+  "registry_sync_pending": [
+    "artifact_tideglass",
+    "artifact_silent_lantern",
+    "max_synergy_claims_per_run",
+    "meta_passive_tree_17_nodes",
+    "artifact_effect_definitions"
+  ],
+  "no_mockups_created": true
+}
