@@ -69,12 +69,29 @@ def main() -> int:
     simulation = model.get("simulation_model", {})
     integration = model.get("runtime_integration", {})
     join_policy = integration.get("join_policy", {})
+    clock_policy = simulation.get("final_boss_clock_policy", {})
 
     record_error(errors, model.get("status") == "PARTIAL", "model status must remain PARTIAL")
     record_error(
         errors,
         simulation.get("status") == "PROPOSED_MODEL_ONLY",
         "simulation_model must remain explicitly model-only",
+    )
+    record_error(
+        errors,
+        clock_policy.get("status") == "CANON",
+        "final boss clock policy must be explicit CANON product behavior",
+    )
+    record_error(
+        errors,
+        clock_policy.get("checkpoint_seconds") == 1200,
+        "final boss clock policy must bind to the 20-minute checkpoint",
+    )
+    record_error(
+        errors,
+        clock_policy.get("run_clock_stops_at_final_checkpoint") is True
+        and clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is False,
+        "final boss clock policy must freeze the run/wave/XP/spawn clock",
     )
     record_error(
         errors,
