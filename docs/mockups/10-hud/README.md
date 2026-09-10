@@ -1,62 +1,63 @@
-# Stage 10 — HUD
-Status: PLANNED.
-HUD игрового забега.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+# Этап 10 — Игровой интерфейс
+Состояние этапа: PLANNED (запланирован).
+Интерфейс игрового забега.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — run HUD information contract
+## Контентный бриф v01 — информационный договор интерфейса забега
 
-Это текстовый content/UX brief для будущего mockup. Он описывает информацию, состояния и readable hierarchy, но не создаёт layout, PNG/SVG, font treatment или production asset.
+Это текстовый контентный и пользовательский бриф для будущего мокапа. Он описывает информацию, состояния и порядок чтения, но не создаёт компоновку, изображение, шрифт или производственный ресурс.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; C2_ARTIFACTS.md; C3_MINI_BOSSES_AND_CHEST_FLOW.md + screenshot reference supplied by owner |
-| visual route | UI_ART + MOCKUP |
-| asset_id / family_id / candidate_id | null до Visual Lab intake |
-| target viewport | 390×844 safe-area reference; exact responsive rules — PENDING_VISUAL/ENGINEERING |
-| dependencies | runtime telemetry, StatsCalculator, UpgradeOffer, ArtifactOffer, SynergyInfo, BossDirector |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источники | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; C2_ARTIFACTS.md; C3_MINI_BOSSES_AND_CHEST_FLOW.md; скриншот владельца |
+| визуальный маршрут | художественный интерфейс + мокап |
+| технический маршрут | UI_ART + MOCKUP |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| эталонный экран | безопасная область 390×844; точные правила адаптации — PENDING_VISUAL/PENDING_ARCHITECTURE |
+| зависимости | телеметрия игры, StatsCalculator, UpgradeOffer, ArtifactOffer, SynergyInfo, BossDirector |
 
-### HUD information blocks
+### Информационные блоки игрового интерфейса
 
-| block | content that must be readable | source/consumer | state rules |
+| Блок | Что должно читаться | Источник и потребитель | Правило состояния |
 |---|---|---|---|
-| run_context | elapsed run time, level and XP/progression bar, pause affordance | RunClock, Progression, Pause | target run is 30:00/1800 s; exact clock behavior follows Architecture, not this brief |
-| hero_state | health/current max health, healing-per-second state, healing mote/ward feedback, damage-taken/defense state | HealthSystem, Meta tree, passives, artifacts | never hide a lethal/active hazard behind a persistent aura; temporary ward has explicit active/consumed state |
-| movement_and_tempo | movement-speed axis, evasion/poise feedback, active MOMENTUM or shared tempo state | MovementSystem, passive_wind_of_travel, passive_iron_bell, passive_frost_thread | show state transition only when active; no permanent screen-wide effect |
-| loadout | six weapon slots and six passive slots, stable icon/name, current level/rank, empty/locked/maxed state | WeaponRegistry, PassiveRegistry, UpgradeOffer | bound weapon hint may show synergy eligibility; passive remains a global run modifier |
-| combat_stats | attack power, attack multiplier, all magic damage, spell size, spell duration, spell cooldown, crit chance, crit power | StatsCalculator + pause/stat projection | values come from authoritative stats; no hard-coded numbers in content layer |
-| defense_and_enemy_stats | received damage modifier, evasion, enemy max HP modifier | StatsCalculator + pause/stat projection | negative/positive direction and source tooltip must be unambiguous |
-| collection | XP/mana gain and pickup radius; pickup/route feedback | Magnet/Progression, passive_spirit_lens, meta_magnet | XP, mana, gold, healing and artifacts remain distinct resource semantics |
-| encounter | current main boss/mini-boss/elite banner, checkpoint label, phase/telegraph cue and recovery cue | BossDirector, TelegraphResolver, ChestResolver | main-boss clock-freeze behavior and mini-boss continue behavior are shown only after Architecture contract; no invented animation timing |
-| synergy | progress 0/5 claims, eligible pair, required weapon/passive levels, chest source, claimed/evolved state | SynergyResolver, SynergyInfo | claim counter never exceeds 5; final boss has no synergy chest |
-| artifact | owned artifact markers, active trigger feedback, three-card offer → choose one state | ArtifactEffectSystem, Artifact UI | artifacts use separate collection, never weapon/passive slots |
-| feedback_layers | XP gain, pickup confirmation, damage/heal, chest, artifact offer and upgrade offer channels | runtime event projections | avoid competing full-screen layers; each event has source and expiry |
-| pause_detail | detailed stat sheet matching canonical stat keys plus Continue action | Pause/Stats projection | pause is informational; it must not imply runtime/balance values not supplied by authoritative systems |
+| контекст забега | прошедшее время, уровень и шкала опыта, кнопка паузы | RunClock, Progression, Pause | цель забега — 30:00/1800 с; точное поведение часов задаёт архитектура |
+| состояние героя | здоровье и максимум здоровья, состояние лечения, крупица лечения, защита и щит | HealthSystem, дерево постоянных улучшений, пассивки, артефакты | временный щит имеет явные состояния «активен» и «израсходован» |
+| движение и темп | оси скорости движения, уклонения и стойкости, активный MOMENTUM или общий темп | MovementSystem, passive_wind_of_travel, passive_iron_bell, passive_frost_thread | показывать переход состояния, а не постоянную экранную ауру |
+| набор героя | шесть ячеек оружия и шесть ячеек пассивок, ID, имя, уровень или ранг, пустая/закрытая/максимальная ячейка | WeaponRegistry, PassiveRegistry, UpgradeOffer | связанное оружие может показываться как подсказка синергии; пассивка остаётся общей |
+| боевые характеристики | сила атаки, приумножение атаки, весь магический урон, размер, длительность и перезарядка заклинаний, шанс и усиление критического удара | StatsCalculator и экран паузы | значения берутся из единого источника характеристик |
+| защита и враги | получаемый урон, уклонение и модификатор максимального здоровья врага | StatsCalculator и экран паузы | направление изменения и источник должны быть однозначны |
+| сбор | получение маны или опыта, радиус сбора и подтверждение подбора | Magnet/Progression, passive_spirit_lens, meta_magnet | опыт, мана, золото, лечение и артефакты сохраняют разные смыслы |
+| встреча | текущий главный босс, мини-босс или элита, контрольная точка, фаза, сигнал атаки и восстановление | BossDirector, TelegraphResolver, ChestResolver | правило остановки часов у главного босса и продолжения у мини-босса показывать только после решения архитектуры |
+| синергия | счётчик 0/5, подходящая пара, требуемые уровни оружия и пассивки, источник сундука, состояние получена/эволюционировала | SynergyResolver и SynergyInfo | счётчик не превышает 5; у финального босса нет сундука синергии |
+| артефакты | полученные артефакты, сработавший эффект, предложение из трёх карточек и выбор одной | ArtifactEffectSystem и интерфейс артефактов | артефакты используют отдельный набор и не занимают ячейки оружия или пассивок |
+| слои обратной связи | опыт, подбор, урон, лечение, сундук, артефакт и улучшение | проекции игровых событий | слои не должны закрывать друг друга; у каждого события есть источник и окончание |
+| подробности паузы | полный список характеристик и действие «Продолжить» | проекция Pause/Stats | пауза только показывает данные и не подменяет источник чисел |
 
-### Canonical stat labels for pause/stat surface
+### Названия характеристик на подробном экране
 
-The reference screen's semantic list is retained: Здоровье, Исцеление в сек, Исцеление от крупицы, Получаемый урон, Уклонение, Скорость движения, Шанс крит. удара, Усиление крит. удара, Сила атаки, Приумножение атаки, Весь магический урон, Размер заклинаний, Длительность заклинаний, Перезарядка заклинаний, Макс. HP врага, Получение маны/опыта, Радиус сбора предметов. Exact values, signs, order of calculation and localization remain owned by Balance/Architecture/Product.
+Сохраняется список со справочного экрана: Здоровье, Исцеление в сек, Исцеление от крупицы, Получаемый урон, Уклонение, Скорость движения, Шанс критического удара, Усиление критического удара, Сила атаки, Приумножение атаки, Весь магический урон, Размер заклинаний, Длительность заклинаний, Перезарядка заклинаний, Максимальное здоровье врага, Получение маны или опыта, Радиус сбора предметов. Точные значения, знаки, порядок расчёта и локализация принадлежат балансу, архитектуре и продукту.
 
-### Readability and state rules
+### Правила читаемости и состояния
 
-- Gameplay HUD uses compact persistent indicators; detail belongs to pause/stat state and tooltips.
-- Boss and mini-boss telegraphs remain in the arena layer; HUD may label the phase but must not replace world-space warning.
-- Artifact, passive and synergy colors follow the visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; crimson/violet are role/status accents.
-- Icons need shape distinction at true 1×; color alone cannot distinguish weapon, passive, artifact, pickup or telegraph.
-- Locked, unavailable, cap-reached, consumed and active states require different copy/icons; never use an empty/blank card as an error state.
-- All numeric fields and responsive spacing are PENDING_BALANCE/PENDING_ARCHITECTURE/PENDING_VISUAL.
+- Во время игры используются компактные постоянные показатели; подробности находятся в паузе и подсказках.
+- Сигнал босса остаётся на арене; интерфейс может назвать фазу, но не заменяет пространственное предупреждение.
+- Визуальный код: тёмный сине-серый, дымчато-бирюзовый, тёплый светлый, приглушённая латунь, мягкий нефрит; багровый и фиолетовый только как акценты роли или состояния.
+- Иконки различаются формой при масштабе 1×; одного цвета недостаточно для различения оружия, пассивки, артефакта, предмета и сигнала атаки.
+- Закрытое, недоступное, достигшее предела, израсходованное и активное состояния имеют разный текст или знак; пустая карточка не используется как сообщение об ошибке.
+- Все числовые параметры и адаптивные отступы — PENDING_BALANCE/PENDING_ARCHITECTURE/PENDING_VISUAL.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: UI_ART + MOCKUP;
-- stage_path: docs/mockups/10-hud/;
+- маршрут: UI_ART + MOCKUP;
+- папка этапа: docs/mockups/10-hud/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — HUD projection, Pause/Stats, UpgradeOffer, Artifact UI, SynergyInfo;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — проекция интерфейса, Pause/Stats, UpgradeOffer, Artifact UI, SynergyInfo;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
