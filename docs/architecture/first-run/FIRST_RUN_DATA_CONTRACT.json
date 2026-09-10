@@ -70,7 +70,11 @@
         "status": "PENDING_PRODUCT_DECISION",
         "reason": "The existence of an extensible bonus state is required; its exact semantics are not canonical."
       }
-    ]
+    ],
+    "checkpoint_outcome_policy": {
+      "non_final_boss": "CHECKPOINT_REWARD_THEN_CHEST_THEN_NEXT_STAGE",
+      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST"
+    }
   },
   "content_registry": {
     "characters": [
@@ -379,22 +383,26 @@
       {
         "id": "boss_hua_lin",
         "name": "Хуа Линь",
-        "checkpoint_seconds": 300
+        "checkpoint_seconds": 300,
+        "is_final": false
       },
       {
         "id": "boss_miyeon",
         "name": "Миён",
-        "checkpoint_seconds": 600
+        "checkpoint_seconds": 600,
+        "is_final": false
       },
       {
         "id": "boss_seika",
         "name": "Сэйка",
-        "checkpoint_seconds": 900
+        "checkpoint_seconds": 900,
+        "is_final": false
       },
       {
         "id": "boss_black_moon_empress",
         "name": "Императрица Чёрной Луны",
-        "checkpoint_seconds": 1200
+        "checkpoint_seconds": 1200,
+        "is_final": true
       }
     ],
     "xp_grades": [
@@ -559,7 +567,9 @@
       "reward_value": null
     },
     "claimed_outcome": null,
-    "idempotency_key": null
+    "idempotency_key": null,
+    "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
+    "final_boss_policy": "NO_CHEST"
   },
   "synergy_evaluator": {
     "inputs": [
@@ -569,7 +579,8 @@
       "passive_max_rank",
       "weapon_not_evolved",
       "chest_available",
-      "claimed_synergy_ids"
+      "claimed_synergy_ids",
+      "checkpoint_is_final"
     ],
     "outcomes": [
       "ELIGIBLE",
@@ -583,7 +594,8 @@
       "passive_max_rank": 5,
       "matching_synergy_id": true,
       "weapon_not_evolved": true,
-      "boss_chest_context": true
+      "boss_chest_context": true,
+      "checkpoint_is_final": false
     }
   },
   "reward_ledger": {
@@ -653,11 +665,12 @@
     "XP drops and aftermath items are separate entity types.",
     "Clock does not advance in paused, blocking or terminal states.",
     "Final victory requires authoritative final boss defeat.",
-    "Checkpoint, chest and result effects are idempotent.",
     "Rewards are committed atomically with the corresponding wallet/unlock revision.",
     "Unknown numeric values remain pending until confirmed by B1.",
     "Unknown product rules remain pending until confirmed by the product owner.",
-    "Missing resource errors produce diagnostics, never a blank screen."
+    "Missing resource errors produce diagnostics, never a blank screen.",
+    "Non-final checkpoint, chest and result effects are idempotent.",
+    "Final boss settlement creates no chest_offer and transitions to victory after ledger commit."
   ],
   "open_questions": [
     {
