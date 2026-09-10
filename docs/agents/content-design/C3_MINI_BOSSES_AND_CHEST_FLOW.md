@@ -2,9 +2,10 @@
 
 Статус пакета: `CONTENT_SPECIFIED`
 
-Это content-only proposal для будущего контента и расширения checkpoint flow первого забега. Два mini-boss ID, четыре future enemy ID и дополнительные поля encounter/chest требуют синхронизации Architecture/Runtime. Мокапы, sprites, VFX assets и production manifests этим документом не создаются.
+Это content-only proposal для расширения первого забега до 30 минут. Пять mini-boss ID, два main-boss extension ID, четыре future enemy ID и дополнительные поля encounter/chest требуют синхронизации Architecture/Runtime. Мокапы, sprites, VFX assets и production manifests этим документом не создаются.
 
-Existing first-run roster остаётся каноническим и не заменяется. Четыре regular enemy proposals ниже не добавляются в Run 1 автоматически; два mini-boss proposal используют пять нефинальных chest windows только после Architecture/Balance sync.
+Existing first-run roster остаётся каноническим и не заменяется. Четыре regular enemy proposals не добавляются в Run 1 автоматически; пять mini-boss proposals и два main-boss extension proposals описаны как content layer. Десять нефинальных boss encounters получают BOSS_CHEST; ещё пять зарезервированных ELITE_CHEST windows предназначены для bounded elite variants. Их cadence и numeric budget остаются PENDING_BALANCE/PENDING_ARCHITECTURE.
+
 ### Existing first-run IDs — protected boundary
 
 The following records are canonical for Run 1 and are not replaced by this C3 proposal:
@@ -14,23 +15,61 @@ The following records are canonical for Run 1 and are not replaced by this C3 pr
 | Enemy | enemy_ink_beetle, enemy_lantern_moth, enemy_bone_carp, enemy_paper_ghost, enemy_jade_toad, enemy_mirror_fox, enemy_bell_crab, enemy_thread_doll, enemy_stone_oni, enemy_eclipse_serpent |
 | Boss | boss_hua_lin, boss_miyeon, boss_seika, boss_black_moon_empress |
 
-The four future enemy IDs and two mini-boss IDs in this file remain proposal-only until Architecture/Balance approve their Registry and stage placement.
+The four future enemy IDs, five mini-boss IDs and two main-boss extension IDs in this file are content proposals. They remain outside the runtime Registry until Architecture/Balance approve their registry shape and stage placement.
 
 
 ## 1. Ритм первого забега
 
-В забеге 20 минут остаются четыре основных boss checkpoints из текущего first-run контракта. Между ними добавляются два самостоятельных mini-boss encounter. Таким образом, до финала игрок получает ровно пять возможностей открыть chest с synergy offer.
+Content target первого забега — 30 минут / 1800 секунд. Шесть main-boss checkpoints идут каждые пять минут; checkpoint на 30:00 — финальный босс без boss chest. Пять mini-boss encounters стоят между main-boss checkpoints и продолжают run clock, волны, XP и ordinary spawn. Точные encounter timers являются content cadence proposal для Balance/Architecture и не заменяют их контракт молча.
 
 | Время | Encounter | Chest | Synergy opportunity |
 |---:|---|---|---|
-| 05:00 | Main Boss 1 | `BOSS_CHEST` | да, если есть eligible pair и cap не достигнут |
-| 07:30 | Mini-boss A — Чернильный Нефритовый Страж | `BOSS_CHEST`, `encounter_kind: MINI_BOSS` | да |
-| 10:00 | Main Boss 2 | `BOSS_CHEST` | да |
-| 12:30 | Mini-boss B — Жнец Завесы | `BOSS_CHEST`, `encounter_kind: MINI_BOSS` | да |
-| 15:00 | Main Boss 3 | `BOSS_CHEST` | да |
-| 20:00 | Final Boss | chest не создаётся | нет |
+| 05:00 | Main Boss 1 | BOSS_CHEST | да, если есть eligible pair и cap не достигнут |
+| 07:30 | Mini-boss A — Чернильный Нефритовый Страж | BOSS_CHEST, encounter_kind: MINI_BOSS | да |
+| 10:00 | Main Boss 2 | BOSS_CHEST | да |
+| 12:30 | Mini-boss B — Жнец Завесы | BOSS_CHEST, encounter_kind: MINI_BOSS | да |
+| 15:00 | Main Boss 3 | BOSS_CHEST | да |
+| 17:30 | Mini-boss C — Хранительница Лотосового Обряда | BOSS_CHEST, encounter_kind: MINI_BOSS | да |
+| 20:00 | Main Boss 4 — Регент Чёрного Прилива | BOSS_CHEST | да |
+| 22:30 | Mini-boss D — Колокольный аскет | BOSS_CHEST, encounter_kind: MINI_BOSS | да |
+| 25:00 | Main Boss 5 — Архивариус Лунных Знаков | BOSS_CHEST | да |
+| 27:30 | Mini-boss E — Луннокорневой перевозчик | BOSS_CHEST, encounter_kind: MINI_BOSS | да |
+| 30:00 | Final Boss — Чёрная Лунная Императрица | chest не создаётся | нет |
 
-Времена 07:30 и 12:30 — target cadence для Balance/Architecture. Они не заменяют main bosses и не расширяют длительность забега. Если владелец таймера выберет другую cadence, должны сохраниться два mini-boss encounter и пять нефинальных chest windows.
+Таким образом, content proposal содержит десять нефинальных BOSS_CHEST windows, способных разрешить synergy или fallback. Лимит остаётся пятью claims за забег: наличие десяти eligible windows не гарантирует получение пяти синергий. Пять дополнительных ELITE_CHEST windows из bounded elite variants не увеличивают synergy cap и по умолчанию ведут в artifact/upgrade/fallback flow.
+
+## 1.1 Main-boss extension proposals
+
+Эти два main-boss ID закрывают content-часть пользовательского расширения с четырёх до шести checkpoints. Они сопоставлены архитектурным slots 04/05 как proposals; этот документ не изменяет Architecture Registry.
+
+| Architecture slot | Content ID | Рабочее имя | Checkpoint |
+|---|---|---|---:|
+| boss_extension_slot_04 | boss_tideglass_regent | Регент Чёрного Прилива | 20:00 |
+| boss_extension_slot_05 | boss_omen_paper_archivist | Архивариус Лунных Знаков | 25:00 |
+
+### boss_tideglass_regent — Регент Чёрного Прилива
+
+- Silhouette brief: высокая фигура в плаще из тёмных полупрозрачных пластин, три приливных кольца вокруг корпуса и один тёплый ivory crest; силуэт должен читаться как управляющий потоками.
+- Role/signature: flow director; создаёт видимые дуги прилива, которые временно разделяют безопасный проход и pressure route.
+- Readable telegraph: сначала возникает источник прилива, затем дуга заполняется smoky teal и только после этого разрешается.
+- Arena interaction: дуги меняют маршрут, но не становятся невидимыми стенами; XP и pickups остаются читаемыми.
+- Player counter-decision: перейти в безопасный коридор и потерять часть damage uptime или переждать convergence ради окна уязвимости.
+- Phase/spawn behavior: safe external spawn; следующая фаза меняет направление/порядок дуг, а не добавляет нечитабельный damage class.
+- VFX/audio/haptic hooks: tide source, ivory edge, muted jade resolve, полный cleanup; стеклянный низкий sweep и один короткий pulse на resolve.
+- Drop/reward boundary: один non-final BOSS_CHEST, synergy/fallback only; artifact offer и wallet mutation запрещены.
+- Balance questions: current spacing, warning lead, corridor width, phase threshold, recovery, damage, boss resistance и performance cap — PENDING_BALANCE/PENDING_B1.
+
+### boss_omen_paper_archivist — Архивариус Лунных Знаков
+
+- Silhouette brief: тонкая фигура с веером бумажных талисманов, прямоугольной лунной маской и тремя подвесными печатями; силуэт не должен сливаться с paper ghost.
+- Role/signature: pattern sequencer; раскладывает ограниченную последовательность знаков и разрешает её в заранее читаемом порядке.
+- Readable telegraph: знак появляется как warm ivory outline, порядок активации показывается короткой линией связи, resolve имеет отдельный muted brass edge.
+- Arena interaction: активные знаки создают временные зоны угрозы, но не блокируют движение и не скрывают обычные telegraphs.
+- Player counter-decision: быстро уничтожить активный знак, сохранить cooldown для окна boss vulnerability или сменить позицию по известному порядку.
+- Phase/spawn behavior: safe external spawn; phase transition меняет порядок/ритм знаков, сохраняя ту же grammar telegraph.
+- VFX/audio/haptic hooks: paper fold on trigger, ivory seal, smoky teal resolve, clean retract on expiry; сухой шелест и двойной щелчок на phase shift.
+- Drop/reward boundary: один non-final BOSS_CHEST; final-boss no-chest rule не меняется.
+- Balance questions: active mark count, warning lead, sequence length, zone duration, vulnerability window, phase threshold, damage and add budget — PENDING_BALANCE/PENDING_B1.
 
 ## 2. Mini-boss A — `miniboss_ink_jade_warden`
 
@@ -107,9 +146,9 @@ The four future enemy IDs and two mini-boss IDs in this file remain proposal-onl
 - `visual code`: deep blue-grey silhouette, warm ivory target marker, restrained violet only for status distinction; no black-on-black telegraph.
 
 
-## 3.3 Mandatory field coverage for the two mini-bosses
+## 3.4 Mandatory field coverage for the five mini-bosses
 
-The existing mini-boss entries above already define role, signature, player question, counters, patterns, reward intent and visual direction. To close the canonical C3 field set, the following explicit fields apply to each entry:
+The five mini-boss entries above define role, signature, player question, counters, patterns, reward intent and visual direction. To close the canonical C3 field set, the following explicit fields apply to each entry:
 
 ### miniboss_ink_jade_warden
 
@@ -129,9 +168,144 @@ The existing mini-boss entries above already define role, signature, player ques
 - Drop/reward boundary: defeat creates one checkpoint-owned BOSS_CHEST; a selected synergy consumes one of five run claims, fallback consumes zero; final boss remains no-chest.
 - Balance questions: HP, damage, speed, marker delay, marker geometry, target priority, phase threshold, recovery, resistance, VFX cap and reward weight are PENDING_BALANCE/PENDING_B1.
 
-## 3.4 Future enemy proposal batch
+## 3.1 Mini-boss C — miniboss_lotus_ritekeeper
 
-These four entries are future-stage proposals only. They do not enter the first-run registry, do not change the 20-minute schedule and do not replace any of the ten canonical enemy IDs.
+Рабочее имя: **Хранительница Лотосового Обряда**.
+
+Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+### Роль и skill-check
+
+Хранительница проверяет target priority и умение прерывать защитный ритуал, не теряя контроль над ордой. Её задача отличается от линий Стража и delayed markers Жнеца: игрок выбирает между прямым damage по mini-boss и разрушением опорных печатей.
+
+- Arena role: support ritual controller.
+- Signature: три lotus anchors связывают ближайшую группу и дают ей читаемое состояние защиты; связь видна до любого усиления.
+- Player question: сломать anchor сейчас или использовать окно и добить саму Хранительницу?
+- Counters: target switching, burst timing, area control and reading the exposed anchor.
+- Failure mode: если anchors пересекаются, между ними остаётся проход; ritual не превращается в невидимый full-arena lock.
+
+### Pattern kit
+
+1. **Лотосовая печать:** anchor раскрывается с ivory outline, затем создаёт видимую связь с выбранной целью.
+2. **Процессия лепестков:** anchors медленно перемещаются по дуге, оставляя один читаемый gap для прохода.
+3. **Незавершённый обряд:** при активной связи Хранительница получает защитное состояние; уничтожение anchor открывает короткое окно уязвимости.
+4. **Переход фазы:** меняется порядок anchor и направление дуги, но не grammar telegraph.
+
+Точные HP, anchor count, link duration, protection rule, warning lead, phase threshold, damage и support composition — PENDING_BALANCE/PENDING_B1.
+
+### Reward intent
+
+После authoritative defeat создаётся один BOSS_CHEST с encounter_kind MINI_BOSS. Eligible synergy может быть выбрана в рамках общего cap 5; при отсутствии pair используется fallback из раздела 4.
+
+### Visual Lab brief
+
+- route: SPRITE + VFX + UI_ART.
+- stage_path: docs/mockups/05-bosses/; asset_id/family_id/candidate_id остаются null до Visual Lab intake.
+- visual code: soft jade lotus crown, warm ivory anchors, smoky teal links, muted crimson только для phase/status accent.
+- technical_status: NOT_RUN; artistic_status: PENDING.
+
+## 3.2 Mini-boss D — miniboss_bell_rhythm_ascetic
+
+Рабочее имя: **Колокольный аскет**.
+
+Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+### Роль и skill-check
+
+Аскет проверяет ритм движения и чтение expanding rings. Урон не должен зависеть только от звука: каждая фаза звонка имеет видимый внешний и внутренний контур.
+
+- Arena role: timing and rhythm controller.
+- Signature: колокол создаёт чередующиеся резонансные кольца с gap, который можно прочитать и пересечь.
+- Player question: перейти через gap, удержать позицию для damage или отступить и потерять tempo?
+- Counters: movement timing, dash/evasion discipline and damage during the recovery beat.
+- Failure mode: визуальный контур появляется раньше resolve; audio/haptic только усиливают, но не заменяют сигнал.
+
+### Pattern kit
+
+1. **Первый звон:** внешний ivory ring расширяется с видимым safe gap.
+2. **Тишина между ударами:** кольцо замирает, gap смещается и остаётся читаемым до resolve.
+3. **Возвратный тон:** после паузы идёт более узкий inner ring; оба контура не сливаются.
+4. **Переход фазы:** меняется порядок колец и recovery window, но сохраняется одна понятная beat grammar.
+
+Точные HP, ring speed, gap width, warning lead, damage, phase threshold, interruption и boss resistance — PENDING_BALANCE/PENDING_B1.
+
+### Reward intent
+
+После defeat создаётся один BOSS_CHEST с encounter_kind MINI_BOSS. Успешный synergy claim расходует один из пяти claims; fallback не расходует cap.
+
+### Visual Lab brief
+
+- route: SPRITE + VFX + UI_ART.
+- stage_path: docs/mockups/05-bosses/; candidate_id null до intake.
+- visual code: restrained brass bell, warm ivory rings, deep blue-grey body, muted teal recovery pulse; без black-on-black.
+- technical_status: NOT_RUN; artistic_status: PENDING.
+
+## 3.3 Mini-boss E — miniboss_moonroot_ferryman
+
+Рабочее имя: **Луннокорневой перевозчик**.
+
+Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+### Роль и skill-check
+
+Перевозчик проверяет решение о маршруте и приоритет угрозы: он ведёт видимый convoy врагов к краю арены, а игрок решает, когда перехватить его. Он не крадёт Gold, XP или pickups и не создаёт фальшивые предметы.
+
+- Arena role: convoy pressure and route commitment.
+- Signature: moonroot barge/line движется по заранее показанному маршруту и временно тянет отмеченных врагов в одну сторону.
+- Player question: продолжать damage по мини-боссу или перерезать convoy, пока он не занял выгодную для орды позицию?
+- Counters: route reading, focus fire, controlled movement and choosing an interception point.
+- Failure mode: маршрут и endpoint всегда видны; convoy не телепортируется и не превращается в permanent collision wall.
+
+### Pattern kit
+
+1. **Лунный маршрут:** корневая линия появляется от края к endpoint, затем перевозчик начинает движение.
+2. **Корневые ворота:** два видимых gate markers сужают проход на время, оставляя минимум один читаемый обход.
+3. **Смена прилива:** convoy меняет направление после warning pulse, но не меняет endpoint скрытно.
+4. **Переход фазы:** растёт сложность маршрута и target priority, а не raw stat inflation.
+
+Точные HP, route duration, convoy size, pull/drag rule, gate geometry, warning lead, phase threshold и recovery — PENDING_BALANCE/PENDING_B1.
+
+### Reward intent
+
+После authoritative defeat создаётся один BOSS_CHEST с encounter_kind MINI_BOSS. Boss chest не выдаёт artifact offer; при отсутствии eligible pair применяется fallback.
+
+### Visual Lab brief
+
+- route: SPRITE + VFX + UI_ART.
+- stage_path: docs/mockups/05-bosses/; candidate_id null до Visual Lab intake.
+- visual code: moonroot deep teal, ivory route line, muted jade root joints and restrained brass endpoint mark.
+- technical_status: NOT_RUN; artistic_status: PENDING.
+
+### miniboss_lotus_ritekeeper
+
+- Silhouette brief: folded lotus crown, three hanging anchor seals and a compact ritual stance; the body must read as support controller.
+- Arena interaction: anchors alter enemy protection and route pressure but never become collision walls; XP remains readable.
+- Phase/spawn behavior: safe external spawn; phase changes anchor order/spacing; selector, interrupt and support pack rules remain pending.
+- VFX/audio/haptic hooks: ivory anchor outline, smoky teal link, jade resolve and full cleanup; petal click and one soft phase note; short haptic on anchor resolve.
+- Drop/reward boundary: one non-final MINI_BOSS BOSS_CHEST; no artifact offer and no wallet mutation.
+- Balance questions: HP, anchor count, duration, protection, warning lead, damage, phase threshold, support composition and reward weight are PENDING_BALANCE/PENDING_B1.
+
+### miniboss_bell_rhythm_ascetic
+
+- Silhouette brief: narrow ascetic body, restrained brass bell and visible ring-emitter posture; readable without audio.
+- Arena interaction: rings alter safe movement only; every gap is visible before resolve and no ring permanently blocks the arena.
+- Phase/spawn behavior: safe external spawn; phase changes ring ordering and recovery; speed, gap, interruption and resistance remain pending.
+- VFX/audio/haptic hooks: ivory outer/inner contours, brass resolve, teal recovery fade and full cleanup; audio/haptic reinforce but never replace the telegraph.
+- Drop/reward boundary: one non-final MINI_BOSS BOSS_CHEST; synergy claim or fallback only.
+- Balance questions: ring speed, gap width, warning lead, damage, phase threshold, recovery and VFX cap are PENDING_BALANCE/PENDING_B1.
+
+### miniboss_moonroot_ferryman
+
+- Silhouette brief: low root-barge body with a crescent lantern and visible route harness; distinct from Burrower and existing Bell Crab.
+- Arena interaction: convoy route shifts enemy formation but does not steal pickups, mutate wallet or create collision walls.
+- Phase/spawn behavior: safe edge spawn; phase changes route direction/priority; convoy size, endpoint, drag and interruption remain pending.
+- VFX/audio/haptic hooks: ivory route line, teal root joints, jade endpoint pulse and complete route cleanup; low wood scrape plus one route-change tap.
+- Drop/reward boundary: one non-final MINI_BOSS BOSS_CHEST; no artifact offer and no direct wallet mutation.
+- Balance questions: HP, route duration, convoy size, drag rule, gate geometry, warning lead, recovery, phase threshold and reward weight are PENDING_BALANCE/PENDING_B1.
+
+## 3.5 Future enemy proposal batch
+
+These four entries are future-stage proposals only. They do not enter the first-run registry, do not change the 30-minute content target and do not replace any of the ten canonical enemy IDs.
 
 ### enemy_lotus_usher — Лотосовый распорядитель
 
@@ -190,6 +364,20 @@ Status: PROPOSAL, REGISTRY_SYNC_PENDING.
 - Balance questions: prediction horizon, arc geometry, lead time, dash damage category, recovery, safe-spawn distance, active cap, XP grade/value and overlap with existing teleport/dash patterns are PENDING_BALANCE/PENDING_B1.
 
 
+## 3.6 Content-only reward-window map
+
+Это контентная раскладка для сверки с 15 архитектурными chest windows. Она не переписывает Architecture Registry и не фиксирует numeric cadence элитных вариантов.
+
+| Content window group | Source kind | Windows | Outcome policy | Synergy |
+|---|---|---|---|---|
+| C01–C05 | MAIN_BOSS_NON_FINAL | 300, 600, 900, 1200, 1500 | BOSS_CHEST: eligible synergy, иначе upgrade/fallback | allowed, общий cap 5 |
+| C06–C10 | INTERMEDIATE_BOSS | 450, 750, 1050, 1350, 1650 | BOSS_CHEST: eligible synergy, иначе upgrade/fallback | allowed, общий cap 5 |
+| C11–C15 | ELITE_VARIANT | Balance-selected bounded elite peaks | ELITE_CHEST: artifact offer из 3 карт или upgrade/fallback | запрещена по умолчанию |
+
+Content invariant: C01–C10 дают десять отдельных non-final boss chest opportunities, но один chest claim выбирает максимум одну synergy, а run counter никогда не превышает 5. C11–C15 не расходуют synergy counter и не превращаются в boss chest. Final boss на 1800 секунд не создаёт chest.
+
+Для каждой строки нужны source_id, encounter_id/drop_id, state_revision, outcome policy и idempotency semantics на стороне Architecture/Runtime. До их подтверждения эта таблица имеет статус CONTENT_PROPOSAL_FOR_RECONCILIATION.
+
 ## 4. Единый chest resolver
 
 ### 4.1 Проверка при defeat
@@ -246,8 +434,10 @@ Content фиксирует только безопасность выбора:
 synergy_run_policy:
   max_claimed_per_run: 5
   eligible_encounter_kinds: [MAIN_BOSS, MINI_BOSS]
-  eligible_checkpoint_seconds: [300, 450, 600, 750, 900]
-  mini_boss_checkpoints_seconds: [450, 750]
+  eligible_checkpoint_seconds: [300, 450, 600, 750, 900, 1050, 1200, 1350, 1500, 1650]
+  mini_boss_checkpoints_seconds: [450, 750, 1050, 1350, 1650]
+  main_boss_non_final_checkpoints_seconds: [300, 600, 900, 1200, 1500]
+  final_boss_checkpoint_seconds: 1800
   final_boss_chest: forbidden
   fallback_after_missing_requirements: required
   duplicate_reward_for_same_encounter: idempotent_noop
@@ -264,7 +454,7 @@ synergy_run_policy:
 
 ### Architecture
 
-- Добавить/подтвердить два encounter IDs и `encounter_kind: MINI_BOSS` в Content Registry.
+- Добавить/подтвердить пять mini-boss encounter IDs и два main-boss extension IDs в Content Registry; сохранить `encounter_kind: MINI_BOSS` для промежуточных боёв.
 - Решить, достаточно ли существующего `BOSS_CHEST` source с encounter kind или нужен новый canonical source; content не объявляет новый event.
 - Закрепить checkpoint ownership, pause/clock semantics, defeat idempotency и snapshot fields.
 - Сохранить раздельность Boss Chest и Artifact Offer.
@@ -272,10 +462,10 @@ synergy_run_policy:
 ### Balance
 
 - Закрепить main/mini cadence, HP budget, phase threshold, telegraph lead time, damage, resistances, add composition и reward weights.
-- Проверить, что пять chest windows не гарантируют чрезмерный power spike при удачном билде.
+- Проверить, что десять BOSS_CHEST windows не гарантируют чрезмерный power spike при удачном билде, а пять ELITE_CHEST windows остаются отдельным artifact/upgrade потоком.
 - Протестировать три состояния fallback: недособранная pair, заполненный build, cap reached.
 
 ## 7. Visual Lab handoff
 
-Мокапы и ассеты отсутствуют намеренно. Visual Lab получает два brief-а с `candidate_id: null`, `status: PROPOSAL`, `technical_status: NOT_RUN`, `artistic_status: PENDING`. Нужно отдельно проверить силуэты, warning readability at 390×844, true 1× combat scale, cleanup и отсутствие токсичных/neon цветов.
+Мокапы и ассеты отсутствуют намеренно. Visual Lab получает пять mini-boss briefs и два main-boss extension briefs с `candidate_id: null`, `status: PROPOSAL`, `technical_status: NOT_RUN`, `artistic_status: PENDING`. Нужно отдельно проверить силуэты, warning readability at 390×844, true 1× combat scale, cleanup и отсутствие токсичных/neon цветов.
 
