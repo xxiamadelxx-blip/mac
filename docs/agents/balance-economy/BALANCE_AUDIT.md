@@ -1,156 +1,67 @@
 # Balance Audit
 
-Status: PARTIAL / SIMULATED_MODEL_ONLY
+Status: `PARTIAL / SIMULATED_MODEL_ONLY`
 
 ## Audit snapshot
 
-- Repository: xxiamadelxx-blip/mac.
-- Live main HEAD after the synchronized post-boss wave slice: 1c426c5a7dba79683990b830dace4c7bfba8771c.
-- B1 source: docs/BALANCE_ECONOMY_SPEC.md.
-- B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-- Architecture contract revision: 2f889f876f2b8aa286523d234786addf0b9b245e.
-- Balance model commit: 89c23c7dc80e29463d3dcc2d283e6c7710a5ac65.
-- Simulator commit: 607fb24742f0235e1b048bc4a88f3a4a7f80d3d3.
-- Contract validator commit: 8ddffa562ec2bacec235aea4b70eec4299c5d119.
-- Simulation report commit: 1c426c5a7dba79683990b830dace4c7bfba8771c.
-- Seeds: 101, 202, 303, 404, 505.
-- Model runs: 30, covering fresh/moderate/max_m1 × Lin Yue/Soyeon Han.
-- Repeated full-matrix SHA-256: 6c1e1ea7df9393bc2bc2fc94c8049086d291784a93acc145f8e518d664f9d7cb.
-- Contract validator: PASS; post-boss cycle mapping, reset factor, siege window and ramp window also pass.
-- Runtime status: NOT_IMPLEMENTED.
-- Final status: model evidence is repeatable; Godot balance remains unverified.
+- Repository: `xxiamadelxx-blip/mac`.
+- Live main HEAD at audit write: `52e2ec4d42b5c64eb303d0501a37f8fdd7d284ec`.
+- Balance model: `docs/agents/balance-economy/BALANCE_MODEL.json`.
+- Model status: `PARTIAL`; simulation status: `PROPOSED_MODEL_ONLY`.
+- Runtime status: `NOT_IMPLEMENTED`.
+- Runtime/architecture and content registries were read but not modified by this balance slice.
 
-The previous stale claim that no simulator existed is no longer true. The current simulator reads one BALANCE_MODEL.json and executes a deterministic 20-minute model. It does not execute the Godot runtime.
+This slice continues from the previous balance work. It does not recreate the old documents: it extends the single data model and the existing simulator to the requested 30-minute schedule.
 
-## Current clock rule
+## What is implemented in this slice
 
-The user decision applies to every boss, not only the final boss:
+- 1800-second model schedule with six main-boss slots at 05:00/10:00/15:00/20:00/25:00/30:00.
+- Five mini-boss slots at 07:30/12:30/17:30/22:30/27:30.
+- Separate clock policies: main bosses freeze visible run/wave/XP/spawn clocks; mini-bosses keep them advancing.
+- Two proposed 20:00–30:00 wave bands with explicit source/formula/status fields.
+- Five post-main-boss low→peak→siege ramp cycles.
+- Finite elite-variation packs after mini-bosses; no permanent elite composition.
+- Main/mini encounter TTK, incoming damage/risk, active occupancy, XP/levels, rewards, boss chests, elite offers and idempotency are emitted by the deterministic simulator.
+- Validator accepts canonical legacy IDs plus explicitly proposed extension bands/schedule.
+- Independent checker runs the simulator twice and validates the public result contract.
 
-- at 300/600/900/1200 visible run-clock seconds, the run clock stops while the corresponding boss is alive;
-- ordinary wave selection, spawning, XP pickup and level progression are frozen;
-- the boss and existing active enemies use a separate encounter/wall clock;
-- after a non-final boss defeat, the visible clock resumes from the same checkpoint;
-- the final boss has no resume step because it resolves the model run.
+## Model-only evidence
 
-All 30 runs produced four boss clock events. In every event, run-clock spawn and defeat checkpoints were equal, run_clock_advanced_during_encounter was false, and wave_xp_spawn_clock_advanced_during_encounter was false. This is model evidence only; no runtime trace exists.
+Seed set: 101, 202, 303, 404, 505; two heroes; fresh/moderate/max M1 profiles; 30 runs.
 
-## Completed in this slice
+- Repeat hash: `a2d4b1258c869da4f22a852e46a73166d419e6b59ed8bb33771971cbaa9f505a`.
+- Survived: 24/30.
+- Completed inside the final-boss target window: 20/30.
+- Fresh: 5/10 survived, 1/10 completed.
+- Moderate: 9/10 survived and completed.
+- Max M1: 10/10 survived and completed.
+- Independent check: `INDEPENDENT_30M_CHECK=PASS`.
+- Wallet, boss-chest and elite-offer duplicate attempts: PASS in the model.
+- Runtime execution: none; Android FPS/collision/telegraph evidence: none.
 
-1. Replaced the misleading final-only clock field with simulation_model.boss_clock_policy and bound it to all four boss checkpoints.
-2. Replaced the final-only post-run simulation branch with a two-clock loop. Wall time continues for combat and TTK; visible run time drives waves, active cap and XP.
-3. Added per-boss pause/resume evidence, encounter duration, run-clock defeat time, wall-clock defeat time and final-run outcome fields.
-4. Extended the contract validator to require ALL_BOSS_CHECKPOINTS and the exact 300/600/900/1200 list.
-5. Synchronized combat, acceptance, decisions, simulation report and audit documents.
-6. Repeated the full 30-run output twice and confirmed identical SHA-256.
-7. Preserved explicit source/derived/proposed/status provenance. No missing B1 value was silently changed to CANON.
-8. Rechecked the live runtime seam after the model slice: the architecture contract is still DRAFT/runtime_implemented=false and arena_controller.gd is still preview-only, so no fake runtime integration was added.
+The full ranges and level/XP checkpoints are in `BALANCE_SIMULATION_REPORT.md`. Wave values and clock semantics are in `BALANCE_WAVE_TABLE.md`; acceptance statuses are in `BALANCE_ACCEPTANCE_MATRIX.md`.
 
-## Findings
+## Provenance boundary
 
-### F-01 — Critical — runtime balance seam is still absent
+Existing B1 values remain CANON. The following are not silently promoted:
 
-Evidence: the architecture contract remains DRAFT with runtime_implemented=false; no implemented RunSession/WaveDirector/BossDirector/RewardLedger consumer reads BALANCE_MODEL.json.
+- 30-minute duration and 25:00/30:00 boss IDs;
+- 20:00 reclassification of the old final-boss ID;
+- three missing mini-boss IDs and all mini-boss absolute stats;
+- 20:00–30:00 wave anchors and XP pickup rates;
+- elite overlay multipliers, pack size/cadence and artifact-offer effects;
+- extension wallet rewards and fallback/stacking behavior.
 
-Impact: model evidence cannot prove that the game applies the same values, event ordering, cap, XP pickup, telegraph, pause or reward behavior.
+Each proposed input is stored in `BALANCE_MODEL.json` with `source`, `derived_formula`, `rationale` and `status`.
 
-Confidence: High.
+## Current blockers
 
-Next owner: Architecture + Runtime implementation.
+1. Architecture still declares 1200 seconds, four main bosses and a different legacy clock contract; it must own the 1800-second `RunSession`/encounter update.
+2. Content/Architecture must register the two new main bosses and three additional mini-bosses, including phase/telegraph/ID data.
+3. B1/Product must approve the proposed 20–30 wave/XP/combat/reward values and define the fresh-profile completion target.
+4. Runtime must consume this JSON, emit timer/wave/XP/combat/reward traces and prove idempotency.
+5. Android occupancy/FPS must be profiled at the proposed cap of 400.
 
-### F-02 — Critical — proposed absolute combat values are not runtime values
+## Next implementation slice
 
-Evidence: enemy/boss stats, weapon/passive/synergy effects, pickup cadence and profile hit probabilities are explicitly PROPOSED or DERIVED because B1 does not define them.
-
-Impact: TTK and incoming-risk results are design evidence, not player-facing balance evidence.
-
-Confidence: High.
-
-Next owner: Balance/Product approval, then Combat Runtime.
-
-### F-03 — Watch — active-cap saturation is a model risk
-
-Evidence: all 30 runs reach active cap 280; cap occupancy is approximately 1105.7–1140.0 visible-clock seconds and suppressed spawn attempts are approximately 19,468–20,276 per profile/hero slice.
-
-Impact: the proposed spawn/combat combination may create a continuously saturated horde and may fail readability or performance.
-
-Confidence: Medium; model-only finding.
-
-Next owner: Balance + Runtime performance.
-
-### F-04 — Watch — boss target windows are not uniform across proposed routes
-
-Evidence: moderate Lin Yue passes all four target windows; max M1 Soyeon passes all four; fresh Lin Yue final is 120.5 s, moderate Soyeon final is 123.5 s, fresh Soyeon final is 134.25 s, and max M1 Lin Yue final is 85.25 s.
-
-Impact: one proposed curve does not satisfy every profile/hero route under the current target interpretation.
-
-Confidence: High.
-
-Next owner: Balance/Product decision on reference profile and target-window policy.
-
-### F-05 — Watch — artifact-offer boundary remains pending
-
-Evidence: 15/30 model runs create a separate three-choice FIRST_CLEAR_REWARD offer after finalization. Effect values, refresh, duplicate/stacking and persistence remain pending.
-
-Impact: result UI, artifact choice persistence and Codex/meta-progression can diverge.
-
-Confidence: High.
-
-Next owner: Product + Architecture.
-
-### F-06 — Watch — performance and spatial readability are unverified
-
-Evidence: no selected Android target, Godot runtime load trace, frame-time capture, collision trace, safe-spawn test or visual telegraph QA run.
-
-Impact: cannot establish 30 FPS, safe boss spawn, readable aftermath or no untelegraphed hit in the real game.
-
-Confidence: High.
-
-Next owner: Runtime + Performance + Visual QA.
-
-## What is now verified at model level
-
-- B1 source revision and architecture revision are recorded.
-- BALANCE_MODEL.json parses and carries field-level provenance.
-- Simulator reads one model JSON instead of duplicating tuning values in Python.
-- Contract validator passes stable IDs, wave IDs, build IDs, final reward policy and all-boss clock policy.
-- Five independent seeds and two repeated full runs are deterministic.
-- 29/30 runs survive the model; one fresh Lin Yue seed dies at wall 1,398.5 s / visible run clock 1,179.0 s before the final boss; duplicate reward grants are rejected in 30/30 runs.
-- Four boss encounters per run are resolved on a separate encounter clock; 120/120 boss pause events satisfy the frozen run/wave/XP/spawn assertions.
-- Three post-boss cycles per run are monotonic in the model: entry budgets/caps 8/64, 12/104, 17.6/160; peak/siege budgets/caps 15/130, 22/200, 30/280; the 28-second recovery and 60-second siege boundaries are explicit.
-- Results include level checkpoints at 2/5/10/15/20 minutes, ordinary/elite TTK, incoming damage, HP risk, active-cap occupancy, boss outcomes, reward balances, synergy, fallback, artifact offers and idempotency.
-- Final boss chest remains absent in all model runs, and first-clear artifact delivery remains a separate three-choice offer.
-
-### F-07 — Watch — post-boss curve is model-complete but numerically proposed
-
-Evidence: `simulation_model.boss_wave_ramp` defines three non-final cycles with a 28-second recovery, 212-second linear ramp and 60-second peak siege. The reset factor is 0.80 and remains PROPOSED because B1 does not specify the exact curve. All 30 model runs pass 3/3 monotonic/peak-siege assertions.
-
-Impact: product/B1 approval is still required before treating 0.80 and 60 seconds as canonical; runtime must consume the same phase data to prove the player sees the intended breathing window.
-
-Confidence: High for the model evidence; low for player-facing/runtime behavior.
-
-Next owner: Balance + Product, then Runtime.
-
-## Remaining blockers
-
-- Godot runtime integration and event trace for the all-boss clock rule plus POST_BOSS_RECOVERY/RAMP/SIEGE density phases.
-- Approval/promotion of PROPOSED/DERIVED combat, pickup, profile and build values.
-- Spatial movement, contact, telegraphs, safe boss spawn and same-frame ordering.
-- Active-cap product/performance decision and approval of the post-boss reset/siege parameters.
-- Profile/reference interpretation for boss TTK targets.
-- First-clear artifact selection, refresh, duplicate/stacking and persistence.
-- Android performance and readability evidence.
-- Full build/evolution catalog and real offer UI.
-
-## Exact next implementation slice
-
-Runtime/Architecture must:
-
-1. Load BALANCE_MODEL.json through the versioned Content Registry.
-2. Add RunSession visible run-clock state, separate encounter-clock state, current boss checkpoint, pause/resume trace and terminal outcome.
-3. Gate wave selection, active-cap accounting, XP drops/pickup and level progression on visible run time; keep combat/event ordering on the encounter clock while every boss is alive.
-4. Implement BossDirector interruption/recovery and consume `boss_wave_ramp`: POST_BOSS_RECOVERY → RAMP → SIEGE, contact cooldown, telegraph metadata, safe spawn and no same-frame damage stacking.
-5. Emit runtime traces for the three post-boss density cycles and compare their budget/cap/phase boundaries with the model report.
-6. Implement weapon/passive/synergy IDs, fallback resolution, reward ledger keys, final NO_CHEST settlement and the separate first-clear three-card offer with replay-safe selection.
-7. Emit runtime traces for seeds 101/202/303/404/505 and compare them with the model report.
-
-Until that slice exists, the correct status is PARTIAL / SIMULATED_MODEL_ONLY, not VERIFIED.
+Architecture/Runtime: sync the 30-minute schedule, `MAIN_BOSS` vs `MINI_BOSS` clock policy, five mini-boss slots, elite event state and idempotency fields into the runtime contract/registry. Then Balance reruns the same model against the new revisions. Do not mark `DONE` or `VERIFIED` until runtime evidence exists.
