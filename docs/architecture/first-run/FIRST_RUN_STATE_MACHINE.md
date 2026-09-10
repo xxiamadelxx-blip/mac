@@ -1,7 +1,7 @@
 # FIRST_RUN_STATE_MACHINE — состояния и переходы первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION  
-Runtime implemented: NO  
+Статус: DRAFT ARCHITECTURE SPECIFICATION
+Runtime implemented: NO
 Источник истины переходов: RunSession + RunCoordinator; UI не владеет переходами.
 
 ## 1. Ownership model
