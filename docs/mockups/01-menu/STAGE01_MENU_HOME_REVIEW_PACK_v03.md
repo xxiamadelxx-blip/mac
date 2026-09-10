@@ -1,7 +1,7 @@
 # STAGE01_MENU_HOME_REVIEW_PACK_v03
 
 TASK-ID: MOCKUP-01-MENU-HOME-01
-Parent HEAD: 259d7ab2ae299c9d6db00ff102f9334a37aaef80
+Parent HEAD: fa7a32828d17d79a1af9f204df43f2412bbcd4f1
 Route: MOCKUP
 Secondary route: UI_ART
 Stage path: docs/mockups/01-menu/
@@ -10,16 +10,28 @@ Asset ID: menu.home.soft_tonal.v03
 Family ID: moonveil-menu-soft-tonal-v02
 Candidate ID: vl-20260910-moonveil-menu-home-v03
 Status: USER REVIEW
-Technical status: PARTIAL / STATIC_CONTRACT_CHECKED
+Technical status: PARTIAL / STATIC_IMAGE_PASS
 Artistic status: PENDING
+Storage status: BLOCKED_UPLOAD
 
 ## Что создано
 
-Один representative master главного экрана вертикального меню как authored SVG-asset. Кандидат наследует существующую мягкую tonal family Stage 01 и не создаёт новую identity героинь.
+Один representative master главного экрана вертикального меню как готовая PNG-картинка. Визуальная основа — оригинальная иллюстрация затопленного лунного сада; поверх неё собрана растровая UI-композиция мягкой tonal family Stage 01.
 
-Файл exact candidate:
+В GitHub не оставлен код визуала. Временный внутренний слой компоновки не является deliverable и не хранится в репозитории.
 
-- layers/STAGE01_MENU_HOME_CANDIDATE_v03.svg
+## Exact candidate
+
+Формат: PNG, 390×844, sRGB  
+SHA-256: be328b1802aa2c5e46e8ddf2a126df852bc16d330879f99e6951171cb07181b0  
+Размер: 387921 bytes
+
+Канонический путь для Supabase Storage:
+
+- bucket: visual-assets
+- object: moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png
+
+Фактический статус на момент handoff: объект ещё не появился в Supabase. Прямой upload из текущего окружения завершился сетевым timeout; RLS-политики не изменялись и не ослаблялись.
 
 ## Source / canon audit
 
@@ -42,18 +54,18 @@ Artistic status: PENDING
 
 ## Static checks performed
 
-- SVG имеет viewBox 0 0 390 844 и width/height 390×844.
-- Все интерактивные области находятся внутри x=58..332 и y=430..620.
-- На экране присутствуют обязательные русские labels exact text.
-- Кандидат не содержит Base64, data URL, runtime draw calls или внешних URL.
-- Визуал размещён как файл-ассет, а не строка GDScript/HTML/canvas.
+- Итоговый файл — PNG 390×844, 8-bit RGB, sRGB.
+- Обязательные labels присутствуют в растровой композиции и визуально проверены.
+- Интерактивные области расположены внутри безопасной композиции; primary и secondary targets соответствуют размерам из README.
+- Визуал существует как бинарный image asset, не как GDScript/HTML/canvas-отрисовка.
+- PNG SHA-256 и размер зафиксированы выше.
 
 ## Evidence gaps
 
+- Supabase Storage upload не завершён из текущего окружения; object path зарезервирован, но existence не подтверждён.
 - Godot import не прогонялся: локальный Godot runner не заявлен.
 - Android screenshot и touch test не прогонялись.
 - Реальные font metrics/safe-area device inset не проверялись на устройстве.
-- SHA-256 binary evidence не зафиксирован; это text SVG candidate, не Supabase production binary.
 - Это не APPROVED GOLDEN и не PRODUCTION.
 
 ## Creative Director decision
@@ -66,4 +78,4 @@ PENDING. Нужен выбор exact candidate:
 
 ## Next action
 
-После явного APPROVE создать остальные menu states тем же family contract; до этого batch и runtime integration не начинать.
+Сначала доставить этот PNG в указанный Supabase object path и подтвердить его размер/SHA-256. После явного APPROVE создать остальные menu states тем же family contract; до этого batch и runtime integration не начинать.
