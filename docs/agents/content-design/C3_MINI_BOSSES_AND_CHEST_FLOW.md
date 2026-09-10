@@ -5,6 +5,17 @@
 Это content-only proposal для будущего контента и расширения checkpoint flow первого забега. Два mini-boss ID, четыре future enemy ID и дополнительные поля encounter/chest требуют синхронизации Architecture/Runtime. Мокапы, sprites, VFX assets и production manifests этим документом не создаются.
 
 Existing first-run roster остаётся каноническим и не заменяется. Четыре regular enemy proposals ниже не добавляются в Run 1 автоматически; два mini-boss proposal используют пять нефинальных chest windows только после Architecture/Balance sync.
+### Existing first-run IDs — protected boundary
+
+The following records are canonical for Run 1 and are not replaced by this C3 proposal:
+
+| Type | Stable IDs |
+|---|---|
+| Enemy | enemy_ink_beetle, enemy_lantern_moth, enemy_bone_carp, enemy_paper_ghost, enemy_jade_toad, enemy_mirror_fox, enemy_bell_crab, enemy_thread_doll, enemy_stone_oni, enemy_eclipse_serpent |
+| Boss | boss_hua_lin, boss_miyeon, boss_seika, boss_black_moon_empress |
+
+The four future enemy IDs and two mini-boss IDs in this file remain proposal-only until Architecture/Balance approve their Registry and stage placement.
+
 
 ## 1. Ритм первого забега
 
