@@ -1,96 +1,54 @@
 # Balance Combat Model
 
-Status: SPECIFIED / PARTIAL
+Status: SIMULATED_MODEL_ONLY / PARTIAL
 
-This document defines the combat equations and safety invariants that implementation and testing must satisfy. It is derived from docs/BALANCE_ECONOMY_SPEC.md at revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687. It does not fill missing base stats with guesses.
+This document separates B1 CANON targets from the explicit PROPOSED inputs used by the deterministic model. The complete proposed input set is in BALANCE_MODEL.json under simulation_model.enemy_stats, boss_stats, combat_math, heroes_and_profiles, and build_catalog.
 
-## Status and units
+## Canonical targets and invariants
 
-- CANON values come from B1 and are reproduced in BALANCE_MODEL.json.
-- DERIVED values are arithmetic or test projections from complete CANON inputs.
-- PENDING_B1 means the contract needs a value that B1/GAME_MANIFEST does not currently provide.
-- PENDING_PRODUCT_DECISION means an implementation policy is still open.
-- TEST_PLACEHOLDER values may appear only in the simulator/report and are never production balance data.
-- Runtime integration is NOT_IMPLEMENTED in the audited repository.
-
-Units: HP for damage, world units per second for speed, seconds for cooldown/time, integer units for XP.
-
-## Hero baseline
-
-| Stat | Base hero | Lin Yue | Soyeon Han | Status |
-|---|---:|---:|---:|---|
-| Max HP | 100 | 90 | 110 | CANON, B1 section 3 |
-| Move speed | 100% | 100% | 112% | CANON, B1 section 3 |
-| Damage multiplier | 1.00 | pending ranged/control tuning | pending melee/critical-window tuning | Base is CANON; hero-specific numeric modifiers are PENDING_B1 |
-| Weapon cooldown multiplier | 1.00 | pending | pending | Base is CANON; hero-specific value PENDING_B1 |
-| Armor | 0 | pending | pending | Base is CANON; hero-specific value PENDING_B1 |
-| Pickup radius | 100% | 120% | 100% unless otherwise specified | CANON, B1 section 3 |
-| Role rule | baseline | ranged/control, weaker in melee | dash/melee/critical windows, plays near horde | CANON, B1 section 3 |
-
-## Combat pipeline contract
-
-The production hit pipeline must be ordered and instrumented:
-
-1. Create an attack event with source, target, raw damage, timestamp, and deterministic event ID.
-2. Apply hero, weapon, passive, synergy, wave, and other approved damage multipliers.
-3. Roll critical behavior only when crit chance and crit multiplier are defined. Both are PENDING_B1 in the current contract.
-4. Apply target mitigation. The armor formula and rounding policy are PENDING_PRODUCT_DECISION.
-5. Apply hit gates: contact damage has a 0.8-second cooldown; same-frame damage stacking is forbidden.
-6. Subtract the final integer/float result from target HP using one documented rounding policy.
-7. Emit combat diagnostics sufficient to reproduce DPS, TTK, telegraph timing, and rejected duplicate hits.
-
-The compact equation is:
-
-enemy HP = base HP(enemy_id) × durability multiplier(enemy_id) × wave HP multiplier
-
-enemy damage = base damage(enemy_id) × wave damage multiplier
-
-enemy speed = base speed(enemy_id) × wave speed multiplier
-
-final damage = mitigation( raw damage × approved multipliers × critical result )
-
-TTK = effective HP / sustained DPS
-
-The first three equations are the intended contract, but base enemy HP, base enemy damage, base enemy speed, mitigation, and rounding are not available in B1. A TTK value is DERIVED only after those inputs and the attack cadence are present.
-
-## TTK targets
-
-| Encounter class | Target | Status |
+| Requirement | B1 value | Status |
 |---|---:|---|
-| Ordinary enemy | 0.5–2.5 seconds | CANON, B1 section 3 |
-| Elite | 10–25 seconds | CANON, B1 section 3 |
-| First-slice boss | 45–80 seconds | CANON, B1 section 3 |
-| Final boss | 90–120 seconds | CANON, B1 section 3 |
+| Ordinary TTK | 0.5–2.5 s | CANON target |
+| Elite TTK | 10–25 s | CANON target |
+| First-slice boss TTK | 45–80 s | CANON target |
+| Final boss TTK | 90–120 s | CANON target |
+| Contact damage cooldown | 0.8 s | CANON |
+| No same-frame damage stacking | forbidden | CANON |
+| No untelegraphed hit above base HP × 15% | 15% | CANON acceptance target |
+| Boss safe spawn and readable reaction window | required | CANON acceptance target |
 
-These are encounter targets, not proof that the current repository meets them.
+B1 does not define absolute enemy HP/damage/speed, boss stats, armor mitigation, crit values, weapon cadence, exact composition ratios, or profile definitions. Those values are now visible as PROPOSED or DERIVED entries in the model; they have not been promoted to CANON.
 
-## Enemy archetype contract
+## Model formulas
 
-| Enemy ID | Role | Durability multiplier | XP | Missing production inputs |
-|---|---|---:|---:|---|
-| enemy_ink_beetle | rusher | 1.0 | 1–5 | base HP, damage, speed |
-| enemy_lantern_moth | ranged | 1.2 | 5 | base HP, damage, speed, projectile cadence |
-| enemy_bone_carp | telegraphed dash | 1.4 | 5–15 | base HP, damage, speed, dash hit |
-| enemy_paper_ghost | teleport | 1.3 | 5–15 | base HP, damage, speed, teleport cadence |
-| enemy_jade_toad | jump and zone | 1.6 | 15 | base HP, damage, speed, zone damage |
-| enemy_mirror_fox | decoy/copy | 1.5 | 15 | base HP, damage, speed, decoy rules |
-| enemy_bell_crab | front block/rear weakness | 2.4 | 15–40 | base HP, damage, speed, angle/mitigation rule |
-| enemy_thread_doll | slow beam | 1.8 | 15–40 | base HP, damage, speed, beam tick/slow |
-| elite_stone_oni | slow elite, telegraphed AoE | 7.0 | 40–80 | base HP, damage, speed, AoE |
-| elite_eclipse_serpent | fast elite, trail/arcs | 8.0 | 80 | base HP, damage, speed, trail/arcs |
+- enemy HP = proposed base HP × B1 durability multiplier × canonical wave HP multiplier;
+- enemy damage = proposed base damage × canonical wave damage multiplier;
+- outgoing damage = raw hit × hero multiplier × weapon-level multiplier × passive multiplier × profile multiplier × expected critical multiplier;
+- mitigation = raw incoming damage × (1 − proposed damage-reduction fraction);
+- weapon-level multiplier = 1 + proposed 0.10 × (weapon level − 1);
+- focused TTK = effective HP ÷ focused sustained DPS;
+- incoming damage = landed attack damage × wave damage multiplier × (1 − mitigation).
 
-Durability multipliers and XP ranges are CANON, B1 section 5. The missing fields are intentionally null in BALANCE_MODEL.json. Filling them with simulator-only numbers requires a TEST_PLACEHOLDER label and cannot be promoted to production without a B1 follow-up.
+The simulator reports focused TTK from the first damage event, separately from spawn-to-kill delay. This prevents queueing behind an active horde from being misreported as enemy durability.
 
-## Safety invariants
+## Profile/build inputs
 
-- Contact hit cooldown: 0.8 seconds, CANON.
-- Every dangerous attack needs a readable telegraph, CANON.
-- Elite spawn must be safe relative to the player, CANON.
-- Same-frame damage stacking is forbidden, CANON.
-- No untelegraphed hit may exceed 15% of base hero HP, CANON acceptance target.
-- Bosses must not spawn inside the player and must leave a readable reaction window, CANON acceptance target.
-- The implementation must expose active-mass and safe-mode diagnostics before Android performance is assessed.
+| Profile | Meta ranks | Damage multiplier | Cooldown multiplier | Landed-hit probability | Build status |
+|---|---|---:|---:|---:|---|
+| fresh | all 0 | 1.00 | 1.00 | 0.002 | PROPOSED model profile |
+| moderate | V3/P3/A2/F2/M2/D2 | 1.06 | 0.97 | 0.0015 | PROPOSED model profile |
+| max_m1 | all 10 | 1.20 | 0.85 | 0.001 | PROPOSED model profile |
 
-## Required combat evidence
+Lin Yue uses architecture IDs hero_lin_yue + weapon_jade_talismans + passive_jade_focus + synergy_heavenly_seals. Soyeon Han uses hero_seoyeon_han + weapon_moon_blade + passive_wind_of_travel + synergy_moon_dance. Weapon/passive numeric values, crit pipeline, and synergy damage multipliers are PROPOSED because B1/architecture provide IDs and requirements but not tuning values.
 
-A valid combat result must include the exact source revision, profile definition, hero/build, wave band, enemy ID, HP/damage/speed inputs, mitigation rule, attack cadence, crit rule, event trace or deterministic seed, measured TTK, and rejected-hit count. Without these fields the result is SPECIFIED or SIMULATED_TEST_PLACEHOLDER, not RUNTIME_VERIFIED.
+## Model-only result summary
+
+The five-seed result is in BALANCE_SIMULATION_REPORT.md. Ordinary and elite rows are not blanket passes: mean focused TTK is usually inside the target, while some p95 values and hero/profile combinations remain outside it. Boss results are reported per checkpoint and per profile. This is evidence about the proposed equations and inputs only, not runtime combat.
+
+## Remaining combat blockers
+
+- absolute values need Product/Balance approval;
+- contact/telegraph positions are not simulated spatially;
+- incoming hit probability is a mean-field proposal, not collision evidence;
+- synergy attribution is computed by formula but not by runtime event trace;
+- Android performance and same-frame event ordering are unverified.
