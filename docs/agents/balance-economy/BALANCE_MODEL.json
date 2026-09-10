@@ -35,6 +35,7 @@
     "PENDING_SIMULATION",
     "PENDING_SIMULATION_AND_RUNTIME",
     "PROPOSED",
+    "PENDING_ARCHITECTURE",
     "SIMULATED_MODEL_ONLY"
   ],
   "hero_stats": {
@@ -357,6 +358,130 @@
         "value": "17-18",
         "status": "CANON",
         "source": "B1 section 4"
+      }
+    },
+    {
+      "wave_band_id": "wave_cataclysm_20_25",
+      "start_seconds": 1200,
+      "end_seconds": 1500,
+      "label": "cataclysm_extension",
+      "spawn_budget_per_second": {
+        "value": 38,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 stops at 1200 seconds",
+        "derived_formula": "round(30 + (30 - 22) * (1200 / 900))",
+        "rationale": "Extends the last canonical pressure slope without an immediate jump at 20:00.",
+        "status_reason": "B1 has no 20-30 minute wave anchors."
+      },
+      "active_cap": {
+        "value": 340,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 active-cap sequence",
+        "derived_formula": "round(280 + (280 - 200) * 0.75)",
+        "rationale": "Continues active-mass growth while preserving a measurable cap below the final extension peak.",
+        "status_reason": "Android/runtime occupancy budget is not yet confirmed."
+      },
+      "enemy_hp_multiplier": {
+        "value": 2.7,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "2.2 + (2.2 - 1.7) * 1.0",
+        "rationale": "Adds durability gradually across the first post-20-minute band.",
+        "status_reason": "Absolute late-run enemy HP is pending B1 update."
+      },
+      "enemy_damage_multiplier": {
+        "value": 1.75,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "1.55 + (1.55 - 1.25) * 0.667",
+        "rationale": "Raises incoming risk without turning the 20:00 transition into an instant wall.",
+        "status_reason": "Telegraph coverage and hit rate require runtime validation."
+      },
+      "enemy_speed_multiplier": {
+        "value": 1.1,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "1.08 + (1.08 - 1.05) * 0.667",
+        "rationale": "Keeps movement pressure increasing more slowly than HP/damage.",
+        "status_reason": "Late-run movement budget is not canonical."
+      },
+      "composition": {
+        "value": "full_roster; finite_elite_variant_events_only",
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; C3 future-enemy boundary",
+        "derived_formula": "reuse canonical roster; elite overlay is event-triggered, not a permanent wave member",
+        "rationale": "Prevents the new elite variations from becoming continuous background pressure.",
+        "status_reason": "Elite variant registry and pack cadence are pending."
+      },
+      "level_target": {
+        "value": "21-22",
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; canonical level targets through 20:00",
+        "derived_formula": "continue the 10-minute target slope with a two-level five-minute extension",
+        "rationale": "Keeps the build progressing before the final two bosses.",
+        "status_reason": "B1 contains no 30-minute progression target."
+      }
+    },
+    {
+      "wave_band_id": "wave_apocalypse_25_30",
+      "start_seconds": 1500,
+      "end_seconds": 1800,
+      "label": "apocalypse_extension",
+      "spawn_budget_per_second": {
+        "value": 48,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "round(38 + (38 - 30) * 1.25)",
+        "rationale": "Creates a final siege peak after a full 25:00-to-30:00 ramp.",
+        "status_reason": "The requested 30-minute B1 revision is not yet present."
+      },
+      "active_cap": {
+        "value": 400,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 active-cap sequence",
+        "derived_formula": "round(340 + (340 - 280) * 1.0)",
+        "rationale": "Provides a measurable final occupancy target without unbounded spawn debt.",
+        "status_reason": "Runtime performance and device budget are pending."
+      },
+      "enemy_hp_multiplier": {
+        "value": 3.3,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "2.7 + (2.7 - 2.2) * 1.2",
+        "rationale": "Makes the final band a peak while preserving a visible climb from 20:00.",
+        "status_reason": "Absolute enemy stats and late-game TTK require B1 approval."
+      },
+      "enemy_damage_multiplier": {
+        "value": 2.0,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "1.75 + (1.75 - 1.55) * 1.25",
+        "rationale": "Sets the final pressure peak while keeping each individual hit bounded by telegraph rules.",
+        "status_reason": "Incoming damage needs runtime/player-trace validation."
+      },
+      "enemy_speed_multiplier": {
+        "value": 1.12,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
+        "derived_formula": "1.10 + (1.10 - 1.08) * 1.0",
+        "rationale": "Finishes the pressure climb without making speed the only difficulty lever.",
+        "status_reason": "Movement and safe-spawn behavior are pending runtime."
+      },
+      "composition": {
+        "value": "full_roster; finite_elite_variant_events_only",
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; C3 future-enemy boundary",
+        "derived_formula": "reuse canonical roster; elite overlay remains event-triggered",
+        "rationale": "The final wave may be dense, but elite variants still appear only through finite chest/pressure events.",
+        "status_reason": "Elite content IDs and composition are not in the architecture registry."
+      },
+      "level_target": {
+        "value": "25-26",
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; canonical level targets through 20:00",
+        "derived_formula": "continue the extension progression by four levels over the final ten minutes",
+        "rationale": "Leaves the final boss as a build check rather than an unannounced level wall.",
+        "status_reason": "30-minute XP curve is pending B1."
       }
     }
   ],
@@ -858,6 +983,69 @@
         "boss_essence": 2,
         "status": "CANON",
         "source": "B1 section 7"
+      },
+      {
+        "checkpoint_id": "boss_05_25",
+        "gold": 250,
+        "moon_seals": 70,
+        "boss_essence": 2,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 reward ladder has no 25:00 checkpoint",
+        "derived_formula": "continue the 15:00→20:00 proposed reward step with a bounded +50 gold/+10 seals/+1 essence increment"
+      },
+      {
+        "checkpoint_id": "boss_final_30",
+        "gold": 300,
+        "moon_seals": 80,
+        "boss_essence": 3,
+        "status": "PROPOSED",
+        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 reward ladder has no 30:00 checkpoint",
+        "derived_formula": "final reward = 20:00 proposed reward + one late checkpoint increment; first-clear bonus remains separate"
+      },
+      {
+        "checkpoint_id": "miniboss_01_07_30",
+        "gold": 40,
+        "moon_seals": 10,
+        "boss_essence": 1,
+        "status": "PROPOSED",
+        "source": "C3 mini-boss chest intent; B1 has no mini-boss wallet values",
+        "derived_formula": "mini reward = 0.5 × first main checkpoint gold, rounded, plus one essence"
+      },
+      {
+        "checkpoint_id": "miniboss_02_12_30",
+        "gold": 50,
+        "moon_seals": 12,
+        "boss_essence": 1,
+        "status": "PROPOSED",
+        "source": "C3 mini-boss chest intent; B1 has no mini-boss wallet values",
+        "derived_formula": "mini reward ladder increments by 10 gold and 2 seals"
+      },
+      {
+        "checkpoint_id": "miniboss_03_17_30",
+        "gold": 60,
+        "moon_seals": 14,
+        "boss_essence": 1,
+        "status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and reward weight are missing",
+        "derived_formula": "continue the bounded mini-boss ladder"
+      },
+      {
+        "checkpoint_id": "miniboss_04_22_30",
+        "gold": 70,
+        "moon_seals": 16,
+        "boss_essence": 1,
+        "status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and reward weight are missing",
+        "derived_formula": "continue the bounded mini-boss ladder"
+      },
+      {
+        "checkpoint_id": "miniboss_05_27_30",
+        "gold": 80,
+        "moon_seals": 18,
+        "boss_essence": 1,
+        "status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and reward weight are missing",
+        "derived_formula": "continue the bounded mini-boss ladder below the final main-boss reward"
       }
     ],
     "first_clear_bonus": {
@@ -1198,18 +1386,143 @@
     "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
   },
   "simulation_model": {
-    "model_version": "0.3",
+    "model_version": "0.4",
     "status": "PROPOSED_MODEL_ONLY",
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
     "architecture_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
     "runtime_status": "NOT_IMPLEMENTED",
-    "scope": "deterministic 20-minute wave/economy model with a separate encounter clock for every boss checkpoint",
+    "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; elite variants are finite event packs",
     "main_run_duration_seconds": {
-      "value": 1200,
-      "source": "architecture contract canonical duration; B1 section 4",
-      "derived_formula": "5 wave durations × 60 seconds per minute",
-      "rationale": "Matches the 20-minute first-run contract.",
-      "status": "CANON"
+      "value": 1800,
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10; old architecture/B1 value is 1200",
+      "derived_formula": "30 minutes × 60 seconds",
+      "rationale": "Extends the balance slice to the requested 30-minute run while leaving the old architecture contract read-only and visibly out of sync.",
+      "status": "PROPOSED",
+      "status_reason": "Architecture and B1 source docs still declare 1200 seconds."
+    },
+    "run_schedule": {
+      "status": "PROPOSED",
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10 plus existing B1 checkpoint cadence",
+      "duration_seconds": {
+        "value": 1800,
+        "source": "simulation_model.main_run_duration_seconds",
+        "derived_formula": "30 × 60",
+        "rationale": "Single schedule duration consumed by the simulator.",
+        "status": "DERIVED"
+      },
+      "derived_formula": "main checkpoints remain on a 5-minute cadence; five mini-bosses occupy the midpoint of each 5-minute interval before the final checkpoint",
+      "rationale": "Gives the requested two additional main-boss slots and five mini-boss opportunities without placing encounters on top of one another.",
+      "architecture_sync_status": "BLOCKED_PENDING_ARCHITECTURE_REGISTRY_UPDATE",
+      "main_boss_checkpoints": [
+        {
+          "checkpoint_id": "boss_01_05",
+          "time_seconds": 300,
+          "boss_id": "boss_hua_lin",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": false,
+          "id_status": "CANON_ARCHITECTURE",
+          "schedule_status": "PROPOSED_30M_CONTEXT"
+        },
+        {
+          "checkpoint_id": "boss_02_10",
+          "time_seconds": 600,
+          "boss_id": "boss_miyeon",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": false,
+          "id_status": "CANON_ARCHITECTURE",
+          "schedule_status": "PROPOSED_30M_CONTEXT"
+        },
+        {
+          "checkpoint_id": "boss_03_15",
+          "time_seconds": 900,
+          "boss_id": "boss_seika",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": false,
+          "id_status": "CANON_ARCHITECTURE",
+          "schedule_status": "PROPOSED_30M_CONTEXT"
+        },
+        {
+          "checkpoint_id": "boss_final_20",
+          "time_seconds": 1200,
+          "boss_id": "boss_black_moon_empress",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": false,
+          "id_status": "CANON_ARCHITECTURE",
+          "schedule_status": "PENDING_ARCHITECTURE_RECLASSIFICATION_FROM_FINAL"
+        },
+        {
+          "checkpoint_id": "boss_05_25",
+          "time_seconds": 1500,
+          "boss_id": "boss_pending_25",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": false,
+          "id_status": "PENDING_CONTENT_REGISTRY",
+          "schedule_status": "PROPOSED_NEW_MAIN_BOSS"
+        },
+        {
+          "checkpoint_id": "boss_final_30",
+          "time_seconds": 1800,
+          "boss_id": "boss_pending_final_30",
+          "encounter_kind": "MAIN_BOSS",
+          "is_final": true,
+          "id_status": "PENDING_CONTENT_REGISTRY",
+          "schedule_status": "PROPOSED_NEW_FINAL_BOSS"
+        }
+      ],
+      "mini_boss_checkpoints": [
+        {
+          "checkpoint_id": "miniboss_01_07_30",
+          "time_seconds": 450,
+          "boss_id": "miniboss_ink_jade_warden",
+          "encounter_kind": "MINI_BOSS",
+          "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
+          "reward_type": "BOSS_CHEST",
+          "id_status": "CONTENT_PROPOSAL_REGISTRY_SYNC_PENDING"
+        },
+        {
+          "checkpoint_id": "miniboss_02_12_30",
+          "time_seconds": 750,
+          "boss_id": "miniboss_veil_harvester",
+          "encounter_kind": "MINI_BOSS",
+          "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
+          "reward_type": "BOSS_CHEST",
+          "id_status": "CONTENT_PROPOSAL_REGISTRY_SYNC_PENDING"
+        },
+        {
+          "checkpoint_id": "miniboss_03_17_30",
+          "time_seconds": 1050,
+          "boss_id": "miniboss_pending_03",
+          "encounter_kind": "MINI_BOSS",
+          "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
+          "reward_type": "BOSS_CHEST",
+          "id_status": "PENDING_CONTENT_REGISTRY"
+        },
+        {
+          "checkpoint_id": "miniboss_04_22_30",
+          "time_seconds": 1350,
+          "boss_id": "miniboss_pending_04",
+          "encounter_kind": "MINI_BOSS",
+          "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
+          "reward_type": "BOSS_CHEST",
+          "id_status": "PENDING_CONTENT_REGISTRY"
+        },
+        {
+          "checkpoint_id": "miniboss_05_27_30",
+          "time_seconds": 1650,
+          "boss_id": "miniboss_pending_05",
+          "encounter_kind": "MINI_BOSS",
+          "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
+          "reward_type": "BOSS_CHEST",
+          "id_status": "PENDING_CONTENT_REGISTRY"
+        }
+      ],
+      "checkpoint_spacing_seconds": {
+        "value": 300,
+        "source": "existing B1 5-minute cadence extended by user decision",
+        "derived_formula": "30-minute duration ÷ 6 main-boss checkpoints",
+        "rationale": "Keeps boss readability and leaves a ramp/siege interval between checkpoints.",
+        "status": "PROPOSED"
+      }
     },
     "simulation_step_seconds": {
       "value": 0.25,
@@ -1334,6 +1647,22 @@
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
           "rationale": "Supports the level-17–18 target without requiring a new XP drop value.",
           "status": "PROPOSED"
+        },
+        "wave_cataclysm_20_25": {
+          "value": 4.6,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 pickup cadence absent",
+          "derived_formula": "3.8 + (3.8 - 2.5) × 0.615",
+          "rationale": "Continues pickup throughput with the 20:00–25:00 pressure ramp without granting a hidden boss XP spike.",
+          "status": "PROPOSED",
+          "status_reason": "30-minute XP target and pickup economy are not in B1."
+        },
+        "wave_apocalypse_25_30": {
+          "value": 5.5,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 pickup cadence absent",
+          "derived_formula": "4.6 + (4.6 - 3.8) × 1.125",
+          "rationale": "Supports the final ten-minute build curve while keeping XP acquisition data-driven.",
+          "status": "PROPOSED",
+          "status_reason": "30-minute XP target and pickup economy are not in B1."
         }
       },
       "magnet_capacity_per_rank": {
@@ -1395,6 +1724,30 @@
           "enemy_thread_doll": 0.1,
           "enemy_stone_oni": 0.06,
           "enemy_eclipse_serpent": 0.06
+        },
+        "wave_cataclysm_20_25": {
+          "enemy_ink_beetle": 0.12,
+          "enemy_lantern_moth": 0.1,
+          "enemy_bone_carp": 0.08,
+          "enemy_paper_ghost": 0.08,
+          "enemy_jade_toad": 0.1,
+          "enemy_mirror_fox": 0.08,
+          "enemy_bell_crab": 0.13,
+          "enemy_thread_doll": 0.12,
+          "enemy_stone_oni": 0.1,
+          "enemy_eclipse_serpent": 0.09
+        },
+        "wave_apocalypse_25_30": {
+          "enemy_ink_beetle": 0.08,
+          "enemy_lantern_moth": 0.08,
+          "enemy_bone_carp": 0.07,
+          "enemy_paper_ghost": 0.07,
+          "enemy_jade_toad": 0.08,
+          "enemy_mirror_fox": 0.07,
+          "enemy_bell_crab": 0.14,
+          "enemy_thread_doll": 0.14,
+          "enemy_stone_oni": 0.14,
+          "enemy_eclipse_serpent": 0.13
         }
       },
       "composition_formula": "weights are normalized only if floating-point sum drifts from 1.0; one weighted choice per spawn budget unit",
@@ -1553,6 +1906,24 @@
           "peak_band_id": "wave_eclipse_15_20",
           "status": "DERIVED",
           "source": "B1 section 4 band order and checkpoint spacing"
+        },
+        {
+          "cycle_id": "cycle_after_boss_04",
+          "from_checkpoint_id": "boss_final_20",
+          "to_checkpoint_id": "boss_05_25",
+          "entry_band_id": "wave_eclipse_15_20",
+          "peak_band_id": "wave_cataclysm_20_25",
+          "status": "PROPOSED",
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; linear continuation from the last canonical band"
+        },
+        {
+          "cycle_id": "cycle_after_boss_05",
+          "from_checkpoint_id": "boss_05_25",
+          "to_checkpoint_id": "boss_final_30",
+          "entry_band_id": "wave_cataclysm_20_25",
+          "peak_band_id": "wave_apocalypse_25_30",
+          "status": "PROPOSED",
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; linear continuation to the final siege"
         }
       ]
     },
@@ -2214,6 +2585,246 @@
         },
         "boss_id_status": "CANON",
         "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+      },
+      "boss_05_25": {
+        "boss_id": "boss_pending_25",
+        "checkpoint_id": "boss_05_25",
+        "base_hp": {
+          "value": 10000,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; absolute late-boss HP absent from B1",
+          "derived_formula": "target_late_main_ttk_midpoint × reference_late_boss_dps = 67 × 150",
+          "rationale": "Keeps the new 25:00 boss in a late-main-boss window instead of reusing the old 20:00 final HP silently.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 26,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; boss incoming damage absent from B1",
+          "derived_formula": "late_boss_damage_budget ÷ telegraphed_attack_interval ÷ proposed_hit_probability",
+          "rationale": "Raises readable pressure after 20:00 while keeping a single hit below the telegraph-bound target in the model.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 36,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; boss movement absent from B1",
+          "derived_formula": "late_arena_pressure_target ÷ target_late_main_ttk_midpoint",
+          "rationale": "Continues the proposed 20:00 speed progression without a teleport-only difficulty spike.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.5,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; boss cadence absent from B1",
+          "derived_formula": "late-boss telegraph cadence remains above the 0.8-second contact gate",
+          "rationale": "Maintains a readable attack rhythm in the 25:00 encounter.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.8,
+          "source": "B1 telegraph invariant; exact late-boss warning absent",
+          "derived_formula": "minimum proposed warning used by the existing model",
+          "rationale": "Preserves the same readable telegraph floor until runtime traces establish a different value.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 allowed XP drop set; new boss mapping absent",
+          "derived_formula": "reuse the top special drop without adding a new XP denomination",
+          "rationale": "Keeps the boss reward vocabulary stable while the new content ID is pending.",
+          "status": "PROPOSED"
+        },
+        "boss_id_status": "PENDING_CONTENT_REGISTRY"
+      },
+      "boss_final_30": {
+        "boss_id": "boss_pending_final_30",
+        "checkpoint_id": "boss_final_30",
+        "base_hp": {
+          "value": 11200,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; absolute final-boss HP absent from B1",
+          "derived_formula": "target_final_ttk_midpoint × reference_late_boss_dps = 93 × 120, rounded to 11200",
+          "rationale": "Places the new final boss in the existing 90–120 second target window under the reference late-run DPS assumption.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 30,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; final-boss damage absent from B1",
+          "derived_formula": "final_boss_damage_budget ÷ telegraphed_attack_interval ÷ proposed_hit_probability",
+          "rationale": "Creates a final pressure peak without using an untelegraphed lethal hit.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 38,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; final-boss movement absent from B1",
+          "derived_formula": "final_arena_pressure_target ÷ target_final_ttk_midpoint",
+          "rationale": "Adds final positional pressure while keeping the attack telegraph as the primary safety control.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.4,
+          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; final-boss cadence absent from B1",
+          "derived_formula": "final-boss cadence remains above the 0.8-second contact gate",
+          "rationale": "Keeps the final encounter active but reactable.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.8,
+          "source": "B1 telegraph invariant; exact 30:00 final warning absent",
+          "derived_formula": "minimum proposed warning used by the existing model",
+          "rationale": "Prevents the new final boss from relying on invisible burst.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 allowed XP drop set; new final mapping absent",
+          "derived_formula": "reuse the top special drop; final boss XP remains excluded from the main level curve",
+          "rationale": "Avoids silently adding a new progression spike at victory.",
+          "status": "PROPOSED"
+        },
+        "boss_id_status": "PENDING_CONTENT_REGISTRY"
+      }
+    },
+    "mini_boss_stats": {
+      "status": "PROPOSED",
+      "source": "C3 mini-boss role/telegraph intent plus B1 boss TTK/incoming-risk targets; absolute mini-boss values are absent",
+      "stat_formula": "base_hp = target_mini_ttk_midpoint × reference_mini_boss_dps; base_damage follows telegraph-bound incoming budget",
+      "miniboss_ink_jade_warden": {
+        "boss_id": "miniboss_ink_jade_warden",
+        "base_hp": 3000,
+        "base_damage": 14,
+        "base_speed": 22,
+        "attack_interval_seconds": 2.8,
+        "telegraph_seconds": 0.9,
+        "xp_value": 80,
+        "stat_status": "PROPOSED",
+        "source": "C3 role: space controller; exact HP/damage/duration is PENDING_BALANCE",
+        "derived_formula": "3000 = 20-second lower target × 150 reference mini-boss DPS",
+        "rationale": "First mini-boss tests route reading without freezing waves or becoming a main-boss-length wall."
+      },
+      "miniboss_veil_harvester": {
+        "boss_id": "miniboss_veil_harvester",
+        "base_hp": 3300,
+        "base_damage": 16,
+        "base_speed": 24,
+        "attack_interval_seconds": 2.6,
+        "telegraph_seconds": 0.85,
+        "xp_value": 80,
+        "stat_status": "PROPOSED",
+        "source": "C3 role: priority hunter; exact HP/damage/delay is PENDING_BALANCE",
+        "derived_formula": "3300 = 22-second lower target × 150 reference mini-boss DPS",
+        "rationale": "Second mini-boss increases target-priority pressure while remaining shorter than a main checkpoint."
+      },
+      "miniboss_pending_03": {
+        "boss_id": "miniboss_pending_03",
+        "base_hp": 3600,
+        "base_damage": 18,
+        "base_speed": 26,
+        "attack_interval_seconds": 2.5,
+        "telegraph_seconds": 0.8,
+        "xp_value": 80,
+        "stat_status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and skill kit are missing",
+        "derived_formula": "3600 = 24-second lower target × 150 reference late-mini DPS",
+        "rationale": "Reserved slot grows pressure gradually; it is not a registry claim."
+      },
+      "miniboss_pending_04": {
+        "boss_id": "miniboss_pending_04",
+        "base_hp": 3900,
+        "base_damage": 20,
+        "base_speed": 28,
+        "attack_interval_seconds": 2.4,
+        "telegraph_seconds": 0.8,
+        "xp_value": 80,
+        "stat_status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and skill kit are missing",
+        "derived_formula": "3900 = 26-second lower target × 150 reference late-mini DPS",
+        "rationale": "Late mini-boss pressure rises through encounter length and damage, not instant burst."
+      },
+      "miniboss_pending_05": {
+        "boss_id": "miniboss_pending_05",
+        "base_hp": 4300,
+        "base_damage": 22,
+        "base_speed": 30,
+        "attack_interval_seconds": 2.3,
+        "telegraph_seconds": 0.8,
+        "xp_value": 80,
+        "stat_status": "PROPOSED",
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and skill kit are missing",
+        "derived_formula": "4300 = 29-second late-mini target × 148 reference late-mini DPS",
+        "rationale": "Final mini-boss is a pre-final pressure check, still distinct from the 30:00 final boss."
+      },
+      "target_ttk_seconds": {
+        "value": [20, 55],
+        "source": "B1 boss TTK target plus C3 short-encounter intent",
+        "derived_formula": "mini-boss target is below main first-slice 45–80 seconds and final 90–120 seconds",
+        "rationale": "Mini-bosses create pressure while waves keep moving; they cannot consume the whole interval.",
+        "status": "PROPOSED"
+      }
+    },
+    "elite_variation_policy": {
+      "status": "PROPOSED",
+      "source": "USER_PRODUCT_DECISION_ELITE_VARIANTS_FOR_CHESTS_AND_HORDE_PRESSURE; C3 elite-pack artifact source; B1 has no cadence/stats",
+      "purpose": ["ADDITIONAL_ARTIFACT_OFFER_SOURCE", "FINITE_HORDE_PRESSURE_EVENT"],
+      "persistent": false,
+      "spawn_mode": "FINITE_PACK_AFTER_MINI_BOSS_DEFEAT",
+      "max_events_per_run": {
+        "value": 5,
+        "source": "USER_REQUESTED_FIVE_MINI_BOSSES",
+        "derived_formula": "one finite elite pack per mini-boss checkpoint",
+        "rationale": "Elite variants are event tools, never a permanent composition weight.",
+        "status": "PROPOSED"
+      },
+      "variant_overlay": {
+        "hp_multiplier": {
+          "value": 8,
+          "source": "PENDING_B1; elite TTK target 10–25 seconds and no variant stats",
+          "derived_formula": "base enemy HP × 8, then current wave HP multiplier; calibrate against the 10–25 second elite TTK target",
+          "rationale": "A finite variant must survive a focused player attack for an elite-length window; 1.8× only produced ordinary-class TTK in the first model pass.",
+          "status": "PROPOSED"
+        },
+        "damage_multiplier": {
+          "value": 1.25,
+          "source": "PENDING_B1; incoming-risk target and no variant damage stats",
+          "derived_formula": "base enemy damage × 1.25, then current wave damage multiplier",
+          "rationale": "Adds pressure while keeping the same telegraph grammar and contact gate.",
+          "status": "PROPOSED"
+        },
+        "speed_multiplier": {
+          "value": 1.05,
+          "source": "PENDING_B1; no variant movement stats",
+          "derived_formula": "base enemy speed × 1.05",
+          "rationale": "Prevents the overlay from being only an HP bag; the increase stays smaller than HP/damage.",
+          "status": "PROPOSED"
+        },
+        "xp_multiplier": {
+          "value": 2,
+          "source": "PENDING_B1; no variant XP mapping",
+          "derived_formula": "round(base enemy XP × 2)",
+          "rationale": "Pays for a finite elite pack without a new XP denomination.",
+          "status": "PROPOSED"
+        }
+      },
+      "pack_size": {
+        "value": 3,
+        "source": "PENDING_B1; no elite-pack size",
+        "derived_formula": "one anchor variant plus two ordinary escorts",
+        "rationale": "Small enough for a pressure beat and large enough to be visible.",
+        "status": "PROPOSED"
+      },
+      "selection": {
+        "value": "seeded_choice_from_current_wave_composition",
+        "source": "B1 wave composition plus user elite-variation rule",
+        "derived_formula": "choose anchor base enemy from current band weights using run seed",
+        "rationale": "Keeps the elite overlay tied to the wave rather than inventing a hidden roster.",
+        "status": "DERIVED"
+      },
+      "reward": {
+        "source_kind": "ELITE_PACK",
+        "reward_type": "ARTIFACT_OFFER",
+        "choice_count": 3,
+        "selection": "ONE_OF_THREE",
+        "wallet_mutation": false,
+        "idempotency_key_format": "{run_id}:ELITE_PACK:{event_id}:ARTIFACT_OFFER",
+        "status": "PROPOSED_MODEL_ONLY",
+        "source": "existing artifact_offer_model plus user request for additional chest/offer beats",
+        "derived_formula": "one offer after all members of a finite pack are defeated; duplicate returns stored offer"
       }
     },
     "combat_math": {
@@ -2449,6 +3060,13 @@
     "build_catalog": {
       "status": "PROPOSED",
       "source": "architecture content registry supplies IDs; numeric combat values absent",
+      "max_synergy_claims_per_run": {
+        "value": 5,
+        "source": "content catalog C1/C3 requested cap; architecture registry sync pending",
+        "derived_formula": "one claim per eligible non-final chest, capped at five run claims",
+        "rationale": "Allows the five mini/main chest windows to be meaningful without allowing unbounded evolution grants.",
+        "status": "PROPOSED"
+      },
       "weapons": {
         "weapon_jade_talismans": {
           "owner_hero_id": "hero_lin_yue",
@@ -2625,7 +3243,9 @@
         "300": 5,
         "600": 9,
         "900": 13,
-        "1200": "17-18"
+        "1200": "17-18",
+        "1500": "21-22",
+        "1800": "25-26"
       },
       "ordinary_ttk_seconds": [
         0.5,
@@ -2635,9 +3255,21 @@
         10,
         25
       ],
+      "elite_variant_ttk_seconds": [
+        5,
+        15
+      ],
       "first_slice_boss_ttk_seconds": [
         45,
         80
+      ],
+      "late_main_boss_ttk_seconds": [
+        60,
+        100
+      ],
+      "mini_boss_ttk_seconds": [
+        20,
+        55
       ],
       "final_boss_ttk_seconds": [
         90,
@@ -2699,10 +3331,16 @@
         "policy": null
       },
       "elite_pack_schedule": {
-        "status": "PENDING_B1",
-        "cadence": null,
-        "size": null,
-        "composition": null
+        "status": "PROPOSED",
+        "cadence": "AFTER_EACH_MINI_BOSS_DEFEAT",
+        "size": {
+          "value": 3,
+          "source": "simulation_model.elite_variation_policy.pack_size",
+          "derived_formula": "one anchor variant plus two escorts",
+          "status": "DERIVED"
+        },
+        "composition": "seeded_choice_from_current_wave_composition",
+        "source": "simulation_model.elite_variation_policy; exact B1 cadence/composition remains pending"
       },
       "first_clear_offer": {
         "source_kind": "FIRST_CLEAR_REWARD",
@@ -2714,17 +3352,30 @@
     "boss_clock_policy": {
       "status": "CANON",
       "source": "User product decision captured 2026-09-10",
-      "applies_to": "ALL_BOSS_CHECKPOINTS",
+      "applies_to": "MAIN_BOSS_CHECKPOINTS",
       "checkpoint_seconds": [
         300,
         600,
         900,
-        1200
+        1200,
+        1500,
+        1800
       ],
       "run_clock_stops_at_boss_checkpoint": true,
       "wave_xp_spawn_clock_advances_during_encounter": false,
       "resolution_clock": "SEPARATE_ENCOUNTER_CLOCK",
-      "rationale": "The visible run clock freezes at every boss checkpoint; only the boss encounter clock advances until that boss is defeated or the run fails."
+      "rationale": "The visible run clock freezes at every main-boss checkpoint; only the main-boss encounter clock advances until that boss is defeated or the run fails."
+    },
+    "mini_boss_clock_policy": {
+      "status": "PROPOSED",
+      "source": "USER_PRODUCT_DECISION_MINI_BOSSES_DO_NOT_FREEZE_WAVES; C3 mini-boss encounter intent",
+      "applies_to": "MINI_BOSS_CHECKPOINTS",
+      "checkpoint_seconds": [450, 750, 1050, 1350, 1650],
+      "run_clock_stops_at_checkpoint": false,
+      "wave_xp_spawn_clock_advances_during_encounter": true,
+      "resolution_clock": "SAME_WALL_AND_RUN_CLOCK",
+      "rationale": "Mini-bosses are pressure beats inside the wave cadence: spawning, XP pickup and the visible timer continue while the mini-boss is alive.",
+      "status_reason": "Runtime encounter_kind and timer behavior are not yet in the architecture registry."
     }
   },
   "runtime_integration": {
@@ -2761,6 +3412,30 @@
           "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         }
       ],
+      "run_30m_extension": {
+        "status": "BLOCKED_PENDING_ARCHITECTURE_REGISTRY_UPDATE",
+        "main_boss_mapping": "read from simulation_model.run_schedule.main_boss_checkpoints",
+        "mini_boss_mapping": "read from simulation_model.run_schedule.mini_boss_checkpoints",
+        "clock_split": {
+          "main_boss": "FREEZE_VISIBLE_RUN_WAVE_XP_SPAWN_CLOCK",
+          "mini_boss": "ADVANCE_VISIBLE_RUN_WAVE_XP_SPAWN_CLOCK"
+        },
+        "unresolved_ids": [
+          "boss_pending_25",
+          "boss_pending_final_30",
+          "miniboss_pending_03",
+          "miniboss_pending_04",
+          "miniboss_pending_05"
+        ],
+        "required_architecture_fields": [
+          "duration_seconds_1800",
+          "main_boss_checkpoint_registry",
+          "mini_boss_encounter_kind",
+          "mini_boss_timer_policy",
+          "elite_variant_overlay_or_registry_ids",
+          "30m_wave_band_registry"
+        ]
+      },
       "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
       "no_duplicate_tuning_values": true,
       "simulator_authority": "simulation_model in BALANCE_MODEL.json",
@@ -2789,6 +3464,16 @@
           "wave_band_id": "wave_eclipse_15_20",
           "status": "CANON",
           "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+        },
+        {
+          "wave_band_id": "wave_cataclysm_20_25",
+          "status": "PROPOSED_EXTENSION",
+          "source": "simulation_model 30-minute extension; not in architecture registry"
+        },
+        {
+          "wave_band_id": "wave_apocalypse_25_30",
+          "status": "PROPOSED_EXTENSION",
+          "source": "simulation_model 30-minute extension; not in architecture registry"
         }
       ],
       "enemy_id_policy": {
