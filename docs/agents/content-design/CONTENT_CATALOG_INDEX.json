@@ -612,5 +612,40 @@
       "aura.drop_tide_path",
       "target.threat_telegraph"
     ]
+  },
+  "ref_content_01": {
+    "task_id": "REF-CONTENT-01",
+    "scope": "CONTENT_ONLY",
+    "status": "PARTIAL",
+    "source_head": "145d08ca64cca8b3fc795a3d87e0031fc2c7cc69",
+    "document": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
+    "new_ids_introduced": [],
+    "reused_content": {
+      "weapon_count": 10,
+      "passive_count": 10,
+      "synergy_count": 10,
+      "artifact_count": 10,
+      "enemy_record_count": 10,
+      "requested_core_boss_count": 4
+    },
+    "reference_repositories": [
+      "murparreira/vampire-survivors-clone-godot-4",
+      "ParsaSabzei/20-Minutes-till-dawn",
+      "Blaze-master/Magic_Survival_Clone",
+      "syncXL/Magic_Survival_Clone"
+    ],
+    "reference_policy": "STRUCTURAL_PATTERNS_ONLY; NO_FOREIGN_NUMBERS_IDS_NAMES_CHARACTERS_DESCRIPTIONS_IMAGES_OR_ASSETS",
+    "approval_boundary": {
+      "runtime": "NOT_REQUESTED",
+      "balance": "NOT_LOCKED",
+      "artistic": "PENDING"
+    },
+    "blockers": [
+      "30-minute four-core versus six-main/five-mini reconciliation",
+      "artifact registry 8 versus content 10 and missing typed effect definitions",
+      "enemy 8 ordinary plus 2 elite-family interpretation",
+      "per-ID balance and late-wave values pending"
+    ],
+    "promotion_guard": "DOCUMENTATION_ONLY; NO_RUNTIME_OR_ARTISTIC_APPROVAL"
   }
 }
