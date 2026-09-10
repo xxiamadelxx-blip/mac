@@ -1,8 +1,9 @@
 # Content Design — каталог и межагентский handoff
 
-Статус пакета: `CONTENT_SPECIFIED`
+Статус пакета: `CONTENT_SPECIFIED`  
+C5 status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 
-Пакет фиксирует контент первого забега, постоянное дерево магазина, future encounter proposals и семь временных drops арены. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
+Пакет фиксирует контент первого забега, постоянное дерево магазина, future encounter proposals, семь временных drops арены и C5 cross-system handoff. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
 
 ## 1. Состав среза
 
@@ -13,6 +14,7 @@
 | `C2_ARTIFACTS.md` | 10 артефактов, trigger/effect/counterplay и offer contract | `CONTENT_SPECIFIED` |
 | `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 4 future enemy proposals, 2 mini-bosses, 5 chest windows и fallback resolver | `CONTENT_SPECIFIED` |
 | `C4_ARENA_DROP_CATALOGUE.md` | 7 arena drops: heal, Gold, XP magnet, destruction, freeze, ward, vacuum | `CONTENT_SPECIFIED` |
+| `C5_CROSS_SYSTEM_HANDOFF.md` | cross-system index, dependency matrix, conflict review and owner handoff | `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS` |
 | `META_PASSIVE_TREE.md` | 6 ветвей, 17 stat nodes и shop/persistence contract | `CONTENT_SPECIFIED` |
 | `CONTENT_CATALOG_INDEX.json` | машинно читаемый roster/count/limit index | `CONTENT_SPECIFIED` |
 
@@ -173,7 +175,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 
 Локальная проверка JSON, ID uniqueness, required fields и remote path scope выполняется перед commit; production/playable/APPROVED статус этому пакету не присваивается.
 
-## 8. Следующий handoff order
+## 8. Historical C4 handoff order
 
 1. Balance Agent: reconcile six B1 branch budgets with 17-node topology and bind numbers.
 2. Architecture/Runtime: sync two artifact proposals, two mini-boss proposals, synergy cap, chest source, artifact effect schema and meta purchase boundary.
@@ -186,4 +188,21 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 - Balance owns source cadence, quantities, values, radii, durations, target caps, mitigation and performance budgets.
 - Architecture/Runtime owns instance/effect schema, new event names, idempotency, reward ownership, wall policy and reconnect behavior.
 - Visual Lab receives briefs only; no mockups or candidate IDs were created.
-- C5 remains the next Content Agent stage after the C4 handoff is accepted.
+- C5 is now documented in `C5_CROSS_SYSTEM_HANDOFF.md`; its open reconciliation items are explicit and are not hidden as content decisions.
+
+
+## 10. C5 cross-system reconciliation
+
+C5 сверяет каталог с live Architecture, Runtime и Balance contracts на baseline `17803bde8e38dbf07a72e4033beacf2de5e29281`. Полная dependency matrix, P1/P2 findings, Balance/Runtime/Visual Lab handoff и acceptance evidence находятся в `C5_CROSS_SYSTEM_HANDOFF.md`.
+
+Ключевые открытые reconciliation items:
+
+- Architecture: единая clock policy для MAIN_BOSS freeze и MINI_BOSS continuation;
+- Product/Content: roster mini-bosses — C3 content = 2, data contract = 3, runtime acceptance = 5, live B1 Registry = 0;
+- Architecture: синхронизация 2 недостающих артефактов и typed effect definitions;
+- Product/Balance: 20-minute legacy vs 30-minute architecture envelope; `BALANCE_MODEL.json` содержит только proposed/model-only extension;
+- Product/Architecture: карта 15 chest windows и отделение synergy claims от artifact offers;
+- Runtime: typed arena-drop instance/events поверх существующих XP/aftermath records;
+- Visual Lab: briefs переданы, mockups и production assets C5 не создаёт.
+
+C5 package status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`; до закрытия P1 findings нельзя ставить `APPROVED`, `IMPLEMENTED`, `VERIFIED`, `PLAYABLE` или `PRODUCTION`.

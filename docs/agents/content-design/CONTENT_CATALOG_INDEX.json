@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "894e4c35fa626d5c41cfa0d38a3e1e646fa89118",
+  "source_head": "17803bde8e38dbf07a72e4033beacf2de5e29281",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -13,7 +13,14 @@
     "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
     "docs/BALANCE_ECONOMY_SPEC.md",
     "GAME_MANIFEST.md",
-    "docs/agents/content-design/C4_ARENA_DROP_CATALOGUE.md"
+    "docs/agents/content-design/C4_ARENA_DROP_CATALOGUE.md",
+    "docs/agents/content-design/C5_CROSS_SYSTEM_HANDOFF.md",
+    "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+    "docs/agents/core-gameplay-runtime/RUNTIME_ACCEPTANCE.md",
+    "docs/agents/core-gameplay-runtime/R3_RUNTIME_HANDOFF.md",
+    "docs/agents/balance-economy/BALANCE_MODEL.json",
+    "docs/agents/balance-economy/BALANCE_WAVE_TABLE.md",
+    "docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md"
   ],
   "run_1": {
     "weapon_ids": [
@@ -102,7 +109,53 @@
       900,
       1200
     ],
-    "final_boss_chest": "FORBIDDEN"
+    "final_boss_chest": "FORBIDDEN",
+    "cross_system_target": {
+      "status": "RECONCILIATION_REQUIRED",
+      "envelope_target_seconds": 1800,
+      "main_boss_checkpoints_seconds": [
+        300,
+        600,
+        900,
+        1200,
+        1500,
+        1800
+      ],
+      "final_boss_id": "boss_black_moon_empress",
+      "final_boss_chest": "FORBIDDEN",
+      "max_chest_windows_per_run": 15,
+      "configured_non_final_boss_chest_windows": 8,
+      "reserved_additional_chest_windows": 7,
+      "max_synergy_claims_per_run": 5,
+      "main_boss_clock": "FREEZE_PER_RUNTIME_ACCEPTANCE_PENDING_DATA_CONTRACT_RECONCILIATION",
+      "mini_boss_clock": "ADVANCES_PER_RUNTIME_ACCEPTANCE",
+      "mini_boss_count": {
+        "c3_named_content": 2,
+        "data_contract_records": 3,
+        "runtime_acceptance_target": 5,
+        "b1_registry_records": 0,
+        "status": "PRODUCT_DECISION_REQUIRED"
+      },
+      "legacy_content_snapshot": {
+        "content_defined_main_boss_checkpoints_seconds": [
+          300,
+          600,
+          900,
+          1200
+        ],
+        "content_defined_mini_boss_checkpoints_seconds": [
+          450,
+          750
+        ],
+        "content_defined_synergy_checkpoints_seconds": [
+          300,
+          450,
+          600,
+          750,
+          900
+        ]
+      }
+    }
   },
   "arena_drops": {
     "ids": [
@@ -165,7 +218,8 @@
     "balance": "BALANCE_PENDING",
     "visual": "VISUAL_BRIEF_READY",
     "runtime": "RUNTIME_HANDOFF_READY",
-    "artistic": "PENDING"
+    "artistic": "PENDING",
+    "cross_system": "HANDOFF_READY_WITH_OPEN_RECONCILIATIONS"
   },
   "registry_sync_pending": [
     "artifact_tideglass",
@@ -187,7 +241,17 @@
     "arena_drop_destruction_seal",
     "arena_drop_wave_freeze",
     "arena_drop_ward_shard",
-    "arena_drop_vacuum_bloom"
+    "arena_drop_vacuum_bloom",
+    "artifact_effects_definitions",
+    "boss_extension_slot_04_identity",
+    "boss_extension_slot_05_identity",
+    "miniboss_extension_slot_03_identity",
+    "miniboss_roster_count_reconciliation",
+    "chest_window_additional_01_to_07_sources",
+    "arena_drop_registry",
+    "arena_drop_events",
+    "main_boss_clock_policy_reconciliation",
+    "balance_30_minute_extension"
   ],
   "no_mockups_created": true,
   "future_content": {
@@ -204,6 +268,81 @@
     "status": "CONTENT_SPECIFIED",
     "registry_sync": "PENDING_ARCHITECTURE",
     "not_part_of_run_1_registry": true,
-    "no_existing_first_run_replacement": true
+    "no_existing_first_run_replacement": true,
+    "roster_reconciliation": {
+      "status": "PRODUCT_DECISION_REQUIRED",
+      "c3_named_mini_boss_count": 2,
+      "data_contract_intermediate_boss_count": 3,
+      "runtime_acceptance_mini_boss_count": 5,
+      "b1_registry_records": 0,
+      "approved_additional_ids": [],
+      "do_not_create_speculative_ids": true
+    }
+  },
+  "c5_cross_system_handoff": {
+    "stage": "C5",
+    "status": "HANDOFF_READY_WITH_OPEN_RECONCILIATIONS",
+    "baseline_head": "17803bde8e38dbf07a72e4033beacf2de5e29281",
+    "document": "docs/agents/content-design/C5_CROSS_SYSTEM_HANDOFF.md",
+    "scope": [
+      "catalog_index",
+      "dependency_matrix",
+      "conflict_review",
+      "balance_handoff",
+      "runtime_handoff",
+      "visual_briefs",
+      "open_product_decisions",
+      "acceptance_evidence"
+    ],
+    "content_counts": {
+      "weapons": 10,
+      "passives": 10,
+      "synergies": 10,
+      "artifacts": 10,
+      "arena_drops": 7,
+      "meta_branches": 6,
+      "meta_stat_nodes": 17
+    },
+    "architecture_snapshot": {
+      "artifact_registry_records": 8,
+      "main_boss_records": 6,
+      "intermediate_boss_records": 3,
+      "chest_window_records": 15,
+      "typed_arena_drop_session_records": false,
+      "artifact_effect_definitions": 0
+    },
+    "b1_runtime_registry_boundary": "20_MINUTE_FOUR_MAIN_ZERO_MINI_PER_R3_HANDOFF",
+    "evidence_source_shas": {
+      "architecture_data_contract": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+      "runtime_context": "37e48475c7f6ca265d25c7a1a0104cf0c80eb091",
+      "runtime_acceptance": "cee3aacfa5c6417cf1a770961aa1ee128731bdf1",
+      "runtime_r3_handoff": "8ccec29fc17c5519b3a0f1c0ac019c519ca6b1c9",
+      "balance_model": "d39f8dc420e0802088aac42fd1e4285a429479a6",
+      "balance_wave_table": "dbe65eac66e5e84011453cea1566540dc553c4fb",
+      "balance_acceptance": "2cb937cbd4e1de7668de4f75791193da6e785803",
+      "game_manifest": "1d6d6fdc463b9d74cec64ba00bae0f12dd668e5a",
+      "previous_content_index": "668b832da11150a868e4882638010ecdaa18f3cd"
+    },
+    "open_findings": [
+      "C5-P1-01",
+      "C5-P1-02",
+      "C5-P1-03",
+      "C5-P1-04",
+      "C5-P1-05",
+      "C5-P2-01",
+      "C5-P2-02",
+      "C5-P2-03",
+      "C5-P2-04",
+      "C5-P2-05"
+    ],
+    "acceptance": {
+      "json_parse_required": true,
+      "stable_id_review": "PASS_WITH_SCOPE_QUALIFIED_NAMES",
+      "mockups_created": false,
+      "runtime_implementation_changed": false,
+      "balance_values_changed": false,
+      "visual_policy_changed": false,
+      "approved": false
+    }
   }
 }

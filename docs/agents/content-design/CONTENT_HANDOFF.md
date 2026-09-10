@@ -1,105 +1,58 @@
-# Content Handoff — C4: каталог дропов арены
+# Content Handoff — C5: cross-system reconciliation
 
 ## 1. Идентичность
 
 - Repository: xxiamadelxx-blip/mac
 - Branch: main
-- HEAD: 894e4c35fa626d5c41cfa0d38a3e1e646fa89118 (baseline, проверенный перед записью C4)
-- Slice: C4
-- Status: CONTENT_SPECIFIED
+- HEAD baseline: 17803bde8e38dbf07a72e4033beacf2de5e29281 (проверен перед записью C5)
+- Slice: C5
+- Status: HANDOFF_READY_WITH_OPEN_RECONCILIATIONS
 - Catalog version: 1
 - Date: 2026-09-10
 
-C4 — content design package. Он не является runtime implementation, balance lock, visual approval или production delivery.
+C5 закрывает content-design handoff между C1–C4, META passive tree, Architecture, Balance, Runtime и Visual Lab. Документ не объявляет runtime playable, balance locked, visual approved или production-ready.
 
-## 2. Scope
+## 2. Переданный content package
 
-| content_id | type | status | source | next owner |
-|---|---|---|---|---|
-| arena_drop_heal_mote | arena drop / нефритовая капля | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_coin_cache | arena drop / лунная монета | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_xp_magnet | arena drop / лунный магнит опыта | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_destruction_seal | arena drop / печать разрушения | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_wave_freeze | arena drop / печать остановленной волны | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_ward_shard | arena drop / осколок оберега | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-| arena_drop_vacuum_bloom | arena drop / цветок сбора | PROPOSAL / REGISTRY_SYNC_PENDING | C4_ARENA_DROP_CATALOGUE.md | Balance, Architecture, Visual Lab |
-
-Existing first-run roster, C1/C2/C3 IDs and meta tree were not replaced. Write set is limited to content-design docs.
-
-## 3. Content decisions
-
-- Ровно семь обязательных drop families: heal, coin/Gold, XP magnet, destruction, wave freeze, shield/ward и vacuum/harvest.
-- XP magnet использует current canonical XP source; «mana» — открытый product decision, второй resource ID не создан.
-- Coin cache предлагает Gold через RewardLedger; direct persistent wallet mutation не предложена.
-- Destruction не получает silent kill-credit/reward rule: defeat vs removed outcome выбирают владельцы.
-- Freeze не останавливает run clock, checkpoints, boss/mini-boss encounter или offer/settlement states.
-- Ward не является flat passive, max-HP upgrade или unconditional invulnerability.
-- Vacuum по умолчанию harvest-ит XP и coin, но не активирует utility drops.
-- XP и aftermath, boss chest, artifact offer и final reward остаются отдельными surfaces.
-
-## 4. Balance handoff
-
-- source tiers, drop-table weights, cadence/frequency, safe-spawn и performance caps;
-- Gold/healing quantity/value и resource ownership;
-- XP magnet radius/duration/attraction/target cap;
-- destruction scope/whitelist, elite behavior, defeat/removal, kill credit и reward output;
-- freeze duration, ordinary spawn pressure, actor/projectile/wind-up lifecycle и resistance;
-- ward mitigation/absorption, eligible damage, lethal boundary, charge, stacking/refresh;
-- vacuum radius, target cap, wall/LOS policy и XP/Gold eligible set;
-- interaction с meta pickup/healing nodes и artifact triggers.
-
-Все неизвестные числа и частоты имеют PENDING_BALANCE/PENDING_PRODUCT_DECISION; B1 XP formula/grades и RewardLedger totals не меняются.
-
-## 5. Runtime handoff
-
-- stable drop_id и уникальный drop_instance_id на run;
-- source context, world position, pickup/effect/cleanup state и target references;
-- per-instance/per-target/per-reward idempotency;
-- wall/line-of-sight/safe-spawn и reconnect/restore policy;
-- owner systems для health, Gold, XP collection, destruction, freeze и ward;
-- canonical names/schema для новых activation/resolve events.
-
-Существующий xp_drop_collected.v1 сохраняется для фактического XP collect. XpDropStore/ProgressionSystem владеют XP, RewardLedger — Gold settlement, CombatSystem/WaveDirector — combat/wave resolution. Ни один arena drop не открывает chest, claim-ит synergy, создаёт artifact offer или обходит final-boss no-chest.
-
-## 6. Visual Lab handoff
-
-| Visual item | Route | Stage path | Asset metadata |
+| Package | Stable content | Status | Next owner |
 |---|---|---|---|
-| Heal mote / coin cache | SPRITE + VFX + UI_ART | docs/mockups/02-arena/, docs/mockups/09-xp/ | asset_id/family_id/candidate_id: null; PROPOSAL; technical NOT_RUN; artistic PENDING |
-| XP magnet / vacuum bloom | SPRITE + VFX + UI_ART | docs/mockups/09-xp/, docs/mockups/02-arena/ | asset_id/family_id/candidate_id: null; PROPOSAL; technical NOT_RUN; artistic PENDING |
-| Destruction seal / wave freeze | SPRITE + VFX + UI_ART | docs/mockups/02-arena/ | asset_id/family_id/candidate_id: null; PROPOSAL; technical NOT_RUN; artistic PENDING |
-| Ward shard | SPRITE + VFX + UI_ART | docs/mockups/02-arena/ | asset_id/family_id/candidate_id: null; PROPOSAL; technical NOT_RUN; artistic PENDING |
+| C1 weapons/passives/synergies | 10 weapons, 10 global run passives, 10 direct evolutions; passive binding используется для synergy eligibility | CONTENT_SPECIFIED | Balance + Runtime + Visual Lab |
+| C2 artifacts | 10 run artifacts, three-card offer boundary, no weapon/passive slot usage | CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING | Product + Architecture + Balance |
+| C3 bosses/chests | 4 future enemy proposals, 2 named mini-boss proposals, synergy/fallback flow | CONTENT_SPECIFIED / ROSTER_RECONCILIATION | Product + Architecture + Runtime |
+| C4 arena drops | 7 typed content intents: heal, Gold, XP magnet, destruction, wave freeze, ward, vacuum | CONTENT_SPECIFIED / RUNTIME_PENDING | Architecture + Runtime + Balance |
+| META passive tree | 6 branches, 17 stat nodes, Gold, next-run application | CONTENT_SPECIFIED / BALANCE_PENDING | Balance + Runtime/UI |
 
-Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; muted crimson/violet only for role/status accent. Проверка — true 1× arena scale, 390×844 UI/combat, cluttered aftermath/XP, telegraph visibility, pickup feedback and cleanup. Mockups этим commit не создаются.
+Detailed dependency matrix, conflict review, open decisions and acceptance evidence are in `C5_CROSS_SYSTEM_HANDOFF.md`.
 
-## 7. Checks
+## 3. Integration blockers
 
-- ID uniqueness: PASS — семь C4 IDs distinct from live first-run, C1/C2/C3 and meta IDs.
-- Required fields: PASS — each entry has visual signal, pickup rule, effect intent, feedback, limitations, PENDING_BALANCE, player decision and owner boundary.
-- Semantic separation: PASS — XP magnet = attraction over time; vacuum = bounded harvest pulse; heal/ward are not passives.
-- Reward boundary: PASS — no direct wallet write, duplicate XP/aftermath, boss chest/artifact/synergy mutation or final-boss exception.
-- Numeric boundary: PASS — frequency, quantity, duration, radius, cap and value remain open.
-- Protected-scope review: PASS — write set is limited to docs/agents/content-design/.
-- JSON/roster validation: PASS — index parses, Run 1 IDs/limits are preserved, seven drop IDs are unique.
-- Remote diff review: performed after commit; final SHA is reported in delivery note.
-
-## 8. Open decisions
-
-| Question | Owner | Status | Next action |
+| ID | Blocker | Evidence | Owner |
 |---|---|---|---|
-| Source cadence/drop-table ownership | Balance + Product | PENDING_BALANCE/PENDING_PRODUCT_DECISION | bind source tiers and weights |
-| Gold target and settlement UI | Product + Architecture | PENDING_PRODUCT_DECISION | approve wallet/timing |
-| XP vs mana label/semantics | Product + Architecture | PENDING_PRODUCT_DECISION | resolve before data/UI mapping |
-| Destruction defeat vs removal reward | Product + Balance + Runtime | PENDING_PRODUCT_DECISION/PENDING_ARCHITECTURE | choose idempotent path |
-| Freeze actor/telegraph lifecycle | Architecture + Balance | PENDING_ARCHITECTURE/PENDING_BALANCE | define scope and resume |
-| Ward mitigation/lethal/duplicate rules | Balance + Runtime | PENDING_BALANCE/PENDING_ARCHITECTURE | bind guards |
-| Vacuum target whitelist | Product + Balance | PENDING_PRODUCT_DECISION/PENDING_BALANCE | approve resource-only set |
-| Drop schema/events/reconnect | Architecture/Runtime | PENDING_ARCHITECTURE | add canonical contract/tests |
-| Visual candidate production | Visual Lab | PENDING_ARTISTIC_REVIEW | intake brief only |
+| C5-P1-01 | Main-boss freeze in Runtime conflicts with all-boss advancing clock in data contract | `RUNTIME_CONTEXT.md`/`RUNTIME_ACCEPTANCE.md` vs `FIRST_RUN_DATA_CONTRACT.json` | Architecture + Runtime |
+| C5-P1-02 | Mini roster is 2 in C3, 3 in data contract, 5 in runtime acceptance and 0 in live B1 Registry | Named content and live contract counts; R3 runtime handoff | Product + Content + Architecture |
+| C5-P1-03 | Content/index has 10 artifacts, registry has 8 and typed effect definitions are empty | `artifact_tideglass`, `artifact_silent_lantern`, `artifact_effects.definitions` | Product + Architecture + Balance |
+| C5-P1-04 | Architecture target is 30:00 while manifest/B1 evidence is legacy 20:00; Balance model extension remains proposed | `FIRST_RUN_DATA_CONTRACT.json`, `GAME_MANIFEST.md`, `BALANCE_MODEL.json` | Product + Architecture + Balance |
+| C5-P1-05 | 15 chest windows are not mapped to the 5 content synergy checkpoints | 8 configured + 7 reserved vs C3 content snapshot | Product + Architecture + Balance |
 
-## 9. Следующий шаг
+До закрытия этих пунктов каталог остаётся handoff-ready, но не APPROVED/IMPLEMENTED.
 
-- Balance Agent: numeric binding, source cadence and performance review.
-- Architecture/Runtime Agent: Registry, instance/effect schema, event versioning, idempotency and reconnect.
-- Visual Lab: review briefs and create masters in protected stages.
-- Content Agent: C5 catalog consolidation and acceptance review after C4 is accepted; do not call C4 runtime-ready.
+## 4. Required handoff actions
+
+1. Product/Architecture publish one decision for envelope, clock policy, mini roster and chest taxonomy.
+2. Architecture syncs approved registry records, typed artifact effects, arena-drop instances/events and idempotency.
+3. Balance binds numeric values, 30-minute wave/reward extension, chest cadence, C4 drop frequency/quantity and performance caps; proposed model values are not treated as lock.
+4. Visual Lab ingests existing C1–C4 briefs; extension bosses/variants wait for stable identities. No mockups were created by Content.
+5. Runtime/QA proves main freeze, mini continuation, five-claim cap, one offer per chest window, three artifact cards and final no-chest behavior.
+
+## 5. Evidence and scope
+
+- Baseline was read from live main at `17803bde8e38dbf07a72e4033beacf2de5e29281`.
+- C5 updates only content-design documentation and catalog metadata.
+- No architecture, balance, runtime source, Visual Lab policy or mockup files are changed.
+- Existing R1 runtime verification does not prove R2/R3 boss, chest, artifact or full-wave implementation; current runtime acceptance remains NOT_IMPLEMENTED for those slices.
+- R3 handoff records a verification blocker before runner/step allocation; Godot stdout and exit codes were not observed, so C5 does not claim runtime verification.
+- Legacy 20-minute material is recorded as a conflict, not silently rewritten.
+
+## 6. Next owner
+
+Architecture/Project Owner resolves C5-P1-01…05. After that, Balance, Runtime and Visual Lab consume the handoff in the order stated above. New content ideas after C5 require a separate proposal and do not reopen this completed documentation slice.
