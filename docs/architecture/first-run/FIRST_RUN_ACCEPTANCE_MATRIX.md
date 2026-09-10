@@ -1,7 +1,7 @@
 # FIRST_RUN_ACCEPTANCE_MATRIX — traceability первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION  
-Runtime implemented: NO  
+Статус: DRAFT ARCHITECTURE SPECIFICATION
+Runtime implemented: NO
 Правило: VERIFIED_BY_DOC_CHECK означает проверку архитектурного артефакта/ссылки, а не работу Godot runtime или Android APK.
 
 ## 1. Матрица требований
