@@ -1,36 +1,33 @@
 # Balance Acceptance Matrix
 
-Status: PARTIAL
+Status: SIMULATED_MODEL_ONLY / PARTIAL
 
-Source baseline: docs/BALANCE_ECONOMY_SPEC.md, revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-
-This matrix separates specification, deterministic contract arithmetic, and runtime evidence. A row is not VERIFIED merely because the target is written down. Runtime rows remain NOT_IMPLEMENTED or BLOCKED until an executable run loop, trace, test, or device measurement exists.
+B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
+Architecture source revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
+Model run: 30 runs, 3 profiles × 2 heroes × 5 seeds.
 
 | Requirement | Source | Model/runtime behavior | Check | Observed | Status | Next owner |
 |---|---|---|---|---|---|---|
-| Machine-readable balance contract has source and provenance | B1; BALANCE_MODEL.json | Canonical values carry CANON source; missing values remain null/PENDING_* | Parse JSON; inspect status/source fields | Contract materialized; no runtime consumer found | SPECIFIED | Balance + Architecture |
-| Wave bands, multipliers, caps, and level targets | B1 section 4 | Five CANON bands; arithmetic simulator derives 22,620 nominal spawn opportunity | Run balance_simulator.py with fixed seed | Arithmetic self-check passes | SIMULATED | Runtime |
-| Exact wave composition ratios and elite cadence | B1 section 4 | Membership is defined; weights/cadence are not invented | Require explicit composition fixture | Ratios, duplicate limits, and cadence absent | BLOCKED | Balance + Product |
-| Boss interruption | B1 section 4 | 8-second reduction and 0.70→1.00 over 20 seconds; overlap semantics pending | Run conditional interpolation check; then runtime trace | Conditional 0.85 average/17 nominal spawn-seconds only | SPECIFIED | Balance + Runtime |
-| Ordinary TTK 0.5–2.5 s | B1 section 3 | Requires absolute enemy stats and sustained player DPS | Deterministic combat trace per enemy/profile | Base HP/damage/speed and runtime combat loop absent | BLOCKED | Combat Runtime + Balance |
-| Elite TTK 10–25 s | B1 section 3 | Same | Deterministic elite trace with telegraph and mitigation | No absolute elite inputs or trace | BLOCKED | Combat Runtime + Balance |
-| First-slice boss TTK 45–80 s | B1 section 3 | Boss HP, phases, DPS window, and spawn schedule required | Boss trace with phase timestamps | Boss numeric stats and boss runtime absent | BLOCKED | Boss Runtime + Balance |
-| Final boss TTK 90–120 s | B1 section 3 | Same | Full 20-minute trace | Final boss numeric stats and runtime absent | BLOCKED | Boss Runtime + Balance |
-| First level in 30–45 s | B1 section 6 | Threshold formula is CANON; actual XP rate is runtime-dependent | Fixed-seed XP pickup trace | Placeholder profiles only; no RunSession/XP loop | BLOCKED | Progression Runtime + Balance |
-| Level approximately 9 at 10 minutes | B1 section 6 | Requires kill composition, XP pickup latency, and level-up overflow rules | 10-minute replay per hero/profile | Placeholder projection is not production evidence | BLOCKED | Progression Runtime + Balance |
-| First significant decision by 90 s | B1 section 6 | Offer generation and pause/selection flow required | Replay with timestamps and offer IDs | Offer IDs/eligibility/flow not implemented | BLOCKED | Progression Runtime + Product |
-| First evolution at 8–12 minutes | B1 section 6 | Requires weapon/passive/synergy catalog and eligibility | Replay with selected build and evolution timestamp | Catalog and evolution rules are pending | BLOCKED | Progression Runtime + Product |
-| No untelegraphed hit above 15% base HP | B1 section 10 | Every damage event needs telegraph metadata and post-mitigation amount | Assert event trace against 15% base HP | Contract written; no combat event trace | BLOCKED | Combat Runtime + QA |
-| Contact gate, telegraphs, safe elite spawn, no same-frame stacking | B1 section 5 | Contact cooldown 0.8 s; telegraph/safe-spawn invariants | Combat event and spawn-position tests | Rules are specified; runtime tests absent | SPECIFIED | Combat Runtime + QA |
-| Boss never spawns inside player and leaves reaction window | B1 section 10 | Spawn validator plus telegraph timestamp required | Property test over deterministic seeds | No boss spawn/runtime trace | BLOCKED | Boss Runtime + QA |
-| Synergy contributes no more than 40% total damage | B1 section 10 | Damage attribution must label synergy versus base/weapon/passive | All-build damage attribution suite | Synergy IDs and build catalog absent | BLOCKED | Build Runtime + Balance |
-| Two sustainable routes per hero | B1 section 10 | At least two viable Lin Yue and Soyeon Han builds | Profiled route replay with survival/TTK evidence | No build catalog or hero run loop | BLOCKED | Balance + Build Runtime |
-| Active mass cap and safe mode | B1 section 4/10 | Must enforce cap and preserve XP/telegraphs/readability | Stress test at each cap and Android target | Caps are specified; consumer and safe mode absent | BLOCKED | Runtime + Performance |
-| XP drops and separate aftermath | B1 section 6; AGENT_CONTEXT | XP values are CANON; aftermath must not obscure XP/readability | Scene/replay and pickup trace | Arithmetic is simulated; runtime presentation absent | BLOCKED | Runtime + Visual QA |
-| Checkpoint, first-clear, repeat-clear totals | B1 section 7 | Simulator reproduces 425/120/5 repeat and 725/300/6 first-clear totals | Deterministic reward calculation | Totals match B1 | SIMULATED | Reward Runtime |
-| Reward ledger idempotency | B1 section 7; GAME_MANIFEST | Retry-safe grant keyed by run/checkpoint/outcome/table version | Duplicate/reconnect/replay transaction test | Test harness rejects duplicates; production key/ledger absent | BLOCKED | Reward Runtime + Architecture |
-| Post-clear grants some meta/summons but not whole progression | B1 section 7–9 | Reward pacing must be measured over first clear and repeats | Progression economy replay | Reward table is specified; summon pool and pacing absent | BLOCKED | Economy + Product |
-| M1 has no paid gacha | B1 section 9 | No paid-gacha transaction path | Static config and store-flow audit | Rule is specified; store runtime not audited as implemented | SPECIFIED | Product + Economy |
-| Minimum 30 FPS on target Android | B1 section 10 | Target device, scene, load, and measurement protocol required | Profiled 20-minute run with frame-time capture | Target device and runtime run absent | BLOCKED | Performance + Runtime |
-| Deterministic replay and regression suite | B1/AGENT_CONTEXT; engineering guardrails | Seeded contract simulator is repeatable; runtime replay is still required | Run twice; compare hash; then replay game trace | Simulator hash stable: 95c09b1e…68caae9; no runtime test suite | SIMULATED | QA + Runtime |
-| Readability of combat, telegraphs, XP, aftermath, results | B1 section 10; visual package | Requires actual scene capture and review | Visual QA checklist on runtime build | Runtime evidence absent; visual assets are out of scope here | BLOCKED | Visual Lab + Runtime |
+| One auditable balance model | B1 + architecture contract | BALANCE_MODEL.json contains CANON, DERIVED, PROPOSED, PENDING fields | JSON parse and provenance inspection | Valid model; simulator reads this file | SIMULATED_MODEL_ONLY | Balance + Architecture |
+| Five wave bands and caps | B1 section 4 | Canonical rates/caps plus proposed weighted composition | 30 deterministic runs | All bands traversed; cap reached in every slice | SIMULATED_MODEL_ONLY | Runtime |
+| Exact composition ratios | B1 section 4 | Ratios exposed in model, not hidden in Python | Compare model weights to output | Ratios are PROPOSED; Product decision pending | PROPOSED | Product + Balance |
+| Boss interruption/recovery | B1 section 4 | 8 s, 0.70→1.00/20 s plus proposed first factor 0.0 | Fixed checkpoint factor assertions | Deterministic factors reproduced | SIMULATED_MODEL_ONLY | Runtime |
+| Active cap | B1 section 4/10 | Cap 40/80/130/200/280, excess discarded | Occupancy and suppressed-spawn trace | Cap 280 reached; roughly 19.6k–20.5k attempts suppressed | SIMULATED_MODEL_ONLY / WATCH | Balance + Runtime |
+| First level 30–45 s | B1 section 6 | Proposed pickup window/capacity | Five-seed checkpoint trace | 33.25–39.75 s across profiles | SIMULATED_MODEL_ONLY | Runtime |
+| Levels 2/5/9/13/17–18 | B1 section 4/6 | XP formula + proposed pickup model | Levels at 120/300/600/900/1200 s | Fresh matches; moderate/max are +1 at later checkpoints | SIMULATED_MODEL_ONLY | Balance |
+| Ordinary TTK 0.5–2.5 s | B1 section 3 | Focused TTK from first damage event | Per-enemy/profile trace | Means mostly inside; some p95 values exceed 2.5 s | PARTIAL | Balance + Combat Runtime |
+| Elite TTK 10–25 s | B1 section 3 | Proposed absolute stats and focused DPS | Elite trace | Means mostly inside; p95 can exceed target | PARTIAL | Balance + Combat Runtime |
+| Boss TTK 45–80/90–120 s | B1 section 3 | Four proposed boss stat blocks | Per-checkpoint trace | Several routes pass; fresh/moderate Soyeon final route and max Lin final route miss target | PARTIAL / BLOCKED | Balance + Boss Runtime |
+| Incoming damage/risk | B1 section 10 | Deterministic landed-hit model and mitigation | HP/damage trace | All 30 runs survive; conservative single-hit bound passes; spatial collision unverified | SIMULATED_MODEL_ONLY | Combat Runtime + QA |
+| No same-frame stacking/contact gate | B1 section 5 | Contract documented; simulator is not event-runtime | Runtime event trace | Not exercised in Godot | BLOCKED | Combat Runtime |
+| Boss safe spawn/reaction window | B1 section 10 | Boss timing only; no positions/telegraphs | Runtime property test | Not implemented | BLOCKED | Boss Runtime + QA |
+| Weapon/passive/synergy IDs | Architecture contract | Canonical IDs and proposed numeric effects | Build/evolution trace | Both proposed routes resolve synergy; final checkpoint creates no chest | SIMULATED_MODEL_ONLY | Runtime + Product |
+| Synergy ≤40% total damage | B1 section 10 | Formula clamps attribution share | Damage attribution output | Model cap is enforced; no runtime attribution | SIMULATED_MODEL_ONLY | Combat Runtime |
+| Fallback offer | Architecture contract open question | Proposed +3% fallback on unresolved non-final chest | Chest resolver trace | Fallback is deterministic and visible | PROPOSED | Product |
+| Checkpoint rewards | B1 section 7 | Canonical values read from model | Ledger sum | Full first clear 725/300/6; repeat 425/120/5 arithmetic preserved | SIMULATED_MODEL_ONLY | Reward Runtime |
+| Reward idempotency | Architecture contract | Canonical key format and duplicate rejection | Duplicate grant attempts | PASS in all 30 model runs | SIMULATED_MODEL_ONLY | Reward Runtime |
+| Final boss chest policy | Architecture latest HEAD | NO_CHEST final policy; artifact as result grant proposal | Assert final chest_offer=false | PASS in model; result-artifact delivery remains proposed | SPECIFIED / PROPOSED | Architecture + Product |
+| Post-clear progression pacing | B1 sections 7–9 | Reward totals exist; summon/catalog pacing absent | Full economy replay | Not runtime-verified | BLOCKED | Economy + Product |
+| Minimum 30 FPS Android | B1 section 10 | No device/frame-time model | Device profiling | Target device and Godot runtime absent | BLOCKED | Performance + Runtime |
+| Readability of telegraphs/XP/aftermath | B1 sections 4/6/10 | No scene execution | Visual/runtime QA | Not measured | BLOCKED | Runtime + Visual QA |
+| Deterministic replay | Engineering guardrails | Fixed model input and seed set | Two full runs + hash | PASS; hashes equal: 13e7c864…b5f8f92f | SIMULATED_MODEL_ONLY | QA + Runtime |
