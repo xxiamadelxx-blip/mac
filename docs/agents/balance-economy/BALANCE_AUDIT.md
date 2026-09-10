@@ -5,7 +5,7 @@ Status: `PARTIAL / SIMULATED_MODEL_ONLY`
 ## Audit snapshot
 
 - Repository: `xxiamadelxx-blip/mac`.
-- Live main HEAD at audit write: `52e2ec4d42b5c64eb303d0501a37f8fdd7d284ec`.
+- Live main HEAD immediately before audit write: `3c81c1d0424586b3d216a6423f49000264dc6fa8`.
 - Balance model: `docs/agents/balance-economy/BALANCE_MODEL.json`.
 - Model status: `PARTIAL`; simulation status: `PROPOSED_MODEL_ONLY`.
 - Runtime status: `NOT_IMPLEMENTED`.
