@@ -30,7 +30,7 @@ jobs:
       - name: Run R1 checks
         shell: bash
         run: |
-          set -u -o pipefail
+          set +e -u -o pipefail
           mkdir -p build/verification
           failed=0
 
@@ -69,11 +69,3 @@ jobs:
           if [ "${failed}" -ne 0 ]; then
             exit 1
           fi
-
-      - name: Upload R1 verification logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: r1-runtime-verification-${{ github.sha }}
-          path: build/verification/
-          if-no-files-found: error
