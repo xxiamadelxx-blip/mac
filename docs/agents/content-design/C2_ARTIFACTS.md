@@ -244,6 +244,39 @@
 
 UI copy должен использовать понятные состояния: `Уже получен`, `Недоступно в этом источнике`, `Выберите один артефакт`, `Обновление недоступно`, `Эффект проявится в забеге`. Preview не должен показывать точные числа до того, как Balance закрепит их в Registry.
 
+## 4.4 Content-owned default policy
+
+Ниже зафиксированы только семантические defaults Content Agent. Они не задают цену, частоту, коэффициенты, schema implementation или save format.
+
+| Rule | Content default for Run 1 |
+|---|---|
+| Refresh | Разрешён только до выбора карты; каждый refresh снова показывает ровно 3 distinct candidate IDs; refresh не создаёт скрытую четвёртую карту и не меняет уже выбранный artifact |
+| Duplicate | Все 10 артефактов по умолчанию UNIQUE; повторный ID не активирует второй instance |
+| Duplicate outcome | Повтор получает outcome key artifact_duplicate_fallback и передаётся в approved fallback pool; тип ресурса и количество задаёт Balance/Product |
+| Cross-theme stacking | Одинаковая тема с run-passive или weapon не означает общий stack bucket; artifact не меняет synergy eligibility |
+| Effect scope | Каждый artifact effect имеет один authoritative trigger, target whitelist, cleanup boundary и source event; recursive self-trigger запрещён |
+| Offer selection | Один offer выбирает максимум один artifact; preview/refresh не считаются obtained |
+| First-clear | FIRST_CLEAR_REWARD по умолчанию открывает artifact в Codex для будущих offers; активный run effect без отдельного offer запрещён |
+
+### 4.5 Canonical semantic effect keys
+
+Эти keys закрывают content-часть typed effect mapping. Architecture всё ещё должна создать runtime definitions и guards, а Balance — привязать численные параметры.
+
+| artifact_id | semantic effect key | Trigger / target boundary |
+|---|---|---|
+| artifact_jade_compass | aura.drop_route_compass | arena drop collected / nearby enemies and route |
+| artifact_mirror_shard | trigger.critical_echo | critical weapon hit / source hit zone |
+| artifact_phoenix_feather | trigger.elite_ember_path | elite defeated / enemies crossing path |
+| artifact_frost_bead | modifier.control_bloom | slow or freeze applied / controlled target and nearby area |
+| artifact_bell_fragment | trigger.guard_resonance | post-mitigation guarded hit / nearby threats |
+| artifact_lotus_seed | trigger.overheal_ward | full-health heal or overheal / next eligible incoming hit |
+| artifact_moon_crown | target.boss_phase_window | boss phase started / current boss phase |
+| artifact_black_bead | modifier.elite_polarity | eligible elite weapon hit / last eligible weapon source |
+| artifact_tideglass | aura.drop_tide_path | arena drop collected / enemies crossing snapshot path |
+| artifact_silent_lantern | target.threat_telegraph | elite/high-threat target selected / one current threat |
+
+Для каждого key обязательны source event, target whitelist, cleanup/expiry, recursion guard и replay identity. Exact coefficients, cooldowns, durations, radii, rarity, source cadence и performance budgets остаются PENDING_BALANCE/PENDING_ARCHITECTURE.
+
 ## 5. Visual Lab handoff — brief only
 
 Мокапы, PNG/SVG, production icons и final VFX **не создаются этим пакетом**.
@@ -266,9 +299,9 @@ Visual Lab получает artifact brief после того, как Architect
 
 - значения effect coefficient, cooldown, duration, radius и threshold для всех десяти IDs — `PENDING_BALANCE`;
 - source cadence/composition для `ELITE_PACK`, rarity и повторный offer — `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`;
-- refresh cost/limit и fallback при уникальном дубликате — `PENDING_PRODUCT_DECISION`;
+- refresh cost/limit и fallback value для `artifact_duplicate_fallback` — `PENDING_PRODUCT_DECISION`/`PENDING_BALANCE`; content defaults уже зафиксированы в разделе 4.4;
 - scope `FIRST_CLEAR_REWARD`: Codex unlock или активный effect до следующего забега — `PENDING_ARCHITECTURE`;
-- canonical schema для artifact effect families и trigger guards — `PENDING_ARCHITECTURE`;
+- canonical runtime schema для десяти semantic effect keys и trigger guards — `PENDING_ARCHITECTURE`; content mapping зафиксирован в разделе 4.5;
 - status/preview для boss phase у `artifact_moon_crown` — `PENDING_BALANCE`;
 - точная граница `on_damage_taken_or_guarded_hit` у `artifact_bell_fragment` — `PENDING_ARCHITECTURE`;
 - threat selector и source telegraph projection для `artifact_silent_lantern` — `PENDING_ARCHITECTURE`.
