@@ -1,7 +1,7 @@
 # FIRST_RUN_ARCHITECTURE — логические границы и data flow
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION  
-Runtime implemented: NO  
+Статус: DRAFT ARCHITECTURE SPECIFICATION
+Runtime implemented: NO
 Цель: контракт для следующего runtime-агента, а не список классов и не доказательство APK.
 
 ## 1. Цель и ограничения
