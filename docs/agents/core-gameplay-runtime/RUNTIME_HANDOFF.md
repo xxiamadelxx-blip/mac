@@ -1,84 +1,77 @@
-<!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
-> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](../../AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
-
-# Runtime Handoff — R2 content gate and replay-safe outcomes
+# Runtime Handoff — SYNC-04 R2 registry reconciliation checkpoint
 
 ## 1. Work identity
 
 - Repository: `xxiamadelxx-blip/mac`
 - Branch: `main`
-- HEAD: the publication commit containing this report; exact SHA is supplied with the GitHub commit handoff
-- Parent: `9a025c2186ba30280f1e68e122a554fa262bd0f8`
-- Slice: R2 — content readiness, wave admission and boss/chest replay seams
+- Parent HEAD: `4dce51b2b86957533faa20b668f8725a112b4a20`
+- Resulting HEAD: exact SHA is supplied with the GitHub commit handoff
+- Slice: `SYNC-04` / R2 registry reconciliation after the content `SYNC-01` handoff
 - Status: `PARTIAL` / `BLOCKED`
+- Runtime implementation baseline: `af2b7fbdd4d155e1d8e2ae3ad48690eac342792c`
 - Content version: `moonveil_first_run_balance:0.1@6aa4ec96afc8a8c9e6a35c164c99e7d62910a687`
 - Runtime test inputs: 101, 202, 303
 
-## 2. Scope
+## 2. This follow-up
 
-### Changed files
+This commit refreshes this handoff against the live `main` after external Content and Balance updates. It changes no runtime source, architecture, balance, content or visual files.
 
-- `scripts/runtime/content_registry.gd` — explicit R2 content status, normalized main/mini/elite records, bounded wave-envelope lookup and per-chest eligibility lookup.
-- `scripts/runtime/wave_director.gd` — registry-backed spawn admission and active-cap rejection.
-- `scripts/runtime/boss_director.gd` — stable ID normalization and replay-safe defeat facts.
-- `scripts/runtime/run_session.gd` — snapshot/restore fields for boss defeat and checkpoint settlement outcomes.
-- `scripts/runtime/run_coordinator.gd` — wave admission integration, generic chest source fields and duplicate-safe boss/checkpoint outcomes.
-- `scripts/runtime/r2_runtime_test.gd` — focused R2 gate and policy test.
+The content handoff `SYNC-01` is present and valid as a content-only proposal: five records, all `PROPOSED`, all `PENDING_ARCHITECTURE`. Its promotion guard explicitly forbids runtime registration before Architecture and Balance reconciliation.
 
-### Boundary check
+## 3. Live registry join
 
-- Runtime scripts and runtime evidence only: PASS.
-- `docs/architecture/first-run/` changed: NO.
-- `docs/agents/balance-economy/` or B1 changed: NO.
-- `visual_lab/`, `docs/mockups/`, scenes, assets, audio changed: NO.
-- Reset, rebase, force-push or history rewrite: NO.
+| Input | Live evidence | Runtime consequence | Status |
+|---|---|---|---|
+| Main bosses | B1 `boss_checkpoints`: 6 records | `ContentRegistry.get_main_bosses()` can consume the six-record main roster | PASS for count; numeric extension values remain proposed |
+| Mini bosses | B1 exposes no top-level `mini_bosses` array and no `simulation_model.mini_bosses` array | Runtime must return `MINI_BOSS_CONTENT_PENDING`; it must not read proposal IDs as canonical | BLOCKED |
+| Elite variants | B1 exposes no top-level `elite_variants` array and no `simulation_model.elite_variants` array | Runtime must return pending content status; no elite encounter or offer is invented | BLOCKED |
+| Run envelope | B1 has 7 wave bands, contiguous=true, coverage=1800 seconds; declared duration=1800 | The envelope is structurally available, while extension values remain `PROPOSED`/model-only | PARTIAL |
+| Architecture | Contract declares 6 main, 3 intermediate and 15 chest windows | Target is five mini-bosses; three intermediate records are insufficient | BLOCKED |
 
-## 3. Implemented contract
+## 4. Canonical policy reconciliation
 
-| Contract | Source | Runtime seam | Current evidence | Status |
-|---|---|---|---|---|
-| Content readiness | RUNTIME_CONTEXT + synchronized B1 boundary | `ContentRegistry.get_r2_content_status()` | Live B1 exposes 4 main, 0 mini, 0 elite, 1200-second duration and 1200-second wave coverage; status is `PENDING_CONTENT_SYNC` | BLOCKED by source sync |
-| Wave band lookup | B1 `wave_bands` | `ContentRegistry.get_wave_band_for_time()` and `WaveDirector.evaluate_spawn()` | Last band is no longer silently extended beyond its declared end; active-cap admission is explicit | IMPLEMENTED, runtime unverified |
-| Main/mini boss IDs | Registry records | `ContentRegistry` normalization + `BossDirector` lookup | Supports `boss_id`, `mini_boss_id` and future `id` records without inventing roster entries | IMPLEMENTED, runtime unverified |
-| Main boss policy | RUNTIME_CONTEXT | Existing `SimulationClock` plus R2 test seam | Main freeze remains in existing code; duplicate defeat now returns the stored outcome | IMPLEMENTED, runtime unverified |
-| Mini boss policy | RUNTIME_CONTEXT | Existing `SimulationClock` plus explicit missing-content result | Missing mini content returns `MINI_BOSS_CONTENT_PENDING`; no encounter is invented | BLOCKED by source sync |
-| Chest separation | Architecture/runtime contract | `BOSS_CHEST`, `MINI_BOSS_CHEST`, `ELITE_CHEST` source fields | Offers carry `source_kind`, `source_id`, `chest_window_id` and independent eligibility lookup; final main boss path remains chest-free | IMPLEMENTED, runtime unverified |
-| Reward idempotency | Architecture reward contract | `RewardLedger` plus session outcome replay maps | Boss defeat and checkpoint settlement replays return stored outcomes | IMPLEMENTED, runtime unverified |
-| R2 gate | Runtime acceptance | `r2_runtime_test.gd` | Current expected result is `status=BLOCKED` with explicit content blockers; it must not report green R2 | BLOCKED |
+- Runtime code implements the user-canonical policy: `MAIN_BOSS` freezes visible run time, wave progression, XP and ordinary spawning; `MINI_BOSS` keeps them moving.
+- The current architecture contract still states that the clock advances during `BOSS_INTRO` and `BOSS_ACTIVE` for every boss. This remains an unresolved cross-system conflict; runtime does not silently change the architecture document.
+- Final main boss remains chest-free.
+- Artifact offers remain separate from boss chest windows and do not become pre-run loadout slots.
 
-## 4. Verification
+## 5. Implemented runtime seams
 
-- Pre-change red signal: PASS by inspection of live B1 and `r3_runtime_test.gd`; current source had 4/0/0 content and a silent mini-roster return.
-- B1 JSON parse: PASS.
-- Static GDScript delimiter/function scan on changed files: PASS; no duplicate function names, unbalanced delimiters or trailing whitespace.
-- Expected R2 gate result from live content: `PENDING_CONTENT_SYNC` with blockers `MAIN_BOSS_ROSTER_COUNT`, `MINI_BOSS_ROSTER_COUNT`, `ELITE_VARIANT_CONTENT`, `RUN_DURATION_CONTENT`, `WAVE_ENVELOPE_CONTENT`.
-- Godot focused test: not run locally; no Godot executable is installed in the workspace.
-- CI runtime stdout/exit code: unavailable; the configured GitHub runner previously failed before allocating steps. No fabricated Godot trace is claimed.
-- Local `git diff --check`: unavailable because there is no local checkout; whitespace scan on the prepared tree passed.
+- `ContentRegistry.get_r2_content_status()` exposes `READY` versus `PENDING_CONTENT_SYNC` instead of hiding missing content.
+- `ContentRegistry.get_wave_band_for_time()` does not extend the last source band beyond its declared end.
+- `WaveDirector.evaluate_spawn()` applies registry active-cap admission.
+- `BossDirector` normalizes stable IDs and stores replay-safe defeat outcomes.
+- `RunSession` snapshots boss-defeat and checkpoint-settlement replay maps.
+- `RunCoordinator` carries chest source fields and preserves duplicate-safe boss, settlement and chest behavior.
+- `r2_runtime_test.gd` fails closed when content is incomplete; it does not silently pass an empty mini roster.
 
-## 5. Status separation
+## 6. Verification
 
-- R1: `RUNTIME_VERIFIED` only by the prior R1 handoff evidence.
-- R2: `PARTIAL/BLOCKED`; code seams are implemented, but synchronized content and executable Godot evidence are missing.
-- R3: `RUNTIME_VERIFICATION_BLOCKED`; no new R3 claim is made by this slice.
-- R4: `BLOCKED`; Android/APK is out of scope.
+- `CONTENT_CATALOG_INDEX.json` parse: PASS; `SYNC-01` has 5 records, all `PROPOSED`.
+- `FIRST_RUN_DATA_CONTRACT.json` parse: PASS; architecture status is `VERIFIED_ARCHITECTURE`, but its intermediate-boss registry contains 3 records.
+- `BALANCE_MODEL.json` parse: PASS; model status is `PARTIAL`, simulation is model-only, runtime integration is not implemented.
+- Live R2 projection: `PENDING_CONTENT_SYNC`; blockers are `MINI_BOSS_ROSTER_COUNT` and `ELITE_VARIANT_CONTENT`.
+- Static runtime source review from implementation baseline: PASS for delimiter balance, duplicate function/top-level variable scan, trailing whitespace and forbidden artifact-slot terminology.
+- Godot focused runtime execution: not available in the workspace; no stdout or exit code is claimed.
+- CI runtime evidence: no valid Godot stdout/exit-code evidence; previous runner failures occurred before step allocation.
 
-## 6. Blockers and next action
+## 7. Scope and status separation
 
-### Blocked
+- This follow-up changes only `docs/agents/core-gameplay-runtime/RUNTIME_HANDOFF.md`.
+- No architecture, B1, content-design, Visual Lab, mockup, scene, asset or APK file is changed.
+- `R1`: prior `RUNTIME_VERIFIED` evidence remains separate.
+- `R2`: `PARTIAL/BLOCKED`; implementation seams exist, but joined mini/elite content and executable evidence are missing.
+- `R3`: `RUNTIME_VERIFICATION_BLOCKED`.
+- `R4`: `BLOCKED`; Android/APK is outside this slice.
 
-1. Balance/content owner must publish the synchronized 30-minute B1 records: six main bosses, five mini-bosses, bounded elite variants and wave bands covering the target envelope.
-2. A functional Godot runner must execute `r2_runtime_test.gd` and capture stdout plus exit status.
-3. Only after both checks pass may R2 move to `RUNTIME_VERIFIED`.
+## 8. Blockers and one next action
 
-### Pending product decisions
+### Blockers
 
-- Exact elite eligibility, expiry and chest mapping remain source-owned; runtime returns pending status instead of inventing values.
-- Mini-boss and elite numeric cadence remain pending synchronized content.
+1. Architecture must reconcile the five mini-boss target and replace the advancing-all-boss clock statement with the user-canonical `MAIN_BOSS` freeze / `MINI_BOSS` continue policy.
+2. Balance must publish consumable `mini_bosses[5]` and bounded `elite_variants` records with stable IDs, while keeping proposed numbers explicitly labelled.
+3. CI/QA must provide a working Godot runner and capture the R2 command, stdout and exit code.
 
-## 7. Handoff
+### Next action
 
-- Balance/content owner: synchronize the missing R2 records without changing runtime-owned idempotency rules.
-- Runtime owner: run the focused R2 test after synchronization and attach deterministic policy traces.
-- Next slice: R2 full wave/boss/mini/elite runtime execution evidence.
-- First check: parse the new B1 model and assert `ContentRegistry.get_r2_content_status().status == READY` before running gameplay traces.
+After Architecture and Balance publish the reconciled registry, Runtime runs `godot --headless --path . --script res://scripts/runtime/r2_runtime_test.gd` and records the deterministic policy trace.
