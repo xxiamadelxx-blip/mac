@@ -3,6 +3,9 @@ name: Import Stage 03 binary hero assets
 on:
   release:
     types: [published]
+  push:
+    paths:
+      - docs/ci/STAGE03_IMPORT_REQUEST.json
   workflow_dispatch:
     inputs:
       release_tag:
@@ -24,10 +27,10 @@ concurrency:
 jobs:
   import:
     name: Import Stage 03 release asset
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 15
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{github.token}}
 
     steps:
       - name: Checkout canonical main
@@ -39,23 +42,68 @@ jobs:
       - name: Resolve release asset
         id: asset
         env:
-          EVENT_RELEASE_TAG: ${{ github.event.release.tag_name }}
-          INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
-          INPUT_ASSET_NAME: ${{ inputs.asset_name }}
+          EVENT_RELEASE_TAG: ${{github.event.release.tag_name}}
+          INPUT_RELEASE_TAG: ${{inputs.release_tag}}
+          INPUT_ASSET_NAME: ${{inputs.asset_name}}
+          REQUEST_FILE: docs/ci/STAGE03_IMPORT_REQUEST.json
         shell: bash
         run: |
           set -euo pipefail
 
+          expected_sha256=""
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
             release_tag="${EVENT_RELEASE_TAG}"
             asset_name=""
-          else
+          elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             release_tag="${INPUT_RELEASE_TAG}"
             asset_name="${INPUT_ASSET_NAME}"
+          elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            if [[ ! -f "${REQUEST_FILE}" ]]; then
+              echo "No pending Stage 03 import request; nothing to import."
+              echo "should_import=false" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+
+            request_payload="$(
+              python3 - "${REQUEST_FILE}" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+for key in ("release_tag", "asset_name"):
+    value = data.get(key)
+    if not isinstance(value, str) or not value:
+        raise SystemExit(f"request field {key!r} must be a non-empty string")
+    print(value)
+
+expected = data.get("expected_sha256", "")
+if expected:
+    if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", expected):
+        raise SystemExit("request field 'expected_sha256' must be a 64-character hexadecimal SHA-256")
+print(expected)
+PY
+            )"
+            mapfile -t request_values <<< "${request_payload}"
+            if (( ${#request_values[@]} < 2 )); then
+              echo "The Stage 03 import request is incomplete." >&2
+              exit 1
+            fi
+            release_tag="${request_values[0]}"
+            asset_name="${request_values[1]}"
+            expected_sha256="${request_values[2]:-}"
+          else
+            echo "Unsupported event: ${GITHUB_EVENT_NAME}" >&2
+            exit 1
           fi
 
           if [[ -z "${release_tag}" ]]; then
             echo "A release tag is required." >&2
+            exit 1
+          fi
+          if [[ ! "${release_tag}" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+            echo "Release tag contains unsupported characters." >&2
             exit 1
           fi
 
@@ -81,18 +129,24 @@ jobs:
             echo "Asset name must match stage03-assets-<id>.zip." >&2
             exit 1
           fi
+          if [[ -n "${expected_sha256}" && ! "${expected_sha256}" =~ ^[0-9a-fA-F]{64}$ ]]; then
+            echo "Expected SHA-256 must be 64 hexadecimal characters." >&2
+            exit 1
+          fi
 
           {
             echo "should_import=true"
             echo "release_tag=${release_tag}"
             echo "asset_name=${asset_name}"
+            echo "expected_sha256=${expected_sha256}"
           } >> "${GITHUB_OUTPUT}"
 
       - name: Download release ZIP
         if: steps.asset.outputs.should_import == 'true'
         env:
-          RELEASE_TAG: ${{ steps.asset.outputs.release_tag }}
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+          RELEASE_TAG: ${{steps.asset.outputs.release_tag}}
+          ASSET_NAME: ${{steps.asset.outputs.asset_name}}
+          EXPECTED_SHA256: ${{steps.asset.outputs.expected_sha256}}
         shell: bash
         run: |
           set -euo pipefail
@@ -103,7 +157,14 @@ jobs:
             --output "${archive}" \
             --clobber
           test -s "${archive}"
-          sha256sum "${archive}" | tee "${RUNNER_TEMP}/archive.sha256"
+          actual_sha256="$(sha256sum "${archive}" | awk '{print $1}')"
+          if [[ -n "${EXPECTED_SHA256}" && "${actual_sha256,,}" != "${EXPECTED_SHA256,,}" ]]; then
+            echo "Release ZIP SHA-256 mismatch." >&2
+            echo "Expected: ${EXPECTED_SHA256}" >&2
+            echo "Actual: ${actual_sha256}" >&2
+            exit 1
+          fi
+          printf '%s  %s\n' "${actual_sha256}" "${archive}" | tee "${RUNNER_TEMP}/archive.sha256"
           {
             echo "Stage 03 binary intake"
             echo "Release: ${RELEASE_TAG}"
@@ -123,7 +184,7 @@ jobs:
       - name: Validate and import PNG files
         if: steps.asset.outputs.should_import == 'true'
         env:
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+          ASSET_NAME: ${{steps.asset.outputs.asset_name}}
         shell: bash
         run: |
           set -euo pipefail
@@ -135,7 +196,7 @@ jobs:
       - name: Commit imported PNG files
         if: steps.asset.outputs.should_import == 'true'
         env:
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+          ASSET_NAME: ${{steps.asset.outputs.asset_name}}
         shell: bash
         run: |
           set -euo pipefail
@@ -148,8 +209,11 @@ jobs:
           fi
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+users.noreply.github.com"
           git add -- "${imported_files[@]}"
+          if [[ "${GITHUB_EVENT_NAME}" == "push" && -f docs/ci/STAGE03_IMPORT_REQUEST.json ]]; then
+            git rm -- docs/ci/STAGE03_IMPORT_REQUEST.json
+          fi
           if git diff --cached --quiet; then
             echo "No new files to commit." >&2
             exit 1
@@ -167,8 +231,8 @@ jobs:
         if: always() && steps.asset.outputs.should_import == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: stage03-binary-import-evidence-${{ github.run_id }}
+          name: stage03-binary-import-evidence-${{github.run_id}}
           path: |
-            ${{ runner.temp }}/import.log
-            ${{ runner.temp }}/archive.sha256
+            ${{runner.temp}}/import.log
+            ${{runner.temp}}/archive.sha256
           if-no-files-found: ignore
