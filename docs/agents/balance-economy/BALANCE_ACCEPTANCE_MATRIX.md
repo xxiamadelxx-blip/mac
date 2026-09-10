@@ -1,39 +1,24 @@
-# Balance Acceptance Matrix
+# Balance Acceptance Matrix — 30-minute extension
 
-Status: SIMULATED_MODEL_ONLY / PARTIAL
+Status: `PARTIAL`; model-only evidence is not runtime verification.
 
-B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-Architecture source revision: 2f889f876f2b8aa286523d234786addf0b9b245e.
-Model run: 30 runs, 3 profiles × 2 heroes × 5 seeds.
+| Acceptance item | Evidence in this slice | Status | Remaining blocker |
+|---|---|---|---|
+| 30:00 run duration | `simulation_model.main_run_duration_seconds = 1800` with formula `30×60` | MODEL PASS | B1/architecture still say 1200 |
+| Six main checkpoints | 05/10/15/20/25/30 schedule in one model | PROPOSED | two new boss IDs and 20:00 reclassification need registry sync |
+| Five mini-bosses | 07:30/12:30/17:30/22:30/27:30 schedule | MODEL PASS | only two content IDs exist; three IDs/skills are pending |
+| Main-boss timer freeze | six main clock events report no visible/wave/XP advancement | MODEL PASS | runtime `BossDirector/RunSession` not connected |
+| Mini-boss timer advance | five mini events report visible timer/wave/XP advancement | MODEL PASS | architecture lacks `MINI_BOSS` clock contract |
+| Low→peak→siege waves | five linear ramp cycles; independent checker verified monotonic density and peak siege | MODEL PASS | runtime wave director not connected |
+| Elite variations are finite | five post-mini packs, no permanent composition weight | MODEL PASS | B1 cadence, variant IDs/stats and artifact semantics pending |
+| XP and levels | 30 deterministic runs report levels at 02/05/10/15/20/25/30 | MODEL PASS | 20–30 XP pickup capacities are proposed |
+| Ordinary/elite TTK | model reports ordinary, existing elite and elite-variant TTK | MODEL PARTIAL | elite variant range is proposed; no gameplay trace |
+| Main/mini boss TTK | model reports every resolved encounter | MODEL PARTIAL | new boss stats and mini skill kits are proposed |
+| Incoming damage/risk | total damage, peak incoming DPS, min HP and single-hit bound are reported | MODEL PASS | hit probability and telegraph assumptions need runtime evidence |
+| Rewards | main/mini wallet rows, boss chest, elite offer and final no-chest path are modelled | MODEL PARTIAL | proposed reward values and content chest contract pending |
+| Idempotency | wallet, chest and elite-offer duplicate attempts pass for all 30 model runs | MODEL PASS | RewardLedger/ArtifactOffer runtime not implemented |
+| Determinism | independent checker: repeat hash `a2d4b1258c869da4f22a852e46a73166d419e6b59ed8bb33771971cbaa9f505a` | PASS | model only |
+| Runtime 30-minute run | no Godot execution in this slice | BLOCKED | runtime implementation and trace required |
+| Android occupancy/FPS | max proposed occupancy reaches 400 | BLOCKED | device profiling and active-cap decision required |
 
-| Requirement | Source | Model/runtime behavior | Check | Observed | Status | Next owner |
-|---|---|---|---|---|---|---|
-| One auditable balance model | B1 + architecture contract | BALANCE_MODEL.json contains CANON, DERIVED, PROPOSED, PENDING fields | JSON parse and provenance inspection | Valid model; simulator reads this file | SIMULATED_MODEL_ONLY | Balance + Architecture |
-| Balance↔architecture stable IDs | Architecture contract revision 2f889f876f2b8aa286523d234786addf0b9b245e | Boss, wave-band, enemy and build references join by semantic ID; numeric tuning is not duplicated | balance_contract_validator.py | PASS: 4 boss IDs, 5 wave IDs, build references, all-boss clock policy and final policy | SIMULATED_MODEL_ONLY | Runtime + Architecture |
-| Five wave bands and caps | B1 section 4 | Canonical rates/caps plus proposed weighted composition | 30 deterministic runs | All bands traversed; cap 280 reached in every slice; mean cap occupancy 1,117.45–1,157.20 s across six profile/hero aggregates | SIMULATED_MODEL_ONLY | Runtime |
-| Exact composition ratios | B1 section 4 | Ratios exposed in model, not hidden in Python | Compare model weights to output | Ratios are PROPOSED; Product decision pending | PROPOSED | Product + Balance |
-| Boss interruption/recovery | B1 section 4 + user clock decision | 8 s, 0.70→1.00/20 s; all four boss encounters pause the visible run clock and suppress ordinary wave/XP/spawn time | Fixed checkpoint factors and clock-event assertions | 4/4 boss events on every surviving model run; encounter clock advanced while run clock stayed fixed; recovery factor reproduced | SIMULATED_MODEL_ONLY | Runtime |
-| Post-boss recovery → ramp → siege | User rule + B1 sections 4/10 | Each non-final boss cycle starts at 80% of the preceding peak, completes 28 s recovery, ramps for 212 s, then holds a 60 s peak siege; composition blends entry→peak | `wave_ramp_samples` plus monotonic/peak assertions | 3/3 cycles monotonic in every run; starts 8/12/17.6 per second with caps 64/104/160; sieges hold 15/22/30 per second with caps 130/200/280 | SIMULATED_MODEL_ONLY / PROPOSED | Balance + Runtime |
-| Active cap | B1 section 4/10 | Cap 40/80/130/200/280, excess discarded | Occupancy and suppressed-spawn trace | Cap 280 reached in all 30 runs; mean cap occupancy 1,117.45–1,157.20 s by profile/hero aggregate; sustained-cap watch remains | SIMULATED_MODEL_ONLY / WATCH | Balance + Runtime |
-| First level 30–45 s | B1 section 6 | Proposed pickup window/capacity | Five-seed checkpoint trace | 33.25–39.75 s across profiles | SIMULATED_MODEL_ONLY | Runtime |
-| Levels 2/5/9/13/17–18 | B1 section 4/6 | XP formula + proposed pickup model; XP clock is paused during all bosses | Levels at 120/300/600/900/1200 s | Fresh Lin: 2/5/9/13/— (seed 101 dies at run 19:39); fresh Soyeon: 2/5/9/13/17; moderate: 2/6/10/13/17; max M1: 2/6/10/14/18 | SIMULATED_MODEL_ONLY / WATCH | Balance |
-| Ordinary TTK 0.5–2.5 s | B1 section 3 | Focused TTK from first damage event | Per-enemy/profile trace | Means mostly inside; some p95 values exceed 2.5 s | PARTIAL | Balance + Combat Runtime |
-| Elite TTK 10–25 s | B1 section 3 | Proposed absolute stats and focused DPS | Elite trace | Means mostly inside; p95 can exceed target | PARTIAL | Balance + Combat Runtime |
-| Boss TTK 45–80/90–120 s | B1 section 3 | Four proposed boss stat blocks resolved on separate encounter clocks | Per-checkpoint trace | 30 runs: fresh Lin 3/4, fresh Soyeon 1/4, moderate Lin 4/4, moderate Soyeon 3/4, max Lin 3/4, max Soyeon 4/4 target windows; final Lin max is below lower bound and fresh/moderate Soyeon exceed upper bound | PARTIAL / BLOCKED | Balance + Boss Runtime |
-| Incoming damage/risk | B1 section 10 | Deterministic landed-hit model and mitigation | HP/damage trace | 29/30 runs survive; fresh Lin Yue seed 101 dies at wall 1,398.5 s / run clock 1,179.0 s; conservative single-hit bound passes on model routes; spatial collision unverified | SIMULATED_MODEL_ONLY / WATCH | Combat Runtime + QA |
-| No same-frame stacking/contact gate | B1 section 5 | Contract documented; simulator is not event-runtime | Runtime event trace | Not exercised in Godot | BLOCKED | Combat Runtime |
-| Boss safe spawn/reaction window | B1 section 10 | Boss timing only; no positions/telegraphs | Runtime property test | Not implemented | BLOCKED | Boss Runtime + QA |
-| Weapon/passive/synergy IDs | Architecture contract | Canonical IDs and proposed numeric effects | Build/evolution trace | Both proposed routes resolve boss-chest synergy; final checkpoint creates no boss chest | SIMULATED_MODEL_ONLY | Runtime + Product |
-| Artifact offer boundary | Architecture contract; product decision | Elite pack/first-clear source opens exactly three cards; one chosen effect is active in-run and consumes no weapon/passive slot | Offer lifecycle/idempotency trace | Contract specified; elite cadence and exact effects pending | SIMULATED_MODEL_ONLY / PENDING | Balance + Runtime + Product |
-| Artifact effect power/types | GAME_MANIFEST; architecture contract | Typed aura/derived-stat/target/weapon/triggered/cooldown effects are modeled separately from passive modifiers | Effect attribution and stacking trace | Contract boundary specified; definitions pending | PENDING | Balance + Product |
-| Synergy ≤40% total damage | B1 section 10 | Formula clamps attribution share | Damage attribution output | Model cap is enforced; no runtime attribution | SIMULATED_MODEL_ONLY | Combat Runtime |
-| Boss-chest fallback offer | Architecture contract open question | Proposed +3% fallback on unresolved non-final boss chest | Boss-chest resolver trace | Fallback is deterministic and visible | PROPOSED | Product |
-| Artifact refresh/choice idempotency | Architecture contract; product decision | Refresh and Get commands are replay-safe; one of three cards creates one active effect | Duplicate command trace | Not implemented in runtime; simulator models first-clear offer creation | PENDING | Runtime + Product |
-| Checkpoint rewards | B1 section 7 | Canonical values read from model | Ledger sum | Full first clear 725/300/6; repeat 425/120/5 arithmetic preserved | SIMULATED_MODEL_ONLY | Reward Runtime |
-| Reward idempotency | Architecture contract | Canonical key format and duplicate rejection | Duplicate grant attempts | PASS in all 30 model runs | SIMULATED_MODEL_ONLY | Reward Runtime |
-| Final boss chest policy | Architecture latest HEAD | NO_CHEST final policy; first-clear artifact is a separate post-result three-card offer | Assert final boss chest=false and artifact offer source=FIRST_CLEAR_REWARD | PASS in model; offer selection/persistence remains pending | SPECIFIED / PENDING | Architecture + Product |
-| Boss encounter run clock | User product decision 2026-09-10 | At 300/600/900/1200s the main run clock stops; wave/XP/spawn clock remains frozen; each boss resolves on a separate encounter clock | Assert model clock_policy and runtime trace | PASS in model: 4/4 pause events in all 30 runs; runtime trace absent | SIMULATED_MODEL_ONLY / BLOCKED | Runtime + QA |
-| Post-clear progression pacing | B1 sections 7–9 | Reward totals exist; summon/catalog pacing absent | Full economy replay | Not runtime-verified | BLOCKED | Economy + Product |
-| Minimum 30 FPS Android | B1 section 10 | No device/frame-time model | Device profiling | Target device and Godot runtime absent | BLOCKED | Performance + Runtime |
-| Readability of telegraphs/XP/aftermath | B1 sections 4/6/10 | No scene execution | Visual/runtime QA | Not measured | BLOCKED | Runtime + Visual QA |
-| Deterministic replay | Engineering guardrails | Fixed model input and seed set | Two full runs + hash | PASS; hashes equal: 6c1e1ea7df9393bc2bc2fc94c8049086d291784a93acc145f8e518d664f9d7cb | SIMULATED_MODEL_ONLY | QA + Runtime |
+Profile outcome across seeds 101/202/303/404/505 and both heroes: fresh 5/10 survived and 1/10 completed in the target final-boss window; moderate 9/10 survived and completed; max M1 10/10 survived and completed. These are tuning evidence, not a VERIFIED claim.
