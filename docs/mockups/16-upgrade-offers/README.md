@@ -1,76 +1,77 @@
-# Stage 16 — Upgrade Offers
-Status: PLANNED.
+# Этап 16 — Предложения улучшений
+Состояние этапа: PLANNED (запланирован).
 Карточки предложений улучшений.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — run upgrades and shop boundary
+## Контентный бриф v01 — улучшения забега и граница магазина
 
-Это текстовый contract карточек, не готовый UI mockup. Он связывает 10 weapons и 10 global run passives с понятным выбором игрока и отдельно обозначает постоянное дерево магазина.
+Это текстовый договор карточек, а не готовый мокап. Он связывает 10 видов оружия и 10 общих пассивок с понятным выбором игрока и отдельно обозначает постоянное дерево магазина.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; META_PASSIVE_TREE.md |
-| visual route | UI_ART + MOCKUP |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| run slots | максимум 6 weapon slots и 6 passive slots |
-| dependencies | XP/Progression, UpgradeOfferResolver, WeaponRegistry, PassiveRegistry, SynergyInfo, StatsCalculator |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источники | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; META_PASSIVE_TREE.md |
+| визуальный маршрут | художественный интерфейс + мокап |
+| технический маршрут | UI_ART + MOCKUP |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| ячейки забега | максимум 6 ячеек оружия и 6 ячеек пассивок |
+| зависимости | XP/Progression, UpgradeOfferResolver, WeaponRegistry, PassiveRegistry, SynergyInfo, StatsCalculator |
 
-### Run upgrade card contract
+### Договор карточки улучшения забега
 
-Каждый level-up offer показывает три distinct cards и разрешает выбрать одну. Кандидат обязан иметь stable content ID из C1; offer ID не должен подменять content ID.
+Каждое повышение уровня открывает три разные карточки и разрешает выбрать одну. Кандидат обязан использовать стабильный ID контента из C1; ID самой карточки не заменяет ID контента.
 
-| card field | required content |
+| Поле карточки | Обязательное содержание |
 |---|---|
-| category | WEAPON или RUN_PASSIVE |
-| content_id | один из 10 weapon_* или 10 passive_* IDs |
-| title/promise | короткая fantasy и понятный результат для общего билда |
-| current state | NEW, owned rank, maxed, locked или synergy-ready |
-| next effect intent | qualitative change; exact coefficient/cadence/cooldown/range/duration — PENDING_BALANCE |
-| decision cue | что игрок получает сейчас и какой trade-off/маршрут открывается |
-| synergy hint | matching weapon/passive pair и gate without promising automatic evolution |
-| source | XP/level-up offer; no direct wallet mutation |
-| unavailable copy | почему карточка недоступна и какое действие нужно для eligibility |
+| категория | WEAPON или RUN_PASSIVE |
+| content_id | один из 10 ID оружия или 10 ID пассивок |
+| заголовок и обещание | короткий образ и понятный результат для общего билда |
+| текущее состояние | NEW, имеется ранг, максимальный ранг, LOCKED или SYNERGY_READY |
+| следующее изменение | качественное изменение; точные коэффициенты, темп, перезарядка, дальность и длительность — PENDING_BALANCE |
+| подсказка решения | что игрок получает сейчас и какой выбор или маршрут открывается |
+| подсказка синергии | подходящая пара и условие, без обещания автоматической эволюции |
+| источник | XP/level-up offer; без прямого изменения кошелька |
+| текст недоступности | почему карточка недоступна и какое условие нужно выполнить |
 
-### Offer states
+### Состояния предложения
 
-- NEW: entry ещё не занята в соответствующем run slot; показывается role и first promise.
-- UPGRADE: entry уже в билде; показывается текущий rank/level и qualitative next step.
-- MAXED: дальнейший rank запрещён authoritative rule; карточка не притворяется доступной.
-- LOCKED: источник/слот/gate ещё не выполнен; причина видна.
-- SYNERGY_READY: pair gate выполнен, но evolution появляется только через eligible non-final BOSS_CHEST.
-- EVOLVED: weapon behavior заменён synergy; новая weapon card не добавляет слот.
-- NO_VALID_OFFER: resolver сообщает readable fallback, а не пустой экран.
+- NEW: запись ещё не занята в соответствующей ячейке забега; показываются роль и первое обещание.
+- UPGRADE: запись уже есть в билде; показываются текущий ранг или уровень и качественный следующий шаг.
+- MAXED: дальнейший ранг запрещён главным правилом; карточка не выдаётся как доступная.
+- LOCKED: ещё не выполнено условие источника, ячейки или пары; причина видна.
+- SYNERGY_READY: пара собрана, но эволюция появляется только через подходящий нефинальный BOSS_CHEST.
+- EVOLVED: поведение оружия заменено синергией; новая карточка не добавляет ячейку.
+- NO_VALID_OFFER: разрешатель показывает понятную резервную награду, а не пустой экран.
 
-### Pool and pair visibility
+### Пулы и видимость пар
 
-| pool | entries | card copy must emphasize |
+| Пул | Содержимое | Что должна объяснять карточка |
 |---|---|---|
-| weapon | weapon_moon_blade, weapon_jade_talismans, weapon_crimson_flame_fan, weapon_frost_pearl, weapon_thunder_needles, weapon_spirit_bell, weapon_fox_mirage, weapon_lotus_mines, weapon_star_bow, weapon_black_eclipse_umbrella | geometry, target role, weakness/counterplay, matching passive |
-| run passive | passive_wind_of_travel, passive_jade_focus, passive_ember_heart, passive_frost_thread, passive_heavenly_seal, passive_iron_bell, passive_mirror_shard, passive_lotus_heart, passive_star_compass, passive_spirit_lens | global axis/trigger, build-wide benefit, matching weapon only as synergy anchor |
-| evolution | synergy_moon_dance through synergy_eclipse_vortex | appears in chest/synergy info after weapon level 6 + passive rank 5; no extra slot |
+| оружие | weapon_moon_blade, weapon_jade_talismans, weapon_crimson_flame_fan, weapon_frost_pearl, weapon_thunder_needles, weapon_spirit_bell, weapon_fox_mirage, weapon_lotus_mines, weapon_star_bow, weapon_black_eclipse_umbrella | форма атаки, роль цели, слабость, контригра и связанная пассивка |
+| пассивка забега | passive_wind_of_travel, passive_jade_focus, passive_ember_heart, passive_frost_thread, passive_heavenly_seal, passive_iron_bell, passive_mirror_shard, passive_lotus_heart, passive_star_compass, passive_spirit_lens | общая ось и срабатывание; связанное оружие указывается только как условие синергии |
+| эволюция | synergy_moon_dance, synergy_heavenly_seals, synergy_phoenix_sky, synergy_winter_palace, synergy_heavenly_judgment, synergy_guardian_bell, synergy_nine_reflections, synergy_lotus_sanctuary, synergy_constellation_rain, synergy_eclipse_vortex | появляется в сундуке после уровня оружия 6 и ранга пассивки 5; ячейку не добавляет |
 
-### Persistent shop branch — separate from run cards
+### Постоянная ветка магазина — отдельно от карточек забега
 
-The full persistent tree is specified in docs/agents/content-design/META_PASSIVE_TREE.md and must not be mixed with the ten passive_* run entries.
+Полное постоянное дерево описано в docs/agents/content-design/META_PASSIVE_TREE.md и не смешивается с десятью записями passive_* забега.
 
-- six branches: meta_vitality, meta_force, meta_agility, meta_focus, meta_magnet, meta_defense;
-- 17 stat nodes cover the screenshot/stat-sheet axes: max HP, regen, healing mote, attack power, attack multiplier, magic damage, movement speed, evasion, crit chance, crit power, cooldown, duration, size, pickup radius, mana/XP gain, damage taken, enemy max HP;
-- meta_* node is bought between runs for Gold and applies according to its persistent contract; it never occupies a temporary passive slot;
-- dependency topology and player-facing copy are content-defined; price, exact effect, rank budget, currency mutation and persistence are PENDING_BALANCE/PENDING_PRODUCT/RUNTIME;
-- shop card status is PROPOSAL and must not be presented as a run upgrade or as an artifact.
+- шесть ветвей: meta_vitality, meta_force, meta_agility, meta_focus, meta_magnet, meta_defense;
+- 17 узлов характеристик покрывают оси справочного экрана: максимум здоровья, восстановление, лечение от крупицы, сила атаки, приумножение атаки, магический урон, скорость движения, уклонение, шанс критического удара, усиление критического удара, перезарядка, длительность, размер, радиус сбора, получение маны или опыта, получаемый урон, максимальное здоровье врага;
+- узел meta_* покупается между забегами за золото и действует по постоянному договору; он не занимает временную ячейку пассивки;
+- зависимости и тексты определены контентом; цена, величина эффекта, количество рангов, изменение валюты и сохранение — PENDING_BALANCE/PENDING_PRODUCT/PENDING_RUNTIME;
+- карточка магазина имеет состояние PROPOSAL и не должна выглядеть как улучшение забега или артефакт.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: UI_ART + MOCKUP;
-- stage_path: docs/mockups/16-upgrade-offers/;
+- маршрут: UI_ART + MOCKUP;
+- папка этапа: docs/mockups/16-upgrade-offers/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — UpgradeOffer projection + Shop/Meta tree navigation;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — проекция UpgradeOffer и переход к дереву магазина;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
