@@ -1,0 +1,199 @@
+{
+  "task_id": "SYNC-01",
+  "status": "PROPOSED",
+  "registry_sync_status": "PENDING_RECONCILIATION",
+  "final_id_approval": "PENDING",
+  "runtime_approval": "NOT_REQUESTED",
+  "artistic_approval": "NOT_REQUESTED",
+  "balance_approval": "NOT_REQUESTED",
+  "architecture_approval": "NOT_REQUESTED",
+  "source_refs": [
+    "docs/AGENT_SYNC_STATE.md",
+    "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+    "docs/agents/content-design/C5_CROSS_SYSTEM_HANDOFF.md"
+  ],
+  "entries": [
+    {
+      "id": "boss_tideglass_regent",
+      "encounter_kind": "MAIN_BOSS",
+      "checkpoint": {
+        "label": "20:00",
+        "seconds": 1200,
+        "content_slot": "boss_extension_slot_04"
+      },
+      "dependencies": [
+        {
+          "owner": "architecture",
+          "contract": "boss_extension_slot_04",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "balance",
+          "contract": "30_minute_main_boss_checkpoint_1200s",
+          "status": "PENDING_BINDING"
+        },
+        {
+          "owner": "runtime",
+          "contract": "MAIN_BOSS_FREEZE_CLOCK",
+          "status": "PENDING_REGISTRY_SYNC"
+        },
+        {
+          "owner": "architecture/runtime",
+          "contract": "non_final_BOSS_CHEST",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "visual_lab",
+          "contract": "boss_extension_brief_intake",
+          "status": "PENDING"
+        }
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "id": "boss_omen_paper_archivist",
+      "encounter_kind": "MAIN_BOSS",
+      "checkpoint": {
+        "label": "25:00",
+        "seconds": 1500,
+        "content_slot": "boss_extension_slot_05"
+      },
+      "dependencies": [
+        {
+          "owner": "architecture",
+          "contract": "boss_extension_slot_05",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "balance",
+          "contract": "30_minute_main_boss_checkpoint_1500s",
+          "status": "PENDING_BINDING"
+        },
+        {
+          "owner": "runtime",
+          "contract": "MAIN_BOSS_FREEZE_CLOCK",
+          "status": "PENDING_REGISTRY_SYNC"
+        },
+        {
+          "owner": "architecture/runtime",
+          "contract": "non_final_BOSS_CHEST",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "visual_lab",
+          "contract": "boss_extension_brief_intake",
+          "status": "PENDING"
+        }
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "id": "miniboss_lotus_ritekeeper",
+      "encounter_kind": "MINI_BOSS",
+      "checkpoint": {
+        "label": "17:30",
+        "seconds": 1050
+      },
+      "dependencies": [
+        {
+          "owner": "architecture",
+          "contract": "versioned_intermediate_boss_registry",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "balance",
+          "contract": "30_minute_mini_boss_checkpoint_1050s",
+          "status": "PENDING_BINDING"
+        },
+        {
+          "owner": "runtime",
+          "contract": "MINI_BOSS_CONTINUE_CLOCK",
+          "status": "PENDING_REGISTRY_SYNC"
+        },
+        {
+          "owner": "architecture/runtime",
+          "contract": "MINI_BOSS_BOSS_CHEST",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "visual_lab",
+          "contract": "boss_brief_intake",
+          "status": "PENDING"
+        }
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "id": "miniboss_bell_rhythm_ascetic",
+      "encounter_kind": "MINI_BOSS",
+      "checkpoint": {
+        "label": "22:30",
+        "seconds": 1350
+      },
+      "dependencies": [
+        {
+          "owner": "architecture",
+          "contract": "versioned_intermediate_boss_registry",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "balance",
+          "contract": "30_minute_mini_boss_checkpoint_1350s",
+          "status": "PENDING_BINDING"
+        },
+        {
+          "owner": "runtime",
+          "contract": "MINI_BOSS_CONTINUE_CLOCK",
+          "status": "PENDING_REGISTRY_SYNC"
+        },
+        {
+          "owner": "architecture/runtime",
+          "contract": "MINI_BOSS_BOSS_CHEST",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "visual_lab",
+          "contract": "boss_brief_intake",
+          "status": "PENDING"
+        }
+      ],
+      "status": "PROPOSED"
+    },
+    {
+      "id": "miniboss_moonroot_ferryman",
+      "encounter_kind": "MINI_BOSS",
+      "checkpoint": {
+        "label": "27:30",
+        "seconds": 1650
+      },
+      "dependencies": [
+        {
+          "owner": "architecture",
+          "contract": "versioned_intermediate_boss_registry",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "balance",
+          "contract": "30_minute_mini_boss_checkpoint_1650s",
+          "status": "PENDING_BINDING"
+        },
+        {
+          "owner": "runtime",
+          "contract": "MINI_BOSS_CONTINUE_CLOCK",
+          "status": "PENDING_REGISTRY_SYNC"
+        },
+        {
+          "owner": "architecture/runtime",
+          "contract": "MINI_BOSS_BOSS_CHEST",
+          "status": "PENDING_RECONCILIATION"
+        },
+        {
+          "owner": "visual_lab",
+          "contract": "boss_brief_intake",
+          "status": "PENDING"
+        }
+      ],
+      "status": "PROPOSED"
+    }
+  ]
+}
