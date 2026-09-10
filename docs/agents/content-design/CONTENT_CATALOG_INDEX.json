@@ -22,6 +22,93 @@
     "docs/agents/balance-economy/BALANCE_WAVE_TABLE.md",
     "docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md"
   ],
+  "sync_01": {
+    "task_id": "SYNC-01",
+    "scope": "CONTENT_ONLY",
+    "parent_head": "601c6b57137e4e9807e3b8fbb419b106916fb06f",
+    "status": "PROPOSED",
+    "record_count": 5,
+    "pending_records": [
+      {
+        "id": "boss_tideglass_regent",
+        "encounter_kind": "MAIN_BOSS",
+        "extension_role": "MAIN_BOSS_EXTENSION",
+        "checkpoint": "20:00",
+        "checkpoint_seconds": 1200,
+        "architecture_slot_ref": "boss_extension_slot_04",
+        "dependencies": [
+          "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+          "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+          "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+          "docs/agents/balance-economy/BALANCE_MODEL.json"
+        ],
+        "registry_status": "PENDING_ARCHITECTURE",
+        "status": "PROPOSED"
+      },
+      {
+        "id": "boss_omen_paper_archivist",
+        "encounter_kind": "MAIN_BOSS",
+        "extension_role": "MAIN_BOSS_EXTENSION",
+        "checkpoint": "25:00",
+        "checkpoint_seconds": 1500,
+        "architecture_slot_ref": "boss_extension_slot_05",
+        "dependencies": [
+          "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+          "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+          "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+          "docs/agents/balance-economy/BALANCE_MODEL.json"
+        ],
+        "registry_status": "PENDING_ARCHITECTURE",
+        "status": "PROPOSED"
+      },
+      {
+        "id": "miniboss_lotus_ritekeeper",
+        "encounter_kind": "MINI_BOSS",
+        "extension_role": "MISSING_MINI_RECORD",
+        "checkpoint": "17:30",
+        "checkpoint_seconds": 1050,
+        "dependencies": [
+          "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+          "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+          "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+          "docs/agents/balance-economy/BALANCE_MODEL.json"
+        ],
+        "registry_status": "PENDING_ARCHITECTURE",
+        "status": "PROPOSED"
+      },
+      {
+        "id": "miniboss_bell_rhythm_ascetic",
+        "encounter_kind": "MINI_BOSS",
+        "extension_role": "MISSING_MINI_RECORD",
+        "checkpoint": "22:30",
+        "checkpoint_seconds": 1350,
+        "dependencies": [
+          "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+          "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+          "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+          "docs/agents/balance-economy/BALANCE_MODEL.json"
+        ],
+        "registry_status": "PENDING_ARCHITECTURE",
+        "status": "PROPOSED"
+      },
+      {
+        "id": "miniboss_moonroot_ferryman",
+        "encounter_kind": "MINI_BOSS",
+        "extension_role": "MISSING_MINI_RECORD",
+        "checkpoint": "27:30",
+        "checkpoint_seconds": 1650,
+        "dependencies": [
+          "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
+          "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+          "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
+          "docs/agents/balance-economy/BALANCE_MODEL.json"
+        ],
+        "registry_status": "PENDING_ARCHITECTURE",
+        "status": "PROPOSED"
+      }
+    ],
+    "promotion_guard": "PROPOSED_ONLY; NO_RUNTIME_OR_ARTISTIC_APPROVAL"
+  },
   "run_1": {
     "weapon_ids": [
       "weapon_moon_blade",
