@@ -31,13 +31,14 @@ B1 does not define absolute enemy HP/damage/speed, boss stats, armor mitigation,
 
 The simulator reports focused TTK from the first damage event, separately from spawn-to-kill delay. This prevents queueing behind an active horde from being misreported as enemy durability.
 
-## Final boss clock policy
+## All-boss clock policy
 
-At the final checkpoint (1200 seconds / 20:00), the visible run clock freezes. Wave selection, ordinary spawning and XP progression do not advance during the final boss encounter. The boss resolves on a separate encounter clock; this is a product rule, not an extension of the 20-minute run duration.
+At every boss checkpoint (300/600/900/1200 seconds, or 5/10/15/20 minutes), the visible run clock freezes. Wave selection, ordinary spawning, XP pickup and level progression do not advance while that boss is alive. The boss and existing active enemies continue on a separate encounter/wall clock; once a non-final boss is defeated, the visible clock resumes from the same checkpoint. The final boss has no resume step because it ends the model run.
 
 - Source: user product decision captured 2026-09-10.
 - Status: CANON product behavior in the model; runtime implementation is NOT_IMPLEMENTED.
-- Model key: simulation_model.final_boss_clock_policy.
+- Model key: simulation_model.boss_clock_policy.
+- Evidence: every one of the 30 deterministic model runs emits four pause events with run_clock_stop_seconds equal to defeat_time_run_clock_seconds; runtime trace is still absent.
 
 ## Profile/build inputs
 
