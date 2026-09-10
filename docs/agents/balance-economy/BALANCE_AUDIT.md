@@ -1,73 +1,79 @@
 <!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
-> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](../../AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
 
-# Balance Audit
+# Balance Audit — REF-BALANCE-REF-01
 
-Status: `PARTIAL / SIMULATED_MODEL_ONLY`
+Status: \`PARTIAL / SIMULATED_MODEL_ONLY\`
 
-## Audit snapshot
+## Live repository evidence
 
-- Repository: `xxiamadelxx-blip/mac`.
-- Live main HEAD immediately before this audit write: `4ce6122ac19bf1f8e3bc84bf8afb192a55145ba9`.
-- Live architecture contract revision: `bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00`.
-- Architecture state: `VERIFIED_ARCHITECTURE`, duration 1800s, six main checkpoint records, three intermediate records, three stable enemy-variant IDs; runtime is still not implemented.
-- Balance model: `docs/agents/balance-economy/BALANCE_MODEL.json`, status `PARTIAL`; simulation status `PROPOSED_MODEL_ONLY`.
-- Runtime status: `NOT_IMPLEMENTED`.
-- Architecture/content registries were read but not modified by this balance slice.
+- Repository: \`xxiamadelxx-blip/mac\`.
+- Branch: \`main\`.
+- Task parent HEAD before the first write: \`488c5bbd6b0ad412f0c1647eb99e17d31a6953a0\`.
+- Audit write parent HEAD: \`e269b2ea812a87a374c2585e7bea61770ec69a93\`.
+- B1: \`docs/BALANCE_ECONOMY_SPEC.md\`, SHA \`6aa4ec96afc8a8c9e6a35c164c99e7d62910a687\`.
+- B1 status: Version 0.1, design baseline; numeric parameters are not wired to code.
+- Coordination snapshot: \`docs/AGENT_SYNC_STATE.md\` still records snapshot \`ceb9781c24adcd8737f6953573f4ebc9103ae366\`; live main was re-read immediately before this write.
+- Architecture contract revision: \`bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00\`.
+- Runtime status: \`NOT_IMPLEMENTED\` for this balance contract; no Godot/Android evidence was created.
 
-This slice continues from the prior balance work. It updates the existing model, simulator, validator and reports for the requested 30-minute run, new main/mini encounters and finite elite variations. It does not recreate a second tuning source.
+## What was corrected
 
-## What is implemented in this slice
+The published \`BALANCE_MODEL.json\` was a stale 20-minute model while the balance handoff and current coordination lock require 30 minutes. It is now synchronized to the existing 30-minute v0.4 model:
 
-- A single JSON authority for 1800 visible-run seconds, six main bosses and five model mini-boss slots.
-- Current architecture IDs are synchronized: `boss_extension_slot_04`, `boss_extension_slot_05`, `boss_black_moon_empress`, `miniboss_extension_slot_03`, and the three architecture variant IDs.
-- Main-boss model clock freeze and mini-boss model clock advance are explicit and emitted per encounter.
-- Two proposed 20:00–30:00 wave bands with source/formula/status provenance.
-- Five main-boss low→peak→siege ramp cycles; the architecture rule for intermediate/mini relief is recorded as an unresolved alignment item.
-- Finite elite-variation packs after model mini-bosses; variants are selected from JSON registry IDs, not hardcoded in Python.
-- Main/mini TTK, incoming damage/risk, active occupancy, XP/levels, rewards, boss chests, artifact offers and idempotency are emitted by the deterministic simulator.
-- Validator passes against the fresh live architecture contract and the independent checker runs two identical 30-run batches.
+- one JSON source for 7 bands, 6 main checkpoints and 5 model mini checkpoints;
+- main-boss visible clock/wave/XP/spawn freeze;
+- mini-boss visible clock/wave/XP continuation;
+- post-main recovery → monotonic ramp → peak siege;
+- no immediate mini-boss density spike; finite elite pack after defeat;
+- XP, HP/ATK scaling, TTK, incoming risk, weapon/passive/synergy/fallback and reward/idempotency fields;
+- external pattern provenance with no imported foreign numbers, IDs, loot odds or assets.
 
-## Model-only evidence
+B1 CANON values were not rewritten. All absent 30-minute, elite, mini, base enemy and artifact values remain PROPOSED, PENDING_B1 or PENDING_PRODUCT_DECISION in the model.
 
-Seed set: 101, 202, 303, 404, 505; two heroes; fresh/moderate/max M1 profiles; 30 runs.
+## Reference pattern extraction
 
-- Repeat hash: `2d901903a59cc88926b4413c5caa71cb92e2321cd3b446e93e6ee14db5f43d92`.
-- Survived: 24/30.
-- Completed inside the final-boss target window: 21/30.
-- Fresh: 5/10 survived, 2/10 completed.
-- Moderate: 9/10 survived and completed.
-- Max M1: 10/10 survived and completed.
-- Independent check: `INDEPENDENT_30M_CHECK=PASS`.
-- Validator: `BALANCE_CONTRACT_CHECK=PASS` against architecture revision `bd1d4d44…`.
-- Wallet, boss-chest and elite-offer duplicate attempts: PASS in the model.
-- Runtime execution: none; Android FPS/collision/telegraph evidence: none.
+Only these common patterns were accepted:
 
-Full levels, TTK, incoming damage, occupancy and reward values are in `BALANCE_SIMULATION_REPORT.md`; wave semantics and stable-ID mapping are in `BALANCE_WAVE_TABLE.md`; acceptance statuses are in `BALANCE_ACCEPTANCE_MATRIX.md`.
+| Pattern | Evidence | MAC application | Numeric import |
+|---|---|---|---|
+| XP → level threshold → offer | [VampireSurvivorsClone](https://github.com/matthiasbroske/VampireSurvivorsClone), [20-Minutes-till-dawn PlayerController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/PlayerController.java), [Sentaur LevelProgression](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/LevelProgression.cs) | keep B1 XP formula; resolve a separate three-card choice | none |
+| time/level-keyed wave density | [MonsterSpawnTable](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs), [DifficultyCurve](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs), [SpawnDirector](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/SpawnDirector.cs) | read MAC bands, composition and cap from JSON | none |
+| explicit boss/special encounter | [BossMonster](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/BossMonster.cs), [MonsterController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java) | typed checkpoint events with separate encounter clock | none |
+| post-boss pressure state | keyed spawn/ramp systems above plus B1 interruption rule | suppression → recovery → low entry → linear ramp → siege | none |
+| elite/variant window | special/boss separation in the three references | bounded seeded overlay event, then return to ordinary roster | none |
+| rewards/chests | [Chest/LootTable](https://github.com/matthiasbroske/VampireSurvivorsClone/tree/main/Assets/Scripts/Gameplay), [Sentaur XP/upgrade flow](https://github.com/sentry-demos/unity/tree/main/Assets/Scripts) | XP, boss chest, elite offer, first-clear offer and wallet ledger are separate channels | none |
 
-## Provenance boundary
+## Evidence
 
-Existing B1 values remain CANON. The following are not silently promoted:
+- Remote model parses as JSON; current model fields: duration 1800, 6 main, 5 mini, 6 reference-pattern rules, runtime \`NOT_IMPLEMENTED\`.
+- Contract validator: \`BALANCE_CONTRACT_CHECK=PASS\`, exit 0, against architecture snapshot.
+- Independent deterministic checker: \`INDEPENDENT_30M_CHECK=PASS\`, exit 0.
+- 30 runs: two heroes × three profiles × five seeds; repeat hash \`2d901903a59cc88926b4413c5caa71cb92e2321cd3b446e93e6ee14db5f43d92\`.
+- Results: 24/30 survived, 21/30 completed; fresh 5/10 survived and 2/10 completed; moderate 9/10; max M1 10/10.
+- Occupancy stayed at or below proposed cap 400; wallet/chest/elite-offer idempotency passed in the model.
+- Full levels, TTK, incoming damage, boss results and reward output are in \`BALANCE_SIMULATION_REPORT.md\`.
 
-- B1 extension duration/XP/wave/reward numbers beyond the currently synced architecture duration;
-- two new main-boss numeric kits and all five mini-boss numeric kits;
-- the five-vs-three mini schedule reconciliation;
-- elite overlay multipliers, pack size/cadence and artifact-offer effects;
-- extension wallet rewards and fallback/stacking behavior;
-- main-boss freeze versus the live architecture clock contract.
+## Changed files in this task
 
-Each proposed input is stored in `BALANCE_MODEL.json` with `source`, `derived_formula`, `rationale` and `status`.
+- \`docs/agents/balance-economy/BALANCE_MODEL.json\`
+- \`docs/agents/balance-economy/BALANCE_WAVE_TABLE.md\`
+- \`docs/agents/balance-economy/BALANCE_COMBAT_MODEL.md\`
+- \`docs/agents/balance-economy/BALANCE_XP_REWARDS.md\`
+- \`docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md\`
+- \`docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md\`
+- \`docs/agents/balance-economy/DECISIONS_AND_UNKNOWNS.md\`
+- \`docs/agents/balance-economy/BALANCE_AUDIT.md\`
 
-## Current blockers
+Runtime code and content IDs were not modified.
 
-1. Clock contract conflict: live architecture says elapsed time advances through every boss; the balance/product rule requires main-boss visible/wave/XP/spawn freeze.
-2. Schedule conflict: the model has five mini-bosses, while the live architecture registry currently has three intermediate slots at 450/750/1350. The extra 1050/1650 slots and their content records are pending.
-3. Content join is incomplete for new main bosses, pending intermediate/minis and variant numeric/visual records.
-4. B1/Product must approve or replace proposed 20:00–30:00 wave anchors, XP capacities, boss/mini/elite combat values and extension rewards.
-5. Runtime must consume this model, implement the selected clock/schedule policy and emit timer, wave, XP, combat, reward and idempotency traces.
-6. Android occupancy/FPS must be profiled at the proposed cap of 400.
-7. Product must set the fresh-profile completion target; the current model completes 2/10 fresh runs.
+## Remaining blockers
+
+1. Architecture clock contract still advances elapsed time through bosses while this balance rule freezes main-boss visible clocks.
+2. Architecture/content registry exposes three intermediate records while the requested model has five mini-boss slots.
+3. Pending main/mini content records, absolute enemy combat values, elite numeric/visual records and extension reward values are not canonical.
+4. Artifact effects, refresh/stacking policy and fresh-profile completion target remain product decisions.
+5. Godot runtime traces and Android FPS/occupancy evidence are absent; the Python model cannot close those gates.
 
 ## Next implementation slice
 
-Architecture/Runtime: resolve the main-boss clock conflict and choose/register the five-mini schedule (or explicitly change the product target to three intermediate slots). Then wire `RunSession`, `WaveDirector/BossDirector`, `CombatSystem`, `ProgressionSystem`, `RewardLedger` and `ArtifactOfferSystem` to `BALANCE_MODEL.json`. Re-run the exact seed set with runtime traces and Android profiling. Do not mark `DONE` or `VERIFIED` until those traces exist.
+Architecture/Runtime must reconcile the main-boss freeze and five-mini registry, then consume the single \`BALANCE_MODEL.json\` and emit the same timer, wave, XP, combat and idempotency traces before this package can leave PARTIAL.
