@@ -1,8 +1,8 @@
 # R1 runtime handoff
 
-Status: `IMPLEMENTED_LOCALLY / RUNTIME_VERIFICATION_BLOCKED`
+Status: `RUNTIME_VERIFIED`
 
-Base `main` checked for this change set: `3f5b903a27b17f5a9f0818a3a5a479c1090a10cc`.
+R1 runtime verification source commit: `ff06451b15b0040f61ccf3f43e8ee3baec19f202` (tested on GitHub Actions job `102889083984`).
 
 This handoff covers only the R1 runtime slice. It does not claim that the
 first run is production-ready or that the balance model is final.
@@ -51,12 +51,32 @@ collection, duplicate pickup, blocking offer, frozen offer clock, claim and
 duplicate claim, pause/resume, invalid-save recovery, independent encounter
 clock, and deterministic replay.
 
-## Verification boundary for this handoff
+## Verification evidence
 
-The current execution workspace does not contain the Godot executable, so a
-Godot exit code and runtime trace could not be produced locally. Until the
-commands above run in a Godot-enabled environment, the runtime status is
-`RUNTIME_VERIFICATION_BLOCKED`, not `RUNTIME_VERIFIED`.
+The R1 acceptance run completed on GitHub Actions job
+[102889083984](https://github.com/xxiamadelxx-blip/mac/actions/runs/34482674171/job/102889083984)
+using the existing `barichello/godot-ci:4.7.2` container. The checkout SHA
+was `ff06451b15b0040f61ccf3f43e8ee3baec19f202`.
+
+The workflow captured each Godot process status from `PIPESTATUS[0]`. All three
+commands returned exit code `0`, the final R1 check step completed
+successfully, and the required stdout markers were present:
+
+| Command | Exit code | Observed stdout |
+| --- | ---: | --- |
+| `godot --headless --path . --script scripts/runtime/r1_runtime_test.gd` | `0` | `R1_RUNTIME_TEST {"failures":[],"ok":true}` |
+| `godot --headless --path . --editor --quit` | `0` | Godot 4.7.2 editor/import bootstrap completed |
+| `godot --headless --path . res://scenes/arena/arena.tscn --quit-after 1` | `0` | `R1_RUNTIME_TRACE {...,"ok":true,...}` |
+
+The trace reports an empty diagnostics array and a successful R1 run. The
+scene-facing smoke command also produced the trace marker, so the R1 runtime
+verification gate is closed.
+
+The editor/import stdout contains non-fatal Godot errors for 14 corrupt PNGs
+under `docs/mockups` (including `ERR_FILE_CORRUPT`, `Error loading image`
+and `Error importing`). These are content/asset import issues outside the R1
+runtime slice; they remain unresolved and are not hidden by this handoff.
+The full-project asset import is therefore not declared clean.
 
 ## Commit boundary
 
