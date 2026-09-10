@@ -11,8 +11,8 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "87c8be7b01660b54be82f8a8270a11937eba2cda",
-    "captured_at": "2026-09-09T23:43:04.347Z"
+    "head": "ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d",
+    "captured_at": "2026-09-10T00:00:00Z"
   },
   "units": {
     "time": "seconds",
@@ -33,7 +33,9 @@
     "NOT_IMPLEMENTED",
     "BLOCKED",
     "PENDING_SIMULATION",
-    "PENDING_SIMULATION_AND_RUNTIME"
+    "PENDING_SIMULATION_AND_RUNTIME",
+    "PROPOSED",
+    "SIMULATED_MODEL_ONLY"
   ],
   "hero_stats": {
     "base": {
@@ -977,16 +979,109 @@
   },
   "profiles": {
     "fresh": {
-      "global_upgrade_level": 0,
-      "status": "PENDING_SIMULATION"
+      "status": "PROPOSED",
+      "source": "B1 profile requirement; exact definition absent",
+      "meta_ranks": {
+        "vitality": 0,
+        "power": 0,
+        "agility": 0,
+        "focus": 0,
+        "magnet": 0,
+        "defense": 0
+      },
+      "damage_multiplier": {
+        "value": 1,
+        "source": "derived from all meta ranks 0",
+        "derived_formula": "base damage × (1 + 0.02 × power_rank)",
+        "rationale": "No meta advantage.",
+        "status": "DERIVED"
+      },
+      "cooldown_multiplier": {
+        "value": 1,
+        "source": "derived from all meta ranks 0",
+        "derived_formula": "1 − 0.015 × focus_rank",
+        "rationale": "No cooldown advantage.",
+        "status": "DERIVED"
+      },
+      "hit_probability": {
+        "value": 0.08,
+        "source": "PENDING_PRODUCT_DECISION",
+        "derived_formula": "landed-hit chance under moving/telegraphing",
+        "rationale": "Conservative beginner stress case; tune after gameplay trace.",
+        "status": "PROPOSED"
+      },
+      "build_policy": "level weapon to 6, passive to 5, then fallback; resolve first eligible synergy at non-final chest",
+      "profile_rationale": "fresh must reach early decision/level targets without assuming meta power."
     },
     "moderate": {
-      "global_upgrade_definition": null,
-      "status": "PENDING_PRODUCT_DECISION"
+      "status": "PROPOSED",
+      "source": "B1 profile requirement; exact definition absent",
+      "meta_ranks": {
+        "vitality": 3,
+        "power": 3,
+        "agility": 2,
+        "focus": 2,
+        "magnet": 2,
+        "defense": 2
+      },
+      "damage_multiplier": {
+        "value": 1.06,
+        "source": "derived from power rank 3",
+        "derived_formula": "1 + 0.02 × 3",
+        "rationale": "Small mid-progression damage advantage.",
+        "status": "DERIVED"
+      },
+      "cooldown_multiplier": {
+        "value": 0.97,
+        "source": "derived from focus rank 2",
+        "derived_formula": "1 − 0.015 × 2",
+        "rationale": "Small mid-progression cadence advantage.",
+        "status": "DERIVED"
+      },
+      "hit_probability": {
+        "value": 0.06,
+        "source": "PENDING_PRODUCT_DECISION",
+        "derived_formula": "landed-hit chance under moving/telegraphing",
+        "rationale": "Moderate profile has more survivability but still receives avoidable hits.",
+        "status": "PROPOSED"
+      },
+      "build_policy": "level weapon to 6, passive to 5, resolve synergy when eligible, fallback otherwise",
+      "profile_rationale": "moderate represents a player with several meta ranks, not a fully upgraded account."
     },
     "max_m1": {
-      "global_upgrade_definition": null,
-      "status": "PENDING_PRODUCT_DECISION"
+      "status": "PROPOSED",
+      "source": "B1 profile requirement; exact definition absent",
+      "meta_ranks": {
+        "vitality": 10,
+        "power": 10,
+        "agility": 10,
+        "focus": 10,
+        "magnet": 10,
+        "defense": 10
+      },
+      "damage_multiplier": {
+        "value": 1.2,
+        "source": "derived from power rank 10",
+        "derived_formula": "1 + 0.02 × 10",
+        "rationale": "Uses the canonical M1 branch cap.",
+        "status": "DERIVED"
+      },
+      "cooldown_multiplier": {
+        "value": 0.85,
+        "source": "derived from focus rank 10",
+        "derived_formula": "1 − 0.015 × 10",
+        "rationale": "Uses the canonical M1 branch cap.",
+        "status": "DERIVED"
+      },
+      "hit_probability": {
+        "value": 0.04,
+        "source": "PENDING_PRODUCT_DECISION",
+        "derived_formula": "landed-hit chance under moving/telegraphing",
+        "rationale": "Max profile is a stress test for kill speed and overpowered synergy.",
+        "status": "PROPOSED"
+      },
+      "build_policy": "level weapon to 6, passive to 5, resolve synergy at first eligible non-final chest, then fallback",
+      "profile_rationale": "max_m1 is a bounded account state, not a claim that the whole meta is required for victory."
     }
   },
   "invariants": [
@@ -1033,18 +1128,1411 @@
   },
   "audit_reference": "docs/agents/balance-economy/BALANCE_AUDIT.md",
   "runtime_status": "NOT_IMPLEMENTED",
-  "simulation_status": "SIMULATED",
+  "simulation_status": "SIMULATED_MODEL_ONLY",
   "contract_notes": [
-    "Materialized from the B1 design baseline; this file is a contract, not runtime data.",
-    "Null values and PENDING_* statuses are intentional and must not be replaced by unsourced estimates.",
-    "TEST_PLACEHOLDER values are permitted only in the simulator and its report."
+    "B1 CANON values remain unchanged; missing inputs are added only under simulation_model with explicit PROPOSED/PENDING provenance.",
+    "The simulator must read this BALANCE_MODEL.json and must not duplicate tuning numbers in Python.",
+    "Model-only results are not runtime verification.",
+    "The current architecture contract is the live source for stable IDs, slots, reward ledger key shape, and final-boss NO_CHEST policy."
   ],
   "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
   "verification": {
     "json_parse": "PASS",
-    "deterministic_contract_simulation": "PASS",
+    "data_driven_simulation": "PASS",
+    "independent_seed_runs": "PASS",
     "runtime_integration": "NOT_IMPLEMENTED",
     "android_performance": "BLOCKED",
     "overall": "PARTIAL"
+  },
+  "architecture_contract": {
+    "path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+    "source_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "status": "DRAFT_READ_ONLY",
+    "canonical_ids": [
+      "hero_lin_yue",
+      "hero_seoyeon_han",
+      "weapon_jade_talismans",
+      "weapon_moon_blade"
+    ],
+    "weapon_slot_limit": {
+      "value": 6,
+      "status": "CANON",
+      "source": "architecture contract canonical"
+    },
+    "passive_slot_limit": {
+      "value": 6,
+      "status": "CANON",
+      "source": "architecture contract canonical"
+    },
+    "weapon_max_level": {
+      "value": 6,
+      "status": "CANON",
+      "source": "architecture contract canonical"
+    },
+    "passive_max_rank": {
+      "value": 5,
+      "status": "CANON",
+      "source": "architecture contract canonical"
+    },
+    "non_final_chest": "CHECKPOINT_REWARD_THEN_CHEST_THEN_NEXT_STAGE",
+    "final_boss_policy": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST",
+    "reward_idempotency_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
+    "status_notes": [
+      "Architecture contract is read-only input for this balance slice.",
+      "B1 first-clear artifact-chest wording and final-boss no-chest_offer policy require an explicit result-reward resolution; the simulator models the artifact as a run-result grant, not a final chest_offer."
+    ]
+  },
+  "simulation_model": {
+    "model_version": "0.2",
+    "status": "PROPOSED_MODEL_ONLY",
+    "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
+    "architecture_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "runtime_status": "NOT_IMPLEMENTED",
+    "scope": "deterministic 20-minute wave/economy model plus post-20-minute final-boss resolution window",
+    "main_run_duration_seconds": {
+      "value": 1200,
+      "source": "architecture contract canonical duration; B1 section 4",
+      "derived_formula": "5 wave durations × 60 seconds per minute",
+      "rationale": "Matches the 20-minute first-run contract.",
+      "status": "CANON"
+    },
+    "simulation_step_seconds": {
+      "value": 0.25,
+      "source": "simulation method; not specified by B1",
+      "derived_formula": "choose a fixed step smaller than the 0.8-second contact gate and shortest proposed attack interval",
+      "rationale": "Keeps spawn, attack, XP, and contact-gate updates deterministic without claiming runtime frame timing.",
+      "status": "PROPOSED"
+    },
+    "post_final_boss_window_seconds": {
+      "value": 120,
+      "source": "B1 section 3 final-boss TTK target",
+      "derived_formula": "upper end of final-boss target window",
+      "rationale": "Allows the final boss spawned at 20:00 to resolve without extending wave/XP clock.",
+      "status": "PROPOSED"
+    },
+    "default_seed_set": {
+      "value": [
+        101,
+        202,
+        303,
+        404,
+        505
+      ],
+      "source": "verification protocol; not specified by B1",
+      "derived_formula": "fixed independent seeds rather than one happy-path seed",
+      "rationale": "Separates deterministic algorithm checks from one output.",
+      "status": "PROPOSED"
+    },
+    "rounding_policy": {
+      "value": "half_up",
+      "source": "B1 uses round(...) without a runtime rounding policy",
+      "derived_formula": "round positive economic/stat values to nearest integer, halves upward",
+      "rationale": "Avoids language-runtime banker-rounding drift in XP and costs.",
+      "status": "PROPOSED"
+    },
+    "xp_formula_parameters": {
+      "base_xp": {
+        "value": 30,
+        "source": "B1 section 6",
+        "derived_formula": "XP_to_next = base_xp + linear_per_level × (L − 1) + power_coefficient × (L − 1)^power_exponent",
+        "rationale": "Structured copy of the canonical formula so the simulator reads data rather than duplicating B1 literals.",
+        "status": "CANON"
+      },
+      "linear_per_level": {
+        "value": 12,
+        "source": "B1 section 6",
+        "derived_formula": "XP_to_next = base_xp + linear_per_level × (L − 1) + power_coefficient × (L − 1)^power_exponent",
+        "rationale": "Structured copy of the canonical formula.",
+        "status": "CANON"
+      },
+      "power_coefficient": {
+        "value": 3,
+        "source": "B1 section 6",
+        "derived_formula": "XP_to_next = base_xp + linear_per_level × (L − 1) + power_coefficient × (L − 1)^power_exponent",
+        "rationale": "Structured copy of the canonical formula.",
+        "status": "CANON"
+      },
+      "power_exponent": {
+        "value": 1.35,
+        "source": "B1 section 6",
+        "derived_formula": "XP_to_next = base_xp + linear_per_level × (L − 1) + power_coefficient × (L − 1)^power_exponent",
+        "rationale": "Structured copy of the canonical formula.",
+        "status": "CANON"
+      }
+    },
+    "xp_pickup_model": {
+      "status": "PROPOSED",
+      "source": "B1 section 6 defines XP drops and timing targets but not pickup latency/capacity",
+      "drop_delay_seconds": {
+        "value": 1.0,
+        "source": "PENDING_B1",
+        "derived_formula": "drop becomes collectible at defeat_time + drop_delay_seconds",
+        "rationale": "Separates combat defeat from visible aftermath and prevents same-frame XP teleportation.",
+        "status": "PROPOSED"
+      },
+      "first_level_window_seconds": {
+        "value": 45,
+        "source": "B1 section 6 first-level target 30–45 seconds",
+        "derived_formula": "use the first_level_capacity during the warmup window, then use the band capacity",
+        "rationale": "Makes the first meaningful level-up testable without increasing the whole warmup band's XP rate.",
+        "status": "CANON_TARGET_BOUND"
+      },
+      "first_level_capacity_per_second": {
+        "value": 0.75,
+        "source": "PENDING_B1; pickup cadence absent",
+        "derived_formula": "first_window_collected_xp = first_level_capacity × elapsed_seconds × magnet_multiplier",
+        "rationale": "Allows 30 XP to be collected near the 30–45 second target while keeping the remainder of the warmup conservative.",
+        "status": "PROPOSED"
+      },
+      "capacity_per_second_by_wave": {
+        "wave_00_02": {
+          "value": 0.35,
+          "source": "PENDING_B1; pickup cadence absent",
+          "derived_formula": "collected_xp_budget = capacity_per_second × dt",
+          "rationale": "Keeps the first level in the 30–45 second target while the warmup wave remains readable.",
+          "status": "PROPOSED"
+        },
+        "wave_02_05": {
+          "value": 1.35,
+          "source": "PENDING_B1; pickup cadence absent",
+          "derived_formula": "collected_xp_budget = capacity_per_second × dt",
+          "rationale": "Raises progression with the first-pressure wave toward the level-5 target.",
+          "status": "PROPOSED"
+        },
+        "wave_05_10": {
+          "value": 1.9,
+          "source": "PENDING_B1; pickup cadence absent",
+          "derived_formula": "collected_xp_budget = capacity_per_second × dt",
+          "rationale": "Supports level 9 around 10 minutes without assuming every spawned enemy is immediately collected.",
+          "status": "PROPOSED"
+        },
+        "wave_10_15": {
+          "value": 2.5,
+          "source": "PENDING_B1; pickup cadence absent",
+          "derived_formula": "collected_xp_budget = capacity_per_second × dt",
+          "rationale": "Supports the level-13 target as elite pressure and pickup density increase.",
+          "status": "PROPOSED"
+        },
+        "wave_15_20": {
+          "value": 3.8,
+          "source": "PENDING_B1; pickup cadence absent",
+          "derived_formula": "collected_xp_budget = capacity_per_second × dt",
+          "rationale": "Supports the level-17–18 target without requiring a new XP drop value.",
+          "status": "PROPOSED"
+        }
+      },
+      "magnet_capacity_per_rank": {
+        "value": 0.02,
+        "source": "PENDING_B1; B1 only specifies pickup-radius growth",
+        "derived_formula": "pickup_capacity_multiplier = 1 + magnet_rank × magnet_capacity_per_rank",
+        "rationale": "A small proposed link makes magnet progression observable while keeping it weaker than damage branches.",
+        "status": "PROPOSED"
+      },
+      "boss_xp_policy": {
+        "value": "excluded_from_main_level_curve",
+        "source": "PENDING_B1; B1 lists XP drop values but does not map boss XP to progression",
+        "derived_formula": "main_run_xp = collected ordinary and elite drops; boss XP remains a pending reward/content decision",
+        "rationale": "Prevents an unconfirmed 250-XP boss grant from invalidating the level-2/5/9/13/17–18 targets.",
+        "status": "PROPOSED"
+      }
+    },
+    "wave_selection": {
+      "status": "PROPOSED",
+      "source": "B1 section 4 defines eligible composition but not ratios",
+      "selection_algorithm": "seeded_weighted_choice_per_spawn",
+      "composition_weights": {
+        "wave_00_02": {
+          "enemy_ink_beetle": 1
+        },
+        "wave_02_05": {
+          "enemy_ink_beetle": 0.55,
+          "enemy_lantern_moth": 0.25,
+          "enemy_bone_carp": 0.2
+        },
+        "wave_05_10": {
+          "enemy_ink_beetle": 0.35,
+          "enemy_lantern_moth": 0.2,
+          "enemy_bone_carp": 0.15,
+          "enemy_paper_ghost": 0.1,
+          "enemy_jade_toad": 0.1,
+          "enemy_mirror_fox": 0.1
+        },
+        "wave_10_15": {
+          "enemy_ink_beetle": 0.24,
+          "enemy_lantern_moth": 0.15,
+          "enemy_bone_carp": 0.12,
+          "enemy_paper_ghost": 0.1,
+          "enemy_jade_toad": 0.1,
+          "enemy_mirror_fox": 0.08,
+          "enemy_bell_crab": 0.07,
+          "enemy_thread_doll": 0.07,
+          "elite_stone_oni": 0.04,
+          "elite_eclipse_serpent": 0.03
+        },
+        "wave_15_20": {
+          "enemy_ink_beetle": 0.18,
+          "enemy_lantern_moth": 0.12,
+          "enemy_bone_carp": 0.1,
+          "enemy_paper_ghost": 0.1,
+          "enemy_jade_toad": 0.1,
+          "enemy_mirror_fox": 0.08,
+          "enemy_bell_crab": 0.1,
+          "enemy_thread_doll": 0.1,
+          "elite_stone_oni": 0.06,
+          "elite_eclipse_serpent": 0.06
+        }
+      },
+      "composition_formula": "weights are normalized only if floating-point sum drifts from 1.0; one weighted choice per spawn budget unit",
+      "composition_rationale": "preserves B1 roster order, introduces ranged/control pressure before elites, and reserves the final bands for elite pressure without inventing a new enemy ID.",
+      "composition_value_provenance": {
+        "source": "PENDING_B1; B1 defines eligible composition but not exact ratios",
+        "derived_formula": "each band weight is a proposed share of eligible spawn attempts; weights are normalized to sum 1.0",
+        "rationale": "Ratios are exposed as auditable inputs instead of hidden Python constants.",
+        "status": "PROPOSED"
+      },
+      "exact_status": "PROPOSED; replace after Product/B1 composition decision"
+    },
+    "cap_policy": {
+      "active_cap_scope": {
+        "value": "ordinary_and_elite_entities",
+        "source": "B1 active cap; boss reservation is not specified",
+        "derived_formula": "count all non-boss active entities against the band cap",
+        "rationale": "Keeps boss encounter readable while preserving the ordinary active-mass cap.",
+        "status": "PROPOSED"
+      },
+      "cap_behavior": {
+        "value": "discard_excess_spawn_attempt",
+        "source": "B1 requires an active cap but does not specify overflow",
+        "derived_formula": "when cap is full, do not queue unbounded debt; suppressed attempts do not create XP",
+        "rationale": "Prevents hidden burst after a boss and bounds memory/CPU.",
+        "status": "PROPOSED"
+      },
+      "boss_reserved_slots": {
+        "value": 1,
+        "source": "B1 boss checkpoints; architecture final-run contract",
+        "derived_formula": "reserve one boss slot outside ordinary cap",
+        "rationale": "A boss must remain spawnable at a checkpoint even when ordinary occupancy is full.",
+        "status": "PROPOSED"
+      },
+      "occupancy_measurement": "sample active ordinary+elite count every simulation step; report max, mean, p95, cap_seconds"
+    },
+    "boss_interruption": {
+      "suppression_seconds": {
+        "value": 8,
+        "source": "B1 section 4",
+        "derived_formula": "direct canonical duration",
+        "rationale": "Creates the explicit post-boss breathing window.",
+        "status": "PROPOSED"
+      },
+      "suppression_factor": {
+        "value": 0,
+        "source": "B1 says reduced but omits the exact factor",
+        "derived_formula": "proposed zero ordinary spawn during the first 8 seconds",
+        "rationale": "Makes the boss entrance readable; must be product-approved.",
+        "status": "PROPOSED"
+      },
+      "recovery_start_factor": {
+        "value": 0.7,
+        "source": "B1 section 4",
+        "derived_formula": "direct canonical endpoint",
+        "rationale": "B1 recovery endpoint.",
+        "status": "PROPOSED"
+      },
+      "recovery_end_factor": {
+        "value": 1,
+        "source": "B1 section 4",
+        "derived_formula": "direct canonical endpoint",
+        "rationale": "B1 recovery endpoint.",
+        "status": "PROPOSED"
+      },
+      "recovery_duration_seconds": {
+        "value": 20,
+        "source": "B1 section 4",
+        "derived_formula": "direct canonical duration",
+        "rationale": "B1 recovery duration.",
+        "status": "PROPOSED"
+      },
+      "overlap_policy": {
+        "value": "latest_boss_restarts_recovery",
+        "source": "B1 does not define overlapping interruption semantics",
+        "derived_formula": "a new checkpoint event restarts the suppression/recovery clock; overlapping bosses are a blocked edge case",
+        "rationale": "Deterministic and conservative until runtime boss scheduling exists.",
+        "status": "PROPOSED"
+      }
+    },
+    "enemy_stats": {
+      "enemy_ink_beetle": {
+        "base_hp": {
+          "value": 24,
+          "source": "PENDING_B1; B1 supplies durability 1.0 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability; 24 gives roughly 0.5–2.5 seconds across early weapon levels",
+          "rationale": "Fast rusher must be individually killable while still filling the cap.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 3,
+          "source": "PENDING_B1; B1 supplies contact gate only",
+          "derived_formula": "target_contact_dps × attack_interval ÷ wave_damage_multiplier ÷ landed_hit_probability",
+          "rationale": "Low contact threat prevents an untelegraphed rusher from deleting base HP.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 70,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Fast enough to create pressure without making the 0.8-second contact gate irrelevant.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 0.8,
+          "source": "PENDING_B1",
+          "derived_formula": "match canonical contact gate as the minimum repeat interval",
+          "rationale": "No same-frame stacking; a rusher cannot hit more often than the contact gate.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 2.8,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Gives a moving player a reaction window.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 2,
+          "source": "B1 section 6 gives allowed drop set/range; exact enemy mapping absent",
+          "derived_formula": "choose an integer in the 1–5 beetle range",
+          "rationale": "Early kills should reach the level-2 target without making later levels free.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "contact"
+      },
+      "enemy_lantern_moth": {
+        "base_hp": {
+          "value": 30,
+          "source": "PENDING_B1; B1 supplies durability 1.2 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Ranged pressure has more HP than the rusher but remains ordinary-class.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 4,
+          "source": "PENDING_B1",
+          "derived_formula": "target_ranged_dps × attack_interval ÷ wave_damage_multiplier ÷ landed_hit_probability",
+          "rationale": "Projectile threat remains readable and below the 15% untelegraphed-hit bound.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 42,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Ranged enemies move slowly; threat comes from projectiles, not contact speed.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 1.6,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraph interval selected above the 0.8-second contact gate",
+          "rationale": "Leaves time for a reaction and dodge.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 3.5,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Ranged unit takes longer to become active pressure.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 5,
+          "source": "B1 section 5 exact moth XP",
+          "derived_formula": "direct B1 value",
+          "rationale": "Preserves the exact canonical moth XP.",
+          "status": "CANON"
+        },
+        "attack_type": "ranged"
+      },
+      "enemy_bone_carp": {
+        "base_hp": {
+          "value": 36,
+          "source": "PENDING_B1; B1 supplies durability 1.4 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Dash unit survives a little longer than a moth.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 8,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraphed_damage_budget ÷ reaction_window",
+          "rationale": "Higher damage is compensated by a telegraph and lower attack cadence.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 58,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Dash threat enters pressure band before ordinary rushers.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.4,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraph cadence above 0.8-second contact gate",
+          "rationale": "Prevents repeated burst without a reaction window.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 2.4,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Dash becomes relevant in the first-pressure band.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 8,
+          "source": "B1 section 5 range 5–15",
+          "derived_formula": "midpoint of the allowed range, rounded to integer",
+          "rationale": "Rewards telegraphed threat without eclipsing elites.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "telegraphed_dash"
+      },
+      "enemy_paper_ghost": {
+        "base_hp": {
+          "value": 34,
+          "source": "PENDING_B1; B1 supplies durability 1.3 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Teleport unit stays in ordinary durability band.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 7,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraph_damage_budget ÷ reaction_window",
+          "rationale": "Teleport threat is meaningful but not an untelegraphed spike.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 48,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Mobility is represented by teleport behavior, not raw speed alone.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraph cadence above contact gate",
+          "rationale": "Preserves reaction time.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 2.7,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Keeps teleport pressure distinct from beetles.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 8,
+          "source": "B1 section 5 range 5–15",
+          "derived_formula": "midpoint of the allowed range, rounded to integer",
+          "rationale": "Rewards control disruption without overfeeding XP.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "teleport"
+      },
+      "enemy_jade_toad": {
+      "base_hp": {
+        "value": 36,
+          "source": "PENDING_B1; B1 supplies durability 1.6 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Zone unit is more durable and should be killed before its zone persists.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 10,
+          "source": "PENDING_B1",
+          "derived_formula": "zone_damage_budget ÷ telegraph/reaction window",
+          "rationale": "Zone damage is higher but telegraphed and periodic.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 36,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Slow body, high zone value.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 3,
+          "source": "PENDING_B1",
+          "derived_formula": "zone cadence above contact gate",
+          "rationale": "Avoids stacking zone hits in one reaction window.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 3.8,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Player sees and can route around the zone.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 15,
+          "source": "B1 section 5 exact toad XP",
+          "derived_formula": "direct B1 value",
+          "rationale": "Keeps advanced enemy reward canonical.",
+          "status": "CANON"
+        },
+        "attack_type": "telegraphed_zone"
+      },
+      "enemy_mirror_fox": {
+        "base_hp": {
+          "value": 38,
+          "source": "PENDING_B1; B1 supplies durability 1.5 and ordinary TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Decoy mechanic adds decision cost without a giant HP pool.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 8,
+          "source": "PENDING_B1",
+          "derived_formula": "decoy_damage_budget ÷ reaction window",
+          "rationale": "Decoy pressure is meaningful but bounded.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 46,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Mobile control threat.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.5,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraph cadence above contact gate",
+          "rationale": "Gives time to identify the real target.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 2.9,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Keeps decoys from instant contact.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 15,
+          "source": "B1 section 5 exact fox XP",
+          "derived_formula": "direct B1 value",
+          "rationale": "Keeps advanced enemy reward canonical.",
+          "status": "CANON"
+        },
+        "attack_type": "decoy"
+      },
+      "enemy_bell_crab": {
+      "base_hp": {
+        "value": 35,
+          "source": "PENDING_B1; B1 supplies durability 2.4 and elite-band TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability, with rear_weakness_multiplier",
+          "rationale": "Front block is compensated by a rear weakness rather than a larger HP pool.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 8,
+          "source": "PENDING_B1",
+          "derived_formula": "blocker_damage_budget ÷ attack_interval ÷ hit_probability",
+          "rationale": "Front block enemy is slow and telegraphed.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 28,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Blocker should shape routes, not chase rapidly.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 1.8,
+          "source": "PENDING_B1",
+          "derived_formula": "front-blocker cadence above contact gate",
+          "rationale": "Prevents rapid contact stacking.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 4.2,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Creates route/positioning decision time.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 24,
+          "source": "B1 section 5 range 15–40",
+          "derived_formula": "midpoint of the allowed range, rounded to integer",
+          "rationale": "Elite-band reward without matching elite XP.",
+          "status": "PROPOSED"
+        },
+        "rear_weakness_multiplier": {
+          "value": 1.8,
+          "source": "PENDING_B1",
+          "derived_formula": "reward positioning with less than 2× damage amplification",
+          "rationale": "Makes the rear weakness visible in TTK without dominating the build.",
+          "status": "PROPOSED"
+        },
+        "rear_hit_probability": {
+          "value": 0.5,
+          "source": "PENDING_B1; rear-position access is absent",
+          "derived_formula": "rear_hit_probability = fraction of deterministic attacks that access the exposed rear",
+          "rationale": "Represents a mixed route rather than applying the rear weakness to every attack.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "blocker"
+      },
+      "enemy_thread_doll": {
+      "base_hp": {
+        "value": 20,
+          "source": "PENDING_B1; B1 supplies durability 1.8 and elite-band TTK target",
+          "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
+          "rationale": "Slow beam unit is durable but not an elite.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 6,
+          "source": "PENDING_B1",
+          "derived_formula": "beam_tick_budget ÷ tick_interval ÷ hit_probability",
+          "rationale": "Beam applies control; direct damage stays bounded.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 30,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Slow support enemy.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 1.2,
+          "source": "PENDING_B1",
+          "derived_formula": "beam tick above contact gate",
+          "rationale": "A readable beam may tick faster than contact only with explicit telegraph.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 4,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Support unit needs time to set up.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 24,
+          "source": "B1 section 5 range 15–40",
+          "derived_formula": "midpoint of the allowed range, rounded to integer",
+          "rationale": "Rewards support threat fairly.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "slow_beam"
+      },
+      "elite_stone_oni": {
+      "base_hp": {
+        "value": 70,
+          "source": "PENDING_B1; B1 supplies durability 7.0 and elite TTK target",
+          "derived_formula": "reference_elite_dps × target_elite_ttk ÷ durability",
+          "rationale": "Produces approximately 10–25 seconds under the reference builds.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 25,
+          "source": "PENDING_B1",
+          "derived_formula": "elite_telegraphed_damage_budget ÷ attack_interval ÷ hit_probability",
+          "rationale": "High threat is paired with slow telegraphed AoE.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 18,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ long_target_contact_delay",
+          "rationale": "Slow elite creates space for reaction.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 3.5,
+          "source": "PENDING_B1",
+          "derived_formula": "slow AoE cadence above contact gate",
+          "rationale": "One readable danger window at a time.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 5.5,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Safe elite spawn and reaction window.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 60,
+          "source": "B1 section 5 range 40–80",
+          "derived_formula": "midpoint of the allowed range, rounded to integer",
+          "rationale": "Rewards elite effort without always granting the top drop.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "telegraphed_aoe"
+      },
+      "elite_eclipse_serpent": {
+      "base_hp": {
+        "value": 75,
+          "source": "PENDING_B1; B1 supplies durability 8.0 and elite TTK target",
+          "derived_formula": "reference_elite_dps × target_elite_ttk ÷ durability",
+          "rationale": "Fast elite remains in the 10–25-second target with focused damage.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 22,
+          "source": "PENDING_B1",
+          "derived_formula": "trail_damage_budget ÷ attack_interval ÷ hit_probability",
+          "rationale": "Fast movement is offset by lower per-event damage than oni.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 52,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ target_contact_delay",
+          "rationale": "Fast elite pressure without an instant hit.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.8,
+          "source": "PENDING_B1",
+          "derived_formula": "trail/arc cadence above contact gate",
+          "rationale": "Makes arcs readable and avoidable.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 3.2,
+          "source": "PENDING_B1",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "Fast but not instantaneous.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 80,
+          "source": "B1 section 5 exact serpent XP",
+          "derived_formula": "direct B1 value",
+          "rationale": "Keeps top elite drop canonical.",
+          "status": "CANON"
+        },
+        "attack_type": "trail_and_arcs"
+      }
+    },
+    "boss_stats": {
+      "boss_01_05": {
+        "boss_id": "boss_ink_warden",
+        "checkpoint_id": "boss_01_05",
+        "base_hp": {
+          "value": 3600,
+          "source": "PENDING_B1; B1 supplies first-slice boss TTK 45–80 seconds",
+          "derived_formula": "target_ttk_midpoint × reference_boss_dps",
+          "rationale": "First boss should be a readable 5-minute DPS/positioning check.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 12,
+          "source": "PENDING_B1",
+          "derived_formula": "boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
+          "rationale": "Keeps one readable attack below the 15% base-HP untelegraphed bound.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 24,
+          "source": "PENDING_B1",
+          "derived_formula": "arena pressure target ÷ encounter duration",
+          "rationale": "Boss pressures space but does not teleport into the player.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 3.2,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraphed boss cadence",
+          "rationale": "Allows reaction between danger windows.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.9,
+          "source": "B1 requires telegraph; exact duration absent",
+          "derived_formula": "reaction_window = telegraph duration − input/latency margin",
+          "rationale": "Proposed readable warning.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 section 6 allowed XP drop set; boss mapping absent",
+          "derived_formula": "use the top special drop for a checkpoint boss",
+          "rationale": "Creates a meaningful level-up without adding a new XP value.",
+          "status": "PROPOSED"
+        }
+      },
+      "boss_02_10": {
+        "boss_id": "boss_lantern_matriarch",
+        "checkpoint_id": "boss_02_10",
+      "base_hp": {
+        "value": 4500,
+          "source": "PENDING_B1; B1 supplies first-slice boss TTK 45–80 seconds",
+          "derived_formula": "target_ttk_midpoint × reference_boss_dps × pressure_growth",
+          "rationale": "Escalates ranged control after the first boss.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 15,
+          "source": "PENDING_B1",
+          "derived_formula": "boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
+          "rationale": "Higher pressure remains telegraphed.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 28,
+          "source": "PENDING_B1",
+          "derived_formula": "arena pressure target ÷ encounter duration",
+          "rationale": "Moves slightly faster than boss one.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 3,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraphed boss cadence",
+          "rationale": "Preserves reaction window.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.85,
+          "source": "B1 requires telegraph; exact duration absent",
+          "derived_formula": "reaction_window = telegraph duration − input/latency margin",
+          "rationale": "Slightly tighter but readable.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 section 6 allowed XP drop set; boss mapping absent",
+          "derived_formula": "use the top special drop for a checkpoint boss",
+          "rationale": "Keeps boss XP consistent.",
+          "status": "PROPOSED"
+        }
+      },
+      "boss_03_15": {
+        "boss_id": "boss_bone_colossus",
+        "checkpoint_id": "boss_03_15",
+      "base_hp": {
+        "value": 5200,
+          "source": "PENDING_B1; B1 supplies first-slice boss TTK 45–80 seconds",
+          "derived_formula": "target_ttk_midpoint × reference_boss_dps × pressure_growth",
+          "rationale": "Third boss tests elite-band build maturity.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 18,
+          "source": "PENDING_B1",
+          "derived_formula": "boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
+          "rationale": "Escalates without violating reaction requirement.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 30,
+          "source": "PENDING_B1",
+          "derived_formula": "arena pressure target ÷ encounter duration",
+          "rationale": "Keeps space pressure increasing.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.8,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraphed boss cadence",
+          "rationale": "One danger event per readable window.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.8,
+          "source": "B1 requires telegraph; exact duration absent",
+          "derived_formula": "reaction_window = telegraph duration − input/latency margin",
+          "rationale": "Minimum proposed warning for this slice.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 section 6 allowed XP drop set; boss mapping absent",
+          "derived_formula": "use the top special drop for a checkpoint boss",
+          "rationale": "Keeps reward class stable.",
+          "status": "PROPOSED"
+        }
+      },
+      "boss_final_20": {
+        "boss_id": "boss_eclipse_serpent_final",
+        "checkpoint_id": "boss_final_20",
+      "base_hp": {
+        "value": 9600,
+          "source": "PENDING_B1; B1 supplies final boss TTK 90–120 seconds",
+          "derived_formula": "target_final_ttk_midpoint × reference_final_boss_dps",
+          "rationale": "Final boss is resolved after the 20-minute wave clock in the explicit post-run window.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 22,
+          "source": "PENDING_B1",
+          "derived_formula": "final_boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
+          "rationale": "Final pressure remains readable instead of being a surprise burst.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 34,
+          "source": "PENDING_B1",
+          "derived_formula": "arena pressure target ÷ encounter duration",
+          "rationale": "Fast final pressure with safe spawn and telegraphed arcs.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.6,
+          "source": "PENDING_B1",
+          "derived_formula": "telegraphed boss cadence",
+          "rationale": "Keeps final danger active but avoidable.",
+          "status": "PROPOSED"
+        },
+        "telegraph_seconds": {
+          "value": 0.8,
+          "source": "B1 requires telegraph; exact duration absent",
+          "derived_formula": "reaction_window = telegraph duration − input/latency margin",
+          "rationale": "Matches the minimum proposed boss warning.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 250,
+          "source": "B1 section 6 allowed XP drop set; boss mapping absent",
+          "derived_formula": "use the top special drop for the final encounter",
+          "rationale": "Uses existing XP vocabulary only.",
+          "status": "PROPOSED"
+        }
+      }
+    },
+    "combat_math": {
+      "status": "PROPOSED",
+      "reference_damage_formula": "raw_hit × hero_damage_multiplier × weapon_level_multiplier × passive_multiplier × profile_multiplier × critical_expected_multiplier",
+      "mitigation_formula": "post_armor_damage = raw_damage × (1 − damage_reduction_fraction)",
+      "damage_reduction_fraction_formula": "min(0.75, armor + defense_rank × 0.01)",
+      "critical_expected_multiplier_formula": "1 + crit_chance × (crit_multiplier − 1)",
+      "weapon_level_multiplier_formula": "1 + 0.10 × (weapon_level − 1)",
+      "passive_damage_multiplier_formula": "1 + passive_damage_per_rank × passive_rank",
+      "synergy_damage_formula": "base_dps × synergy_damage_multiplier, then clamp synergy_share ≤ 0.40 of total damage",
+      "boss_focus_fraction": {
+        "value": 0.65,
+        "source": "PENDING_B1; player target allocation is not specified",
+        "derived_formula": "boss_damage_share = total_attack_damage × boss_focus_fraction while a boss is active",
+        "rationale": "A player can continue clearing nearby enemies while deliberately maintaining pressure on the boss; this avoids a fake single-target-only TTK.",
+        "status": "PROPOSED"
+      },
+      "weapon_level_damage_per_level": {
+        "value": 0.1,
+        "source": "PENDING_B1; weapon level damage curve is absent",
+        "derived_formula": "weapon_level_multiplier = 1 + per_level × (weapon_level − 1)",
+        "rationale": "A linear, bounded curve makes level gains visible without making the first six levels a runaway multiplier.",
+        "status": "PROPOSED"
+      },
+      "defense_reduction_per_meta_rank": {
+        "value": 0.01,
+        "source": "B1 section 8",
+        "derived_formula": "damage_reduction_from_defense = defense_rank × 0.01",
+        "rationale": "Directly materializes the canonical +1% damage reduction per rank.",
+        "status": "CANON"
+      },
+      "mitigation_cap": {
+        "value": 0.75,
+        "source": "PENDING_B1; mitigation cap is absent",
+        "derived_formula": "damage_reduction_fraction = min(mitigation_cap, armor + defense_rank × 0.01)",
+        "rationale": "Prevents the proposed defense curve from reaching invulnerability while remaining explicit.",
+        "status": "PROPOSED"
+      },
+      "engaged_attacker_limit": {
+        "value": 4,
+        "source": "PENDING_B1; arena collision/targeting limit is not specified",
+        "derived_formula": "incoming_damage = sum of at most engaged_attacker_limit landed attack events per step",
+        "rationale": "Bounds the mean-field threat model to a readable local threat set; the full active cap still measures CPU/occupancy pressure.",
+        "status": "PROPOSED"
+      },
+      "ttk_formula": "effective_hp ÷ focused_sustained_dps",
+      "incoming_damage_formula": "sum(landed_hit_damage × wave_damage_multiplier × (1 − damage_reduction_fraction))",
+      "status_notes": [
+        "The formulas are a model proposal for missing B1 combat math.",
+        "The simulator reports proposed-model results separately from CANON values."
+      ]
+    },
+    "heroes_and_profiles": {
+      "status": "PROPOSED",
+      "meta_effect_parameters": {
+        "vitality_hp_per_rank": {
+          "value": 0.02,
+          "source": "B1 section 8",
+          "derived_formula": "max_hp = base_hp × (1 + vitality_rank × 0.02)",
+          "rationale": "Structured copy of the canonical vitality branch.",
+          "status": "CANON"
+        },
+        "agility_speed_per_rank": {
+          "value": 0.015,
+          "source": "B1 section 8",
+          "derived_formula": "move_speed = base_speed × (1 + agility_rank × 0.015)",
+          "rationale": "Structured copy of the canonical agility branch.",
+          "status": "CANON"
+        },
+        "magnet_radius_per_rank": {
+          "value": 0.04,
+          "source": "B1 section 8",
+          "derived_formula": "magnet_radius = base_magnet × (1 + magnet_rank × 0.04)",
+          "rationale": "Structured copy of the canonical magnet branch.",
+          "status": "CANON"
+        }
+      },
+      "heroes": {
+        "hero_lin_yue": {
+          "architecture_id": "hero_lin_yue",
+          "canonical_hp": 90,
+          "canonical_move_speed_percent": 100,
+          "role": "ranged_control",
+          "starting_weapon_id": "weapon_jade_talismans",
+          "starting_passive_id": "passive_jade_focus",
+          "crit_chance": {
+            "value": 0.05,
+            "source": "B1 says ranged/control but no numeric crit pipeline",
+            "derived_formula": "small baseline expected crit chance for a ranged build",
+            "rationale": "Keeps Lin Yue stable at range without creating a crit identity.",
+            "status": "PROPOSED"
+          },
+          "crit_multiplier": {
+            "value": 1.5,
+            "source": "B1 crit multiplier absent",
+            "derived_formula": "standard expected-crit multiplier for model comparison",
+            "rationale": "Provides a transparent expected-damage term; must be product-approved.",
+            "status": "PROPOSED"
+          }
+        },
+        "hero_seoyeon_han": {
+          "architecture_id": "hero_seoyeon_han",
+          "canonical_hp": 110,
+          "canonical_move_speed_percent": 112,
+          "role": "melee_dash_crit",
+          "starting_weapon_id": "weapon_moon_blade",
+          "starting_passive_id": "passive_wind_of_travel",
+          "crit_chance": {
+            "value": 0.15,
+            "source": "B1 says critical windows but no numeric crit pipeline",
+            "derived_formula": "higher expected crit chance for a melee window build",
+            "rationale": "Rewards proximity without making a single hit lethal.",
+            "status": "PROPOSED"
+          },
+          "crit_multiplier": {
+            "value": 1.6,
+            "source": "B1 crit multiplier absent",
+            "derived_formula": "critical-window multiplier above baseline",
+            "rationale": "Creates a measurable melee identity; must be product-approved.",
+            "status": "PROPOSED"
+          }
+        }
+      },
+      "profiles": {
+        "fresh": {
+          "status": "PROPOSED",
+          "source": "B1 profile requirement; exact definition absent",
+          "meta_ranks": {
+            "vitality": 0,
+            "power": 0,
+            "agility": 0,
+            "focus": 0,
+            "magnet": 0,
+            "defense": 0
+          },
+          "damage_multiplier": {
+            "value": 1,
+            "source": "derived from all meta ranks 0",
+            "derived_formula": "base damage × (1 + 0.02 × power_rank)",
+            "rationale": "No meta advantage.",
+            "status": "DERIVED"
+          },
+          "cooldown_multiplier": {
+            "value": 1,
+            "source": "derived from all meta ranks 0",
+            "derived_formula": "1 − 0.015 × focus_rank",
+            "rationale": "No cooldown advantage.",
+            "status": "DERIVED"
+          },
+        "hit_probability": {
+          "value": 0.002,
+            "source": "PENDING_PRODUCT_DECISION",
+            "derived_formula": "landed-hit chance under moving/telegraphing",
+            "rationale": "Conservative beginner stress case; tune after gameplay trace.",
+            "status": "PROPOSED"
+          },
+          "build_policy": "level weapon to 6, passive to 5, then fallback; resolve first eligible synergy at non-final chest",
+          "profile_rationale": "fresh must reach early decision/level targets without assuming meta power."
+        },
+        "moderate": {
+          "status": "PROPOSED",
+          "source": "B1 profile requirement; exact definition absent",
+          "meta_ranks": {
+            "vitality": 3,
+            "power": 3,
+            "agility": 2,
+            "focus": 2,
+            "magnet": 2,
+            "defense": 2
+          },
+          "damage_multiplier": {
+            "value": 1.06,
+            "source": "derived from power rank 3",
+            "derived_formula": "1 + 0.02 × 3",
+            "rationale": "Small mid-progression damage advantage.",
+            "status": "DERIVED"
+          },
+          "cooldown_multiplier": {
+            "value": 0.97,
+            "source": "derived from focus rank 2",
+            "derived_formula": "1 − 0.015 × 2",
+            "rationale": "Small mid-progression cadence advantage.",
+            "status": "DERIVED"
+          },
+        "hit_probability": {
+          "value": 0.0015,
+            "source": "PENDING_PRODUCT_DECISION",
+            "derived_formula": "landed-hit chance under moving/telegraphing",
+            "rationale": "Moderate profile has more survivability but still receives avoidable hits.",
+            "status": "PROPOSED"
+          },
+          "build_policy": "level weapon to 6, passive to 5, resolve synergy when eligible, fallback otherwise",
+          "profile_rationale": "moderate represents a player with several meta ranks, not a fully upgraded account."
+        },
+        "max_m1": {
+          "status": "PROPOSED",
+          "source": "B1 profile requirement; exact definition absent",
+          "meta_ranks": {
+            "vitality": 10,
+            "power": 10,
+            "agility": 10,
+            "focus": 10,
+            "magnet": 10,
+            "defense": 10
+          },
+          "damage_multiplier": {
+            "value": 1.2,
+            "source": "derived from power rank 10",
+            "derived_formula": "1 + 0.02 × 10",
+            "rationale": "Uses the canonical M1 branch cap.",
+            "status": "DERIVED"
+          },
+          "cooldown_multiplier": {
+            "value": 0.85,
+            "source": "derived from focus rank 10",
+            "derived_formula": "1 − 0.015 × 10",
+            "rationale": "Uses the canonical M1 branch cap.",
+            "status": "DERIVED"
+          },
+        "hit_probability": {
+          "value": 0.001,
+            "source": "PENDING_PRODUCT_DECISION",
+            "derived_formula": "landed-hit chance under moving/telegraphing",
+            "rationale": "Max profile is a stress test for kill speed and overpowered synergy.",
+            "status": "PROPOSED"
+          },
+          "build_policy": "level weapon to 6, passive to 5, resolve synergy at first eligible non-final chest, then fallback",
+          "profile_rationale": "max_m1 is a bounded account state, not a claim that the whole meta is required for victory."
+        }
+      }
+    },
+    "build_catalog": {
+      "status": "PROPOSED",
+      "source": "architecture content registry supplies IDs; numeric combat values absent",
+      "weapons": {
+      "weapon_jade_talismans": {
+        "owner_hero_id": "hero_lin_yue",
+        "synergy_id": "synergy_heavenly_seals",
+          "base_damage": {
+            "value": 12,
+            "source": "PENDING_B1; architecture supplies ID only",
+            "derived_formula": "reference ordinary TTK ÷ attack cadence ÷ target count",
+            "rationale": "Ranged multi-target basic weapon for Lin Yue.",
+            "status": "PROPOSED"
+          },
+          "attack_interval_seconds": {
+            "value": 0.65,
+            "source": "PENDING_B1",
+            "derived_formula": "cadence must remain above the 0.8 contact safety gate only for outgoing attacks; tune to sustain ordinary clear",
+            "rationale": "Provides visible ranged pressure without instant kills.",
+            "status": "PROPOSED"
+          },
+          "targets_per_attack": {
+            "value": 3,
+            "source": "PENDING_B1",
+            "derived_formula": "multi-target identity of ranged/control starter",
+            "rationale": "Allows pressure control rather than single-target burst.",
+            "status": "PROPOSED"
+          }
+        },
+      "weapon_moon_blade": {
+        "owner_hero_id": "hero_seoyeon_han",
+        "synergy_id": "synergy_moon_dance",
+          "base_damage": {
+            "value": 18,
+            "source": "PENDING_B1; architecture supplies ID only",
+            "derived_formula": "reference ordinary TTK ÷ melee cadence ÷ cone targets",
+            "rationale": "Melee weapon must compensate for proximity risk.",
+            "status": "PROPOSED"
+          },
+          "attack_interval_seconds": {
+            "value": 0.75,
+            "source": "PENDING_B1",
+            "derived_formula": "melee cadence below one second but contact hits remain gated separately",
+            "rationale": "Gives Soyeon a close-range route.",
+            "status": "PROPOSED"
+          },
+          "targets_per_attack": {
+            "value": 2,
+            "source": "PENDING_B1",
+            "derived_formula": "short cone target count",
+            "rationale": "Prevents pure single-target tunnel vision in a horde.",
+            "status": "PROPOSED"
+          }
+        }
+      },
+      "passives": {
+        "passive_jade_focus": {
+          "owner_hero_id": "hero_lin_yue",
+          "damage_per_rank": {
+            "value": 0.03,
+            "source": "PENDING_B1; architecture supplies ID only",
+            "derived_formula": "passive_multiplier = 1 + damage_per_rank × rank",
+            "rationale": "Makes ranged control scale without a synergy-only spike.",
+            "status": "PROPOSED"
+          },
+          "defense_per_rank": {
+            "value": 0.002,
+            "source": "PENDING_B1",
+            "derived_formula": "small damage reduction per passive rank",
+            "rationale": "Adds survivability without replacing defense meta.",
+            "status": "PROPOSED"
+          }
+        },
+        "passive_wind_of_travel": {
+          "owner_hero_id": "hero_seoyeon_han",
+          "damage_per_rank": {
+            "value": 0.02,
+            "source": "PENDING_B1; architecture supplies ID only",
+            "derived_formula": "passive_multiplier = 1 + damage_per_rank × rank",
+            "rationale": "Keeps melee route competitive.",
+            "status": "PROPOSED"
+          },
+          "defense_per_rank": {
+            "value": 0.003,
+            "source": "PENDING_B1",
+            "derived_formula": "small damage reduction per passive rank",
+            "rationale": "Offsets melee exposure.",
+            "status": "PROPOSED"
+          }
+        }
+      },
+      "synergies": {
+        "synergy_heavenly_seals": {
+          "weapon_id": "weapon_jade_talismans",
+          "passive_id": "passive_jade_focus",
+          "damage_multiplier": {
+            "value": 0.18,
+            "source": "PENDING_PRODUCT_DECISION; architecture supplies matching IDs only",
+            "derived_formula": "synergy DPS = base DPS × proposed multiplier, then enforce 40% share ceiling",
+            "rationale": "Below the canonical 40% total-damage ceiling while feeling like an evolution.",
+            "status": "PROPOSED"
+          },
+          "requires_weapon_level": 6,
+          "requires_passive_rank": 5
+        },
+        "synergy_moon_dance": {
+          "weapon_id": "weapon_moon_blade",
+          "passive_id": "passive_wind_of_travel",
+          "damage_multiplier": {
+            "value": 0.2,
+            "source": "PENDING_PRODUCT_DECISION; architecture supplies matching IDs only",
+            "derived_formula": "synergy DPS = base DPS × proposed multiplier, then enforce 40% share ceiling",
+            "rationale": "Slightly stronger risk-reward melee evolution, still below 40% share.",
+            "status": "PROPOSED"
+          },
+          "requires_weapon_level": 6,
+          "requires_passive_rank": 5
+        }
+      },
+      "offer_model": {
+        "slots": {
+          "value": 3,
+          "source": "PENDING_PRODUCT_DECISION; architecture exposes chest offer but not slot count",
+          "derived_formula": "offer_count = fixed slot count per chest",
+          "rationale": "Three choices is the minimum useful decision surface for this model.",
+          "status": "PROPOSED"
+        },
+        "non_final_chest_only": "CANON_ARCHITECTURE",
+        "fallback": {
+          "id": "fallback_damage_resonance",
+          "type": {
+            "value": "upgrade",
+            "source": "PENDING_PRODUCT_DECISION; architecture fallback fields are null",
+            "derived_formula": "when no eligible synergy exists, apply one non-currency micro-upgrade",
+            "rationale": "Preserves forward progression without creating an unbounded reward.",
+            "status": "PROPOSED"
+          },
+          "damage_multiplier_additive": {
+            "value": 0.03,
+            "source": "PENDING_PRODUCT_DECISION",
+            "derived_formula": "fallback damage = +3% once per non-final unresolved chest",
+            "rationale": "Ensures fallback is measurable and weaker than a successful evolution.",
+            "status": "PROPOSED"
+          }
+        },
+        "final_boss_offer": "NO_CHEST_CANON_ARCHITECTURE"
+      }
+    },
+    "target_policy": {
+      "xp_level_targets": {
+        "120": 2,
+        "300": 5,
+        "600": 9,
+        "900": 13,
+        "1200": "17-18"
+      },
+      "ordinary_ttk_seconds": [
+        0.5,
+        2.5
+      ],
+      "elite_ttk_seconds": [
+        10,
+        25
+      ],
+      "first_slice_boss_ttk_seconds": [
+        45,
+        80
+      ],
+      "final_boss_ttk_seconds": [
+        90,
+        120
+      ],
+      "incoming_untelegraphed_hit_fraction_of_base_hp": 0.15,
+      "synergy_damage_share_max": 0.4,
+      "status": "CANON_TARGETS"
+    },
+    "reward_model": {
+      "status": "PROPOSED_MODEL_ONLY",
+      "checkpoint_rewards": "read from canonical rewards.checkpoint_rewards",
+      "first_clear_bonus": "read from canonical rewards.first_clear_bonus",
+      "repeat_clear_total": "read from canonical rewards.repeat_clear_total",
+      "artifact_delivery": {
+        "value": "run_result_artifact_grant",
+        "source": "B1 says first-clear artifact chest; architecture final policy forbids final chest_offer",
+        "derived_formula": "deliver artifact as result grant after final ledger commit, not a final chest_offer",
+        "rationale": "Preserves first-clear value while obeying the current architecture final-boss no-chest contract.",
+        "status": "PROPOSED"
+      },
+      "ledger_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
+      "duplicate_behavior": "return existing committed entry without applying currency again",
+      "defeat_policy": "read from canonical rewards.defeat_after_checkpoint"
+    }
   }
 }
