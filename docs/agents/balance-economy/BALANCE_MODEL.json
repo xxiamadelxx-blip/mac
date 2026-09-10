@@ -11,7 +11,7 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "01c08c49334f9a8bf6a0472e678e319f3f1b4c90",
+    "head": "07940fbc7ff487bef606b25d60474c8b0365d774",
     "captured_at": "2026-09-10T10:36:29Z"
   },
   "units": {
@@ -1474,6 +1474,87 @@
         "rationale": "Deterministic and conservative until runtime boss scheduling exists.",
         "status": "PROPOSED"
       }
+    },
+    "boss_wave_ramp": {
+      "status": "PROPOSED",
+      "source": "B1 section 4 wave bands and boss checkpoints; user product rule captured 2026-09-10",
+      "applies_to": "POST_BOSS_CYCLES_BEFORE_EVERY_NEXT_BOSS",
+      "phase_order": [
+        "POST_BOSS_RECOVERY",
+        "RAMP",
+        "SIEGE"
+      ],
+      "pre_first_boss_policy": {
+        "value": "CANONICAL_WAVE_BANDS",
+        "source": "B1 section 4",
+        "derived_formula": "use the existing 0-2 and 2-5 canonical bands before the first boss",
+        "rationale": "The first five minutes already have an explicit warmup-to-pressure progression; the new reset rule starts after a boss.",
+        "status": "CANON"
+      },
+      "post_boss_reset_factor": {
+        "value": 0.8,
+        "source": "PENDING_B1; user requires post-boss waves to restart below the preceding peak",
+        "derived_formula": "entry_budget = preceding_peak_budget × reset_factor; entry_cap = preceding_peak_cap × reset_factor",
+        "rationale": "A 20% reset below the preceding peak is large enough to make the breathing window visible while retaining continuity; exact reset remains a product/balance decision.",
+        "status": "PROPOSED"
+      },
+      "siege_duration_seconds": {
+        "value": 60,
+        "source": "PENDING_B1; user requires a peak-density siege before the next boss",
+        "derived_formula": "round(20% × canonical 300-second boss interval)",
+        "rationale": "Reserves the last minute of each five-minute cycle for a stable peak/siege instead of an immediate boss transition.",
+        "status": "PROPOSED"
+      },
+      "ramp_curve": {
+        "value": "LINEAR",
+        "source": "PENDING_B1; user requires monotonic low-to-peak pressure",
+        "derived_formula": "fraction = clamp((run_elapsed - cycle_start) / (cycle_duration - siege_duration), 0, 1)",
+        "rationale": "Linear interpolation is deterministic, auditable, and avoids a hidden step at the start of a new post-boss wave band.",
+        "status": "PROPOSED"
+      },
+      "density_formula": {
+        "value": "start_factor = reset_factor × entry_band_budget / peak_band_budget; fraction = clamp((run_elapsed - cycle_start - suppression_seconds - recovery_duration_seconds) / (cycle_duration - suppression_seconds - recovery_duration_seconds - siege_duration_seconds), 0, 1); effective_budget = lerp(entry_band_budget × reset_factor, peak_band_budget, fraction); effective_cap = round(lerp(entry_band_cap × reset_factor, peak_band_cap, fraction))",
+        "source": "B1 canonical band anchors plus post-boss reset decision",
+        "derived_formula": "entry is 80% of the preceding peak; the existing suppression+recovery window completes first; the remaining cycle time ramps to the next canonical band peak; fraction reaches 1.0 before the siege window",
+        "rationale": "Every post-boss cycle has a quiet recovery, then rises monotonically to the next band peak, and stays at peak for the siege window.",
+        "status": "DERIVED"
+      },
+      "recovery_interaction": {
+        "value": "multiply_budget_after_density_curve",
+        "source": "B1 section 4 boss interruption plus existing simulation model",
+        "derived_formula": "effective_spawn_budget = density_curve_budget × boss_interruption_factor; suppression remains zero-spawn, then the existing 0.7-to-1.0 recovery applies",
+        "rationale": "The immediate boss aftermath remains quiet without erasing the longer low-to-peak ramp.",
+        "status": "DERIVED"
+      },
+      "cycle_band_mapping": [
+        {
+          "cycle_id": "cycle_after_boss_01",
+          "from_checkpoint_id": "boss_01_05",
+          "to_checkpoint_id": "boss_02_10",
+          "entry_band_id": "wave_pressure_2_5",
+          "peak_band_id": "wave_threat_5_10",
+          "status": "DERIVED",
+          "source": "B1 section 4 band order and checkpoint spacing"
+        },
+        {
+          "cycle_id": "cycle_after_boss_02",
+          "from_checkpoint_id": "boss_02_10",
+          "to_checkpoint_id": "boss_03_15",
+          "entry_band_id": "wave_threat_5_10",
+          "peak_band_id": "wave_elite_10_15",
+          "status": "DERIVED",
+          "source": "B1 section 4 band order and checkpoint spacing"
+        },
+        {
+          "cycle_id": "cycle_after_boss_03",
+          "from_checkpoint_id": "boss_03_15",
+          "to_checkpoint_id": "boss_final_20",
+          "entry_band_id": "wave_elite_10_15",
+          "peak_band_id": "wave_eclipse_15_20",
+          "status": "DERIVED",
+          "source": "B1 section 4 band order and checkpoint spacing"
+        }
+      ]
     },
     "enemy_stats": {
       "enemy_ink_beetle": {
