@@ -209,7 +209,7 @@ PY
           fi
 
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${imported_files[@]}"
           if [[ "${GITHUB_EVENT_NAME}" == "push" && -f docs/ci/STAGE03_IMPORT_REQUEST.json ]]; then
             git rm -- docs/ci/STAGE03_IMPORT_REQUEST.json
