@@ -1,144 +1,151 @@
 # Balance Simulation Report
 
-Status: SIMULATED_TEST_PLACEHOLDER
+Status: SIMULATED_MODEL_ONLY / PARTIAL
 
-This report records a deterministic contract simulation, not a playable-run result. The source baseline is docs/BALANCE_ECONOMY_SPEC.md at revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687. The simulator is docs/agents/balance-economy/balance_simulator.py. The simulator commit used for this report is 77a6f75417bc3531c743aa648ecd74998ad76652.
+## Run snapshot
 
-## What was executed
+- Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
+- Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
+- Live main HEAD observed at the start of this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
+- Balance model commit used: 094a544d09635e855f84bf46ae53bf225d37cfe4.
+- Simulator commit used: 57ae67766ef7f5b5e25779ecd210d4127de4da8c.
+- Main HEAD observed immediately before this report update: 110a91300c33d59394b00e2750edd20bf561e571.
+- Seeds: 101, 202, 303, 404, 505.
+- Runs: 30 (6 profile/hero slices × 5 seeds).
+- Runtime executed: false.
+- Repeated full-run SHA-256: 13e7c864d08be7c8b35d023482e122c9c26457374fad0fb43d3eac23b5f8f92f.
 
-Command:
+The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so.
 
-    python3 docs/agents/balance-economy/balance_simulator.py --seed 20260909 --json
+## Concrete profile inputs
 
-The command exits with code 0 after self-checks. Two identical runs with seed 20260909 produced the same SHA-256:
+| Profile | Meta ranks | Damage multiplier | Cooldown multiplier | Landed-hit probability | Status |
+|---|---|---:|---:|---:|---|
+| fresh | all 0 | 1.00 | 1.00 | 0.002 | PROPOSED |
+| moderate | vitality 3, power 3, agility 2, focus 2, magnet 2, defense 2 | 1.06 | 0.97 | 0.0015 | PROPOSED |
+| max_m1 | all branches rank 10 | 1.20 | 0.85 | 0.001 | PROPOSED |
 
-    95c09b1e184f297e3de5cb295e4e2a0b63c15056ef54c6536ee21016e68caae9
+Two architecture-compatible build routes were run for every profile:
 
-The run status is SIMULATED_TEST_PLACEHOLDER. All test fixture values below are marked TEST_PLACEHOLDER by the simulator and are not production inputs.
+- Lin Yue: hero_lin_yue / weapon_jade_talismans / passive_jade_focus / synergy_heavenly_seals.
+- Soyeon Han: hero_seoyeon_han / weapon_moon_blade / passive_wind_of_travel / synergy_moon_dance.
 
-## Canonical arithmetic checks
+## XP and levels
 
-### Wave schedule
+| Profile | Hero | First level-up (s) | Level at 2 / 5 / 10 / 15 / 20 min | Final |
+|---|---|---:|---|---:|
+| fresh | hero_lin_yue | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 | 0 | 39.38 | 50.62 | 1.15 / 2.85 | 24.5 / 38.05 |
+| fresh | hero_seoyeon_han | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 | 0 | 63.04 | 46.96 | 0.75 / 2.4 | 18 / 33.3 |
+| max_m1 | hero_lin_yue | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 | 0 | 84.474 | 23.526 | 0.75 / 1.75 | 17.65 / 23.85 |
+| max_m1 | hero_seoyeon_han | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 | 0 | 115.116 | 16.884 | 0.5 / 1.25 | 12.35 / 18 |
+| moderate | hero_lin_yue | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 | 0 | 61.159 | 34.241 | 1.25 / 2.6 | 22.3 / 39.1 |
+| moderate | hero_seoyeon_han | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 | 0 | 83.868 | 32.732 | 0.75 / 1.75 | 15.1 / 27 |
 
-| Band | Duration (s) | Spawn budget/s | Theoretical spawn opportunity |
-|---|---:|---:|---:|
-| wave_00_02 | 120 | 6 | 720 |
-| wave_02_05 | 180 | 10 | 1800 |
-| wave_05_10 | 300 | 15 | 4500 |
-| wave_10_15 | 300 | 22 | 6600 |
-| wave_15_20 | 300 | 30 | 9000 ||
+B1 target comparison:
 
-Total nominal spawn opportunity: 22620. This is DERIVED arithmetic before active-cap limits, boss interruption, actual defeat/despawn behavior, and safe mode. It is not a kill-count prediction.
+- first level: 30–45 seconds; all six slices are 33.25–39.75 seconds;
+- level at 2/5/10/15/20 minutes: fresh is 2/5/9/13/17; moderate is 2/6/10/13/17; max M1 is 2/6/10/14/18;
+- the moderate/max acceleration is an observed consequence of the proposed meta/pickup model, not a canonical claim.
 
-The conditional single-recovery projection is:
+## Combat and incoming risk
 
-- reduction window: 8 seconds;
-- start factor: 0.70;
-- end factor: 1.00;
-- recovery duration: 20 seconds;
-- linear average: 0.85;
-- equivalent nominal spawn-seconds: 17.
+The TTK columns below are focused TTK: time from the first damage event to death. Spawn-to-kill queue delay is tracked separately by the simulator.
 
-The interpolation and overlap policy remain pending.
+| Profile | Hero | Ordinary mean / p95 (s) | Elite mean / p95 (s) | Deaths / 5 | Mean min HP | Mean incoming damage | Conservative single-hit bound |
+|---|---|---:|---:|---:|---:|---:|---|
+| fresh | hero_lin_yue | 1.15 / 2.85 | 24.5 / 38.05 | 0 | 39.38 | 50.62 | PASS (0.1) |
+| fresh | hero_seoyeon_han | 0.75 / 2.4 | 18 / 33.3 | 0 | 63.04 | 46.96 | PASS (0.124) |
+| max_m1 | hero_lin_yue | 0.75 / 1.75 | 17.65 / 23.85 | 0 | 84.474 | 23.526 | PASS (0.112) |
+| max_m1 | hero_seoyeon_han | 0.5 / 1.25 | 12.35 / 18 | 0 | 115.116 | 16.884 | PASS (0.112) |
+| moderate | hero_lin_yue | 1.25 / 2.6 | 22.3 / 39.1 | 0 | 61.159 | 34.241 | PASS (0.122) |
+| moderate | hero_seoyeon_han | 0.75 / 1.75 | 15.1 / 27 | 0 | 83.868 | 32.732 | PASS (0.122) |
 
-### XP formula
+The conservative bound treats the largest model hit as if it were untelegraphed. It passes the B1 15% bound in all 30 runs. This does not prove spatial telegraph behavior or collision ordering.
 
-The simulator evaluates the CANON formula:
+## Active-cap occupancy
 
-    XP_to_next(L) = round(30 + 12 × (L - 1) + 3 × (L - 1)^1.35)
+| Profile / hero | Max occupancy mean | p95 occupancy mean | Seconds at cap mean | Suppressed spawn attempts mean |
+|---|---:|---:|---:|---:|
+| fresh/hero_lin_yue | 280 | 280 | 1123.75 | 20134 |
+| fresh/hero_seoyeon_han | 280 | 280 | 1150.1 | 20470.4 |
+| max_m1/hero_lin_yue | 280 | 280 | 1117.5 | 19622.6 |
+| max_m1/hero_seoyeon_han | 280 | 280 | 1128.3 | 19804.6 |
+| moderate/hero_lin_yue | 280 | 280 | 1122.2 | 20039.4 |
+| moderate/hero_seoyeon_han | 280 | 280 | 1139.9 | 20278.2 |
 
-The first twelve derived thresholds are:
+Every slice reaches the 280 cap in the final band. This is a model risk, not a runtime acceptance pass: the proposed spawn/damage combination keeps the arena saturated for most of the run.
 
-| Current level | XP to next | Cumulative XP |
-|---:|---:|---:|
-| 1 | 30 | 30 |
-| 2 | 45 | 75 |
-| 3 | 62 | 137 |
-| 4 | 79 | 216 |
-| 5 | 97 | 313 |
-| 6 | 116 | 429 |
-| 7 | 136 | 565 |
-| 8 | 155 | 720 |
-| 9 | 176 | 896 |
-| 10 | 196 | 1092 |
-| 11 | 217 | 1309 |
-| 12 | 238 | 1547 ||
+## Boss results
 
-The XP drop set checked is: 1, 5, 15, 40, 80, 250.
+Target pass count is out of five seeds.
 
-### Reward totals
+| Profile / hero | Boss | Mean TTK (s) | TTK range | Target passes | Status |
+|---|---|---:|---:|---:|---|
+| fresh/hero_lin_yue | boss_01_05 | 65.5 | 65.5–65.5 | 5/5 | DEFEATED |
+| fresh/hero_lin_yue | boss_02_10 | 70.25 | 70.25–70.25 | 5/5 | DEFEATED |
+| fresh/hero_lin_yue | boss_03_15 | 77 | 77–77 | 5/5 | DEFEATED |
+| fresh/hero_lin_yue | boss_final_20 | 119.928 | 119.928–119.928 | 5/5 | PROJECTED_POST_RUN_DEFEAT |
+| fresh/hero_seoyeon_han | boss_01_05 | 70.5 | 70.5–70.5 | 5/5 | DEFEATED |
+| fresh/hero_seoyeon_han | boss_02_10 | 78.75 | 78.75–78.75 | 5/5 | DEFEATED |
+| fresh/hero_seoyeon_han | boss_03_15 | 87 | 87–87 | 0/5 | DEFEATED |
+| fresh/hero_seoyeon_han | boss_final_20 | 133.749 | 133.749–133.749 | 0/5 | POST_RUN_WINDOW_EXCEEDED |
+| max_m1/hero_lin_yue | boss_01_05 | 45.5 | 45.5–45.5 | 5/5 | DEFEATED |
+| max_m1/hero_lin_yue | boss_02_10 | 48.75 | 48.75–48.75 | 5/5 | DEFEATED |
+| max_m1/hero_lin_yue | boss_03_15 | 47.75 | 47.75–47.75 | 5/5 | DEFEATED |
+| max_m1/hero_lin_yue | boss_final_20 | 85.409 | 85.409–85.409 | 0/5 | PROJECTED_POST_RUN_DEFEAT |
+| max_m1/hero_seoyeon_han | boss_01_05 | 49.5 | 49.5–49.5 | 5/5 | DEFEATED |
+| max_m1/hero_seoyeon_han | boss_02_10 | 54.75 | 54.75–54.75 | 5/5 | DEFEATED |
+| max_m1/hero_seoyeon_han | boss_03_15 | 53.25 | 53.25–53.25 | 5/5 | DEFEATED |
+| max_m1/hero_seoyeon_han | boss_final_20 | 94.633 | 94.633–94.633 | 5/5 | PROJECTED_POST_RUN_DEFEAT |
+| moderate/hero_lin_yue | boss_01_05 | 59.5 | 59.5–59.5 | 5/5 | DEFEATED |
+| moderate/hero_lin_yue | boss_02_10 | 64.75 | 64.75–64.75 | 5/5 | DEFEATED |
+| moderate/hero_lin_yue | boss_03_15 | 70.5 | 70.5–70.5 | 5/5 | DEFEATED |
+| moderate/hero_lin_yue | boss_final_20 | 109.71 | 109.71–109.71 | 5/5 | PROJECTED_POST_RUN_DEFEAT |
+| moderate/hero_seoyeon_han | boss_01_05 | 64.5 | 64.5–64.5 | 5/5 | DEFEATED |
+| moderate/hero_seoyeon_han | boss_02_10 | 72.25 | 72.25–72.25 | 5/5 | DEFEATED |
+| moderate/hero_seoyeon_han | boss_03_15 | 68.5 | 68.5–68.5 | 5/5 | DEFEATED |
+| moderate/hero_seoyeon_han | boss_final_20 | 123.079 | 123.079–123.079 | 0/5 | POST_RUN_WINDOW_EXCEEDED |
 
-| Scenario | Gold | Moon Seals | Boss Essence |
-|---|---:|---:|---:|
-| Checkpoint sum | 425 | 120 | 5 |
-| Full first clear | 725 | 300 | 6 |
-| Repeat clear | 425 | 120 | 5 |
+Interpretation:
 
-These match the CANON totals in B1 section 7.
+- fresh Lin Yue passes all four model target windows and resolves the first-clear ledger;
+- fresh Soyeon passes bosses 1–2 but misses boss 3 and final target windows;
+- moderate Lin Yue passes all four;
+- moderate Soyeon passes bosses 1–3 but misses the final upper bound by a small margin;
+- max M1 Lin Yue defeats the final boss faster than the 90-second lower target;
+- max M1 Soyeon passes all four target windows.
 
-### Meta rank costs
+These are explicit model findings. They are not hidden by profile-specific scaling.
 
-The simulator evaluates cost(r) = round(100 × 1.45^r). Costs for current ranks 0–9 are:
+## Rewards, synergy, fallback, and idempotency
 
-100, 145, 210, 305, 442, 641, 929, 1,348, 1,954, 2,833.
+| Profile / hero | Ledger balance | Idempotency | Final chest_offer | Synergy | Fallback damage bonus |
+|---|---|---|---|---|---|
+| fresh/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| fresh/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
+| max_m1/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| max_m1/hero_seoyeon_han | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_moon_dance | 0.06 |
+| moderate/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| moderate/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
 
-These are DERIVED from the CANON formula, not a new economy decision.
+The canonical arithmetic remains:
 
-## Test-placeholder profile projection
+- full first clear: 725 gold / 300 Moon Seals / 6 boss essence;
+- repeat clear: 425 gold / 120 Moon Seals / 5 boss essence;
+- duplicate reward attempts: rejected in all 30 model runs;
+- final boss chest_offer: false in all model runs;
+- artifact delivery: proposed run-result artifact grant, because the architecture contract currently says final boss NO_CHEST while B1 specifies first-clear artifact value.
 
-B1 does not define fresh, moderate, or max_m1 numeric upgrade profiles. The following rows only exercise the report and profile plumbing with explicit TEST_PLACEHOLDER XP rates.
+## Remaining blockers
 
-| Profile | XP/s | First level (s) | Level at 10 min | XP at 10 min | Status |
-|---|---:|---:|---:|---:|---|
-| fresh | 1 | 30 | 8 | 600 | TEST_PLACEHOLDER |
-| max_m1 | 1.4 | 21.429 | 9 | 840 | TEST_PLACEHOLDER |
-| moderate | 1.2 | 25 | 9 | 720 | TEST_PLACEHOLDER ||
+1. The Godot runtime does not consume BALANCE_MODEL.json.
+2. Absolute combat values and profile definitions are PROPOSED, not approved CANON.
+3. Active-cap saturation needs a product decision and runtime performance test.
+4. Fresh/moderate Soyeon and max Lin Yue do not share the final-boss target window.
+5. Spatial movement, telegraphs, same-frame ordering, XP presentation, and Android 30 FPS are not executed.
+6. The result-artifact settlement needs Product/Architecture confirmation.
 
-Do not interpret these rows as progression evidence. The production profile definitions remain PENDING_PRODUCT_DECISION and the level timing target remains NOT_IMPLEMENTED in runtime.
+## Exact next implementation slice
 
-## TTK equation harness
-
-B1 defines target ranges but does not provide absolute enemy base HP, base damage, base speed, weapon cadence, mitigation, or crit rules. The simulator therefore uses a deliberately isolated TEST_PLACEHOLDER fixture to check the equation and range guard only.
-
-| Encounter | Effective HP | Sustained DPS | Fixture TTK (s) | Target range | Guard |
-|---|---:|---:|---:|---:|---|
-| ordinary | 100 | 60 | 1.667 | 0.5–2.5 | PASS (fixture only) |
-| elite | 1000 | 50 | 20 | 10–25 | PASS (fixture only) |
-| first_slice_boss | 3000 | 50 | 60 | 45–80 | PASS (fixture only) |
-| final_boss | 5250 | 50 | 105 | 90–120 | PASS (fixture only) ||
-
-Every guard passes for the fixture. This is not evidence that any enemy, hero, boss, or build meets the target in runtime.
-
-## Reward idempotency harness
-
-The harness sends two checkpoint grants twice with the same test key shape:
-
-- attempted grants: 4;
-- accepted grants: 2;
-- stored grants: 2;
-- duplicate attempts rejected: true.
-
-The key shape is a test fixture: run ID, checkpoint ID, outcome, and source-table revision. The production ledger transaction/idempotency schema is still PENDING_PRODUCT_DECISION and NOT_IMPLEMENTED.
-
-## Evidence boundary
-
-Verified by this report:
-
-- the B1 wave arithmetic is reproducible;
-- the B1 XP formula and derived thresholds are reproducible;
-- the B1 checkpoint/clear totals are reproducible;
-- the meta-cost formula is reproducible;
-- the isolated duplicate-grant harness rejects duplicate attempts;
-- the simulator output is deterministic for a fixed seed.
-
-Not verified:
-
-- production wave spawning or active-cap behavior;
-- ordinary/elite/boss TTK;
-- hero/build routes or synergy power ceiling;
-- boss telegraph and reaction timing;
-- reward wallet persistence or reconnect/replay behavior;
-- Android performance or 30 FPS target;
-- readability of combat, XP, aftermath, or results;
-- playability or overall balance.
+Runtime/Architecture must load this model through the versioned Content Registry, create the RunSession wave/XP/combat/reward fields, implement the event pipeline and final NO_CHEST settlement, then emit the same five-seed traces. Balance can only promote PROPOSED inputs or tune against those traces after that evidence exists.
 
