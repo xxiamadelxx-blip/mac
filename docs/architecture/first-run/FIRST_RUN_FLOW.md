@@ -4,11 +4,13 @@
 Runtime implemented: NO
 Android acceptance: NOT_PERFORMED
 
+> Revision 2: этот flow теперь описывает 30-минутный target run, schedule-driven encounters, до 15 chest windows и cycle-based wave pressure. Runtime implemented: NO.
+
 Документ описывает наблюдаемое поведение от включения игры до возврата в меню. Он не утверждает, что описанные состояния уже реализованы в Godot.
 
 ## 1. Границы и источники
 
-Цель — дать runtime-агенту последовательный контракт первого 20-минутного забега:
+Цель — дать runtime-агенту последовательный контракт первого 30-минутного забега:
 
 включение → загрузка → меню → ПЕРСОНАЖИ → подготовка → арена → волны → XP/уровни → улучшения → промежуточные боссы → checkpoint/сундук → следующая полоса; финальный босс → финальная награда → победа или поражение → результат → rewards → меню.
 
@@ -46,16 +48,16 @@ Android acceptance: NOT_PERFORMED
 | 8. Run creation | Confirm start command | Content version и save revision согласованы | RUN_LOADING, RunCoordinator создаёт RunSession | Loading screen | Ошибка создания/seed → CONTENT_ERROR или MAIN_MENU; частичный RunSession не считается начатым |
 | 9. Arena load | RunCoordinator загружает карту | RunSession создана, arena contract найден | RUN_ACTIVE, Arena/Simulation adapters | Героиня в стартовой точке, HUD и открытое поле | Ошибка visual/runtime resource → fallback + diagnostic; запуск запрещён только при отсутствии обязательного gameplay resource |
 | 10. Active simulation | Clock tick | Не paused, RunSession active | RUN_ACTIVE, RunSession + SimulationClock | Движение, автоматическое оружие, враги, HUD, XP и aftermath | Ошибка одного декоративного ресурса не останавливает simulation; ошибка authoritative state переводит в recoverable pause |
-| 11. Wave band | Elapsed time пересекает B1 boundary | RunSession active | RUN_ACTIVE, WaveDirector | Состав, плотность и pressure меняются по полосе B1 | Повторный tick той же границы не создаёт вторую смену |
+| 11. Wave cycle/phase | Elapsed time или encounter boundary пересекает registry boundary | RunSession active | RUN_ACTIVE, WaveDirector | После boss — relief, затем постепенный ramp к следующему peak; состав/варианты/pressure читаются из data | Повторный tick той же boundary не создаёт вторую фазу; missing extension profile → diagnostic/pending gate |
 | 12. XP and level | XPDrop collected | Drop ещё не collected; magnet/line-of-sight разрешены | RUN_ACTIVE или UPGRADE_OFFER, ProgressionSystem | XP bar, level-up и readable pickup | Повторная доставка pickup не увеличивает XP; потерянный drop остаётся отдельной диагностируемой записью |
 | 13. Upgrade offer | Level-up command | Simulation can freeze; content offer pool valid | UPGRADE_OFFER, ProgressionSystem | Ровно три offer projection, current/new values и slot state | Невалидная карта отклоняется; offer сохраняется до выбора/отмены по policy |
 | 14. Upgrade chosen | Пользователь выбирает карточку | Offer open, choice belongs to offer | RUN_ACTIVE или UPGRADE_OFFER | Изменившийся build и stats | Повторный выбор того же offer → duplicate/no-op; stale offer требует открыть новый valid projection |
 | 15. Weapon/passive slot | Chosen offer adds content | Slot available or upgrade target exists | RUN_ACTIVE, BuildInventory | Weapon/passive level и доступные слоты | Полный слот исключает illegal new-item offer; если pool исчерпан, fallback outcome помечен в offer contract |
-| 16. Boss checkpoint | Clock достигает B1 checkpoint | Нужная boss record и wave band loaded; boss state не останавливает elapsed time | BOSS_INTRO → BOSS_ACTIVE, BossDirector | Босс, health bar, telegraph и временно сниженный обычный spawn | Босс не может появиться внутри персонажа; invalid spawn → deterministic safe spawn retry и diagnostic |
+| 16. Encounter checkpoint | Clock достигает scheduled main/intermediate checkpoint | Нужная encounter record и cycle phase loaded; boss state не останавливает elapsed time | BOSS_INTRO → BOSS_ACTIVE, BossDirector | Main boss или intermediate boss, health bar, telegraph и controlled ordinary spawn | Encounter не может появиться внутри персонажа; invalid spawn → deterministic safe spawn retry и diagnostic |
 | 17. Boss combat | Boss pattern event | Boss active; elapsed time continues for every boss | BOSS_ACTIVE, Combat/BossDirector | Wind-up, telegraph, reaction window, damage | Повторный boss spawn с тем же checkpoint_id ignored; отсутствие telegraph — contract failure |
 | 18. Boss defeated | Authoritative defeat | Boss active и HP <= zero | CHECKPOINT_SETTLEMENT, RunCoordinator | Death beat; settlement промежуточного или финального босса | Повторный defeat event не повторяет rewards; повреждённое result → recoverable checkpoint state |
 | 19. Checkpoint reward | Settlement command | checkpoint_id not settled | CHECKPOINT_SETTLEMENT, RewardLedger | Gold, Lunar Seals, Boss Essence и ledger status | Для финального босса это последняя награда перед victory; idempotency key не допускает повтор |
-| 20. Boss chest (non-final checkpoints) | Reward settlement completed | Нефинальный boss checkpoint разрешает boss chest | CHEST_OFFER, BossChestSystem | Сундук босса, synergy/evolution eligibility и fallback explanation | Финальный босс boss chest не создаёт; закрытие без claim не теряет pending offer |
+| 20. Chest window | Non-final settlement or configured non-boss source trigger | chest_window_id is enabled and not consumed; final boss guard passes | CHEST_OFFER, ChestWindowSystem | Source, offer type, eligibility/fallback and claim state; boss chest remains a typed non-final source | Final boss cannot create a boss chest or generic defeat chest; unconfigured reserved window stays pending; close/reopen preserves offer |
 | 21. Boss-chest outcome | Claim non-final boss-chest offer | Offer valid, evaluator result known | RUN_ACTIVE, BossChestSystem | Synergy/evolution или fallback reward согласно offer | Применяется только к нефинальному boss chest; exact fallback values остаются PENDING_PRODUCT_DECISION |
 | 22. Elite-pack artifact source | Special elite pack defeated between bosses | Elite encounter is authoritative; cadence/composition policy allows source | ARTIFACT_OFFER, ArtifactOfferSystem | Three-card artifact offer | Elite-pack cadence and card pool remain explicit pending fields |
 | 23. Artifact offer choice/refresh | Artifact source opens offer | Exactly three cards; offer owned by current run | ARTIFACT_OFFER → RUN_ACTIVE or RESULT_REVIEW | `Get` selects one card; `Refresh` rerolls the offer only under pending policy | One choice creates one active run effect; no weapon/passive slot is consumed; duplicate commands are idempotent |
@@ -64,10 +66,42 @@ Android acceptance: NOT_PERFORMED
 | 26. Resume | Continue / Android foreground | Snapshot and content version valid | Previous resumable state | Simulation continues without time jump | Invalid snapshot → RECOVERY_REVIEW/diagnostic; rewards не начисляются автоматически |
 | 27. Exit attempt | User chooses menu from pause | Confirmation required for active run | Exit confirmation overlay | Ясно указано: abandon или recoverable save policy | Cancel returns to pause; confirm follows abandon policy and не выдаёт незаработанные rewards |
 | 28. Death | HP reaches zero | Run active; death not already settled | RUN_DEFEAT → RESULT_REVIEW | Причина смерти, stats, partial rewards | Repeated death event ignored; partial rewards считаются один раз |
-| 29. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; финальный босс не создаёт сундук |
+| 29. Final boss defeat | Final boss defeated at the terminal 30-minute schedule slot | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; final boss creates no boss chest; first-clear artifact offer remains post-result and separate |
 | 30. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_REVIEW → REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards; result_finalized.v1 marks the immutable result boundary | Повторное открытие read-only; claim использует ledger idempotency |
 | 31. Return to menu | Result claim or explicit menu action | Result settlement committed or abandon confirmed | MAIN_MENU, MenuFlow | Updated wallets/unlocks and start options | Неудача save → result остаётся recoverable; возврат не теряет committed ledger |
 | 32. New run | User starts another run | Previous result committed/abandoned | New RUN_LOADING | New run_id и fresh session | Старый RunSession не переиспользуется |
+## 3.1 Revision 2: encounter schedule
+
+The schedule is registry data, not a set of UI branches. checkpoint_reached.v1 carries encounter_kind, encounter_id, checkpoint_id and is_final.
+
+| Order | Target time | Kind | Stable ID | Defeat outcome | Status |
+|---:|---:|---|---|---|---|
+| 1 | 300 s / 05:00 | MAIN_BOSS | boss_hua_lin | checkpoint reward → chest window | existing |
+| 2 | 450 s / 07:30 | INTERMEDIATE_BOSS | miniboss_ink_jade_warden | checkpoint reward → chest window | C3 target |
+| 3 | 600 s / 10:00 | MAIN_BOSS | boss_miyeon | checkpoint reward → chest window | existing |
+| 4 | 750 s / 12:30 | INTERMEDIATE_BOSS | miniboss_veil_harvester | checkpoint reward → chest window | C3 target |
+| 5 | 900 s / 15:00 | MAIN_BOSS | boss_seika | checkpoint reward → chest window | existing |
+| 6 | 1200 s / 20:00 | MAIN_BOSS | boss_extension_slot_04 | checkpoint reward → chest window | new content slot; pending registry/B1 |
+| 7 | 1350 s / 22:30 | INTERMEDIATE_BOSS | miniboss_extension_slot_03 | checkpoint reward → chest window | new slot; target placement pending approval |
+| 8 | 1500 s / 25:00 | MAIN_BOSS | boss_extension_slot_05 | checkpoint reward → chest window | new content slot; pending registry/B1 |
+| 9 | 1800 s / 30:00 | MAIN_BOSS / FINAL | boss_black_moon_empress | final settlement → victory; no boss chest | existing identity retimed to terminal slot |
+
+The five-minute main cadence and the 22:30 intermediate placement are working architecture targets derived from the existing cadence and C3 ordering; Product/B1 may replace the seconds through the registry without changing state ownership. There are six main-boss records and three intermediate records, but only eight non-final boss/mini-boss chest windows because the terminal record has no boss chest.
+
+## 3.2 Revision 2: wave cycles and enemy variants
+
+Each main-boss interval is a wave cycle. Every cycle after the first begins with a post-boss relief phase, then rebuilds pressure gradually and reaches a pre-boss peak. BOSS_INTRO and BOSS_ACTIVE consume the same run clock; after settlement/claim the next cycle starts at relief. A boss or mini-boss must never be followed by an immediate jump to the previous peak profile.
+
+| Phase | Owner | Observable rule | Numeric source |
+|---|---|---|---|
+| OPENING | WaveDirector | readable onboarding pressure before the first scheduled encounter | B1 extension |
+| POST_BOSS_RELIEF | WaveDirector | lower pressure after any non-final encounter and chest settlement | B1 extension |
+| RAMP | WaveDirector | pressure, composition and allowed variants grow in steps toward the next peak | B1 extension |
+| PRE_BOSS_PEAK | WaveDirector | target pressure before the next main/intermediate encounter | B1 extension |
+| BOSS_ACTIVE | BossDirector + WaveDirector | controlled ordinary spawn; boss telegraphs remain readable; clock continues | B1 extension |
+
+EnemyVariantResolver selects a variant from content_version, run_seed, wave_cycle_id, base_enemy_id and state_revision and records variant_id in telemetry and the run snapshot. enemy_ink_beetle has three reserved variants. Each variant inherits the base role, XP/drop boundary and aftermath separation unless B1 explicitly overrides a field; it must have a non-color marker/detail and may not silently create a new reward source. Three new enemy slots are registry placeholders only, with names/roles/tuning pending Content/B1.
+
 
 ## 4. Что считается активным забегом
 
@@ -102,7 +136,7 @@ Game clock движется в RUN_ACTIVE, BOSS_INTRO и BOSS_ACTIVE для ка
 
 ## 6. Босс, checkpoint и сундук
 
-На 300, 600, 900 и 1200 секундах B1/WaveDirector создаёт соответствующий boss checkpoint. На входе:
+На target schedule 300, 600, 900, 1200, 1500 и 1800 секундах WaveDirector создаёт main-boss checkpoints; intermediate slots находятся на 450, 750 и target 1350 секундах. Новые slot IDs и exact cadence/tuning помечены pending. На входе:
 
 1. обычный spawn временно уменьшается по B1;
 2. BossDirector выбирает безопасную позицию;
@@ -117,6 +151,20 @@ Game clock движется в RUN_ACTIVE, BOSS_INTRO и BOSS_ACTIVE для ка
 11. после claim нефинального boss chest открывается следующий wave band; после финального settlement начинается result flow без boss chest.
 
 Точное содержимое fallback-награды и правила округления 50% Gold при defeat после checkpoint отсутствуют в B1 и не заполняются агентом.
+### 6.1 Chest-window registry
+
+The chest system is a source registry plus one idempotent offer lifecycle:
+
+- max_openable_windows_per_run = 15 is an architecture cap/target, independent from synergy claims and artifact capacity.
+- Eight windows are configured for non-final encounters: five main-boss windows (05:00, 10:00, 15:00, 20:00, 25:00) and three intermediate-boss windows.
+- Seven additional windows are reserved for non-boss sources. Their triggers, cadence and exact outcome are PENDING_PRODUCT_DECISION/PENDING_B1; a reserved slot is not a guaranteed drop until configured.
+- Each window may create at most one chest_offer_id. Closing, reopening, retrying or restoring it returns the same offer and cannot duplicate the outcome.
+- BOSS_CHEST can be created only for a non-final main/intermediate encounter and resolves synergy/evolution or an approved fallback. It never becomes an artifact offer.
+- FIRST_CLEAR_REWARD artifact offer remains a separate post-result three-card source and is not counted as a boss chest or as a pre-run loadout.
+- The final boss at 30:00 creates no boss chest and no generic chest as part of defeat; it goes through final settlement and victory.
+
+Chest-window count is not a guarantee that all 15 windows are active in the first balance pass. The registry has the capacity now; Balance/Product must configure the seven reserved sources before runtime claims a 15-window run.
+
 
 ## 7. Pause, settings, background и выход
 
@@ -144,7 +192,7 @@ Death:
 
 Victory:
 
-- 20 минут сами по себе не дают victory.
+- 30 минут сами по себе не дают victory.
 - Нужен defeat final boss и commit final settlement для authoritative victory; final boss chest не создаётся.
 - Final checkpoint bundle и first-clear/repeat-clear outcome проходят одну ledger transaction; final boss chest не создаётся.
 - После commit доступен result screen и возврат в меню.

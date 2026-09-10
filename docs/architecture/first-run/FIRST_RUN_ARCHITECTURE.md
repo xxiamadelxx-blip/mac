@@ -4,9 +4,11 @@
 Runtime implemented: NO
 Цель: контракт для следующего runtime-агента, а не список классов и не доказательство APK.
 
+> Revision 2: module boundaries now cover a 30-minute schedule, three intermediate encounters, up to 15 chest windows and data-driven enemy variants. Runtime implemented: NO.
+
 ## 1. Цель и ограничения
 
-Архитектура должна провести один offline-first 20-минутный Android-забег от меню до result screen, не смешивая UI, симуляцию, content data, persistence и reward mutation.
+Архитектура должна провести один offline-first 30-минутный Android-забег от меню до result screen, не смешивая UI, симуляцию, content data, persistence и reward mutation.
 
 Защищённый scope этого задания:
 
@@ -115,7 +117,8 @@ RunSession does not reference Godot UI nodes, textures, scene paths or network s
 - selects current wave_band_id;
 - produces spawn budget, active cap, roster and boss interruption commands;
 - enforces no silent per-second HP growth;
-- resumes post-boss spawn from imported B1 rule;
+- after every non-final main/intermediate encounter starts a relief/rebuild phase and ramps gradually toward the next peak; it never jumps directly to maximum pressure;
+- uses schedule-linked phase records, not hard-coded five-band assumptions;
 - delegates actual entity creation to controlled spawner/pool.
 
 #### CombatSystem
@@ -139,6 +142,33 @@ RunSession does not reference Godot UI nodes, textures, scene paths or network s
 - separate enemy/projectile/XP/VFX/aftermath pools;
 - expose diagnostics when a pool is exhausted;
 - never silently delete XP; merge XP items by defined value policy.
+### EncounterSchedule and checkpoint registry
+
+EncounterSchedule is immutable run content. It contains ordered records with encounter_id, encounter_kind (MAIN_BOSS or INTERMEDIATE_BOSS), checkpoint_id, target boundary reference, is_final, chest_window_id when non-final, telegraph contract reference and content status. The state machine consumes the next record; UI cannot choose the next boss and a boss name is not a transition condition.
+
+The architecture target has six main-boss slots and three intermediate slots. Existing main identities remain; two new main slots are pending Content Registry records, and the existing final identity is moved to the terminal 30:00 target slot. Two C3 mini-boss IDs remain and one intermediate slot is added. Target seconds are explicit in the data contract, but new cadence/tuning remains pending until Product/B1 confirmation.
+
+### WaveCycleDirector and pressure phases
+
+WaveCycleDirector wraps WaveDirector with a cycle/phase projection:
+
+1. select the current cycle from encounter_schedule and elapsed_seconds;
+2. enter OPENING or POST_BOSS_RELIEF after the preceding boundary;
+3. apply a data-driven gradual RAMP of composition, spawn budget and active cap;
+4. reach PRE_BOSS_PEAK according to the imported B1 profile;
+5. hand the encounter window to BossDirector while ordinary spawn remains controlled and telegraphs readable;
+6. after non-final settlement/chest claim, reset to relief and begin the next cycle.
+
+The exact durations, budgets, caps, multipliers, variant availability and post-boss recovery curve are not copied here; they are PENDING_B1 until the 30-minute balance extension is published. This structure explicitly prevents a boss defeat from being followed by an immediate max-density wave.
+
+### EnemyVariantResolver
+
+EnemyVariantResolver selects a variant using content version, run seed, cycle ID, base enemy ID and state revision. It records both base_enemy_id and variant_id for telemetry, result statistics and recovery. The three enemy_ink_beetle variants inherit the base role, XP source, aftermath separation and reward boundary. Each variant requires a readable marker/detail beyond hue; color can support recognition but cannot be the only signal. Variant-specific numerical overrides, allowed phases and spawn weights come from B1, while names/visual assets come from Content/Visual owners.
+
+### ChestWindowRegistry and ChestResolver
+
+ChestWindowRegistry separates the number of possible chest windows from the type of outcome. The target cap is 15: eight configured non-final boss/mini-boss windows and seven reserved non-boss source slots. A configured window may create exactly one chest_offer_id; a reserved slot cannot fire until its source, trigger, cadence and outcome are approved. ChestResolver owns common idempotency and source validation, while BossChestSystem remains the specialized resolver for BOSS_CHEST synergy/evolution/fallback outcomes. Artifact offers remain a separate three-card source, and the final boss creates no chest.
+
 
 ## 4. Content and build modules
 
@@ -148,8 +178,8 @@ Records are data-driven and versioned. At minimum:
 
 - characters: two M1 characters and their starting properties;
 - weapons, passives and ten direct synergy pairs from GAME_MANIFEST;
-- ten enemy records and four boss records;
-- five B1 wave bands;
+- ten existing enemy records plus three pending extension slots, three data-driven beetle variants, six main-boss records and three intermediate-boss records;
+- six schedule-linked wave cycles with opening/relief/ramp/peak phases; exact profiles are imported from the B1 extension;
 - artifact definitions and typed artifact-effect contracts, XP grades and reward bundles;
 - telegraph metadata, fallback references and schema version.
 
@@ -319,7 +349,7 @@ Defer: full roster, bosses, all UI art, final balancing and Android performance 
 
 ### Iteration 2 — complete M1 rules and failure paths
 
-Outcome: all B1 wave bands, ten enemies, four bosses, six-weapon/six-passive build, XP curve, upgrade offers, separate non-final boss-chest eligible/fallback path, elite-pack/first-clear artifact-offer path, checkpoint ledger, death/victory results and recovery run through one contract.
+Outcome: the 30-minute schedule, six main bosses, three intermediate bosses, thirteen base-enemy slots, three beetle variants, cycle-based wave pressure, up to 15 chest windows, six-weapon/six-passive build, XP curve, upgrade offers, separate boss-chest and artifact-offer paths, checkpoint ledger, death/victory results and recovery run through one contract. Exact extension tuning remains pending B1/Content sync.
 
 Include:
 
@@ -333,13 +363,13 @@ Defer: production visual promotion, final audio and polish.
 
 ### Iteration 3 — Android hardening and scale evidence
 
-Outcome: target Android APK completes the full 0→20-minute scenario with no critical failure and recorded performance/evidence.
+Outcome: target Android APK completes the full 0→30-minute scenario with no critical failure and recorded performance/evidence.
 
 Include:
 
 - controlled pools and aftermath aggregation;
 - Android pause/resume and background-kill checks;
-- 0/5/10/15/20 evidence;
+- 0/5/10/15/20/25/30 evidence plus intermediate-encounter checkpoints;
 - real HUD, approved runtime assets and audio only after their own gates;
 - performance at full active cap.
 
@@ -353,6 +383,10 @@ Include:
 - Safe pause snapshots reduce data-loss risk, but arbitrary mid-frame resume is not promised.
 - Read models make UI replaceable and testable, but require projection refresh after every state revision.
 - Controlled pools protect mobile performance, but pool exhaustion must surface a diagnostic rather than silently drop XP or rewards.
+- A registry-driven schedule is more adaptable than hard-coded boss branches, but it makes content-version validation and migration mandatory.
+- Fifteen chest windows increase offer/ledger/recovery surface; keeping window identity separate from synergy claim count prevents chest volume from silently increasing power claims.
+- Variant inheritance reduces duplicated enemy logic, but every visual/balance override must be explicit and telemetry must preserve both base and variant IDs.
+
 
 ## 12. Explicit non-goals
 

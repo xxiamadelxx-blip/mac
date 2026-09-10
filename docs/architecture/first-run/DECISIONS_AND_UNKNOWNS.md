@@ -8,8 +8,8 @@
 
 | ID | Решение | Источник |
 |---|---|---|
-| C-01 | Первый срез включает один полный 20-минутный забег | GAME_MANIFEST.md, AGENT_CONTEXT.md |
-| C-02 | Боссы происходят на 5, 10, 15 и 20 минутах | GAME_MANIFEST.md, docs/BALANCE_ECONOMY_SPEC.md |
+| C-01 | Архитектурная target revision включает один полный 30-минутный забег; root 20-minute statements are legacy until sync | User extension brief; root docs remain read-only |
+| C-02 | Target cadence имеет шесть main-boss slots на 5/10/15/20/25/30; существующий final boss identity переносится на 30:00 | User extension brief; exact new tuning pending B1 |
 | C-03 | XP-дропы и останки/aftermath — отдельные сущности и слои | AGENT_CONTEXT.md, docs/BALANCE_ECONOMY_SPEC.md |
 | C-04 | Награды checkpoint должны быть идемпотентными | GAME_MANIFEST.md, docs/BALANCE_ECONOMY_SPEC.md |
 | C-05 | Игра — Godot 4.x native 2D, Android, offline-first | README.md, AGENT_CONTEXT.md |
@@ -18,6 +18,11 @@
 | C-08 | Каждый artifact source показывает три карты; игрок выбирает одну, и эффект активен до конца текущего забега | Product decision |
 | C-09 | Boss chest — отдельная нефинальная награда для synergy/evolution/fallback; elite pack и first-clear reward могут открывать отдельные artifact offers; final boss не создаёт boss chest | Product decision; B1 reward boundary |
 | C-10 | Game clock продолжает идти через BOSS_INTRO и BOSS_ACTIVE для каждого босса; останавливается только на offer/pause/settlement и terminal/transaction boundaries | Explicit current task decision |
+| C-11 | Два C3 mini-boss сохраняются, добавляется один третий intermediate slot; exact placement is a target slot, not a hidden balance value | User extension brief + C3; exact cadence pending |
+| C-12 | ChestWindowRegistry поддерживает до 15 логических окон: 8 configured non-final boss/mini-boss windows плюс 7 reserved non-boss source windows | User extension brief; C3; product boundary |
+| C-13 | Existing enemy families сохраняются; добавляются три new enemy slots, а variants не считаются новыми enemy families | User extension brief; Content Registry owns selection |
+| C-14 | enemy_ink_beetle получает три data-driven variants; визуальный distinction обязан включать marker/detail кроме цвета | User extension brief; accessibility invariant |
+
 
 ## Вопросы, которые агент обязан проверить
 
@@ -49,7 +54,7 @@
 Дата проверки: 2026-09-10
 Repository: xxiamadelxx-blip/mac
 Branch: main
-HEAD at inspection: 54b5932605691be0aad3ccdd490710e727a641c8
+HEAD at inspection: afa1aff37d90ac7b90497c1b37a2ab7504485bb4
 
 - Прямой локальный checkout в текущем окружении отсутствует, поэтому git status/branch/дословный локальный diff не выполнялись.
 - Atlas Scout capability в текущем окружении не опубликована; использован разрешённый fallback: GitHub tree, точечное чтение живых файлов и repository search.
@@ -84,6 +89,12 @@ HEAD at inspection: 54b5932605691be0aad3ccdd490710e727a641c8
 | U-15 | PENDING_PRODUCT_DECISION | Какие optional stats обязательны на HUD/result кроме required fields? | Влияет на projection size и acceptance | Expose required fields plus extensible modifiers_ref | product owner | Утвердить presentation matrix до HUD slice |
 
 | U-16 | PENDING_PRODUCT_DECISION | Что сохраняется между забегами: только артефакт в Codex или также его активный эффект? | Разделяет persistent collection и temporary run state | В текущем контракте artifact instance active only within run; persistent unlock остаётся отдельным вопросом | product owner | Утвердить Codex/meta-progression policy до result slice |
+| U-17 | PENDING_B1 | Какие значения duration-dependent wave profiles, spawn budgets, active caps, post-boss relief/ramp и extension rewards нужны для 30-minute target? | B1 сейчас 20-minute и не покрывает новые slots | Contract содержит refs/status, но не новые числа | balance owner | Выпустить B1 extension/version и прогнать profiles до runtime Iteration 2 |
+| U-18 | PENDING_CONTENT_REGISTRY | Какие имена, IDs, mechanics и telegraph contracts у двух новых main bosses, третьего intermediate boss и трёх новых enemies? | User brief задаёт количество, не content identity | Зарезервированы stable extension slots; runtime не должен invent records | content owner | Утвердить registry records и manifest linkage |
+| U-19 | PENDING_PRODUCT_DECISION | Какие именно семь reserved non-boss chest windows, их triggers, outcome types и UI copy? | Cap 15 задан, source cadence нет | Reserved windows не считаются гарантированной выдачей до approval | product + balance owner | Утвердить source table; затем перевести slots в CONFIGURED |
+| U-20 | PENDING_PRODUCT_DECISION | Утверждается ли target placement третьего intermediate slot на 22:30 и равномерная 5-minute main cadence? | User brief не задаёт секунды новых encounter | 22:30/5-minute cadence записаны как working architecture target и легко меняются registry-only | product owner | Подтвердить schedule before B1 extension |
+| U-21 | BLOCKED_EXTERNAL_SYNC | Как мигрировать уже сохранённые legacy 20-minute snapshots после contract version 2? | Runtime/save migration и root contract вне этой architecture write scope | v1 snapshots block restore or require explicit migration; no silent reinterpretation | runtime + product owner | Define migration adapter before shipping save restore |
+
 
 ## Scope conclusion
 

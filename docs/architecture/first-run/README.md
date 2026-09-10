@@ -2,6 +2,10 @@
 
 Статус пакета: VERIFIED_ARCHITECTURE
 
+> Revision 2 / 2026-09-10: архитектурная target-модель расширена до 30 минут. Старые 20-минутные значения в корневых GAME_MANIFEST.md, AGENT_CONTEXT.md и B1 остаются read-only legacy baseline; конфликт и порядок синхронизации зафиксированы в DECISIONS_AND_UNKNOWNS.md.
+
+Текущая target revision: 30-минутный run, 6 main-boss slots, 3 intermediate-boss slots, до 15 chest windows и data-driven enemy variants. Root 20-minute/B1 records остаются внешним legacy baseline до отдельной синхронизации владельцами продукта и баланса.
+
 REPO_CONTEXT.md содержит исторический baseline с метаданными подготовки. Текущий branch/HEAD всегда проверяется агентом непосредственно перед работой; расхождение SHA само по себе не является дефектом пакета.
 
 Эта папка содержит проверенный логический контракт первого полного игрового забега Moonveil: Eclipse. Статус VERIFIED означает согласованность архитектурных документов и выполненные документальные проверки; он не означает готовность runtime, APK или production.

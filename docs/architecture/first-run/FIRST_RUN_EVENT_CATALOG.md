@@ -1,6 +1,8 @@
 # FIRST_RUN_EVENT_CATALOG — события и команды первого забега
 
 Статус: VERIFIED ARCHITECTURE SPECIFICATION
+
+> Revision 2: event catalog now includes schedule slots, wave relief/ramp phases, enemy variants and generic chest windows. Runtime implemented: NO.
 Runtime implemented: NO
 
 ## 1. Event contract
@@ -84,6 +86,24 @@ For commands with side effects, the idempotency key is checked before mutation. 
 | run_victory.v1 | DOMAIN_EVENT | RunCoordinator | RewardCalculator, ResultProjection | run_id, final_boss_id, final_checkpoint_id, stats_ref | after final_settlement_committed; no boss chest required | final checkpoint/result key returns existing victory | terminal snapshot |
 | result_finalized.v1 | DOMAIN_EVENT | RewardBoundary | ResultProjection, MenuFlow | run_id, result_id, ledger_entries, wallet_revision | after reward commit | result idempotency key | durable result |
 | return_to_menu.v1 | COMMAND | Result/Pause UI | MenuFlow | run_id, return_reason | after commit/abandon | duplicate navigation no-op | optional telemetry |
+## 3.1 Extension event additions
+
+The existing boss_* events remain valid for a scheduled encounter. These events add the registry-level trace for the 30-minute/cycle/chest extension:
+
+| Name/version | Kind | Producer | Consumers | Required payload | Ordering/causality | Retry/duplicate | Persistence/telemetry |
+|---|---|---|---|---|---|---|---|
+| encounter_schedule_slot_reached.v1 | DOMAIN_EVENT | SimulationClock/WaveDirector | BossDirector, WaveCycleDirector, HUD | schedule_index, encounter_id, encounter_kind, checkpoint_id, is_final, target_boundary_ref | before boss_spawned.v1 | schedule index + checkpoint ID dedupe | run snapshot/metrics |
+| wave_cycle_started.v1 | DOMAIN_EVENT | WaveCycleDirector | WaveDirector, Spawner, HUD | wave_cycle_id, from_encounter_id, phase_id, phase_revision | after run start or non-final chest claim | same cycle/revision no-op | snapshot/pressure telemetry |
+| wave_phase_changed.v1 | DOMAIN_EVENT | WaveCycleDirector | Spawner, HUD, Diagnostics | wave_cycle_id, from_phase_id, to_phase_id, profile_ref, state_revision | monotonic phase transition | same target phase/revision no-op | wave metrics |
+| enemy_variant_selected.v1 | DOMAIN_EVENT | EnemyVariantResolver | Spawner, Combat, ResultProjection, Telemetry | base_enemy_id, variant_id, wave_cycle_id, selection_revision, balance_profile_ref | before enemy entity spawn | same selection key returns same variant | spawn/variant metrics |
+| chest_window_triggered.v1 | DOMAIN_EVENT | ChestWindowRegistry/RunCoordinator | ChestResolver, HUD | chest_window_id, source_kind, source_id, checkpoint_id, eligibility_ref | after authoritative source trigger | window ID prevents second offer | snapshot/metrics |
+| chest_offer_created.v1 | DOMAIN_EVENT | ChestResolver | Chest UI, RunSession, Persistence | chest_offer_id, chest_window_id, source_kind, source_id, outcome_policy_ref | after window validation | same window/source returns existing offer | snapshot/metrics |
+| chest_claimed.v1 | COMMAND | Chest UI | RunCoordinator/ChestResolver | chest_offer_id, chest_window_id, outcome_id, state_revision, idempotency_key | while CHEST_OFFER | same offer returns stored outcome | snapshot/metrics |
+| chest_outcome_applied.v1 | DOMAIN_EVENT | ChestResolver/BossChestSystem | BuildInventory, SynergyEvaluator, RewardLedger, HUD | chest_offer_id, source_kind, outcome_type, outcome_id, ledger_entry_ids | after valid claim | offer ID + outcome key dedupe | snapshot/metrics |
+| post_boss_relief_started.v1 | DOMAIN_EVENT | WaveCycleDirector | WaveDirector, HUD, PerformanceTelemetry | from_encounter_id, next_wave_cycle_id, relief_profile_ref, state_revision | after non-final settlement/claim | same source encounter no-op | wave/performance metrics |
+
+boss_chest_opened.v1 and boss_chest_claimed.v1 remain source-specific projections for a BOSS_CHEST offer. They must carry chest_window_id; they do not apply to reserved non-boss windows or the final boss.
+
 
 ## 4. Payload and failure rules by critical event
 
@@ -136,3 +156,6 @@ The next runtime slice must prove:
 7. duplicate result claim does not double first-clear/repeat rewards;
 8. stale state_revision is rejected;
 9. corrupted/old snapshot enters recovery without silent data loss.
+10. The same schedule revision selects the same enemy variant and cannot double-spawn a variant-bound reward.
+11. A configured chest window creates at most one offer; 15-window capacity never implies more than one outcome per window.
+12. Post-boss relief is observable before the next ramp; no direct post-boss jump to a peak profile is accepted without an explicit B1 rule.

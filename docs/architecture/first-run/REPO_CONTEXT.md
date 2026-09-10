@@ -23,20 +23,23 @@
 - Массовые объекты и VFX должны иметь controlled spawn/pooling.
 - Ошибка ресурса не должна превращаться в белый экран.
 
-## Что заявлено каноном первого среза
+## Что заявлено в текущей архитектурной revision
 
-- Один полный 20-минутный забег.
+- Один полный 30-минутный target run для этого architecture package.
 - Два стартовых персонажа.
 - Одна большая арена Затопленного сада Лунного лотоса.
-- Десять противников.
-- Четыре босса на 5, 10, 15 и 20 минутах.
+- Десять существующих enemy families плюс три новые registry slots; варианты одного base enemy являются data records, а не отдельными reward systems.
+- Шесть main-boss slots: 5/10/15/20/25/30 минут как target cadence; существующий финальный boss identity перенесён на 30:00.
+- Три intermediate-boss slots: два сохранены из C3, один добавлен этой revision.
+- До 15 chest windows: 8 configured non-final boss/mini-boss windows и 7 reserved non-boss windows; final boss никогда не создаёт boss chest.
 - Оружие, пассивные умения, синергии/эволюции, артефакты и XP.
-- HUD, выбор улучшений, пауза, смерть, победа, сохранение.
-- Checkpoint rewards, три валюты и идемпотентный reward ledger.
+- HUD, выбор улучшений, пауза, смерть, победа, сохранение и идемпотентный reward ledger.
 - XP-drop отделён от corpses/aftermath.
 - Останки не имеют collision, не участвуют в pathfinding, не наносят урон и не заменяют XP.
 
-Точные цифры, формулы, таблицы волн, XP и rewards брать из docs/BALANCE_ECONOMY_SPEC.md. Не дублировать их в архитектурных документах как независимый источник истины.
+Exact wave profiles, spawn budgets, active caps, enemy variant tuning, new-content names and extension reward values are not invented here. They remain PENDING_B1, PENDING_PRODUCT_DECISION or PENDING_CONTENT_REGISTRY as indicated by the contract.
+
+Корневые GAME_MANIFEST.md, AGENT_CONTEXT.md, ROADMAP.md и docs/BALANCE_ECONOMY_SPEC.md пока содержат legacy 20-minute wording. They are read-only in this task; the conflict is recorded below and does not silently make the root docs look synchronized.
 
 ## Канонический визуальный и продуктовый язык
 
@@ -75,7 +78,7 @@
 - объявлены размеры мира и камеры;
 - рендерится статическое поле с ambient-слоем;
 - есть preview-mode и временные visual markers;
-- нет полноценного героя, movement simulation, enemies, XP, HUD, waves, bosses, drops, persistence или 0→20 acceptance run;
+- нет полноценного героя, movement simulation, enemies, XP, HUD, waves, bosses, drops, persistence или 0→30 acceptance run;
 - это evidence существующего preview, не готовая игровая архитектура.
 
 ## Текущий статус документации и stages
@@ -103,6 +106,11 @@
 - docs/mockups/04-enemies/STAGE04_ENEMIES_MANIFEST_v01.json
 
 ## Важное разделение статусов
+
+## Extension sync boundary
+
+Architecture owns the shape of the extension. Balance owns exact 30-minute wave/reward numbers; Content owns names, mechanics and registry records for the two new main bosses, the third intermediate boss and three new enemies; Runtime owns implementation and Android evidence. Until those owners publish compatible revisions, this package can be verified as a target contract but not as an implemented 30-minute run.
+
 
 - Прочитано — не означает принято как истина, если документ противоречит более высокому источнику.
 - Спроектировано — не означает реализовано.

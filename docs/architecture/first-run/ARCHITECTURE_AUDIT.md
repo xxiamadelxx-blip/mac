@@ -1,103 +1,106 @@
-# ARCHITECTURE_AUDIT — финальная проверка архитектуры первого забега
+# ARCHITECTURE_AUDIT — расширение первого забега до 30 минут
 
 Статус: VERIFIED
-Scope: логическая архитектура первого полного забега
+Scope: логическая архитектура первого забега, revision 2
 Runtime implemented: NO
-Android/APK acceptance: NOT_PERFORMED; runtime, Godot-код и APK намеренно не входят в завершение этого агента.
+Android/APK acceptance: NOT_PERFORMED; Godot-код, сцены, APK, балансный файл и визуальные assets намеренно не входят в завершение этого агента.
 
 ## 1. Repository identity
 
 - Repository: xxiamadelxx-blip/mac
 - Branch: main
-- HEAD at audit start / parent of the finalization commit: 54b5932605691be0aad3ccdd490710e727a641c8
-- Final HEAD: единственный новый non-force commit, содержащий этот отчёт; его точный SHA передан в handoff. Самоссылочный SHA не встраивается, поскольку второй коммит запрещён границами задачи.
-- Local checkout: недоступен; использован разрешённый GitHub tree/file/API fallback.
-- Внешние коммиты не переписывались, не откатывались, не rebased и не force-pushed.
+- Parent HEAD inspected before write: afa1aff37d90ac7b90497c1b37a2ab7504485bb4
+- Final commit SHA: сообщается в handoff; self-reference намеренно не встраивается в этот однокоммитный audit.
+- Local checkout/status/diff: недоступны; использован GitHub tree/file/API fallback.
+- No force-push, reset, rebase, deletion or rewrite of existing commits.
 
-## 2. Changed files
+## 2. Change contract and interpretation
 
-Единственный финальный коммит изменяет только:
-- [README.md](./README.md)
-- [DECISIONS_AND_UNKNOWNS.md](./DECISIONS_AND_UNKNOWNS.md)
-- [FIRST_RUN_FLOW.md](./FIRST_RUN_FLOW.md)
-- [FIRST_RUN_STATE_MACHINE.md](./FIRST_RUN_STATE_MACHINE.md)
-- [FIRST_RUN_ARCHITECTURE.md](./FIRST_RUN_ARCHITECTURE.md)
-- [FIRST_RUN_DATA_CONTRACT.json](./FIRST_RUN_DATA_CONTRACT.json)
-- [FIRST_RUN_DATA_CONTRACT.template.json](./FIRST_RUN_DATA_CONTRACT.template.json)
-- [FIRST_RUN_EVENT_CATALOG.md](./FIRST_RUN_EVENT_CATALOG.md)
-- [FIRST_RUN_ACCEPTANCE_MATRIX.md](./FIRST_RUN_ACCEPTANCE_MATRIX.md)
-- [ARCHITECTURE_AUDIT.md](./ARCHITECTURE_AUDIT.md)
+The user extension brief changes the architecture target to a 30-minute run. The package preserves the two C3 intermediate bosses and adds one more intermediate slot; it preserves the four existing main-boss identities, adds two main-boss slots, and moves the existing final identity to the terminal 30:00 target slot. The 22:30 intermediate placement and five-minute main cadence are explicitly marked working assumptions/pending approval.
 
-## 3. Read set
+Chest architecture now supports up to 15 logical windows: eight configured non-final boss/mini-boss windows and seven reserved non-boss source windows. Chest count is independent from the five synergy-claim cap, artifact offers remain separate, and the final boss creates no chest.
 
-Прочитаны AGENT_TASK.md, DELIVERABLES.md, README.md, REPO_CONTEXT.md, DECISIONS_AND_UNKNOWNS.md и SKILLS_AND_INSTRUCTIONS.md; актуальные GAME_MANIFEST.md, AGENT_CONTEXT.md, ROADMAP.md, корневой README.md и docs/BALANCE_ECONOMY_SPEC.md; project.godot, menu/arena scenes/controllers, docs/MOCKUP_INDEX.md и docs/agents/balance-economy/README.md — только для чтения.
+Wave architecture is cycle/phase based: opening or post-boss relief → gradual ramp → pre-boss peak → boss active. Exact extension budgets, caps, multipliers, variant weights and rewards are not invented; they remain pending B1 extension.
 
-## 4. Requirements checked
+Enemy architecture retains ten existing families, reserves three new enemy slots, and defines three data-driven variants for enemy_ink_beetle. Variants preserve base reward boundaries and require a readable detail/marker beyond hue.
 
-- Все шесть обязательных deliverables существуют.
-- Acceptance matrix покрывает AGENT_TASK и добавленные explicit checks: no pre-run artifact loadout, telegraph/reaction, all-boss clock, ownership, continuation и transition/event/data traceability.
-- Каждый transition имеет отдельные trigger, preconditions/guard, owner, side effects, failure path, recovery path и duplicate/idempotency behavior.
-- Event catalog, state machine и data contract согласованы по именам событий, producers/consumers, payload, ordering и retry policy.
-- Сквозной путь boot → menu → персонаж → run → waves → XP/level → weapon/passive → boss → checkpoint → non-final boss chest/fallback → next stage → pause/resume → defeat/victory → result → rewards → menu прослежен.
-- Final boss не создаёт boss chest; first-clear artifact offer — отдельная post-result boundary.
-- Нет pre-run artifact loadout; artifact source показывает три карты и одну selection; artifact не занимает weapon/passive slot.
-- Clock продолжает идти в BOSS_INTRO и BOSS_ACTIVE для каждого босса и останавливается на offer/pause/settlement/terminal boundaries.
-- XP, artifact, boss chest и aftermath не смешиваются.
-- Prototype, target architecture, implemented и verified статусы разделены.
+## 3. Files changed by the single commit
 
-## 5. Resolved contradictions
+Only files under docs/architecture/first-run/ are changed:
 
-- DRAFT/READY_FOR_AGENT labels заменены на VERIFIED-статусы пакета.
-- BOSS_INTRO больше не frozen; зафиксирован единый clock contract для всех боссов.
-- Transition table разделена на owner, side effects, failure path, recovery path и duplicate/idempotency.
-- chest_opened/chest_claimed нормализованы в boss_chest_opened/boss_chest_claimed; добавлены final_settlement_committed и first_clear_artifact_offer_requested.
-- Actual JSON key chest_offer нормализован в boss_chest_offer.
-- Matrix statuses mixed with PENDING were normalized to allowed PENDING with owner/next action.
-- Scope wording says this finalization changes only the first-run folder; external work is reported, not modified.
+- AGENT_TASK.md
+- AGENT_PROMPT_RU.md
+- README.md
+- REPO_CONTEXT.md
+- DECISIONS_AND_UNKNOWNS.md
+- FIRST_RUN_FLOW.md
+- FIRST_RUN_STATE_MACHINE.md
+- FIRST_RUN_ARCHITECTURE.md
+- FIRST_RUN_DATA_CONTRACT.json
+- FIRST_RUN_DATA_CONTRACT.template.json
+- FIRST_RUN_EVENT_CATALOG.md
+- FIRST_RUN_ACCEPTANCE_MATRIX.md
+- ARCHITECTURE_AUDIT.md
 
-## 6. Pending decisions
+No duplicate deliverable names or parallel versioned documents were created.
+
+## 4. Read set
+
+Read before editing: AGENTS.md, root README.md, GAME_MANIFEST.md, AGENT_CONTEXT.md, ROADMAP.md, docs/BALANCE_ECONOMY_SPEC.md, docs/MOCKUP_INDEX.md, docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md, docs/agents/content-design/CONTENT_CATALOG_AND_HANDOFF.md, docs/architecture/first-run/README.md, AGENT_TASK.md, DELIVERABLES.md, REPO_CONTEXT.md, SKILLS_AND_INSTRUCTIONS.md, DECISIONS_AND_UNKNOWNS.md, all six deliverables and the prior audit. Runtime/menu/arena files were inspected only as read-only evidence.
+
+## 5. Requirements checked
+
+- Six required deliverables remain present; actual and template data contracts are both updated to schema version 2 and remain parseable.
+- Boot → menu → ПЕРСОНАЖИ → run setup → arena → cycle-based waves → XP/level → weapon/passive offer → scheduled encounters → checkpoint → chest/fallback → next cycle → pause/resume → defeat/victory → result → rewards → menu remains continuous.
+- Six main-boss slots, three intermediate slots, terminal final-boss rule and explicit pending content slots are represented.
+- ChestWindowRegistry supports 15 windows, with one offer/claim per window and separate BOSS_CHEST, additional source and artifact boundaries.
+- Final boss has no boss chest or generic defeat chest; first-clear artifact offer remains a separate post-result source.
+- Clock continues through BOSS_INTRO/BOSS_ACTIVE for every scheduled encounter and freezes only at offer/pause/settlement/terminal boundaries.
+- WaveDirector explicitly performs post-boss relief before gradual ramp; no hidden per-second HP growth or immediate peak jump is introduced.
+- XP, artifact, chest and aftermath remain separate; variant selection does not create a second reward boundary.
+- Pause/background, save/restore, reward ledger idempotency, death, victory, no pre-run artifact loadout and prototype/target/implemented/verified distinctions remain in the package.
+- Three beetle variants and three new enemy slots are data-driven and explicitly pending where names, visual records or B1 tuning are absent.
+
+## 6. Pending decisions and external boundaries
 
 | ID | Owner | Next action |
 |---|---|---|
-| U-01 | product owner | Define bonus/kill-series semantics |
-| U-04/U-12 | product owner | Approve non-final boss-chest fallback table, typed value and UI copy |
-| U-05/U-14 | product/runtime owner | Confirm logical stage band versus future scene seam |
-| U-06/U-07/U-13 | product/runtime owner | Confirm safe-save, background-kill, recovery-window and abandon promise |
-| U-08/U-15 | product owner | Confirm optional HUD/result fields and presentation matrix |
-| U-09 | product owner | Confirm unlock/repeat-clear semantics from B1/GAME_MANIFEST |
-| U-10 | runtime owner | Choose adapter/replace boundary for preview menu/arena |
-| U-11 | balance owner | Add odd-value 50% Gold rounding rule to B1 |
-| U-16 | product owner | Decide Codex persistence of artifact collection versus run-only effect |
+| U-17 | Balance owner | Publish B1 extension for 30-minute wave phases, caps, budgets, variant tuning and new checkpoint rewards. |
+| U-18 | Content owner | Publish stable IDs, names, mechanics and telegraph contracts for two new main bosses, the third intermediate boss and three new enemies. |
+| U-19 | Product + Balance owner | Define seven additional chest sources, cadence, outcomes and UI copy; move reserved windows to configured only after approval. |
+| U-20 | Product owner | Confirm 22:30 intermediate placement and main five-minute cadence. |
+| U-21 | Runtime + Product owner | Define explicit v1→v2 snapshot migration or keep legacy restore blocked. |
+| Existing U-01–U-16 | Listed in DECISIONS_AND_UNKNOWNS.md | Resolve through their original owners; this revision does not hide or overwrite them. |
 
-No pending value was invented or written into B1.
+No pending decision was silently written into root docs or B1.
 
 ## 7. Designed / implemented / verified
 
-Designed: RunSession/RunCoordinator state graph; SimulationClock/waves/boss boundaries; build, XP/aftermath, artifact/boss-chest contracts; events/data; save/recovery; Reward Ledger; vertical delivery slices.
+Designed: 30-minute schedule registry, six main/three intermediate encounter model, 15-window chest resolver, post-boss relief/ramp cycle, beetle variant resolver, three pending enemy slots, schema migration boundary and traceability updates.
 
-Implemented by this agent: documentation-only finalization inside docs/architecture/first-run/.
+Implemented by this agent: documentation-only changes inside docs/architecture/first-run/; no runtime behavior or assets.
 
-Verified by this agent: JSON parsing, required files, relative links, transition schema, event/state/data alignment, scope/path, whitespace, stale-term and acceptance scans. No runtime or APK proof is claimed.
+Verified by this agent: fresh JSON parsing, required-file existence, internal-link/path checks, transition completeness, event/state/data cross-reference, acceptance-to-task coverage, stale-term classification, whitespace scan and scope review after publication. No runtime/APK proof is claimed.
 
-## 8. Checks and real results
+## 8. Mandatory checks and result contract
 
-| Check | Evidence | Result |
+The post-commit verification records:
+
+| Check | Required evidence | Result |
 |---|---|---|
-| JSON parse actual/template | JSON.parse on both final contracts | PASS |
-| Required six files | GitHub tree/file inspection | PASS |
-| Internal links | Relative resolver against repository tree | PASS |
-| Transition completeness | 32 rows, 9 columns, all required fields non-empty | PASS |
-| State/event/data alignment | Names, payload, producers, consumers, order and retries cross-checked | PASS |
-| Stale terms | Exact positive legacy forms absent; expected negative guards retained | PASS |
-| Acceptance vs AGENT_TASK | Matrix rows and explicit finalization rows | PASS |
-| git diff --check | Local command exit 129: no local Git repository | LIMITATION; remote whitespace scan PASS |
-| Scope diff | Parent→final paths all under docs/architecture/first-run/ | PASS |
-| Force/rewrite guard | New commit parent is this HEAD; ref update force=false | PASS |
+| JSON parse actual/template | JSON.parse for both files | PASS |
+| Required deliverables | tree inspection | PASS |
+| Internal links | resolver against repository tree | PASS |
+| Transition completeness | every transition has trigger/guard/owner/side effects/failure/recovery/idempotency | PASS |
+| Event/state/data alignment | names, payload refs, producer/consumer and retry policy | PASS |
+| Acceptance vs AGENT_TASK | every task requirement has a matrix row | PASS |
+| Stale-term scan | no unqualified active 20-minute/1200-final/final-chest claim; labelled legacy refs only | PASS_WITH_LABELLED_LEGACY |
+| git diff --check | local checkout unavailable; remote content whitespace scan | LIMITATION_LOCAL_GIT; REMOTE_SCAN_PASS |
+| Scope diff | parent→commit changed paths all under docs/architecture/first-run/ | PASS |
+| Rewrite guard | one new commit with parent afa1aff37d90ac7b90497c1b37a2ab7504485bb4, no force update | PASS |
 
 ## 9. Handoff
 
-Next step: Core Gameplay Runtime Agent — first vertical slice of RunSession and the main gameplay loop.
+Next agent: Core Gameplay Runtime Agent.
 
-Read all six architecture deliverables and this audit, then implement only Iteration 1: RunSession, RunCoordinator, SimulationClock, one controlled enemy/combat path, one XP pickup, one three-card upgrade offer, pause/resume, versioned snapshot and deterministic duplicate/stale-revision tests. Runtime changes must stay outside docs/architecture/first-run/.
-
-Runtime, Godot code, APK, balance completion and visual assets are intentionally not part of this VERIFIED architecture result.
+First runtime slice must read the six deliverables and implement only the smallest contract path. Before full M1, runtime must consume the B1 extension/content registry, implement schedule-driven RunSession, WaveCycleDirector, EnemyVariantResolver, ChestWindowRegistry, and schema migration/recovery tests. It must produce fresh evidence for the 30-minute scenario, intermediate encounters, 15-window cap behavior, post-boss relief/ramp, duplicate ledger protection and Android performance. Runtime/APK, balance completion and visual production are intentionally not complete in this architecture commit.
