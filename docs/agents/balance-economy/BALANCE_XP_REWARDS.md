@@ -1,129 +1,69 @@
 # Balance XP and Rewards
 
-Status: SPECIFIED / PARTIAL
+Status: SIMULATED_MODEL_ONLY / PARTIAL
 
-This document is the progression and wallet contract derived from docs/BALANCE_ECONOMY_SPEC.md at revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687. Values marked CANON are copied from B1. Values marked DERIVED are arithmetic from those values. Missing offer, chest, and ledger rules remain explicitly open.
+Source baseline: B1 revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687. The simulator reads BALANCE_MODEL.json; it does not duplicate the XP, wave, reward, or profile numbers in Python.
 
-## XP drops
-
-| Drop value | Status | Source | Rule |
-|---:|---|---|---|
-| 1 | CANON | B1 section 6 | ordinary low-value enemy drop |
-| 5 | CANON | B1 section 6 | ordinary/early pressure drop |
-| 15 | CANON | B1 section 6 | advanced enemy drop |
-| 40 | CANON | B1 section 6 | elite-range drop |
-| 80 | CANON | B1 section 6 | high elite drop |
-| 250 | CANON | B1 section 6 | special/high-value drop |
-
-Enemy-specific ranges are listed in BALANCE_COMBAT_MODEL.md. Ordinary enemies do not drop gold; their economy contribution is XP and run pressure.
-
-## XP threshold formula
+## Canonical XP formula
 
 For level L:
 
-    XP_to_next(L) = round(30 + 12 × (L - 1) + 3 × (L - 1)^1.35)
+    XP_to_next(L) = round(30 + 12 × (L − 1) + 3 × (L − 1)^1.35)
 
-The formula is CANON. The following table is DERIVED by evaluating it with round-to-nearest integer and accumulating thresholds from level 1.
+The formula and drop vocabulary [1, 5, 15, 40, 80, 250] are CANON. The simulator materializes the four formula parameters in the model and uses half-up rounding to avoid language-runtime rounding drift.
 
-| Current level | XP to next level | Cumulative XP from level 1 |
-|---:|---:|---:|
-| 1 | 30 | 30 |
-| 2 | 45 | 75 |
-| 3 | 62 | 137 |
-| 4 | 79 | 216 |
-| 5 | 97 | 313 |
-| 6 | 116 | 429 |
-| 7 | 136 | 565 |
-| 8 | 155 | 720 |
-| 9 | 176 | 896 |
-| 10 | 196 | 1,092 |
-| 11 | 217 | 1,309 |
-| 12 | 238 | 1,547 |
+## Proposed pickup model
 
-The runtime must document how XP overflow is carried across a level-up and whether multiple level-ups in one pickup frame are allowed. Those are PENDING_PRODUCT_DECISION until a run-session implementation exists.
+B1 does not define pickup latency or collection capacity. The model exposes each proposed value:
 
-## Progression timing targets
+| Input | Value | Status | Purpose |
+|---|---:|---|---|
+| Drop delay | 1.0 s | PROPOSED | separates defeat from aftermath pickup |
+| First-level window | 45 s | CANON target bound | explicit early-progression calibration window |
+| First-window capacity | 0.75 XP/s | PROPOSED | places first level-up in the 30–45 s target |
+| wave_00_02 capacity | 0.35 XP/s | PROPOSED | conservative warmup |
+| wave_02_05 capacity | 1.35 XP/s | PROPOSED | level-5 target |
+| wave_05_10 capacity | 1.90 XP/s | PROPOSED | level-9 target |
+| wave_10_15 capacity | 2.50 XP/s | PROPOSED | level-13 target |
+| wave_15_20 capacity | 3.80 XP/s | PROPOSED | level-17–18 target |
+| magnet capacity per rank | +2% | PROPOSED | small pickup benefit; B1 canonically defines radius, not rate |
+| boss XP | excluded from main level curve | PROPOSED | prevents an unconfirmed 250-XP boss grant from invalidating B1 timing targets |
 
-| Target | Value | Status |
-|---|---:|---|
-| First level | 30–45 seconds | CANON, B1 section 6 |
-| First significant build decision | at or before 90 seconds | CANON, B1 section 6 |
-| Level at 10 minutes | approximately 9 | CANON, B1 section 6 |
-| First evolution | 8–12 minutes | CANON, B1 section 6 |
-| Separate XP aftermath state | required | CANON, B1/AGENT_CONTEXT |
-| Actual level-up timing in current runtime | not observed | NOT_IMPLEMENTED |
+## Five-seed level result
 
-The first level and level-9 target are not derivable from the threshold formula alone because enemy composition, kill rate, XP pickup latency, and player routing are not implemented.
+| Profile / hero | First level | Level at 2 / 5 / 10 / 15 / 20 min | Final level |
+|---|---:|---|---:|
+| fresh | hero_lin_yue | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 | 0 | 39.38 | 50.62 | 1.15 / 2.85 | 24.5 / 38.05 |
+| fresh | hero_seoyeon_han | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 | 0 | 63.04 | 46.96 | 0.75 / 2.4 | 18 / 33.3 |
+| max_m1 | hero_lin_yue | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 | 0 | 84.474 | 23.526 | 0.75 / 1.75 | 17.65 / 23.85 |
+| max_m1 | hero_seoyeon_han | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 | 0 | 115.116 | 16.884 | 0.5 / 1.25 | 12.35 / 18 |
+| moderate | hero_lin_yue | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 | 0 | 61.159 | 34.241 | 1.25 / 2.6 | 22.3 / 39.1 |
+| moderate | hero_seoyeon_han | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 | 0 | 83.868 | 32.732 | 0.75 / 1.75 | 15.1 / 27 |
 
-## Pickup and aftermath contract
+Fresh reaches its first level-up at 39.75 s in both hero routes. Moderate reaches it at 38.25 s; max M1 at 33.25 s. Fresh matches the B1 2/5/9/13/17–18 cadence in this model. Moderate and max M1 are intentionally faster at later checkpoints and should be treated as stress profiles, not canonical timing proof.
 
-- Magnet percentage is a hero/meta input; base is 100% and Lin Yue is 120%, CANON.
-- XP must remain readable after combat and remain separate from the aftermath/loot presentation, CANON.
-- Exact pickup radius units, attraction speed, pooling, wall handling, merge behavior, and overflow behavior are PENDING_PRODUCT_DECISION.
-- The simulator may calculate threshold timelines from an explicit XP-per-second TEST_PLACEHOLDER, but that is not a gameplay result.
+## Rewards, chest, and fallback
 
-## Checkpoint and clear rewards
+B1 checkpoint totals remain CANON. The architecture contract adds the live settlement policy:
 
-| Event | Gold | Moon Seals | Boss Essence | Extra | Status |
-|---|---:|---:|---:|---|---|
-| Boss 1 at 5:00 | 50 | 15 | 1 | — | CANON, B1 section 7 |
-| Boss 2 at 10:00 | 75 | 20 | 1 | — | CANON, B1 section 7 |
-| Boss 3 at 15:00 | 100 | 25 | 1 | — | CANON, B1 section 7 |
-| Final boss at 20:00 | 200 | 60 | 2 | — | CANON, B1 section 7 |
-| First-clear bonus | 300 | 180 | 1 | Artifact chest | CANON, B1 section 7 |
-| Full first clear total | 725 | 300 | 6 | includes first-clear bonus | CANON, B1 section 7 |
-| Repeat clear total | 425 | 120 | 5 | — | CANON, B1 section 7 |
+- reward ledger key: {run_id}:{reward_scope}:{checkpoint_id}:{reward_type};
+- duplicate commit returns the existing entry without applying currency again;
+- non-final checkpoints may create chest offers;
+- final boss creates no chest_offer;
+- the B1 first-clear artifact value is represented by a run-result artifact grant in this model, not a final chest_offer; this is PROPOSED pending Product confirmation;
+- when a non-final synergy is not eligible, the model applies one proposed +3% fallback damage upgrade.
 
-Defeat after checkpoint: gold is multiplied by 0.5, earned essence is retained, and Moon Seals are awarded only for the defeated boss. This is CANON, B1 section 7. The exact definition of "earned" and the transaction boundary are PENDING_PRODUCT_DECISION.
+| Profile / hero | Ledger balance | Idempotency | Final chest_offer | Synergy | Fallback bonus |
+|---|---|---|---|---|---|
+| fresh/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| fresh/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
+| max_m1/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| max_m1/hero_seoyeon_han | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_moon_dance | 0.06 |
+| moderate/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
+| moderate/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
 
-## Reward ledger and idempotency
+The B1 first-clear totals are 725 gold / 300 Moon Seals / 6 boss essence. The repeat-clear totals are 425 / 120 / 5. They remain arithmetic CANON values; whether each model run reaches final settlement is shown above.
 
-The ledger must make one reward grant safe to retry. B1 requires reward idempotency but does not provide the key schema. Before implementation, Product/Architecture must decide:
+## Evidence boundary
 
-- run identifier and immutable run-start identifier;
-- checkpoint identifier and boss outcome;
-- first-clear versus repeat-clear state;
-- source revision or reward-table version;
-- one transaction or a two-phase pending/committed state;
-- replay and reconnect behavior;
-- whether a defeated run can grant the same checkpoint twice.
-
-Current status: PENDING_PRODUCT_DECISION / NOT_IMPLEMENTED. The simulator includes a deterministic duplicate-attempt check, but it is a contract exercise, not a wallet integration test.
-
-## Meta economy
-
-Each branch starts at rank 0 and has 10 ranks.
-
-| Branch | Effect per rank | Max ranks | Status |
-|---|---:|---:|---|
-| Vitality | +2% max HP | 10 | CANON, B1 section 8 |
-| Power | +2% total damage | 10 | CANON, B1 section 8 |
-| Agility | +1.5% move speed | 10 | CANON, B1 section 8 |
-| Focus | -1.5% weapon cooldown | 10 | CANON, B1 section 8 |
-| Magnet | +4% pickup radius | 10 | CANON, B1 section 8 |
-| Defense | +1% damage reduction | 10 | CANON, B1 section 8 |
-
-Rank r cost:
-
-    cost(r) = round(100 × 1.45^r)
-
-The formula and rank range are CANON. Derived rank costs for the next purchase from rank 0 through rank 9 are:
-
-| Current rank | Cost |
-|---:|---:|
-| 0 | 100 |
-| 1 | 145 |
-| 2 | 210 |
-| 3 | 305 |
-| 4 | 442 |
-| 5 | 641 |
-| 6 | 929 |
-| 7 | 1,348 |
-| 8 | 1,954 |
-| 9 | 2,833 |
-
-M1 has no paid gacha, CANON, B1 section 9. Summon pricing/guarantee wording is copied to the model but the available summon pool and progression pacing are not wired to runtime.
-
-## Upgrade offers, synergies, and chests
-
-Weapon IDs, passive IDs, synergy IDs, eligibility, offer weighting, slot limits, reroll cost, banish rules, duplicate fallback, and chest contents are PENDING_PRODUCT_DECISION. This document intentionally does not invent those values. Any later simulation that uses them must provide a separate fixture with TEST_PLACEHOLDER labels and a power-budget rationale.
+This is a deterministic model result, not a wallet, save/reconnect, UI, or runtime XP proof.
