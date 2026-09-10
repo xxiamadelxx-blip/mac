@@ -2,7 +2,7 @@
 
 Статус: **IN PROGRESS / USER REVIEW**.
 
-Активное визуальное семейство: `moonveil-arena-soft-tonal-v02`.
+Активное визуальное семейство для нового art-review: `moonveil-lotus-garden-environment-soft-tonal-v03`. Runtime fallback v02 сохраняется до approval.
 
 Цель этапа — большой связанный Затопленный сад Лунного лотоса, а не тесный вертикальный фон. Камера 390×844 показывает только сектор мира минимум 1560×2532.
 
@@ -34,6 +34,21 @@
 - [STAGE02_ARENA_REVIEW_PACK_v02.md](./STAGE02_ARENA_REVIEW_PACK_v02.md)
 
 Все v02 composite PNG — 390×844 sRGB. Художественный статус остаётся `PENDING`; runtime/Android acceptance отдельно не закрыта.
+
+## Новый top-down environment package v03
+
+v03 — USER REVIEW candidate для приглушённого top-down визуального кода.
+
+- Top-down composite: ./STAGE02_ARENA_TOPDOWN_COMPOSITE_v03.svg
+- Enlarged inspection: ./STAGE02_ARENA_TOPDOWN_INSPECTION_v03.svg
+- Asset board: ./STAGE02_ARENA_ASSET_BOARD_v03.svg
+- Asset manifest: ./STAGE02_ARENA_ASSET_MANIFEST_v03.json
+- Placement map: ./STAGE02_ARENA_PLACEMENT_MAP_v03.json
+- Visual family: ./STAGE02_ARENA_VISUAL_FAMILY_v03.md
+- Review pack: ./STAGE02_ARENA_REVIEW_PACK_v03.md
+- Separate base/landscape SVG assets: ./assets/
+
+Правило v03: подложка арены не содержит декоративных объектов; каждый объект размещается отдельным asset_id поверх неё. Runtime fallback v02 не изменён, пока exact candidate не получит artistic approval.
 
 ## Архив
 
