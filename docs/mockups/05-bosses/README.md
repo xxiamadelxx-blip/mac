@@ -62,4 +62,4 @@ Final boss на 1800 s / 30:00 не создаёт boss chest. Artifact offer н
 - artistic_status: PENDING;
 - manifest/consumer: NOT_PROMOTED; consumer proposal — BossDirector, TelegraphResolver, ChestResolver, SynergyInfo;
 - evidence: отсутствует до фактического mockup/review;
-- нельзя объявлять эту текстовую запись IN PROGRESS, DONE, APPROVED или PLAYABLE.
+- нельзя объявлять эту текстовую запись завершённой, утверждённой или готовой к игре.
