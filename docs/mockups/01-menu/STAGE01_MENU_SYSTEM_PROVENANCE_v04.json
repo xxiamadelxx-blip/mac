@@ -675,7 +675,7 @@
   },
   "promotion": {
     "runtime_manifest_path": null,
-    "producing_commit": null,
+    "producing_commit": "5cb0594edfa9b0c1722805fd3ba48c14f5d4793c",
     "consumer_scene_or_ui": "menu navigation candidate only; not promoted",
     "fallback_status": "not applicable"
   }
