@@ -1,59 +1,60 @@
-# Stage 06 — Weapons
-Status: PLANNED.
-Иконки, боевые эффекты и эволюции оружия.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+# Этап 06 — Оружие
+Состояние этапа: PLANNED (запланирован).
+Иконки, атаки и эволюции оружия.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — ten-weapon roster
+## Контентный бриф v01 — набор из десяти видов оружия
 
-Это текстовая спецификация контента для будущего Visual Lab intake. Она не является иконкой, VFX, animation preview или production asset.
+Это текстовая спецификация для будущего приёма агентом визуального оформления. Здесь нет иконок, визуальных эффектов, предварительных анимаций или производственных ресурсов.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md |
-| visual route | SPRITE + ART + VFX |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| run slot rule | пул 10; в одном забеге максимум 6 weapon slots; эволюция не добавляет slot |
-| progression rule | weapon level gate для synergy — 6; точные числа и cadence — PENDING_BALANCE |
-| dependencies | C1 passive pair, C1 synergy resolver, StatsCalculator/CombatSystem contracts |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источник | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md |
+| визуальный маршрут | спрайт + художественные материалы + визуальные эффекты |
+| технический маршрут | SPRITE + ART + VFX |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| правило ячеек забега | пул из 10; одновременно максимум 6 ячеек оружия; эволюция не добавляет ячейку |
+| правило развития | уровень оружия для синергии — 6; точные значения и темп — PENDING_BALANCE |
+| зависимости | пассивная пара C1, разрешатель синергий C1, договоры StatsCalculator и CombatSystem |
 
-### Weapon catalogue
+### Каталог оружия
 
-| stable weapon ID | name | role / geometry | player decision and counterplay | synergy → new weapon behavior |
+| Стабильный ID оружия | Название | Роль и форма атаки | Решение игрока и контригра | Синергия и новое поведение |
 |---|---|---|---|---|
-| weapon_moon_blade | Лунный клинок | mobility / close_area; cone + returning arc | вести орду по касательной и заранее выбрать сторону выхода; дальние и рассеянные цели остаются слабым match-up | synergy_moon_dance: crescent traces идут по орбитальной траектории; движение прокладывает lanes, остановка оставляет ближнюю дугу |
-| weapon_jade_talismans | Нефритовые талисманы | control / ranged_sustain; homing projectile + mark | распределять метки или удерживать high-threat target; teleport/decoy снижает ценность lock | synergy_heavenly_seals: активированные метки связываются в controlled chain без повторного узла |
-| weapon_crimson_flame_fan | Веер багрового пламени | area / status_burn; alternating cone + zone | закрыть путь перед собой или отрезать фланг; быстрые и разреженные враги обходят очаг | synergy_phoenix_sky: burning zones кормят проход феникса, который зажигает читаемую lane и выходит |
-| weapon_frost_pearl | Ледяная жемчужина | control / mid_area; projectile + impact burst | замедлить опасный коридор и решить, добивать controlled cluster или менять позицию | synergy_winter_palace: controlled targets соединяются frost lattice с временным safe route |
-| weapon_thunder_needles | Иглы грома | burst / chain; chain | держать врагов в читаемой плотности и выбирать priority node; рассеянная волна обрывает цепь | synergy_heavenly_judgment: conductive marks вызывают видимый overhead judgment с вторичными дугами |
-| weapon_spirit_bell | Колокол духов | defense / area_control; radial pulse | использовать pulse как окно выхода и снятие projectile pressure, а не как постоянную неуязвимость | synergy_guardian_bell: pulse оставляет moving ward rim, который deflect-ит допустимые telegraphed projectiles |
-| weapon_fox_mirage | Лисий мираж | mobility / summon_line; dash-linked summon | вести поток так, чтобы fox-route пересёк следующий lane; неверная линия уводит урон от угрозы | synergy_nine_reflections: маршрут оставляет staggered mirror echoes с отдельным cleanup |
-| weapon_lotus_mines | Лотосовые мины | area / delayed_control; delayed zone | заранее занять projected enemy path, не оставив бутоны за потоком; хаотичный rush наказывает задержку | synergy_lotus_sanctuary: сработавшие мины связываются во временное святилище с control/recovery boundary |
-| weapon_star_bow | Звёздный лук | ranged / pierce / priority; line projectile + anchor | выбирать дальнюю угрозу или собрать локальную constellation; swarm может перегрузить target priority | synergy_constellation_rain: anchors соединяются, стрелы падают по читаемым сегментам и схлопывают старый anchor |
-| weapon_black_eclipse_umbrella | Чёрный зонт затмения | defense / utility / pull; orbit + cone/vortex | чередовать guard orbit и open sweep, выбирая между защитой и clustering; bosses/immune tags не тянутся молча | synergy_eclipse_vortex: bounded vortex стягивает eligible enemies и nearby pickups, затем даёт contained burst |
+| weapon_moon_blade | Лунный клинок | мобильность / ближняя зона; конус и возвращающаяся дуга | вести орду по касательной и заранее выбрать сторону выхода; дальние и рассеянные цели неудобны | synergy_moon_dance: дуги движутся по орбите вокруг траектории героя; движение прокладывает дорожки, остановка оставляет ближнюю дугу |
+| weapon_jade_talismans | Нефритовые талисманы | контроль / дальняя поддержка; самонаводящийся снаряд и метка | распределять метки или удерживать приоритетную цель; телепорт и приманка снижают ценность фиксации | synergy_heavenly_seals: активированные метки связываются в управляемую нефритовую цепь без повторного узла |
+| weapon_crimson_flame_fan | Веер багрового пламени | зона / горящий статус; чередующийся конус и очаг | закрыть путь впереди или отрезать фланг; быстрые и рассеянные враги обходят очаг | synergy_phoenix_sky: горящие зоны питают временный проход феникса, который зажигает дорожку и уходит |
+| weapon_frost_pearl | Ледяная жемчужина | контроль / средняя зона; снаряд и морозный импульс | замедлить опасный коридор и решить, добивать связанную группу или менять позицию | synergy_winter_palace: контролируемые цели соединяются в кратковременную морозную решётку с безопасным маршрутом |
+| weapon_thunder_needles | Иглы грома | взрывной удар / цепь; последовательная цепь | держать врагов в читаемой плотности и выбирать главный узел; рассеянная волна обрывает цепь | synergy_heavenly_judgment: проводящие метки вызывают видимый небесный приговор со вторичными дугами |
+| weapon_spirit_bell | Колокол духов | защита / контроль зоны; радиальный импульс | использовать импульс как окно выхода и снятие давления снарядов, а не как постоянную неуязвимость | synergy_guardian_bell: импульс оставляет движущийся защитный обод для допустимых предупреждённых снарядов |
+| weapon_fox_mirage | Лисий мираж | мобильность / линия призыва; связанный с рывком призыв | вести поток так, чтобы маршрут лисы пересёк следующую линию; неверная линия уводит урон от угрозы | synergy_nine_reflections: маршрут оставляет зеркальные отголоски с разнесённым временем и отдельной очисткой |
+| weapon_lotus_mines | Лотосовые мины | зона / отложенный контроль; отложенная область | заранее занять предполагаемый путь врага и не оставить бутоны позади потока; хаотичный натиск наказывает задержку | synergy_lotus_sanctuary: сработавшие мины связываются во временное святилище с границей контроля и восстановления |
+| weapon_star_bow | Звёздный лук | дальний удар / пробивание / приоритет; линейный снаряд и опорная точка | выбирать дальнюю угрозу или собрать локальное созвездие; толпа может перегрузить выбор цели | synergy_constellation_rain: опорные точки соединяются, стрелы падают по читаемым сегментам и убирают старую точку |
+| weapon_black_eclipse_umbrella | Чёрный зонт затмения | защита / польза / притяжение; орбита и воронка | чередовать защитное вращение и раскрытие, выбирая между защитой и стягиванием; боссы и защищённые цели не притягиваются молча | synergy_eclipse_vortex: ограниченная воронка стягивает допустимых врагов и ближайшие предметы, затем схлопывается во взрыв |
 
-Каждое оружие получает отдельный cast → travel → hit → persist → expire lifecycle, читаемый origin и cleanup. Цвет не является единственным differentiator: форма, геометрия и timing обязательны.
+Каждое оружие получает собственный цикл «каст → полёт → попадание → сохранение → завершение», читаемый источник и очистку. Цвет не является единственным отличием: обязательны форма, геометрия и время.
 
-### Global content rules
+### Общие правила контента
 
-- Все 10 weapon entries — run content с stable IDs; exact damage, cadence, cooldown, range, area, duration, target cap, pierce/bounce limits и evolution power budget — PENDING_BALANCE.
-- Synergy/evolution заменяет behavior конкретного оружия после pair gate; она не добавляет слот и не является отдельным одиннадцатым базовым оружием.
-- Не использовать passive как скрытый per-weapon modifier: соответствующая passive работает на общий eligible build, а bound weapon нужен только для eligibility пары.
-- Boss/mini-boss BOSS_CHEST может предложить eligible synergy; общий cap забега — 5 claims, final boss chest отсутствует.
-- Runtime consumer proposal: WeaponRegistry, TargetingSystem, CombatSystem, ZoneStore, SynergyResolver.
-- Visual Lab не получает выдуманные asset IDs: candidate_id остаётся null до intake.
+- Все 10 записей оружия — контент забега со стабильными ID; точные урон, темп, перезарядка, дальность, площадь, длительность, предел целей, пробивание, отскоки и бюджет эволюции — PENDING_BALANCE.
+- Эволюция заменяет поведение конкретного оружия после условия пары; она не добавляет слот и не является отдельным одиннадцатым базовым оружием.
+- Нельзя превращать пассивку в скрытый модификатор одного оружия: связанная пассивка действует на общий подходящий билд, а оружие нужно только для проверки пары.
+- Сундук босса главного или мини-босса может предложить подходящую синергию; общий предел забега — 5 получений, у финального босса сундука нет.
+- Предлагаемые потребители: WeaponRegistry, TargetingSystem, CombatSystem, ZoneStore, SynergyResolver.
+- Агенту визуального оформления нельзя передавать выдуманные ресурсы: candidate_id остаётся null до приёма.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: SPRITE + ART + VFX;
-- stage_path: docs/mockups/06-weapons/;
+- маршрут: SPRITE + ART + VFX;
+- папка этапа: docs/mockups/06-weapons/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — WeaponRegistry + CombatSystem + SynergyInfo;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — WeaponRegistry, CombatSystem, SynergyInfo;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
