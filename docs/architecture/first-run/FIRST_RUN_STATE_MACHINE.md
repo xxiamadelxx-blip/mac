@@ -36,12 +36,12 @@ Runtime implemented: NO
 | UPGRADE_OFFER | blocking run state | Level-up | Offer chosen/cancel policy | Frozen |
 | BOSS_INTRO | blocking run state | Boss checkpoint reached | Intro complete | Frozen |
 | BOSS_ACTIVE | simulation | Boss intro complete | Boss defeated/death/pause | Running |
-| CHECKPOINT_SETTLEMENT | transaction state | Boss defeated | Ledger committed | Frozen |
-| CHEST_OFFER | blocking run state | Settlement committed | Chest claimed/closed by policy | Frozen |
+| CHECKPOINT_SETTLEMENT | transaction state | Boss defeated | Ledger committed; final branch or non-final chest selected | Frozen |
+| CHEST_OFFER | blocking run state | Non-final settlement committed | Chest claimed/closed by policy; no victory transition | Frozen |
 | RUN_PAUSED | overlay state | User pause/background | Resume, settings, exit | Frozen |
 | RECOVERY_REVIEW | recovery state | Invalid/available snapshot | Restore accepted, abandon, diagnostic | Frozen |
 | RUN_DEFEAT | terminal run state | HP reaches zero | Result opened/finalized | Frozen |
-| RUN_VICTORY | terminal run state | Final boss defeated | Result opened/finalized | Frozen |
+| RUN_VICTORY | terminal run state | Final settlement committed after final boss defeat | Result opened/finalized | Frozen |
 | RESULT_REVIEW | terminal read state | Defeat/victory | Claim/return | Frozen |
 | REWARD_COMMITTING | transaction state | Claim result/reward | Commit success/failure | Frozen |
 | MAIN_MENU_RETURN | transition | Commit/abandon complete | MAIN_MENU | N/A |
@@ -67,8 +67,8 @@ stateDiagram-v2
     BOSS_INTRO --> BOSS_ACTIVE
     BOSS_ACTIVE --> CHECKPOINT_SETTLEMENT
     CHECKPOINT_SETTLEMENT --> CHEST_OFFER
+    CHECKPOINT_SETTLEMENT --> RUN_VICTORY
     CHEST_OFFER --> RUN_ACTIVE
-    CHEST_OFFER --> RUN_VICTORY
     RUN_ACTIVE --> RUN_PAUSED
     BOSS_ACTIVE --> RUN_PAUSED
     RUN_PAUSED --> RUN_ACTIVE
@@ -87,7 +87,7 @@ stateDiagram-v2
     MAIN_MENU_RETURN --> MAIN_MENU
 ~~~
 
-Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. Its defeat goes through CHECKPOINT_SETTLEMENT and the final CHEST_OFFER/ledger path; only after the final settlement/claim reaches the terminal branch may the state become RUN_VICTORY. Timer expiry alone is not victory.
+Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. Its defeat goes through CHECKPOINT_SETTLEMENT and final ledger settlement directly to RUN_VICTORY; no CHEST_OFFER is created for the final boss. Timer expiry alone is not victory.
 
 ## 4. Transition contract
 
@@ -107,11 +107,12 @@ Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second
 | T-10 | UPGRADE_OFFER → RUN_ACTIVE | offer_chosen | offer_id belongs to open offer and not claimed | Apply BuildInventory/Stats mutation; clear offer | Duplicate/stale choice is rejected/no-op |
 | T-11 | RUN_ACTIVE → BOSS_INTRO | checkpoint_reached | checkpoint_id matches next unhandled B1 boundary | Freeze normal spawn, create boss encounter | Duplicate boundary ignored |
 | T-12 | BOSS_INTRO → BOSS_ACTIVE | intro_complete | Boss record and safe spawn available | Start boss pattern/telegraph contract | Safe spawn retry; failure → paused diagnostic |
-| T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Encounter active; defeat not settled | Freeze; create settlement command | Duplicate defeat ignored by encounter id |
-| T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Ledger commit succeeded | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable |
-| T-15 | CHEST_OFFER → RUN_ACTIVE or RUN_VICTORY | chest_claimed | Offer valid; evaluator outcome not already claimed; final checkpoint selects terminal branch | Apply synergy/artifact/fallback; mark offer claimed; final branch creates victory candidate | Duplicate claim returns existing outcome |
+| T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Non-final encounter active; final boss uses T-17 | Freeze; create checkpoint settlement command | Duplicate defeat ignored by encounter id |
+| T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Non-final checkpoint; ledger commit succeeded | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable |
+| T-14F | CHECKPOINT_SETTLEMENT → RUN_VICTORY | final_settlement_committed | Final checkpoint; ledger commit succeeded; no chest offer pending | Mark terminal victory and build result projection | Persistence failure keeps settlement retryable |
+| T-15 | CHEST_OFFER → RUN_ACTIVE | chest_claimed | Non-final offer valid; evaluator outcome not already claimed | Apply synergy/artifact/fallback; mark offer claimed; advance stage | Duplicate claim returns existing outcome |
 | T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | Death not settled | Freeze and create defeat result | Duplicate death ignored |
-| T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | Create final settlement command; victory is not terminal until ledger/chest path completes | Invalid final result returns to checkpoint recovery |
+| T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | Create final settlement command; do not create chest offer; victory waits for T-14F | Invalid final result returns to checkpoint recovery |
 | T-18 | RUN_ACTIVE/BOSS_ACTIVE → RUN_PAUSED | pause_requested/background | Current state resumable | Freeze clock; write allowed snapshot | Snapshot failure leaves in-memory paused state with diagnostic |
 | T-19 | RUN_PAUSED → RUN_ACTIVE/BOSS_ACTIVE | resume_requested | Snapshot/content/checksum valid | Restore resume_state and continue clock | Invalid snapshot → RECOVERY_REVIEW |
 | T-20 | RUN_PAUSED → SETTINGS | settings_requested | Pause context is valid | Open settings while preserving paused_from_state | Settings failure returns to pause with diagnostic |
@@ -147,12 +148,12 @@ Working assumption: snapshot делается на checkpoint, при явной
 
 ## 7. Invariants
 
-1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT, RewardLedger and final chest branch.
+1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT or RewardLedger; final settlement transitions directly to RUN_VICTORY without CHEST_OFFER.
 2. UI не меняет authoritative state напрямую.
 3. Clock не идёт в paused/blocking states.
 4. XPDrop не превращается в AftermathItem и наоборот.
 5. Checkpoint reward не применяется без ledger idempotency key.
-6. Final victory невозможна без final boss defeat и финального settlement.
+6. Final victory невозможна без final boss defeat и финального settlement; final boss не создаёт chest_offer.
 7. Unknown/stale content не превращается в silent default.
 8. Ошибка persistence не подтверждает reward commit.
 9. Повторная доставка одного effect command не меняет итог.
