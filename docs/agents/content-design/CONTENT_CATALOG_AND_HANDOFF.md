@@ -3,7 +3,7 @@
 Статус пакета: `CONTENT_SPECIFIED`  
 C5 status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 
-Пакет фиксирует контент первого забега, постоянное дерево магазина, future encounter proposals, семь временных drops арены и C5 cross-system handoff. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
+Пакет фиксирует контент первого забега на 30 минут, постоянное дерево магазина, пять mini-bosses, два main-boss extension proposals, future encounter proposals, семь временных drops арены и C5 cross-system handoff. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
 
 ## 1. Состав среза
 
@@ -12,7 +12,7 @@ C5 status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 | `C0_CONTENT_AUDIT.md` | C0 source-of-truth audit, protected scope и gaps | `READ_ONLY_AUDIT_COMPLETE` |
 | `C1_WEAPONS_PASSIVES_SYNERGIES.md` | 10 оружий, 10 run-пассивок, 10 direct pairs/evolutions | `CONTENT_SPECIFIED` |
 | `C2_ARTIFACTS.md` | 10 артефактов, trigger/effect/counterplay и offer contract | `CONTENT_SPECIFIED` |
-| `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 4 future enemy proposals, 2 mini-bosses, 5 chest windows и fallback resolver | `CONTENT_SPECIFIED` |
+| `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 4 future enemy proposals, 5 mini-bosses, 2 main-boss extension proposals, 15 content reward windows и fallback resolver | `CONTENT_SPECIFIED` |
 | `C4_ARENA_DROP_CATALOGUE.md` | 7 arena drops: heal, Gold, XP magnet, destruction, freeze, ward, vacuum | `CONTENT_SPECIFIED` |
 | `C5_CROSS_SYSTEM_HANDOFF.md` | cross-system index, dependency matrix, conflict review and owner handoff | `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS` |
 | `META_PASSIVE_TREE.md` | 6 ветвей, 17 stat nodes и shop/persistence contract | `CONTENT_SPECIFIED` |
@@ -24,13 +24,15 @@ C5 status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 - 10 synergy IDs сопоставлены с десятью direct pairs; каждая evolution создаёт новое evolved behavior/weapon state, а не новый slot.
 - Все 10 run-passives дают общий эффект eligible build; их weapon ID — только synergy anchor для проверки evolution gate, не отдельный weapon buff.
 - В одном Run 1 разрешено **максимум 5 synergy claims**. Шестая synergy не появляется даже после финального босса.
-- Для synergy предусмотрены пять нефинальных boss chest windows: 300/450/600/750/900 секунд; 450 и 750 — два mini-boss encounter. Если eligible content нет или cap достигнут, используется fallback contract.
-- C3 добавляет четыре future enemy proposals и оставляет их вне Run 1 до отдельного stage/Registry decision; существующие 10 enemy IDs и 4 boss IDs не заменяются.
+- Content target первого забега — 30 минут / 1800 секунд: пять main-boss non-final windows на 300/600/900/1200/1500 и пять mini-boss windows на 450/750/1050/1350/1650 секунд. Все десять BOSS_CHEST windows могут проверить synergy eligibility, но общий cap — 5; при отсутствии eligible content используется fallback.
+- C3 добавляет четыре future enemy proposals, пять mini-boss content IDs и два main-boss extension proposals; future enemies остаются вне Run 1 до отдельного stage/Registry decision, а существующие 10 enemy IDs не заменяются.
 - Build ограничен 6 weapon slots и 6 passive slots; weapon max level 6, passive max rank 5 согласно first-run architecture.
-- Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Артефакт — отдельный run layer без slot capacity.
+- Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Content defaults: UNIQUE duplicate, refresh только до выбора, один выбранный ID, отдельный run layer без slot capacity.
 - Дерево магазина содержит 6 macro branches и 17 stat nodes, покрывающих характеристики из пользовательского stat-screen reference.
 - Покупки meta tree выполняются только в hub/shop за Gold и применяются со следующего забега.
 - C4 содержит 7 arena drop IDs. Их source cadence, quantity, effect duration/radius, frequency и target caps не зафиксированы content-агентом; drops не заменяют XP/aftermath, chest, artifact offer или checkpoint reward.
+- Content proposal для 15 chest windows: C01–C05 MAIN_BOSS_NON_FINAL, C06–C10 INTERMEDIATE_BOSS, C11–C15 ELITE_VARIANT; ELITE_CHEST не расходует synergy cap и не становится boss chest.
+- C3 content cadence является предложением для сверки с Architecture/Balance; он не изменяет их registry, event schema, numeric balance или runtime state.
 
 ## 3. Handoff для Balance Agent
 
@@ -112,7 +114,7 @@ Content consumes/provides projections around the existing `upgrade_applied.v1`, 
 
 - добавить `artifact_tideglass` и `artifact_silent_lantern` в Registry только после schema/effect mapping review;
 - добавить canonical `max_synergy_claims_per_run: 5` и authoritative run counter;
-- добавить два mini-boss encounter proposals и два chest windows; сохранить main boss windows;
+- синхронизировать пять mini-boss encounter proposals и два main-boss extension proposals; content map содержит десять BOSS_CHEST windows и пять ELITE_CHEST windows, но Architecture сохраняет за собой canonical schedule/source mapping;
 - зарегистрировать четыре future enemy proposals только после отдельного stage decision; до этого держать их вне Run 1 registry и save restore.
 - сохранить checkpoint source и final-boss prohibition;
 - определить persistence scope first-clear artifact reward;
@@ -161,7 +163,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 - [x] Сохранены все существующие weapon/passive/synergy IDs.
 - [x] Roster содержит ровно 10 оружий, 10 run-пассивок, 10 synergy/evolutions и 10 artifacts.
 - [x] Все run-passives описаны как общие эффекты; weapon связи оставлены только как synergy anchors.
-- [x] Synergy rule «не более 5 за забег» и два mini-boss chest windows явно повторены в C1, C3 и index.
+- [x] Synergy rule «не более 5 за забег», пять mini-boss encounters и десять content BOSS_CHEST windows явно повторены в C1, C3 и index.
 - [x] Каждый mini-boss имеет distinct skill-check, telegraph contract и fallback path.
 - [x] Четыре future enemy proposals имеют silhouette, role/signature, telegraph, arena interaction, counter-decision, spawn behavior, hooks, reward boundary и balance questions.
 - [x] Полное дерево содержит 6 ветвей и 17 stat nodes из stat-screen reference.
@@ -178,9 +180,9 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 ## 8. Historical C4 handoff order
 
 1. Balance Agent: reconcile six B1 branch budgets with 17-node topology and bind numbers.
-2. Architecture/Runtime: sync two artifact proposals, two mini-boss proposals, synergy cap, chest source, artifact effect schema and meta purchase boundary.
+2. Architecture/Runtime: sync two artifact proposals, ten semantic artifact effect keys, five mini-boss proposals, two main-boss extension proposals, synergy cap, chest source, artifact effect schema and meta purchase boundary.
 3. Visual Lab: create master tree/shop and artifact/synergy/weapon visual briefs/mockups in its protected stages.
-4. QA/Integration: validate offer counts, three-synergy cap, stats aggregation and persistence after the preceding decisions are locked.
+4. QA/Integration: validate offer counts, five-synergy cap, stats aggregation and persistence after the preceding decisions are locked.
 
 ## 9. C4 short handoff
 
@@ -198,10 +200,10 @@ C5 сверяет каталог с live Architecture, Runtime и Balance contra
 Ключевые открытые reconciliation items:
 
 - Architecture: единая clock policy для MAIN_BOSS freeze и MINI_BOSS continuation;
-- Product/Content: roster mini-bosses — C3 content = 2, data contract = 3, runtime acceptance = 5, live B1 Registry = 0;
+- Product/Content: C3 content roster = 5 mini-bosses, data contract = 3, runtime acceptance = 5, live B1 Registry = 0; content identities are supplied, registry sync remains external;
 - Architecture: синхронизация 2 недостающих артефактов и typed effect definitions;
 - Product/Balance: 20-minute legacy vs 30-minute architecture envelope; `BALANCE_MODEL.json` содержит только proposed/model-only extension;
-- Product/Architecture: карта 15 chest windows и отделение synergy claims от artifact offers;
+- Product/Architecture: content map C01–C15 разделяет десять boss chest windows, пять elite chest windows и synergy claims от artifact offers;
 - Runtime: typed arena-drop instance/events поверх существующих XP/aftermath records;
 - Visual Lab: briefs переданы, mockups и production assets C5 не создаёт.
 
