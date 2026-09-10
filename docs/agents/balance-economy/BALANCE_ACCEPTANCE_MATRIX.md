@@ -1,31 +1,40 @@
-# Balance Acceptance Matrix — REF-BALANCE-REF-01
+# Balance Acceptance Matrix — SYNC-03
 
-Status: \`PARTIAL\`. The single-source 30-minute model, deterministic simulation and independent repeat check pass. Godot/Android runtime evidence does not exist.
+Status: `PARTIAL / MODEL_ONLY`. No row below is `RUNTIME_VERIFIED`.
 
-| Requirement | Source | Model/runtime behavior | Check | Observed | Status | Next owner |
-|---|---|---|---|---|---|---|
-| Live B1 read | \`docs/BALANCE_ECONOMY_SPEC.md\` | B1 revision stored in JSON | fetch + SHA | \`6aa4ec96afc8a8c9e6a35c164c99e7d62910a687\` | PASS | Balance |
-| 30:00 duration | user decision + architecture duration | 1800 visible-run seconds | validator + independent check | PASS | MODEL PASS | Architecture/Runtime |
-| 7 wave bands | B1 + 30m extension proposal | one JSON \`wave_bands\` table | validator/simulator | 5 CANON B1 + 2 PROPOSED | MODEL PASS / PARTIAL | B1/Product |
-| Main bosses | architecture + user 30m decision | 6 at 05/10/15/20/25/30 | independent check | 6 events | MODEL PASS / JOIN PENDING | Content/Architecture |
-| Mini-bosses | sync lock + user decision | 5 at 07:30/12:30/17:30/22:30/27:30 | independent check | 5 events | MODEL PASS / REGISTRY BLOCKED | Content/Architecture |
-| Main-boss freeze | user product rule | visible run/wave/XP/spawn clocks stop | independent event assertions | all 6 stop | MODEL PASS / CONTRACT CONFLICT | Architecture/Runtime |
-| Mini-boss continuation | sync lock/model rule | visible clock, wave and XP continue | independent event assertions | all 5 continue | MODEL PASS / CONTRACT PENDING | Architecture/Runtime |
-| Low→peak→siege after main | B1 interruption + user rule | suppression → recovery → linear ramp → 60s siege | monotonic/ramp assertions | PASS for 5 main cycles | MODEL PASS | Runtime |
-| No immediate mini spike | model policy | mini uses current ramp; finite post-defeat pack only | model event output | no permanent roster mutation | DERIVED / MODEL PASS | Runtime |
-| Active cap | B1 cap + model policy | discard overflow, no spawn debt | occupancy assertion | max 400, never exceeded | MODEL PASS / FPS BLOCKED | CI/Runtime |
-| XP formula | B1 §6 | model reads formula from JSON | JSON/model replay | formula exact | MODEL PASS | Runtime |
-| Levels 02/05/10/15/20/25/30 | B1 + proposed extension | model emits checkpoint levels | 30-run aggregation | fresh 2/5/9/13/17/20/24; moderate 2/6/10/13/17/21/24; max 2/6/10/14/18/22/26 | MODEL PASS / LATE PENDING | Balance/Product |
-| Ordinary TTK | B1 target | data-driven combat formula | 30-run output | 0.50–1.25s | MODEL PASS | Runtime |
-| Elite/boss/mini TTK | B1 target + proposed extension | output per event | 30-run output | ranges in simulation report | MODEL PARTIAL | Balance/Product |
-| Incoming damage/risk | B1 15% single-hit bound | seeded landed-hit model | risk assertion | peak DPS and damage output; model bound PASS | SIMULATED | Runtime |
-| Weapon/passive/synergy | B1 + content IDs | one model catalog, eligibility and fallback | model contract | no Python constants; ≤40% synergy guard | MODEL PARTIAL | Content/Balance |
-| Rewards | B1 + architecture ledger | checkpoint, chest, offer and first-clear channels separate | reward assertions | proposed 1575/520/16 for completed 30m model runs | MODEL PARTIAL | Product/Balance |
-| Idempotency | architecture ledger | duplicate wallet/chest/offer returns stored result | independent checker | PASS across 30 runs | MODEL PASS | Runtime |
-| Reference pattern use | three requested public repos | structure only, no foreign numeric inputs | provenance audit | links and pattern registry in JSON/docs | DERIVED PASS | Balance |
-| Godot 30m run | project runtime | no actual runtime invocation in this slice | no command available | no trace | BLOCKED | Runtime |
-| Android occupancy/FPS | B1 ≥30 FPS target | no device profile | no device evidence | not measured | BLOCKED | CI/QA |
+| Requirement | Source | Model/evidence | Status | Owner of next gate |
+|---|---|---|---|---|
+| Live B1 read | `docs/BALANCE_ECONOMY_SPEC.md` | SHA `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687` stored in model | PASS / source | Balance |
+| 30-minute envelope | user decision + sync lock | `1800s`, 7 contiguous bands | PASS / MODEL | Architecture/B1 |
+| Main roster | sync lock | 6 arrays at 05/10/15/20/25/30 | PASS / MODEL; join pending | Architecture/Content |
+| Mini roster | sync lock | 5 arrays at 07:30/12:30/17:30/22:30/27:30 | PASS / MODEL; IDs pending | Content/Architecture |
+| Elite catalog | REF-ARCH-02 | 10 mapped IDs, numeric overlays, run projection ≤5 | PASS / MODEL | Runtime/Visual |
+| ContentRegistry shape | `scripts/runtime/content_registry.gd` | top-level `main_bosses`, `mini_bosses`, `elite_variants` now present | PASS / Balance shape | Runtime |
+| Main-boss freeze | sync lock | all 6 model events freeze visible/wave/XP/spawn clock | PASS / MODEL | Architecture/Runtime |
+| Mini continuation | sync lock | all 5 model events advance visible/wave/XP/spawn clock | PASS / MODEL | Runtime |
+| Post-boss ramp | B1 principle + user rule | relief → linear ramp → peak siege; 5 cycles monotonic | PASS / MODEL | Runtime |
+| Active cap | B1 cap rule | no occupancy above selected cap; no spawn debt | PASS / MODEL | Runtime/CI |
+| XP formula | B1 §6 | exact formula read from JSON; levels reported at 2/5/10/15/20/25/30 | PASS / MODEL | Balance/B1 for late anchors |
+| Fresh/moderate/max profiles | B1 profile target | 5 seeds × 2 heroes × 3 profiles; 30/30 completed | PASS / MODEL | Product for fresh target |
+| Ordinary TTK | B1 target | model means 0.50–1.25s; p95 role outliers reported | PASS / MODEL / watch | Balance/B1 |
+| Elite TTK | B1 target + proposed overlay | means 3.75–12s; p95 outliers to 23.25s | PARTIAL / PROPOSED | Balance/B1/Runtime |
+| Main/mini TTK | B1 + proposed extension | concrete sequences in combat report | PARTIAL / PROPOSED | Balance/B1 |
+| Incoming risk | B1 15% single-hit bound | worst landed hit 12.25% of base HP | PASS / MODEL | Runtime |
+| Rewards | B1 + proposed extension rows | first clear 1575/520/16; repeat 1275/340/15 | PARTIAL / PROPOSED | Product/B1 |
+| Chests/fallback | architecture policy | final no chest; non-final fallback path; elite offer 3 | PASS / MODEL | Runtime |
+| Idempotency | architecture ledger | wallet/chest/elite/first-clear duplicate checks pass | PASS / MODEL | Runtime |
+| Godot 30-minute run | Runtime acceptance | no invocation/stdout/exit code | BLOCKED | Runtime/CI |
+| Android FPS/occupancy | B1 performance gate | no device/runner evidence | BLOCKED | CI/QA |
+
+## Required provenance rule
+
+Every absent B1 number is represented in the model with `source`,
+`derived_formula`, proposed value, rationale and a non-canonical status. The
+validator rejects missing model-owned registry shape, but it does not silently
+turn Architecture/Content drift into a false green join.
 
 ## Status boundary
 
-\`SIMULATED\` means deterministic Python model only. \`RUNTIME_VERIFIED\` is intentionally absent. The package cannot move to VERIFIED until runtime traces and Android evidence exist.
+The model and independent replay are reproducible. The overall package remains
+`PARTIAL`; `VERIFIED` is intentionally unavailable until a real runtime trace
+and performance evidence exist.

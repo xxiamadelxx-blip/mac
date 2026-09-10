@@ -1,79 +1,93 @@
-<!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
+# Balance Audit — SYNC-03 / REF-BALANCE-REF-01
 
-# Balance Audit — REF-BALANCE-REF-01
+Status: `PARTIAL / MODEL_ONLY`
 
-Status: \`PARTIAL / SIMULATED_MODEL_ONLY\`
+This is the current Balance handoff. It is not a Godot, Android, playable, or
+runtime-verification claim.
 
-## Live repository evidence
+## Live source and audit boundary
 
-- Repository: \`xxiamadelxx-blip/mac\`.
-- Branch: \`main\`.
-- Task parent HEAD before the first write: \`488c5bbd6b0ad412f0c1647eb99e17d31a6953a0\`.
-- Audit write parent HEAD: \`e269b2ea812a87a374c2585e7bea61770ec69a93\`.
-- B1: \`docs/BALANCE_ECONOMY_SPEC.md\`, SHA \`6aa4ec96afc8a8c9e6a35c164c99e7d62910a687\`.
-- B1 status: Version 0.1, design baseline; numeric parameters are not wired to code.
-- Coordination snapshot: \`docs/AGENT_SYNC_STATE.md\` still records snapshot \`ceb9781c24adcd8737f6953573f4ebc9103ae366\`; live main was re-read immediately before this write.
-- Architecture contract revision: \`bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00\`.
-- Runtime status: \`NOT_IMPLEMENTED\` for this balance contract; no Godot/Android evidence was created.
+| Field | Evidence |
+|---|---|
+| Repository / branch | `xxiamadelxx-blip/mac` / `main` |
+| Parent HEAD read before this slice | `86eaf6a94593d09e2c8620351cf8186ce736158c` |
+| Live B1 source | `docs/BALANCE_ECONOMY_SPEC.md`, SHA `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687` |
+| Architecture map | `docs/agents/architecture/REGISTRY_VARIANT_MAP.json`, published at parent `0ec954c7f6aed51fc309a6b59e7ec3a5e16371d2` |
+| Model | `BALANCE_MODEL.json`, model version `0.5`, status `PARTIAL` |
+| Runtime claim | `NOT_IMPLEMENTED`; no Godot/Android command was used |
+| Scope | Balance-owned model, simulator, validator and evidence documents only |
 
-## What was corrected
+The root `README.md`, `GAME_MANIFEST.md`, `ROADMAP.md` and first-run
+architecture documents still contain labelled legacy 20-minute/four-main or
+three-intermediate language. `docs/AGENT_SYNC_STATE.md` and the published
+architecture variant map are the current coordination inputs; this Balance
+slice does not rewrite another agent's write set.
 
-The published \`BALANCE_MODEL.json\` was a stale 20-minute model while the balance handoff and current coordination lock require 30 minutes. It is now synchronized to the existing 30-minute v0.4 model:
+## Closed Balance-owned work
 
-- one JSON source for 7 bands, 6 main checkpoints and 5 model mini checkpoints;
-- main-boss visible clock/wave/XP/spawn freeze;
-- mini-boss visible clock/wave/XP continuation;
-- post-main recovery → monotonic ramp → peak siege;
-- no immediate mini-boss density spike; finite elite pack after defeat;
-- XP, HP/ATK scaling, TTK, incoming risk, weapon/passive/synergy/fallback and reward/idempotency fields;
-- external pattern provenance with no imported foreign numbers, IDs, loot odds or assets.
-
-B1 CANON values were not rewritten. All absent 30-minute, elite, mini, base enemy and artifact values remain PROPOSED, PENDING_B1 or PENDING_PRODUCT_DECISION in the model.
-
-## Reference pattern extraction
-
-Only these common patterns were accepted:
-
-| Pattern | Evidence | MAC application | Numeric import |
-|---|---|---|---|
-| XP → level threshold → offer | [VampireSurvivorsClone](https://github.com/matthiasbroske/VampireSurvivorsClone), [20-Minutes-till-dawn PlayerController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/PlayerController.java), [Sentaur LevelProgression](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/LevelProgression.cs) | keep B1 XP formula; resolve a separate three-card choice | none |
-| time/level-keyed wave density | [MonsterSpawnTable](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs), [DifficultyCurve](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs), [SpawnDirector](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/SpawnDirector.cs) | read MAC bands, composition and cap from JSON | none |
-| explicit boss/special encounter | [BossMonster](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/BossMonster.cs), [MonsterController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java) | typed checkpoint events with separate encounter clock | none |
-| post-boss pressure state | keyed spawn/ramp systems above plus B1 interruption rule | suppression → recovery → low entry → linear ramp → siege | none |
-| elite/variant window | special/boss separation in the three references | bounded seeded overlay event, then return to ordinary roster | none |
-| rewards/chests | [Chest/LootTable](https://github.com/matthiasbroske/VampireSurvivorsClone/tree/main/Assets/Scripts/Gameplay), [Sentaur XP/upgrade flow](https://github.com/sentry-demos/unity/tree/main/Assets/Scripts) | XP, boss chest, elite offer, first-clear offer and wallet ledger are separate channels | none |
+- Added explicit top-level `main_bosses`, `mini_bosses` and `elite_variants`
+  arrays consumed by `scripts/runtime/content_registry.gd`.
+- Bound ten ordinary content IDs to numeric model records and ten mapped elite
+  IDs to proposed overlays. Runtime selection remains capped at five.
+- Kept all extension values labelled `PROPOSED`, `DERIVED`, `PENDING_B1` or
+  `PENDING_PRODUCT_DECISION`; no missing B1 value was promoted to `CANON`.
+- Replaced the placeholder simulation slice with a deterministic 30-minute
+  model covering waves, cap, XP/levels, combat, TTK, incoming risk, six main
+  bosses, five mini-bosses, post-boss relief/ramp/siege, elite packs,
+  rewards, chests, fallback, artifact offers and idempotency.
 
 ## Evidence
 
-- Remote model parses as JSON; current model fields: duration 1800, 6 main, 5 mini, 6 reference-pattern rules, runtime \`NOT_IMPLEMENTED\`.
-- Contract validator: \`BALANCE_CONTRACT_CHECK=PASS\`, exit 0, against architecture snapshot.
-- Independent deterministic checker: \`INDEPENDENT_30M_CHECK=PASS\`, exit 0.
-- 30 runs: two heroes × three profiles × five seeds; repeat hash \`2d901903a59cc88926b4413c5caa71cb92e2321cd3b446e93e6ee14db5f43d92\`.
-- Results: 24/30 survived, 21/30 completed; fresh 5/10 survived and 2/10 completed; moderate 9/10; max M1 10/10.
-- Occupancy stayed at or below proposed cap 400; wallet/chest/elite-offer idempotency passed in the model.
-- Full levels, TTK, incoming damage, boss results and reward output are in \`BALANCE_SIMULATION_REPORT.md\`.
+Commands run on the candidate model:
 
-## Changed files in this task
+```text
+python3 -m json.tool current_balance_model.json
+python3 -m py_compile current_balance_simulator.py current_balance_validator.py verify_balance_30m.py
+python3 current_balance_validator.py --model current_balance_model.json --architecture current_architecture_contract.json
+python3 verify_balance_30m.py --model current_balance_model.json --simulator current_balance_simulator.py
+```
 
-- \`docs/agents/balance-economy/BALANCE_MODEL.json\`
-- \`docs/agents/balance-economy/BALANCE_WAVE_TABLE.md\`
-- \`docs/agents/balance-economy/BALANCE_COMBAT_MODEL.md\`
-- \`docs/agents/balance-economy/BALANCE_XP_REWARDS.md\`
-- \`docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md\`
-- \`docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md\`
-- \`docs/agents/balance-economy/DECISIONS_AND_UNKNOWNS.md\`
-- \`docs/agents/balance-economy/BALANCE_AUDIT.md\`
+Observed:
 
-Runtime code and content IDs were not modified.
+```text
+BALANCE_MODEL_CHECK=PASS
+waves=7 main_bosses=6 mini_bosses=5 elite_variants=10
+runtime_claim=NOT_IMPLEMENTED
+ARCHITECTURE_JOIN=BLOCKED
+INDEPENDENT_30M_CHECK=PASS
+run_count=30
+repeat_hash=e3fea44d1bda986bfae372d83ee7efabf9549e212ad63f2e61fa0242c22b758c
+survived=30
+completed=30
+runtime_claim=NOT_IMPLEMENTED
+```
 
-## Remaining blockers
+The independent check runs seeds `101, 202, 303, 404, 505` across fresh,
+moderate and max M1 profiles for both heroes. A single seed 101 run also
+reported six main events, five mini events, visible clock `1800.0`, wall clock
+`2261.5`, final boss with no chest, first-clear ledger
+`1575 Gold / 520 Lunar Seals / 16 Boss Essence`, and maximum landed hit
+`12.25%` of base HP.
 
-1. Architecture clock contract still advances elapsed time through bosses while this balance rule freezes main-boss visible clocks.
-2. Architecture/content registry exposes three intermediate records while the requested model has five mini-boss slots.
-3. Pending main/mini content records, absolute enemy combat values, elite numeric/visual records and extension reward values are not canonical.
-4. Artifact effects, refresh/stacking policy and fresh-profile completion target remain product decisions.
-5. Godot runtime traces and Android FPS/occupancy evidence are absent; the Python model cannot close those gates.
+## Unresolved blockers
 
-## Next implementation slice
+1. `ARCHITECTURE_JOIN=BLOCKED`: the first-run data contract still exposes the
+   legacy 1200-second/four-main/three-intermediate shape and the opposing
+   clock wording. Architecture/Runtime owns reconciliation.
+2. B1 has no canonical absolute base HP/ATK/speed for the new ordinary and
+   elite families, no late 20:00–30:00 numeric anchors, and no exact mini/elite
+   cadence. These remain proposed model inputs, not balance lock.
+3. Content/Architecture have not promoted five stable mini-boss IDs or the two
+   extension main-boss identities into the consumed registry.
+4. No Godot trace, collision/telegraph proof, Android occupancy or FPS evidence
+   exists. Python simulation cannot close R2/R3/R4.
 
-Architecture/Runtime must reconcile the main-boss freeze and five-mini registry, then consume the single \`BALANCE_MODEL.json\` and emit the same timer, wave, XP, combat and idempotency traces before this package can leave PARTIAL.
+## Handoff status
+
+The balance model is structurally checkable and independently reproducible, but
+the package remains `PARTIAL / MODEL_ONLY`. The resulting commit SHA must be
+recorded by the GitHub publication handoff; the parent above is the exact live
+HEAD used for this slice.
+
+Next action: Architecture/Runtime publishes one reconciled 30-minute registry
+and clock contract, then Runtime runs the R2 Godot trace against this model.

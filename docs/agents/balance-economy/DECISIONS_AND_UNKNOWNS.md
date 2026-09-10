@@ -1,53 +1,45 @@
-# Decisions and Unknowns — REF-BALANCE-REF-01
+# Balance Decisions and Unknowns — current 30-minute slice
 
-This file records decisions for the 30-minute balance model. It does not amend B1, runtime code or content IDs.
+Status: `PARTIAL`. This file records the Balance handling of missing inputs; it
+does not amend B1, Architecture, Content IDs or runtime policy.
 
-## Decisions captured
+## Applied model decisions
 
-| Decision | Status | Model consequence |
-|---|---|---|
-| Run lasts 30 minutes | USER / ARCHITECTURE DURATION | visible duration = 1800s; B1 numeric extension remains proposed |
-| Six main checkpoints | USER / ARCHITECTURE SHAPE | 05:00, 10:00, 15:00, 20:00, 25:00, 30:00 |
-| Five mini-boss windows | USER / SYNC LOCK | 07:30, 12:30, 17:30, 22:30, 27:30; two IDs/kits remain pending |
-| Main boss clock behavior | USER PRODUCT RULE | visible run, wave, XP and ordinary-spawn clocks freeze; encounter clock continues |
-| Mini-boss clock behavior | SYNC LOCK / MODEL PROPOSAL | visible run, wave, XP and ordinary spawning continue |
-| Post-main density | USER PRODUCT RULE | recovery below prior peak, then monotonic ramp, then peak siege |
-| Post-mini density | MODEL PROPOSAL | no reset/no immediate hard spike; current ramp continues and one finite elite pack may follow defeat |
-| Elite variants | USER / ARCHITECTURE BOUNDARY | finite, max five event packs, no permanent roster mutation |
-| Final boss chest | ARCHITECTURE CANON | final main boss has no boss chest |
-| Offer surface | PRODUCT / ARCHITECTURE | artifact offer is exactly three cards; choose one; separate from boss chest and wallet |
-| External references | TASK RULE | structural patterns only; no foreign numbers, IDs, loot odds, assets or code copied |
-
-## Numeric provenance boundary
-
-- B1 CANON remains unchanged for hero stats, five bands, XP formula/drop vocabulary, 0.8s contact gate, checkpoint reward arithmetic and acceptance targets.
-- DERIVED values are formulas over B1/architecture/user schedule and are labeled in \`BALANCE_MODEL.json\`.
-- 20:00–30:00 wave/XP anchors, late boss/mini kits, elite overlay, pack size/cadence, fallback strength and extension wallet rows are PROPOSED or PENDING.
-- No absent value is silently promoted to CANON. Each model field has source, formula, rationale and status.
-- External references establish only separable system boundaries: threshold progression, keyed wave pressure, explicit encounter states and separate loot/offer resolution.
-
-## Open blockers
-
-| Missing input / conflict | Impact | Owner | Status |
+| Decision | Source | Model handling | Status |
 |---|---|---|---|
-| Architecture says elapsed time advances through bosses | runtime cannot satisfy main freeze without contract reconciliation | Architecture/Runtime | BLOCKED |
-| Architecture registry has three intermediate records, model target has five | two mini IDs/kits cannot be joined | Content/Architecture | BLOCKED |
-| Two new main IDs and three missing mini records | no production encounter join | Content/Architecture | BLOCKED |
-| B1 ends its numeric run at 20:00 | late bands, XP and rewards cannot become CANON | Product/B1 owner | PENDING_B1 |
-| Absolute enemy base HP/ATK/speed and exact ranged/crit values | TTK/damage remains model proposal | Balance/B1 owner | PENDING_B1 |
-| Elite variant numeric/visual records | TTK, cap and readability cannot be runtime-verified | Content/Balance/Visual | PENDING |
-| Artifact exact effects, refresh, duplicate stacking and cadence | reward economy cannot be closed | Product/Balance | PENDING_PRODUCT_DECISION |
-| Fresh-profile success target | current model completes 2/10 fresh runs | Product/Balance | PENDING_PRODUCT_DECISION |
-| Godot trace and Android FPS | model cannot prove playability or performance | Runtime/CI | BLOCKED |
+| Run length is 30:00 | user decision + `AGENT_SYNC_STATE.md` | 1800-second model envelope | `PROPOSED` until B1/root reconciliation |
+| Six main checkpoints | sync lock | 300/600/900/1200/1500/1800 | `DERIVED` schedule shape |
+| Five mini windows | sync lock | 450/750/1050/1350/1650 | `PROPOSED` IDs pending registry |
+| Main clock freeze | sync lock | visible run/wave/XP/spawn stop during every main boss | `CANON` coordination lock; architecture conflict remains |
+| Mini clock continuation | sync lock | visible run/wave/XP/spawn continue | `CANON` coordination lock |
+| Post-boss low-to-peak ramp | user rule + B1 relief principle | reset 0.80, linear ramp, 60s siege | `PROPOSED` numeric extension |
+| Elite registration cap | sync lock + REF-ARCH-02 | full catalog 10; selected run projection ≤5 | cap `CANON`, selection `PROPOSED` |
+| Final boss chest | sync lock/architecture policy | no boss chest; first-clear artifact is separate | `CANON` policy |
 
-## What was completed in this slice
+## Missing B1/product inputs
 
-- Read live B1 and root instructions.
-- Added pattern provenance to the single balance model.
-- Replaced the published stale 20-minute model with the existing 30-minute v0.4 model; no numeric B1 values were changed.
-- Synchronized wave, combat, XP/reward and acceptance documents.
-- Re-ran deterministic validator and independent 30-run repeat check.
+| Missing value | Source | Derived formula / proposed handling | Status / owner |
+|---|---|---|---|
+| Absolute HP/ATK/speed for new ordinary families | B1 has roles/multipliers, not absolute stats | `HP = reference DPS × target TTK ÷ durability`; ATK from telegraph/contact budget; speed from engagement distance ÷ delay | `PENDING_B1`, Balance |
+| Elite HP/ATK/speed/XP overlays | B1 has no variant numeric table | linked ordinary stat × per-family overlay; all 10 records are explicit and capped to 5 active IDs | `PROPOSED`, Balance/B1 |
+| Late 20:00–30:00 wave anchors | B1 ends at 20:00 | continuation of last canonical slope; 38/340 then 48/400 at 25/30 | `PROPOSED`, Product/B1 |
+| Late XP targets | B1 target table ends at 20:00 | extend level slope to model anchors 20/24/26 at 30 by profile | `PROPOSED`, Product/B1 |
+| Mini-boss stats | content intent only | 20–55s target, `base_hp = target TTK midpoint × reference mini DPS`; records remain proposed | `PROPOSED`, Balance/B1 |
+| Elite pack cadence/size | content says finite offers, B1 is silent | one pack after each mini, 3 members, one 3-card offer | `PROPOSED`, Product/Balance |
+| Reward rows after 20:00 | B1 has no late rows | monotonic gold/seal/essence extension, first-clear sum + bonus | `PROPOSED`, Product/B1 |
+| Hit probability/crit pipeline | B1 acceptance only | profile-specific landed-hit assumptions and expected crit equation | `PROPOSED`, Product/B1 |
+| Artifact refresh/duplicate/stacking | product contract incomplete | model only enforces separate three-card/idempotent offer boundary | `PENDING_PRODUCT_DECISION`, Product/Runtime |
 
-## Next action
+## External join blockers
 
-Runtime/Architecture must reconcile the main-boss freeze and five-mini registry, then consume \`BALANCE_MODEL.json\` and emit the same seed-set traces.
+1. The first-run architecture JSON still declares 1200 seconds, four main
+   checkpoints and three intermediate records; it also contains the opposite
+   boss clock wording. Balance does not rewrite that file.
+2. Content has five named mini proposals, while the consumed architecture/B1
+   registry has no five promoted mini records. Balance keeps placeholder slots
+   visibly pending and does not rename them.
+3. Runtime/Godot/Android evidence is absent. A Python model cannot promote the
+   package to `VERIFIED`.
+
+Next action: Architecture/Runtime reconciles the 30-minute roster and clock
+contract, then runs the R2 trace against the published Balance model.

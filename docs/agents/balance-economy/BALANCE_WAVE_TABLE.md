@@ -1,71 +1,60 @@
-# Balance Wave Table — 30-minute MAC model
+# Balance Wave Table — 30-minute model
 
-Status: \`PARTIAL / SIMULATED_MODEL_ONLY\`
+Status: `PARTIAL / MODEL_ONLY`. `CANON` below means the value is present in
+the live B1 baseline; it does not mean the current Godot runtime consumes it.
+The 20:00–30:00 rows are `PROPOSED` extensions.
 
-This table is the agreed 30-minute balance shape, not a runtime claim. The numeric source of truth remains \`docs/BALANCE_ECONOMY_SPEC.md\` (B1 revision \`6aa4ec96afc8a8c9e6a35c164c99e7d62910a687\`). The 20:00–30:00 anchors, five-mini schedule and elite overlay remain explicitly proposed/pending where the JSON says so.
+## Wave envelope
 
-Parent HEAD for REF-BALANCE-REF-01: \`488c5bbd6b0ad412f0c1647eb99e17d31a6953a0\`.
-Model consumer: \`docs/agents/balance-economy/BALANCE_MODEL.json\`.
+| Band | Time | Spawn budget/s | Active cap | HP mult | ATK mult | Speed mult | Provenance |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `wave_warmup_0_2` | 0–120 | 6 | 40 | 1.00 | 0.70 | 0.90 | B1 §4 / `CANON` |
+| `wave_pressure_2_5` | 120–300 | 10 | 80 | 1.10 | 0.85 | 1.00 | B1 §4 / `CANON` |
+| `wave_threat_5_10` | 300–600 | 15 | 130 | 1.35 | 1.00 | 1.02 | B1 §4 / `CANON` |
+| `wave_elite_10_15` | 600–900 | 22 | 200 | 1.70 | 1.25 | 1.05 | B1 §4 / `CANON` |
+| `wave_eclipse_15_20` | 900–1200 | 30 | 280 | 2.20 | 1.55 | 1.08 | B1 §4 / `CANON` |
+| `wave_cataclysm_20_25` | 1200–1500 | 38 | 340 | 2.70 | 1.75 | 1.10 | continuation formula / `PROPOSED` |
+| `wave_apocalypse_25_30` | 1500–1800 | 48 | 400 | 3.30 | 2.00 | 1.12 | continuation formula / `PROPOSED` |
 
-## Shared reference pattern
+Every numeric row is stored as a model record with source and status. The
+extension formulas are explicit in `BALANCE_MODEL.json`; they are not copied
+into Python.
 
-The three requested repositories show the same useful shape: time/level keyed spawn data, progression separated from spawn control, special encounters as explicit events, and rewards resolved through a distinct loot/offer path. They are reference-only; no foreign number or content ID is imported.
+## Encounter envelope
 
-- [VampireSurvivorsClone spawn table](https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs): time-keyed rate/composition/HP selection.
-- [20-Minutes-till-dawn monster controller](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java): elapsed-progress gates for pressure and special encounters.
-- [Sentaur difficulty curve and spawn director](https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs): separate unlock, wave-size, HP and spawn-rate concerns.
+Main bosses occur at `300, 600, 900, 1200, 1500, 1800` seconds. Mini-bosses
+occur at `450, 750, 1050, 1350, 1650` seconds. Main-boss encounters freeze
+the visible run/wave/XP/ordinary-spawn clock; mini-boss encounters continue
+those clocks. This is the active coordination lock, while the first-run
+architecture document still needs reconciliation.
 
-## Wave bands
+For every non-final main-boss cycle:
 
-| Run clock | Model band | Spawn budget/s | Active cap | HP mult | ATK mult | Speed mult | Level target | Status |
-|---:|---|---:|---:|---:|---:|---:|---|---|
-| 00:00–02:00 | warmup | 6 | 40 | 1.00 | 0.70 | 0.90 | 2 | CANON B1 |
-| 02:00–05:00 | first pressure | 10 | 80 | 1.10 | 0.85 | 1.00 | 5 | CANON B1 |
-| 05:00–10:00 | threat expansion | 15 | 130 | 1.35 | 1.00 | 1.02 | 9 | CANON B1 |
-| 10:00–15:00 | elite band | 22 | 200 | 1.70 | 1.25 | 1.05 | 13 | CANON B1 |
-| 15:00–20:00 | eclipse | 30 | 280 | 2.20 | 1.55 | 1.08 | 17–18 | CANON B1 |
-| 20:00–25:00 | cataclysm extension | 38 | 340 | 2.70 | 1.75 | 1.10 | 21–22 | PROPOSED |
-| 25:00–30:00 | apocalypse extension | 48 | 400 | 3.30 | 2.00 | 1.12 | 25–26 | PROPOSED |
+```text
+post-boss relief → low entry → linear ramp → peak-density siege → next boss
+```
 
-Composition follows the B1 roster order through 20:00. The two extension bands reuse the roster and add only finite elite events; no new enemy ID is invented. Spawn overflow is discarded at the active cap with no spawn debt. A runtime safe-mode fallback is required if device occupancy/FPS exceeds the target, but the fallback value is not yet canonical.
+The model uses `post_boss_reset_factor = 0.80`, an 8-second zero-spawn
+interruption, a 20-second 0.70→1.00 recovery, and a 60-second peak siege.
+These four tuning inputs are `PROPOSED` where B1 does not supply the exact
+value. The independent checker confirmed monotonic density and a final siege
+sample at factor `1.0` for all five cycles.
 
-## Main-boss shape: low → peak → siege
+Elite variants are finite packs after mini-boss defeat: one anchor variant plus
+two ordinary escorts, one offer of three cards after the pack is resolved, and
+no permanent roster mutation. The full catalog has ten IDs; the model's
+run-scoped selected set is bounded to five.
 
-At each main checkpoint, the visible run/wave/XP/ordinary-spawn clocks freeze and a separate encounter clock resolves the boss. After settlement, the next interval is deliberately not a hard jump:
+## Cap rule
 
-1. 8 seconds of ordinary-spawn suppression;
-2. recovery from 70% to 100% of the current budget over 20 seconds;
-3. enter at 80% of the preceding peak budget/cap;
-4. linearly ramp to the next band peak;
-5. hold the peak for the final 60-second siege before the next main checkpoint.
+Ordinary and elite entities count toward the band cap. Overflow spawn attempts
+are discarded rather than queued as spawn debt. The boss occupies a reserved
+slot in the model. The simulator reports occupancy per fixed 0.25-second step;
+it never exceeds the selected band cap. Runtime/Android occupancy is still
+unmeasured.
 
-The 0.80 reset, 8-second suppression, 20-second recovery, linear curve and 60-second siege are DERIVED/PROPOSED model inputs, not external-game numbers. The formula is stored in \`simulation_model.boss_wave_ramp\`.
+## Acceptance status
 
-| Cycle | From → to | Entry band → peak band | Density behavior | Status |
-|---|---|---|---|---|
-| 1 | 05:00 → 10:00 | first pressure → threat | recovery, linear ramp, siege | DERIVED |
-| 2 | 10:00 → 15:00 | threat → elite | recovery, linear ramp, siege | DERIVED |
-| 3 | 15:00 → 20:00 | elite → eclipse | recovery, linear ramp, siege | DERIVED |
-| 4 | 20:00 → 25:00 | eclipse → cataclysm | recovery, linear ramp, siege | PROPOSED |
-| 5 | 25:00 → 30:00 | cataclysm → apocalypse | recovery, linear ramp, siege | PROPOSED |
-
-## Mini-boss and elite windows
-
-Mini-bosses are pressure beats inside the wave cadence, not additional main checkpoints:
-
-| Time | Event | Clock | Ordinary wave | Post-event elite window | Status |
-|---:|---|---|---|---|---|
-| 07:30 | \`miniboss_ink_jade_warden\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
-| 12:30 | \`miniboss_veil_harvester\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
-| 17:30 | \`miniboss_pending_03\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
-| 22:30 | \`miniboss_extension_slot_03\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
-| 27:30 | \`miniboss_pending_05\` | continues | continues | finite pack after defeat | PENDING_CONTENT_REGISTRY |
-
-The mini-boss does not reset the main ramp or create an immediate density spike. One finite pack may follow each mini defeat: one seeded variant anchor plus two current-wave escorts. The pack counts against active cap, selection is seeded, and the roster returns to ordinary composition afterward. The model allows at most five events/run; numeric overlays and the two missing mini records remain PROPOSED/PENDING.
-
-## Provenance and non-import rule
-
-- B1 bands, XP vocabulary, checkpoint/reward rules and acceptance bounds: CANON.
-- 20:00–30:00 bands, reset/ramp values, mini kits, elite overlay and extension rewards: PROPOSED or DERIVED as recorded in JSON.
-- External repositories: REFERENCE_ONLY structural evidence; no numbers, IDs, assets or loot odds copied.
-- Runtime Godot/Android proof: NOT_IMPLEMENTED.
+Wave shape, ramp order, clock policy and cap behavior: `MODEL PASS`.
+Numeric extension lock, runtime trace and Android performance: `PENDING` or
+`BLOCKED` as documented in `BALANCE_AUDIT.md`.

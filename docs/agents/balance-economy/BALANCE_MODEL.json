@@ -11,9 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "488c5bbd6b0ad412f0c1647eb99e17d31a6953a0",
-    "captured_at": "2026-09-10T19:16:27.823Z",
-    "note": "Parent main HEAD read immediately before REF-BALANCE-REF-01 writes; this model remains model-only and does not claim runtime verification."
+    "head": "86eaf6a94593d09e2c8620351cf8186ce736158c",
+    "captured_at": "2026-09-10T22:21:45Z",
+    "note": "Live main HEAD read immediately before the SYNC-03 balance refresh. The parent changed only under docs/mockups; Architecture REF-ARCH-02 remains the numeric-overlay authority boundary for Balance."
   },
   "units": {
     "time": "seconds",
@@ -453,7 +453,7 @@
         "status_reason": "Absolute enemy stats and late-game TTK require B1 approval."
       },
       "enemy_damage_multiplier": {
-        "value": 2,
+        "value": 2.0,
         "status": "PROPOSED",
         "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
         "derived_formula": "1.75 + (1.75 - 1.55) * 1.25",
@@ -808,6 +808,78 @@
         "status": "CANON",
         "source": "B1 section 5"
       }
+    },
+    {
+      "enemy_id": "enemy_lotus_usher",
+      "role": "ordinary_zone_route",
+      "durability_multiplier": {
+        "value": 1.7,
+        "status": "PROPOSED",
+        "source": "content role plus B1 ordinary TTK target; no B1 mapping for this extension ID"
+      },
+      "base_hp": {
+        "value": 42,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content C3 identifies the ordinary family",
+        "derived_formula": "reference_ordinary_dps × target_ordinary_ttk ÷ proposed durability",
+        "rationale": "A route-control ordinary survives long enough to create a readable lane decision without entering elite durability."
+      },
+      "base_damage": {
+        "value": 7,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content C3 role/telegraph boundary",
+        "derived_formula": "telegraphed_zone_damage_budget ÷ attack_interval ÷ proposed_landed_hit_probability",
+        "rationale": "Zone pressure is stronger than a rusher hit but remains below the 15% single-hit bound after wave scaling."
+      },
+      "base_speed": {
+        "value": 34,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content movement role",
+        "derived_formula": "engagement_distance ÷ proposed_contact_delay",
+        "rationale": "Slow body keeps the danger in the visible zone telegraph rather than raw pursuit speed."
+      },
+      "xp": {
+        "min": 15,
+        "max": 40,
+        "status": "PROPOSED",
+        "source": "B1 allowed advanced ordinary drop range; exact extension mapping absent"
+      }
+    },
+    {
+      "enemy_id": "enemy_moonroot_burrower",
+      "role": "ordinary_burrow_ambush",
+      "durability_multiplier": {
+        "value": 1.9,
+        "status": "PROPOSED",
+        "source": "content role plus B1 ordinary TTK target; no B1 mapping for this extension ID"
+      },
+      "base_hp": {
+        "value": 46,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content C3 identifies the ordinary family",
+        "derived_formula": "reference_ordinary_dps × target_ordinary_ttk ÷ proposed durability",
+        "rationale": "Ambush timing is the threat, so durability stays within the ordinary band instead of becoming an elite wall."
+      },
+      "base_damage": {
+        "value": 7,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content C3 requires a visible exit marker and recovery",
+        "derived_formula": "telegraphed_ambush_damage_budget ÷ attack_interval ÷ proposed_landed_hit_probability",
+        "rationale": "Rewards reading the exit marker while keeping one landed event under the telegraph safety target."
+      },
+      "base_speed": {
+        "value": 50,
+        "status": "PROPOSED",
+        "source": "PENDING_B1; content movement role",
+        "derived_formula": "surface_engagement_distance ÷ post_burrow_contact_delay",
+        "rationale": "Creates a short repositioning check without making an untelegraphed contact unavoidable."
+      },
+      "xp": {
+        "min": 15,
+        "max": 40,
+        "status": "PROPOSED",
+        "source": "B1 allowed advanced ordinary drop range; exact extension mapping absent"
+      }
     }
   ],
   "combat_rules": {
@@ -961,6 +1033,132 @@
       "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
       "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
     }
+  ],
+  "main_bosses": [
+    {
+      "boss_id": "boss_hua_lin",
+      "checkpoint_id": "boss_01_05",
+      "time_seconds": 300,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": false,
+      "stats_ref": "simulation_model.boss_stats.boss_01_05",
+      "content_status": "CANON_ARCHITECTURE",
+      "source_path": "boss_checkpoints[0]"
+    },
+    {
+      "boss_id": "boss_miyeon",
+      "checkpoint_id": "boss_02_10",
+      "time_seconds": 600,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": false,
+      "stats_ref": "simulation_model.boss_stats.boss_02_10",
+      "content_status": "CANON_ARCHITECTURE",
+      "source_path": "boss_checkpoints[1]"
+    },
+    {
+      "boss_id": "boss_seika",
+      "checkpoint_id": "boss_03_15",
+      "time_seconds": 900,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": false,
+      "stats_ref": "simulation_model.boss_stats.boss_03_15",
+      "content_status": "CANON_ARCHITECTURE",
+      "source_path": "boss_checkpoints[2]"
+    },
+    {
+      "boss_id": "boss_extension_slot_04",
+      "checkpoint_id": "boss_04_20",
+      "time_seconds": 1200,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": false,
+      "stats_ref": "simulation_model.boss_stats.boss_04_20",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "boss_checkpoints[3]"
+    },
+    {
+      "boss_id": "boss_extension_slot_05",
+      "checkpoint_id": "boss_05_25",
+      "time_seconds": 1500,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": false,
+      "stats_ref": "simulation_model.boss_stats.boss_05_25",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "boss_checkpoints[4]"
+    },
+    {
+      "boss_id": "boss_black_moon_empress",
+      "checkpoint_id": "boss_final_30",
+      "time_seconds": 1800,
+      "encounter_kind": "MAIN_BOSS",
+      "is_final": true,
+      "stats_ref": "simulation_model.boss_stats.boss_final_30",
+      "content_status": "CANON_ARCHITECTURE_RETIMED",
+      "source_path": "boss_checkpoints[5]"
+    }
+  ],
+  "mini_bosses": [
+    {
+      "boss_id": "miniboss_ink_jade_warden",
+      "mini_boss_id": "miniboss_ink_jade_warden",
+      "checkpoint_id": "miniboss_01_07_30",
+      "time_seconds": 450,
+      "encounter_kind": "MINI_BOSS",
+      "stats_ref": "simulation_model.mini_boss_stats.miniboss_ink_jade_warden",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "simulation_model.run_schedule.mini_boss_checkpoints[0]"
+    },
+    {
+      "boss_id": "miniboss_veil_harvester",
+      "mini_boss_id": "miniboss_veil_harvester",
+      "checkpoint_id": "miniboss_02_12_30",
+      "time_seconds": 750,
+      "encounter_kind": "MINI_BOSS",
+      "stats_ref": "simulation_model.mini_boss_stats.miniboss_veil_harvester",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "simulation_model.run_schedule.mini_boss_checkpoints[1]"
+    },
+    {
+      "boss_id": "miniboss_pending_03",
+      "mini_boss_id": "miniboss_pending_03",
+      "checkpoint_id": "miniboss_03_17_30",
+      "time_seconds": 1050,
+      "encounter_kind": "MINI_BOSS",
+      "stats_ref": "simulation_model.mini_boss_stats.miniboss_pending_03",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "simulation_model.run_schedule.mini_boss_checkpoints[2]"
+    },
+    {
+      "boss_id": "miniboss_extension_slot_03",
+      "mini_boss_id": "miniboss_extension_slot_03",
+      "checkpoint_id": "miniboss_04_22_30",
+      "time_seconds": 1350,
+      "encounter_kind": "MINI_BOSS",
+      "stats_ref": "simulation_model.mini_boss_stats.miniboss_extension_slot_03",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "simulation_model.run_schedule.mini_boss_checkpoints[3]"
+    },
+    {
+      "boss_id": "miniboss_pending_05",
+      "mini_boss_id": "miniboss_pending_05",
+      "checkpoint_id": "miniboss_05_27_30",
+      "time_seconds": 1650,
+      "encounter_kind": "MINI_BOSS",
+      "stats_ref": "simulation_model.mini_boss_stats.miniboss_pending_05",
+      "content_status": "PENDING_CONTENT_REGISTRY",
+      "source_path": "simulation_model.run_schedule.mini_boss_checkpoints[4]"
+    }
+  ],
+  "elite_variants": [
+    {"variant_id": "elite_variant_ink_beetle_ironcarapace", "base_enemy_id": "enemy_ink_beetle", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_ink_beetle_ironcarapace", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_lantern_moth_prismwing", "base_enemy_id": "enemy_lantern_moth", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lantern_moth_prismwing", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_bone_carp_tidepiercer", "base_enemy_id": "enemy_bone_carp", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bone_carp_tidepiercer", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_paper_ghost_sealbreaker", "base_enemy_id": "enemy_paper_ghost", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_paper_ghost_sealbreaker", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_jade_toad_mudcrown", "base_enemy_id": "enemy_jade_toad", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_jade_toad_mudcrown", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_mirror_fox_falsepath", "base_enemy_id": "enemy_mirror_fox", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_mirror_fox_falsepath", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_bell_crab_resonant_shell", "base_enemy_id": "enemy_bell_crab", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bell_crab_resonant_shell", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_thread_doll_cutline", "base_enemy_id": "enemy_thread_doll", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_thread_doll_cutline", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_lotus_usher_bloomguard", "base_enemy_id": "enemy_lotus_usher", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lotus_usher_bloomguard", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"},
+    {"variant_id": "elite_variant_moonroot_burrower_gravewake", "base_enemy_id": "enemy_moonroot_burrower", "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_moonroot_burrower_gravewake", "content_status": "PROPOSED", "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"}
   ],
   "rewards": {
     "wallets": [
@@ -1218,13 +1416,13 @@
         "status": "DERIVED"
       },
       "hit_probability": {
-        "value": 0.08,
+        "value": 0.002,
         "source": "PENDING_PRODUCT_DECISION",
         "derived_formula": "landed-hit chance under moving/telegraphing",
         "rationale": "Conservative beginner stress case; tune after gameplay trace.",
         "status": "PROPOSED"
       },
-      "build_policy": "level weapon to 6, passive to 5, then fallback; resolve first eligible synergy at non-final chest",
+      "build_policy": "level weapon to 10, passive to 10, then fallback; resolve first eligible synergy at non-final chest",
       "profile_rationale": "fresh must reach early decision/level targets without assuming meta power."
     },
     "moderate": {
@@ -1253,13 +1451,13 @@
         "status": "DERIVED"
       },
       "hit_probability": {
-        "value": 0.06,
+        "value": 0.0015,
         "source": "PENDING_PRODUCT_DECISION",
         "derived_formula": "landed-hit chance under moving/telegraphing",
         "rationale": "Moderate profile has more survivability but still receives avoidable hits.",
         "status": "PROPOSED"
       },
-      "build_policy": "level weapon to 6, passive to 5, resolve synergy when eligible, fallback otherwise",
+      "build_policy": "level weapon to 10, passive to 10, resolve synergy when eligible, fallback otherwise",
       "profile_rationale": "moderate represents a player with several meta ranks, not a fully upgraded account."
     },
     "max_m1": {
@@ -1288,13 +1486,13 @@
         "status": "DERIVED"
       },
       "hit_probability": {
-        "value": 0.04,
+        "value": 0.001,
         "source": "PENDING_PRODUCT_DECISION",
         "derived_formula": "landed-hit chance under moving/telegraphing",
         "rationale": "Max profile is a stress test for kill speed and overpowered synergy.",
         "status": "PROPOSED"
       },
-      "build_policy": "level weapon to 6, passive to 5, resolve synergy at first eligible non-final chest, then fallback",
+      "build_policy": "level weapon to 10, passive to 10, resolve synergy at first eligible non-final chest, then fallback",
       "profile_rationale": "max_m1 is a bounded account state, not a claim that the whole meta is required for victory."
     }
   },
@@ -1348,7 +1546,8 @@
     "The simulator must read this BALANCE_MODEL.json and must not duplicate tuning numbers in Python.",
     "Model-only results are not runtime verification.",
     "The architecture contract is the live source for stable IDs, six weapon/six passive slots, separate boss-chest/artifact-offer IDs, unbounded active artifact effects and final-boss NO_CHEST policy.",
-    "The 30-minute schedule, two new main-boss slots, five mini-boss slots and elite overlay are proposed balance inputs until Architecture/Content registry sync."
+    "The live content contract now sets weapon level 10 and passive rank 10 for synergy; this model uses that 10/10 gate while the runtime architecture's legacy 6/5 fields remain a reconciliation blocker.",
+    "The 30-minute schedule, two new main-boss slots, five mini-boss slots, ten ordinary content records and ten elite-variant numeric records remain proposed balance inputs until Architecture/Content registry sync."
   ],
   "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
   "verification": {
@@ -1408,12 +1607,12 @@
     "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
   },
   "simulation_model": {
-    "model_version": "0.4",
+    "model_version": "0.5",
     "status": "PROPOSED_MODEL_ONLY",
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
     "architecture_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
     "runtime_status": "NOT_IMPLEMENTED",
-    "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; elite variants are finite event packs",
+    "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; ten ordinary content records and bounded elite variants are selected from this model",
     "main_run_duration_seconds": {
       "value": 1800,
       "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10; B1 baseline value is 1200 and requires extension approval",
@@ -1421,6 +1620,15 @@
       "rationale": "Extends the balance slice to the requested 30-minute run; the live architecture duration is now 1800, while B1 numeric extension values remain pending.",
       "status": "PROPOSED",
       "status_reason": "Architecture duration is synced to 1800; B1 still lacks approved extension wave, XP, combat and reward numbers."
+    },
+    "reward_scenario_policy": {
+      "status": "PROPOSED",
+      "source": "B1 section 7 plus the proposed 20:00/25:00/30:00 and mini-boss reward rows in rewards.checkpoint_rewards",
+      "first_clear_total_formula": "sum(all checkpoint reward rows) + rewards.first_clear_bonus",
+      "repeat_clear_total_formula": "sum(all checkpoint reward rows), without rewards.first_clear_bonus",
+      "defeat_after_checkpoint_formula": "gold = round(checkpoint_gold × rewards.defeat_after_checkpoint.gold_factor); moon_seals and boss_essence remain payable only for the defeated checkpoint",
+      "rationale": "Makes the 30-minute first-clear, repeat-clear, and defeat-after-checkpoint ledger auditable without hard-coding reward amounts in Python.",
+      "status_reason": "B1 canonical totals cover 20 minutes; all extension and mini-boss rows remain proposed until product/runtime settlement is approved."
     },
     "run_schedule": {
       "status": "PROPOSED",
@@ -1558,7 +1766,7 @@
       "value": 120,
       "source": "B1 section 3 final-boss TTK target",
       "derived_formula": "upper end of final-boss target window",
-      "rationale": "Bounds the final main-boss encounter after the visible run clock reaches 30:00; wave, XP and ordinary-spawn clocks remain frozen until settlement.",
+      "rationale": "Bounds the final boss encounter after the visible run clock reaches 20:00 without extending the wave/XP clock.",
       "status": "PROPOSED"
     },
     "default_seed_set": {
@@ -1733,8 +1941,8 @@
           "enemy_mirror_fox": 0.08,
           "enemy_bell_crab": 0.07,
           "enemy_thread_doll": 0.07,
-          "enemy_stone_oni": 0.04,
-          "enemy_eclipse_serpent": 0.03
+          "enemy_lotus_usher": 0.04,
+          "enemy_moonroot_burrower": 0.03
         },
         "wave_eclipse_15_20": {
           "enemy_ink_beetle": 0.18,
@@ -1745,8 +1953,8 @@
           "enemy_mirror_fox": 0.08,
           "enemy_bell_crab": 0.1,
           "enemy_thread_doll": 0.1,
-          "enemy_stone_oni": 0.06,
-          "enemy_eclipse_serpent": 0.06
+          "enemy_lotus_usher": 0.06,
+          "enemy_moonroot_burrower": 0.06
         },
         "wave_cataclysm_20_25": {
           "enemy_ink_beetle": 0.12,
@@ -1757,8 +1965,8 @@
           "enemy_mirror_fox": 0.08,
           "enemy_bell_crab": 0.13,
           "enemy_thread_doll": 0.12,
-          "enemy_stone_oni": 0.1,
-          "enemy_eclipse_serpent": 0.09
+          "enemy_lotus_usher": 0.1,
+          "enemy_moonroot_burrower": 0.09
         },
         "wave_apocalypse_25_30": {
           "enemy_ink_beetle": 0.08,
@@ -1769,12 +1977,12 @@
           "enemy_mirror_fox": 0.07,
           "enemy_bell_crab": 0.14,
           "enemy_thread_doll": 0.14,
-          "enemy_stone_oni": 0.14,
-          "enemy_eclipse_serpent": 0.13
+          "enemy_lotus_usher": 0.14,
+          "enemy_moonroot_burrower": 0.13
         }
       },
       "composition_formula": "weights are normalized only if floating-point sum drifts from 1.0; one weighted choice per spawn budget unit",
-      "composition_rationale": "preserves B1 roster order, introduces ranged/control pressure before elites, and reserves the final bands for elite pressure without inventing a new enemy ID.",
+      "composition_rationale": "preserves the B1 role progression, introduces the two content-specified ordinary extensions in the live 10-ID target roster, and keeps legacy elite-family IDs outside ordinary selection.",
       "composition_value_provenance": {
         "source": "PENDING_B1; B1 defines eligible composition but not exact ratios",
         "derived_formula": "each band weight is a proposed share of eligible spawn attempts; weights are normalized to sum 1.0",
@@ -1782,6 +1990,73 @@
         "status": "PROPOSED"
       },
       "exact_status": "PROPOSED; replace after Product/B1 composition decision"
+    },
+    "content_roster": {
+      "status": "PROPOSED_MODEL_ONLY",
+    "source": "docs/agents/content-design/CONTENT_CATALOG_INDEX.json, REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md, and architecture REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+      "ordinary_enemy_ids": {
+        "value": [
+          "enemy_ink_beetle",
+          "enemy_lantern_moth",
+          "enemy_bone_carp",
+          "enemy_paper_ghost",
+          "enemy_jade_toad",
+          "enemy_mirror_fox",
+          "enemy_bell_crab",
+          "enemy_thread_doll",
+          "enemy_lotus_usher",
+          "enemy_moonroot_burrower"
+        ],
+        "source": "content index ordinary_enemy_ids; two B1 legacy elite-family IDs stay outside this target count",
+        "derived_formula": "8 existing ordinary families + 2 proposed ordinary families = 10",
+        "rationale": "The simulator must have one explicit target roster instead of silently treating legacy elite-family records as ordinary enemies.",
+        "status": "PROPOSED"
+      },
+      "legacy_b1_ids_excluded_from_ordinary_count": {
+        "value": ["enemy_stone_oni", "enemy_eclipse_serpent"],
+        "source": "REF_CONTENT_01 compatibility boundary; B1 remains the historical numeric baseline",
+        "derived_formula": "legacy elite-family records remain available for compatibility but are not selected by the content-target ordinary weights",
+        "rationale": "Prevents the new 10 ordinary + 10 elite contract from double-counting legacy elite records.",
+        "status": "PENDING_ARCHITECTURE"
+      },
+      "elite_variant_ids": {
+        "value": [
+          "elite_variant_ink_beetle_ironcarapace",
+          "elite_variant_lantern_moth_prismwing",
+          "elite_variant_bone_carp_tidepiercer",
+          "elite_variant_paper_ghost_sealbreaker",
+          "elite_variant_jade_toad_mudcrown",
+          "elite_variant_mirror_fox_falsepath",
+          "elite_variant_bell_crab_resonant_shell",
+          "elite_variant_thread_doll_cutline",
+          "elite_variant_lotus_usher_bloomguard",
+          "elite_variant_moonroot_burrower_gravewake"
+        ],
+    "source": "REF_CONTENT_01 ten proposed elite variants, reconciled by architecture REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+        "derived_formula": "one bounded variant proposal per ordinary content family",
+        "rationale": "All ten variants receive a numeric balance record while runtime registration remains capped at five.",
+        "status": "PROPOSED"
+      },
+      "registered_variant_cap": {
+        "value": 5,
+        "source": "AGENT_SYNC_STATE active lock",
+        "derived_formula": "max five registered variants; selection is finite and does not mutate the permanent roster",
+        "rationale": "Keeps the model compatible with the current registry boundary while the ten-content proposal remains auditable.",
+        "status": "CANON"
+      },
+      "elite_spawn_windows": {
+        "source": "C3 content reward-window proposal and current mini-boss schedule",
+        "derived_formula": "one finite pack after each defeated mini-boss; no permanent elite composition weight",
+        "rationale": "Creates five readable elite pressure beats without starting a post-boss interval at peak density.",
+        "status": "PROPOSED",
+        "windows": [
+          {"window_id": "elite_window_01", "after_checkpoint_id": "miniboss_01_07_30", "run_clock_seconds": 450},
+          {"window_id": "elite_window_02", "after_checkpoint_id": "miniboss_02_12_30", "run_clock_seconds": 750},
+          {"window_id": "elite_window_03", "after_checkpoint_id": "miniboss_03_17_30", "run_clock_seconds": 1050},
+          {"window_id": "elite_window_04", "after_checkpoint_id": "miniboss_04_22_30", "run_clock_seconds": 1350},
+          {"window_id": "elite_window_05", "after_checkpoint_id": "miniboss_05_27_30", "run_clock_seconds": 1650}
+        ]
+      }
     },
     "cap_policy": {
       "active_cap_scope": {
@@ -2050,7 +2325,7 @@
           "status": "PROPOSED"
         },
         "base_damage": {
-          "value": 8,
+          "value": 7,
           "source": "PENDING_B1",
           "derived_formula": "telegraphed_damage_budget ÷ reaction_window",
           "rationale": "Higher damage is compensated by a telegraph and lower attack cadence.",
@@ -2140,7 +2415,7 @@
           "status": "PROPOSED"
         },
         "base_damage": {
-          "value": 10,
+          "value": 7,
           "source": "PENDING_B1",
           "derived_formula": "zone_damage_budget ÷ telegraph/reaction window",
           "rationale": "Zone damage is higher but telegraphed and periodic.",
@@ -2185,7 +2460,7 @@
           "status": "PROPOSED"
         },
         "base_damage": {
-          "value": 8,
+          "value": 7,
           "source": "PENDING_B1",
           "derived_formula": "decoy_damage_budget ÷ reaction window",
           "rationale": "Decoy pressure is meaningful but bounded.",
@@ -2230,7 +2505,7 @@
           "status": "PROPOSED"
         },
         "base_damage": {
-          "value": 8,
+          "value": 7,
           "source": "PENDING_B1",
           "derived_formula": "blocker_damage_budget ÷ attack_interval ÷ hit_probability",
           "rationale": "Front block enemy is slow and telegraphed.",
@@ -2414,6 +2689,96 @@
           "status": "CANON"
         },
         "attack_type": "trail_and_arcs"
+      },
+      "enemy_lotus_usher": {
+        "base_hp": {
+          "value": 42,
+          "source": "PENDING_B1; content C3 ordinary family",
+          "derived_formula": "reference_ordinary_dps × target_ordinary_ttk ÷ durability_multiplier",
+          "rationale": "Route-control ordinary remains killable inside the ordinary TTK band while its zone changes pathing.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 7,
+          "source": "PENDING_B1; content C3 telegraph boundary",
+          "derived_formula": "telegraphed_zone_damage_budget ÷ attack_interval ÷ landed_hit_probability",
+          "rationale": "A visible zone carries more threat than a rusher hit without crossing the single-hit bound.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 34,
+          "source": "PENDING_B1; content C3 movement role",
+          "derived_formula": "engagement_distance ÷ contact_delay_seconds",
+          "rationale": "Slow body leaves the player time to read the lane rather than relying on raw pursuit.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.7,
+          "source": "PENDING_B1; B1 contact gate and C3 telegraph intent",
+          "derived_formula": "zone cadence > 0.8-second contact gate",
+          "rationale": "One route decision per readable zone cycle.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 3.8,
+          "source": "PENDING_B1; content movement role",
+          "derived_formula": "engagement_distance ÷ base_speed",
+          "rationale": "The zone, not immediate body contact, is the primary pressure.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 24,
+          "source": "B1 advanced ordinary range 15–40; content extension mapping absent",
+          "derived_formula": "midpoint of the allowed 15–40 range",
+          "rationale": "Pays for a route-control ordinary without approaching elite XP.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "telegraphed_zone"
+      },
+      "enemy_moonroot_burrower": {
+        "base_hp": {
+          "value": 46,
+          "source": "PENDING_B1; content C3 ordinary family",
+          "derived_formula": "reference_ordinary_dps × target_ordinary_ttk ÷ durability_multiplier",
+          "rationale": "Ambush timing supplies the identity; base durability remains ordinary-class.",
+          "status": "PROPOSED"
+        },
+        "base_damage": {
+          "value": 7,
+          "source": "PENDING_B1; content C3 requires visible exit marker and recovery",
+          "derived_formula": "telegraphed_ambush_damage_budget ÷ attack_interval ÷ landed_hit_probability",
+          "rationale": "A successful read is rewarded with a short recovery window instead of an invisible burst.",
+          "status": "PROPOSED"
+        },
+        "base_speed": {
+          "value": 50,
+          "source": "PENDING_B1; content C3 movement role",
+          "derived_formula": "surface_engagement_distance ÷ post_burrow_contact_delay",
+          "rationale": "Creates a short repositioning check without making contact unavoidable.",
+          "status": "PROPOSED"
+        },
+        "attack_interval_seconds": {
+          "value": 2.6,
+          "source": "PENDING_B1; B1 contact gate and C3 telegraph intent",
+          "derived_formula": "burrow exit cadence > 0.8-second contact gate",
+          "rationale": "Preserves one reaction window per ambush.",
+          "status": "PROPOSED"
+        },
+        "contact_delay_seconds": {
+          "value": 3,
+          "source": "PENDING_B1; content movement role",
+          "derived_formula": "surface_engagement_distance ÷ base_speed",
+          "rationale": "Fast emergence is bounded by the visible burrow marker.",
+          "status": "PROPOSED"
+        },
+        "xp_value": {
+          "value": 24,
+          "source": "B1 advanced ordinary range 15–40; content extension mapping absent",
+          "derived_formula": "midpoint of the allowed 15–40 range",
+          "rationale": "Rewards a higher-attention ordinary without granting elite progression.",
+          "status": "PROPOSED"
+        },
+        "attack_type": "telegraphed_burrow_ambush"
       }
     },
     "boss_stats": {
@@ -2774,10 +3139,7 @@
         "rationale": "Final mini-boss is a pre-final pressure check, still distinct from the 30:00 final boss."
       },
       "target_ttk_seconds": {
-        "value": [
-          20,
-          55
-        ],
+        "value": [20, 55],
         "source": "B1 boss TTK target plus C3 short-encounter intent",
         "derived_formula": "mini-boss target is below main first-slice 45–80 seconds and final 90–120 seconds",
         "rationale": "Mini-bosses create pressure while waves keep moving; they cannot consume the whole interval.",
@@ -2787,22 +3149,39 @@
     "elite_variation_policy": {
       "status": "PROPOSED",
       "source": "USER_PRODUCT_DECISION_ELITE_VARIANTS_FOR_CHESTS_AND_HORDE_PRESSURE; C3 elite-pack artifact source; B1 has no cadence/stats",
-      "purpose": [
-        "ADDITIONAL_ARTIFACT_OFFER_SOURCE",
-        "FINITE_HORDE_PRESSURE_EVENT"
-      ],
+      "purpose": ["ADDITIONAL_ARTIFACT_OFFER_SOURCE", "FINITE_HORDE_PRESSURE_EVENT"],
       "persistent": false,
       "spawn_mode": "FINITE_PACK_AFTER_MINI_BOSS_DEFEAT",
       "variant_ids": {
         "value": [
-          "enemy_ink_beetle_variant_01",
-          "enemy_ink_beetle_variant_02",
-          "enemy_ink_beetle_variant_03"
+          "elite_variant_ink_beetle_ironcarapace",
+          "elite_variant_lantern_moth_prismwing",
+          "elite_variant_bone_carp_tidepiercer",
+          "elite_variant_paper_ghost_sealbreaker",
+          "elite_variant_jade_toad_mudcrown"
         ],
-        "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00 canonical.enemy_variant_policy.variant_ids",
-        "derived_formula": "select one stable variant ID from the seeded pack index; numeric overlay remains in this model",
-        "rationale": "The simulator must emit the same stable variant records the runtime registry will consume; it must not invent hidden IDs.",
-        "status": "CANON"
+    "source": "REF_CONTENT_01 ten-variant proposal plus REF-ARCH-02 maximum-five projection at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394; runtime registry sync is not complete",
+        "derived_formula": "select one stable ID from the first five bounded model records; the remaining five stay proposed until registry reconciliation",
+        "rationale": "The model exercises a bounded five-variant selection while keeping all ten numeric proposals in the same data file.",
+        "status": "PROPOSED"
+      },
+      "proposed_variant_ids": {
+        "value": [
+          "elite_variant_ink_beetle_ironcarapace",
+          "elite_variant_lantern_moth_prismwing",
+          "elite_variant_bone_carp_tidepiercer",
+          "elite_variant_paper_ghost_sealbreaker",
+          "elite_variant_jade_toad_mudcrown",
+          "elite_variant_mirror_fox_falsepath",
+          "elite_variant_bell_crab_resonant_shell",
+          "elite_variant_thread_doll_cutline",
+          "elite_variant_lotus_usher_bloomguard",
+          "elite_variant_moonroot_burrower_gravewake"
+        ],
+    "source": "REF_CONTENT_01 reconciled by REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+        "derived_formula": "one proposed elite ID per ordinary content family",
+        "rationale": "No proposed variant is silently promoted to the five-ID runtime registration cap.",
+        "status": "PROPOSED"
       },
       "max_events_per_run": {
         "value": 5,
@@ -2839,6 +3218,43 @@
           "derived_formula": "round(base enemy XP × 2)",
           "rationale": "Pays for a finite elite pack without a new XP denomination.",
           "status": "PROPOSED"
+        }
+      },
+      "variant_overrides": {
+        "source": "PENDING_B1; REF_CONTENT_01 supplies roles but no numeric elite stats",
+        "derived_formula": "variant_hp = base_hp × hp_multiplier; variant_damage = base_damage × damage_multiplier; variant_speed = base_speed × speed_multiplier; variant_xp = round(base_xp × xp_multiplier)",
+        "rationale": "Each proposed elite variation owns an auditable HP/ATK/speed/XP overlay while reusing its ordinary family attack grammar and finite pack spawn policy.",
+        "status": "PROPOSED",
+        "records": {
+          "elite_variant_ink_beetle_ironcarapace": {"base_enemy_id": "enemy_ink_beetle", "hp_multiplier": 6.0, "damage_multiplier": 1.1, "speed_multiplier": 1.0, "xp_multiplier": 2.0},
+          "elite_variant_lantern_moth_prismwing": {"base_enemy_id": "enemy_lantern_moth", "hp_multiplier": 6.5, "damage_multiplier": 1.25, "speed_multiplier": 1.05, "xp_multiplier": 2.0},
+          "elite_variant_bone_carp_tidepiercer": {"base_enemy_id": "enemy_bone_carp", "hp_multiplier": 7.0, "damage_multiplier": 1.3, "speed_multiplier": 1.08, "xp_multiplier": 2.0},
+          "elite_variant_paper_ghost_sealbreaker": {"base_enemy_id": "enemy_paper_ghost", "hp_multiplier": 6.5, "damage_multiplier": 1.2, "speed_multiplier": 1.05, "xp_multiplier": 2.0},
+          "elite_variant_jade_toad_mudcrown": {"base_enemy_id": "enemy_jade_toad", "hp_multiplier": 7.0, "damage_multiplier": 1.25, "speed_multiplier": 1.0, "xp_multiplier": 2.0},
+          "elite_variant_mirror_fox_falsepath": {"base_enemy_id": "enemy_mirror_fox", "hp_multiplier": 6.5, "damage_multiplier": 1.2, "speed_multiplier": 1.1, "xp_multiplier": 2.0},
+          "elite_variant_bell_crab_resonant_shell": {"base_enemy_id": "enemy_bell_crab", "hp_multiplier": 7.0, "damage_multiplier": 1.3, "speed_multiplier": 1.0, "xp_multiplier": 2.0},
+          "elite_variant_thread_doll_cutline": {"base_enemy_id": "enemy_thread_doll", "hp_multiplier": 7.0, "damage_multiplier": 1.25, "speed_multiplier": 1.02, "xp_multiplier": 2.0},
+          "elite_variant_lotus_usher_bloomguard": {"base_enemy_id": "enemy_lotus_usher", "hp_multiplier": 7.0, "damage_multiplier": 1.25, "speed_multiplier": 1.0, "xp_multiplier": 2.0},
+          "elite_variant_moonroot_burrower_gravewake": {"base_enemy_id": "enemy_moonroot_burrower", "hp_multiplier": 7.5, "damage_multiplier": 1.3, "speed_multiplier": 1.08, "xp_multiplier": 2.0}
+        },
+        "record_provenance": {
+          "source": "PENDING_B1; REF_CONTENT_01 provides family roles but no absolute elite multipliers",
+          "derived_formula": "each record multiplier is a proposed value applied to the linked ordinary base record; variant_hp = base_hp × hp_multiplier, variant_damage = base_damage × damage_multiplier, variant_speed = base_speed × speed_multiplier, variant_xp = round(base_xp × xp_multiplier)",
+          "rationale": "The per-record values are explicit model inputs, not hidden test constants; every mapped elite family is covered while runtime activation remains capped at five.",
+          "status": "PROPOSED",
+          "fields": ["hp_multiplier", "damage_multiplier", "speed_multiplier", "xp_multiplier"],
+          "record_ids": [
+            "elite_variant_ink_beetle_ironcarapace",
+            "elite_variant_lantern_moth_prismwing",
+            "elite_variant_bone_carp_tidepiercer",
+            "elite_variant_paper_ghost_sealbreaker",
+            "elite_variant_jade_toad_mudcrown",
+            "elite_variant_mirror_fox_falsepath",
+            "elite_variant_bell_crab_resonant_shell",
+            "elite_variant_thread_doll_cutline",
+            "elite_variant_lotus_usher_bloomguard",
+            "elite_variant_moonroot_burrower_gravewake"
+          ]
         }
       },
       "pack_size": {
@@ -2905,10 +3321,10 @@
         "status": "PROPOSED"
       },
       "engaged_attacker_limit": {
-        "value": 4,
+        "value": 2,
         "source": "PENDING_B1; arena collision/targeting limit is not specified",
         "derived_formula": "incoming_damage = sum of at most engaged_attacker_limit landed attack events per step",
-        "rationale": "Bounds the mean-field threat model to a readable local threat set; the full active cap still measures CPU/occupancy pressure.",
+        "rationale": "Two simultaneous landed events preserve a readable local threat while keeping both fresh heroes on a recoverable 30-minute path; the full active cap still measures CPU/occupancy pressure.",
         "status": "PROPOSED"
       },
       "ttk_formula": "effective_hp ÷ focused_sustained_dps",
@@ -3022,7 +3438,7 @@
             "rationale": "Conservative beginner stress case; tune after gameplay trace.",
             "status": "PROPOSED"
           },
-          "build_policy": "level weapon to 6, passive to 5, then fallback; resolve first eligible synergy at non-final chest",
+          "build_policy": "level weapon to 10, passive to 10, then fallback; resolve first eligible synergy at non-final chest",
           "profile_rationale": "fresh must reach early decision/level targets without assuming meta power."
         },
         "moderate": {
@@ -3057,7 +3473,7 @@
             "rationale": "Moderate profile has more survivability but still receives avoidable hits.",
             "status": "PROPOSED"
           },
-          "build_policy": "level weapon to 6, passive to 5, resolve synergy when eligible, fallback otherwise",
+          "build_policy": "level weapon to 10, passive to 10, resolve synergy when eligible, fallback otherwise",
           "profile_rationale": "moderate represents a player with several meta ranks, not a fully upgraded account."
         },
         "max_m1": {
@@ -3092,7 +3508,7 @@
             "rationale": "Max profile is a stress test for kill speed and overpowered synergy.",
             "status": "PROPOSED"
           },
-          "build_policy": "level weapon to 6, passive to 5, resolve synergy at first eligible non-final chest, then fallback",
+          "build_policy": "level weapon to 10, passive to 10, resolve synergy at first eligible non-final chest, then fallback",
           "profile_rationale": "max_m1 is a bounded account state, not a claim that the whole meta is required for victory."
         }
       }
@@ -3100,6 +3516,34 @@
     "build_catalog": {
       "status": "PROPOSED",
       "source": "architecture content registry supplies IDs; numeric combat values absent",
+      "weapon_slot_limit": {
+        "value": 6,
+        "source": "C1 live main; slots remain separate from level cap",
+        "derived_formula": "build capacity is the number of simultaneous weapon records, independent of weapon level",
+        "rationale": "Preserves the six-slot run build while adopting the live level-10 progression gate.",
+        "status": "CANON"
+      },
+      "passive_slot_limit": {
+        "value": 6,
+        "source": "C1 live main; slots remain separate from rank cap",
+        "derived_formula": "build capacity is the number of simultaneous passive records, independent of passive rank",
+        "rationale": "Preserves the six-slot run build while adopting the live rank-10 progression gate.",
+        "status": "CANON"
+      },
+      "weapon_max_level": {
+        "value": 10,
+        "source": "C1 live main §1 and current product decision; architecture contract still exposes 6 and requires reconciliation",
+        "derived_formula": "synergy gate requires the weapon to reach the maximum run level",
+        "rationale": "The current content contract explicitly separates six slots from a level-10 weapon cap; it is the only gate that permits the requested 10/10 synergy timing.",
+        "status": "PROPOSED"
+      },
+      "passive_max_rank": {
+        "value": 10,
+        "source": "C1 live main §1 and current product decision; architecture contract still exposes 6 and requires reconciliation",
+        "derived_formula": "synergy gate requires the paired passive to reach the maximum run rank",
+        "rationale": "The current content contract explicitly sets rank 10; leaving the simulator at rank 5 would silently contradict the live content gate.",
+        "status": "PROPOSED"
+      },
       "max_synergy_claims_per_run": {
         "value": 5,
         "source": "content catalog C1/C3 requested cap; architecture registry sync pending",
@@ -3206,8 +3650,14 @@
             "rationale": "Below the canonical 40% total-damage ceiling while feeling like an evolution.",
             "status": "PROPOSED"
           },
-          "requires_weapon_level": 6,
-          "requires_passive_rank": 5
+          "requires_weapon_level": 10,
+          "requires_passive_rank": 10,
+          "requirement_provenance": {
+            "source": "C1 live main §1; current product decision",
+            "derived_formula": "weapon_level = weapon_max_level and passive_rank = passive_max_rank",
+            "rationale": "Evolution is a maxed-pair decision, not an early automatic damage grant.",
+            "status": "PROPOSED"
+          }
         },
         "synergy_moon_dance": {
           "weapon_id": "weapon_moon_blade",
@@ -3219,8 +3669,14 @@
             "rationale": "Slightly stronger risk-reward melee evolution, still below 40% share.",
             "status": "PROPOSED"
           },
-          "requires_weapon_level": 6,
-          "requires_passive_rank": 5
+          "requires_weapon_level": 10,
+          "requires_passive_rank": 10,
+          "requirement_provenance": {
+            "source": "C1 live main §1; current product decision",
+            "derived_formula": "weapon_level = weapon_max_level and passive_rank = passive_max_rank",
+            "rationale": "Evolution is a maxed-pair decision, not an early automatic damage grant.",
+            "status": "PROPOSED"
+          }
         }
       },
       "offer_model": {
@@ -3307,6 +3763,13 @@
         60,
         100
       ],
+      "late_main_boss_start_seconds": {
+        "value": 1200,
+        "source": "B1 canonical wave_eclipse_15_20 end plus the 30-minute checkpoint schedule",
+        "derived_formula": "late_main_boss_start_seconds = end_seconds of the final canonical 15–20 minute wave band",
+        "rationale": "Keeps late-main TTK classification data-driven; the simulator must not duplicate the 20:00 boundary in Python.",
+        "status": "DERIVED"
+      },
       "mini_boss_ttk_seconds": [
         20,
         55
@@ -3410,13 +3873,7 @@
       "status": "PROPOSED",
       "source": "USER_PRODUCT_DECISION_MINI_BOSSES_DO_NOT_FREEZE_WAVES; C3 mini-boss encounter intent",
       "applies_to": "MINI_BOSS_CHECKPOINTS",
-      "checkpoint_seconds": [
-        450,
-        750,
-        1050,
-        1350,
-        1650
-      ],
+      "checkpoint_seconds": [450, 750, 1050, 1350, 1650],
       "run_clock_stops_at_checkpoint": false,
       "wave_xp_spawn_clock_advances_during_encounter": true,
       "resolution_clock": "SAME_WALL_AND_RUN_CLOCK",
@@ -3594,104 +4051,5 @@
       "ArtifactEffectSystem"
     ],
     "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
-  },
-  "external_reference_patterns": {
-    "status": "DERIVED",
-    "source_policy": "Reference repositories are pattern evidence only. No external numeric value, content ID, asset, or balance constant is imported into MAC.",
-    "captured_at": "2026-09-10T19:16:27.823Z",
-    "sources": [
-      {
-        "repository": "matthiasbroske/VampireSurvivorsClone",
-        "url": "https://github.com/matthiasbroske/VampireSurvivorsClone",
-        "relevant_files": [
-          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs",
-          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/BossMonster.cs",
-          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Gameplay/Chest.cs",
-          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Utilities/LootTable.cs"
-        ],
-        "observed_patterns": [
-          "time-keyed spawn rate, composition chance and HP selection",
-          "boss behavior separated from ordinary monster behavior",
-          "boss death can open a chest through a distinct reward path",
-          "loot is resolved through a table rather than a balance constant in the controller"
-        ]
-      },
-      {
-        "repository": "ParsaSabzei/20-Minutes-till-dawn",
-        "url": "https://github.com/ParsaSabzei/20-Minutes-till-dawn",
-        "relevant_files": [
-          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/PlayerController.java",
-          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java",
-          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/view/GameView.java"
-        ],
-        "observed_patterns": [
-          "XP pickup is the input to a threshold-based level transition",
-          "level-up pauses normal play and presents three upgrade choices",
-          "spawn pressure and special encounters are gated by elapsed run progress",
-          "a boss/special encounter changes the pressure state instead of being an ordinary spawn"
-        ]
-      },
-      {
-        "repository": "sentry-demos/unity",
-        "url": "https://github.com/sentry-demos/unity",
-        "relevant_files": [
-          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/LevelProgression.cs",
-          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs",
-          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/SpawnDirector.cs",
-          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/Pickups/XpDrop.cs",
-          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/Upgrades/UpgradeManager.cs"
-        ],
-        "observed_patterns": [
-          "progression math is isolated from the frame loop and can be tested independently",
-          "enemy unlocks, wave size and hitpoint pressure are separate difficulty concerns",
-          "spawn timers are independent and respect unlock/cap gates",
-          "XP pickup and upgrade selection are separate from enemy spawning"
-        ]
-      }
-    ],
-    "mac_application": [
-      {
-        "pattern_id": "xp_level_up",
-        "source": "three reference repositories above plus B1 section 6 and architecture artifact_offer.choice_count",
-        "derived_formula": "Keep MAC XP_to_next(L) and drop values from B1; apply one level transition, then resolve a data-driven offer of exactly three candidates. External numbers are ignored.",
-        "proposed_value": "No new numeric value; existing MAC XP and offer values remain the only inputs.",
-        "status": "DERIVED"
-      },
-      {
-        "pattern_id": "wave_density",
-        "source": "MonsterSpawnTable.cs, DifficultyCurve.cs and SpawnDirector.cs",
-        "derived_formula": "MAC density(t) = selected B1/proposed band budget × post-encounter state factor, with composition and cap read from BALANCE_MODEL.json.",
-        "proposed_value": "No new external numeric value; current 30-minute bands and cap stay as model CANON/PROPOSED fields.",
-        "status": "DERIVED"
-      },
-      {
-        "pattern_id": "boss_checkpoint",
-        "source": "BossMonster.cs, MonsterController.java and MAC run_schedule",
-        "derived_formula": "At each MAC checkpoint create a typed encounter event, reserve its encounter clock, settle its reward through a ledger, and never infer a checkpoint from ordinary spawn count.",
-        "proposed_value": "No new external timing or reward number.",
-        "status": "DERIVED"
-      },
-      {
-        "pattern_id": "post_boss_ramp",
-        "source": "time-keyed spawn tables and independent spawn-ramp timers in reference repositories, plus B1 boss interruption rule",
-        "derived_formula": "After each main boss: suppress ordinary spawn, recover from reset_factor to band budget, then ramp linearly to the next peak and hold siege; a mini-boss continues the visible clock.",
-        "proposed_value": "Existing reset/suppression/recovery/siege fields stay explicitly PROPOSED/DERIVED in the MAC model; no external number imported.",
-        "status": "DERIVED"
-      },
-      {
-        "pattern_id": "elite_variants",
-        "source": "Boss/miniboss separation and gated enemy unlock patterns in the reference repositories plus MAC elite_variation_policy",
-        "derived_formula": "Select a bounded variant from the model registry, apply its overlay to one event anchor, count the pack against active cap, then return to the ordinary roster.",
-        "proposed_value": "Existing MAC variant IDs/multipliers remain model PROPOSED/PENDING where marked; no external IDs or numeric kits imported.",
-        "status": "DERIVED"
-      },
-      {
-        "pattern_id": "rewards_and_chests",
-        "source": "Chest.cs/LootTable.cs and separate XP/upgrade flows in the reference repositories plus B1/architecture reward policy",
-        "derived_formula": "XP pickup, non-final boss chest, elite artifact offer and post-result first-clear artifact offer are separate idempotent channels; final main boss has no boss chest.",
-        "proposed_value": "Existing MAC reward amounts stay B1 CANON or explicit 30-minute PROPOSED; external loot odds and currency values are not used.",
-        "status": "DERIVED"
-      }
-    ]
   }
 }

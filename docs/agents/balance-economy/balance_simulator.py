@@ -63,6 +63,41 @@ def load_model(path: Path) -> Dict[str, Any]:
     schedule = simulation["run_schedule"]
     main_checkpoints = schedule["main_boss_checkpoints"]
     mini_checkpoints = schedule["mini_boss_checkpoints"]
+    main_registry = model.get("main_bosses", [])
+    mini_registry = model.get("mini_bosses", [])
+    elite_registry = model.get("elite_variants", [])
+    if len(main_registry) != len(main_checkpoints) or len(main_registry) != 6:
+        raise ValueError("top-level main_bosses must expose the six scheduled main checkpoints")
+    if len(mini_registry) != len(mini_checkpoints) or len(mini_registry) != 5:
+        raise ValueError("top-level mini_bosses must expose the five scheduled mini checkpoints")
+    if len(elite_registry) != 10:
+        raise ValueError("top-level elite_variants must expose the ten mapped variant records")
+    scheduled_main = {
+        str(row["checkpoint_id"]): row for row in main_checkpoints
+    }
+    for record in main_registry:
+        checkpoint_id = str(record.get("checkpoint_id", ""))
+        scheduled = scheduled_main.get(checkpoint_id)
+        if scheduled is None or record.get("boss_id") != scheduled.get("boss_id") or int(record.get("time_seconds", -1)) != int(scheduled.get("time_seconds", -2)):
+            raise ValueError(f"main_bosses registry diverges from run_schedule at {checkpoint_id}")
+        if not str(record.get("stats_ref", "")):
+            raise ValueError(f"main_bosses registry has no stats_ref at {checkpoint_id}")
+    scheduled_mini = {
+        str(row["checkpoint_id"]): row for row in mini_checkpoints
+    }
+    for record in mini_registry:
+        checkpoint_id = str(record.get("checkpoint_id", ""))
+        scheduled = scheduled_mini.get(checkpoint_id)
+        if scheduled is None or record.get("boss_id") != scheduled.get("boss_id") or int(record.get("time_seconds", -1)) != int(scheduled.get("time_seconds", -2)):
+            raise ValueError(f"mini_bosses registry diverges from run_schedule at {checkpoint_id}")
+        if not str(record.get("stats_ref", "")):
+            raise ValueError(f"mini_bosses registry has no stats_ref at {checkpoint_id}")
+    elite_registry_ids = {str(record.get("variant_id", "")) for record in elite_registry}
+    if "" in elite_registry_ids or len(elite_registry_ids) != 10:
+        raise ValueError("elite_variants registry must expose ten unique variant IDs")
+    selected_variant_ids = set(unwrap(simulation["elite_variation_policy"].get("variant_ids", [])))
+    if not selected_variant_ids.issubset(elite_registry_ids):
+        raise ValueError("selected elite variants must be a bounded subset of the registry")
     if clock_policy.get("applies_to") != "MAIN_BOSS_CHECKPOINTS":
         raise ValueError("main boss clock policy must apply to main checkpoints")
     if clock_policy.get("checkpoint_seconds") != [int(number(row["time_seconds"])) for row in main_checkpoints]:
@@ -100,6 +135,20 @@ def load_model(path: Path) -> Dict[str, Any]:
     variant_ids = unwrap(simulation["elite_variation_policy"].get("variant_ids", []))
     if not variant_ids or len(set(variant_ids)) != len(variant_ids):
         raise ValueError("elite variation policy must expose unique stable variant IDs")
+    roster = simulation.get("content_roster", {})
+    ordinary_ids = unwrap(roster.get("ordinary_enemy_ids", []))
+    if len(ordinary_ids) != 10 or len(set(ordinary_ids)) != 10:
+        raise ValueError("content roster must expose ten unique ordinary enemy IDs")
+    enemy_stats = simulation.get("enemy_stats", {})
+    missing_ordinary = [enemy_id for enemy_id in ordinary_ids if enemy_id not in enemy_stats]
+    if missing_ordinary:
+        raise ValueError(f"content roster has no numeric enemy stats: {missing_ordinary}")
+    proposed_variants = unwrap(roster.get("elite_variant_ids", []))
+    records = simulation["elite_variation_policy"].get("variant_overrides", {}).get("records", {})
+    if len(proposed_variants) != 10 or any(variant_id not in records for variant_id in proposed_variants):
+        raise ValueError("content roster must expose numeric records for all ten elite variants")
+    if len(variant_ids) > integer(roster.get("registered_variant_cap", 5)):
+        raise ValueError("model variant selection exceeds the registered variant cap")
     return model
 
 
@@ -150,6 +199,20 @@ def mini_checkpoints(model: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 def all_encounter_checkpoints(model: Dict[str, Any]) -> List[Dict[str, Any]]:
     return sorted(main_checkpoints(model) + mini_checkpoints(model), key=lambda row: number(row["time_seconds"]))
+
+
+def progression_checkpoint_seconds(model: Dict[str, Any]) -> List[float]:
+    """Read level-report checkpoints from the model target table."""
+    target_table = model["simulation_model"]["target_policy"].get("xp_level_targets", {})
+    return sorted(float(key) for key in target_table)
+
+
+def late_main_boss_start_seconds(model: Dict[str, Any]) -> float:
+    """Read the late-main classification boundary from model data."""
+    boundary = model["simulation_model"]["target_policy"].get("late_main_boss_start_seconds")
+    if boundary is None:
+        raise ValueError("target_policy is missing late_main_boss_start_seconds")
+    return number(boundary)
 
 
 def checkpoint_is_final(model: Dict[str, Any], checkpoint_id: str) -> bool:
@@ -396,7 +459,10 @@ def make_entity(
         telegraph = 0.0
         wave_damage = number(band["enemy_damage_multiplier"])
         if elite_variant:
-            overlay = simulation["elite_variation_policy"]["variant_overlay"]
+            policy = simulation["elite_variation_policy"]
+            overlay = policy.get("variant_overrides", {}).get("records", {}).get(variant_id or "")
+            if overlay is None:
+                overlay = policy["variant_overlay"]
             hp *= number(overlay["hp_multiplier"])
             damage *= number(overlay["damage_multiplier"])
             speed *= number(overlay["speed_multiplier"])
@@ -447,7 +513,11 @@ def calculate_profile_stats(model: Dict[str, Any], profile: Dict[str, Any], hero
 
 
 def apply_level_upgrade(model: Dict[str, Any], state: Dict[str, Any]) -> Dict[str, Any]:
-    catalog = model["architecture_contract"]
+    # Runtime architecture still carries the legacy 6/5 contract.  Balance
+    # simulation must consume the current C1 10/10 run-progression proposal
+    # from the single numeric model instead of silently reusing that legacy
+    # shape.
+    catalog = model["simulation_model"]["build_catalog"]
     weapon_max = integer(catalog["weapon_max_level"])
     passive_max = integer(catalog["passive_max_rank"])
     if state["weapon_level"] < weapon_max:
@@ -559,6 +629,67 @@ def reward_key(model: Dict[str, Any], run_id: str, scope: str, checkpoint_id: st
 
 def reward_amount(row: Dict[str, Any]) -> Dict[str, int]:
     return {wallet: integer(row[wallet]) for wallet in ("gold", "moon_seals", "boss_essence") if wallet in row}
+
+
+def sum_reward_rows(rows: Iterable[Dict[str, Any]], wallets: Iterable[str]) -> Dict[str, int]:
+    totals = {wallet: 0 for wallet in wallets}
+    for row in rows:
+        for wallet in totals:
+            totals[wallet] += integer(row.get(wallet, 0))
+    return totals
+
+
+def reward_scenario_audit(model: Dict[str, Any]) -> Dict[str, Any]:
+    """Audit first/repeat/defeat reward paths from the model reward rows."""
+    rewards = model["rewards"]
+    wallets = list(rewards["wallets"])
+    checkpoint_rows = list(rewards["checkpoint_rewards"])
+    checkpoint_total = sum_reward_rows(checkpoint_rows, wallets)
+    first_clear_bonus = reward_amount(rewards["first_clear_bonus"])
+    first_clear_total = {
+        wallet: checkpoint_total[wallet] + first_clear_bonus.get(wallet, 0)
+        for wallet in wallets
+    }
+    repeat_total = dict(checkpoint_total)
+    defeat_policy = rewards["defeat_after_checkpoint"]
+    defeat_rows = {}
+    idempotency_pass = True
+    for row in checkpoint_rows:
+        checkpoint_id = str(row["checkpoint_id"])
+        payout = {
+            wallet: (
+                round_half_up(integer(row.get(wallet, 0)) * number(defeat_policy["gold_factor"]))
+                if wallet == "gold"
+                else integer(row.get(wallet, 0))
+            )
+            for wallet in wallets
+        }
+        defeat_rows[checkpoint_id] = payout
+        ledger: Dict[str, Dict[str, Any]] = {}
+        for wallet, amount in payout.items():
+            key = reward_key(model, "scenario_defeat", "CHECKPOINT_OR_RESULT", checkpoint_id, wallet)
+            first = grant_once(ledger, key, {wallet: amount})
+            duplicate = grant_once(ledger, key, {wallet: amount})
+            idempotency_pass = idempotency_pass and first and not duplicate
+    for scenario_id, totals in (
+        ("first_clear_30m", first_clear_total),
+        ("repeat_clear_30m", repeat_total),
+    ):
+        ledger = {}
+        for wallet, amount in totals.items():
+            key = reward_key(model, f"scenario_{scenario_id}", "CHECKPOINT_OR_RESULT", "run_result", wallet)
+            first = grant_once(ledger, key, {wallet: amount})
+            duplicate = grant_once(ledger, key, {wallet: amount})
+            idempotency_pass = idempotency_pass and first and not duplicate
+    return {
+        "status": model["simulation_model"]["reward_scenario_policy"]["status"],
+        "source": model["simulation_model"]["reward_scenario_policy"]["source"],
+        "first_clear_30m_total": first_clear_total,
+        "repeat_clear_30m_total": repeat_total,
+        "defeat_after_checkpoint": defeat_rows,
+        "idempotency_pass": idempotency_pass,
+        "runtime_claim": "NOT_IMPLEMENTED",
+    }
 
 
 def resolve_reward(model: Dict[str, Any], ledger: Dict[str, Dict[str, Any]], run_id: str, checkpoint_id: str, reward: Dict[str, int]) -> Dict[str, Any]:
@@ -712,7 +843,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
 
     def resolve_boss(boss_entity: Dict[str, Any], wall_clock: float, run_clock: float) -> None:
         checkpoint_id = boss_entity["checkpoint_id"]
-        final = checkpoint_id == "boss_final_30"
+        final = checkpoint_is_final(model, checkpoint_id)
         ttk = wall_clock - boss_entity["boss_start_wall_time"]
         target_range = target_policy["final_boss_ttk_seconds"] if final else target_policy["first_slice_boss_ttk_seconds"]
         target_pass = number(target_range[0]) <= ttk <= number(target_range[1])
@@ -887,7 +1018,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
                 survivors.append(entity)
         active = survivors
 
-        for checkpoint_time in (120.0, 300.0, 600.0, 900.0, 1200.0):
+        for checkpoint_time in progression_checkpoint_seconds(model):
             key = f"{int(checkpoint_time)}"
             if run_elapsed + 1e-9 >= checkpoint_time and key not in checkpoint_levels:
                 checkpoint_levels[key] = state["level"]
@@ -914,7 +1045,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
             "defeat_time_wall_seconds": None,
             "defeat_time_run_clock_seconds": None,
             "ttk_seconds": None,
-            "target_range": list(target_policy["final_boss_ttk_seconds"] if boss["checkpoint_id"] == "boss_final_30" else target_policy["first_slice_boss_ttk_seconds"]),
+            "target_range": list(target_policy["final_boss_ttk_seconds"] if checkpoint_is_final(model, boss["checkpoint_id"]) else target_policy["first_slice_boss_ttk_seconds"]),
             "target_pass": False,
             "within_post_run_window": False,
         })
@@ -956,6 +1087,16 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
         "model_inputs": {
             "profile_meta_ranks": profile["meta_ranks"],
             "profile_stats": {key: round(value, 6) for key, value in profile_stats.items()},
+            "build_rules": {
+                "weapon_slots": integer(simulation["build_catalog"]["weapon_slot_limit"]),
+                "passive_slots": integer(simulation["build_catalog"]["passive_slot_limit"]),
+                "weapon_max_level": integer(simulation["build_catalog"]["weapon_max_level"]),
+                "passive_max_rank": integer(simulation["build_catalog"]["passive_max_rank"]),
+                "max_synergy_claims_per_run": integer(simulation["build_catalog"]["max_synergy_claims_per_run"]),
+            },
+            "ordinary_roster_size": len(unwrap(simulation["content_roster"]["ordinary_enemy_ids"])),
+            "elite_variant_proposal_count": len(unwrap(simulation["content_roster"]["elite_variant_ids"])),
+            "elite_variant_registered_cap": integer(simulation["content_roster"]["registered_variant_cap"]),
             "proposed_build": {
                 "weapon_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_weapon_id"],
                 "passive_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_passive_id"],
@@ -964,7 +1105,10 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
         "progression": {
             "final_level_at_20_minutes": state["level"],
             "final_xp_at_20_minutes": round(state["xp"], 3),
-            "levels_at_checkpoints": {key: checkpoint_levels.get(key) for key in ("120", "300", "600", "900", "1200")},
+            "levels_at_checkpoints": {
+                str(int(checkpoint_time)): checkpoint_levels.get(str(int(checkpoint_time)))
+                for checkpoint_time in progression_checkpoint_seconds(model)
+            },
             "xp_at_20_minutes": round(state["xp"], 3),
             "xp_dropped": state["xp_dropped"],
             "xp_collected": state["xp_collected"],
@@ -1016,12 +1160,13 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
             },
             "boss_interruption_checkpoints": [
                 {"time_seconds": checkpoint, "factor_at_checkpoint": round(boss_interruption_factor(model, checkpoint), 6), "factor_at_plus_8": round(boss_interruption_factor(model, checkpoint + number(simulation["boss_interruption"]["suppression_seconds"])), 6)}
-                for checkpoint in (300.0, 600.0, 900.0, 1200.0)
+                for checkpoint in (number(row["time_seconds"]) for row in main_checkpoints(model))
             ],
         },
         "rewards": {
             "ledger_balance": reward_balance,
             "reward_events": reward_results,
+            "scenario_audit": reward_scenario_audit(model),
             "idempotency_pass": all(not attempt.get("duplicate_accepted", False) for event in reward_results for attempt in event.get("attempts", [])),
             "final_boss_chest_offer_created": False,
             "first_clear_artifact_offer_created": bool(artifact_offer_results),
@@ -1276,7 +1421,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             target_range = target_policy["final_boss_ttk_seconds"]
         elif encounter_kind == "MINI_BOSS":
             target_range = target_policy["mini_boss_ttk_seconds"]
-        elif number(encounter["boss_start_run_clock"]) >= 1200:
+        elif number(encounter["boss_start_run_clock"]) >= late_main_boss_start_seconds(model):
             target_range = target_policy["late_main_boss_ttk_seconds"]
         else:
             target_range = target_policy["first_slice_boss_ttk_seconds"]
@@ -1485,7 +1630,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
                 survivors.append(entity)
         active = survivors
 
-        for checkpoint_time in (120.0, 300.0, 600.0, 900.0, 1200.0, 1500.0, 1800.0):
+        for checkpoint_time in progression_checkpoint_seconds(model):
             key = f"{int(checkpoint_time)}"
             if run_elapsed + 1e-9 >= checkpoint_time and key not in checkpoint_levels:
                 checkpoint_levels[key] = state["level"]
@@ -1502,7 +1647,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         encounter_duration = wall_elapsed - failed_encounter["boss_start_wall_time"]
         kind = str(failed_encounter["encounter_kind"])
         final = bool(failed_encounter.get("is_final", False))
-        target_range = target_policy["final_boss_ttk_seconds"] if final else target_policy["mini_boss_ttk_seconds"] if kind == "MINI_BOSS" else target_policy["late_main_boss_ttk_seconds"] if failed_encounter["boss_start_run_clock"] >= 1200 else target_policy["first_slice_boss_ttk_seconds"]
+        target_range = target_policy["final_boss_ttk_seconds"] if final else target_policy["mini_boss_ttk_seconds"] if kind == "MINI_BOSS" else target_policy["late_main_boss_ttk_seconds"] if failed_encounter["boss_start_run_clock"] >= late_main_boss_start_seconds(model) else target_policy["first_slice_boss_ttk_seconds"]
         boss_results.append({
             "checkpoint_id": failed_encounter["checkpoint_id"],
             "boss_id": failed_encounter["enemy_id"],
@@ -1560,6 +1705,16 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         "model_inputs": {
             "profile_meta_ranks": profile["meta_ranks"],
             "profile_stats": {key: round(value, 6) for key, value in profile_stats.items()},
+            "build_rules": {
+                "weapon_slots": integer(simulation["build_catalog"]["weapon_slot_limit"]),
+                "passive_slots": integer(simulation["build_catalog"]["passive_slot_limit"]),
+                "weapon_max_level": integer(simulation["build_catalog"]["weapon_max_level"]),
+                "passive_max_rank": integer(simulation["build_catalog"]["passive_max_rank"]),
+                "max_synergy_claims_per_run": integer(simulation["build_catalog"]["max_synergy_claims_per_run"]),
+            },
+            "ordinary_roster_size": len(unwrap(simulation["content_roster"]["ordinary_enemy_ids"])),
+            "elite_variant_proposal_count": len(unwrap(simulation["content_roster"]["elite_variant_ids"])),
+            "elite_variant_registered_cap": integer(simulation["content_roster"]["registered_variant_cap"]),
             "proposed_build": {
                 "weapon_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_weapon_id"],
                 "passive_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_passive_id"],
@@ -1568,7 +1723,10 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         "progression": {
             "final_level_at_30_minutes": state["level"],
             "final_xp_at_30_minutes": round(state["xp"], 3),
-            "levels_at_checkpoints": {key: checkpoint_levels.get(key) for key in ("120", "300", "600", "900", "1200", "1500", "1800")},
+            "levels_at_checkpoints": {
+                str(int(checkpoint_time)): checkpoint_levels.get(str(int(checkpoint_time)))
+                for checkpoint_time in progression_checkpoint_seconds(model)
+            },
             "xp_at_30_minutes": round(state["xp"], 3),
             "xp_dropped": state["xp_dropped"],
             "xp_collected": state["xp_collected"],
@@ -1626,9 +1784,14 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         "rewards": {
             "ledger_balance": reward_balance,
             "reward_events": reward_results,
+            "scenario_audit": reward_scenario_audit(model),
             "idempotency_pass": all(not attempt.get("duplicate_accepted", False) for event in reward_results for attempt in event.get("attempts", [])),
             "chest_idempotency_pass": all(event.get("duplicate_attempt_idempotent", True) for event in chest_results),
-            "final_boss_chest_offer_created": any(event.get("checkpoint_id") == "boss_final_30" and event.get("outcome") not in ("NO_CHEST", "IDEMPOTENT_NOOP") for event in chest_results),
+            "final_boss_chest_offer_created": any(
+                checkpoint_is_final(model, str(event.get("checkpoint_id", "")))
+                and event.get("outcome") not in ("NO_CHEST", "IDEMPOTENT_NOOP")
+                for event in chest_results
+            ),
             "first_clear_artifact_offer_created": bool(artifact_offer_results),
             "elite_pack_offer_count": len(elite_pack_offer_results),
             "elite_pack_offer_idempotency_pass": all(
@@ -1766,4 +1929,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
