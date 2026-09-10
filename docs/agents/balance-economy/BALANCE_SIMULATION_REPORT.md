@@ -4,18 +4,18 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 
 ## Run snapshot
 
-- Live main HEAD immediately before this report refresh: a55c50c2f12a77141dff958b9e22ed732d0ed06b.
+- Balance slice source HEAD before publication: 07940fbc7ff487bef606b25d60474c8b0365d774. Final synchronized HEAD is recorded in BALANCE_AUDIT.md.
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture contract revision: 2f889f876f2b8aa286523d234786addf0b9b245e.
-- Balance model commit: 3a40341a71b910f12bea1834c0758a74b6059bdc.
-- Simulator commit: 34d62768787b39191151d6e9f62b957db0e9c1e8.
-- Contract validator commit: 83df99e44c40839724b57563fee90b3032eed87f.
+- Balance model commit: 89c23c7dc80e29463d3dcc2d283e6c7710a5ac65.
+- Simulator commit: 607fb24742f0235e1b048bc4a88f3a4a7f80d3d3.
+- Contract validator commit: 8ddffa562ec2bacec235aea4b70eec4299c5d119.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (fresh/moderate/max_m1 × Lin Yue/Soyeon Han × 5 seeds).
 - Runtime executed: false. No Godot runtime claim is made.
 - Contract validator: PASS.
-- Two full current-model outputs: equal SHA-256 52b32ebff019e312a23d2153439ec0ebbfb7fdf3b48acb568efb16e922a78242.
-- Clock policy: at 300/600/900/1200 seconds the visible run clock stops; wave selection, ordinary spawn, XP pickup and level progression remain frozen; each boss resolves on a separate encounter clock.
+- Three independent full-matrix executions produced equal SHA-256: 6c1e1ea7df9393bc2bc2fc94c8049086d291784a93acc145f8e518d664f9d7cb.
+- Clock policy: at 300/600/900/1200 seconds the visible run clock stops; wave selection, ordinary spawn, XP pickup and level progression remain frozen; each boss resolves on a separate encounter clock. After non-final bosses, the wave profile is recovery → linear ramp → 60-second peak siege.
 
 The simulator reads one BALANCE_MODEL.json. It does not duplicate tuning values in Python. The result is evidence for the proposed deterministic model only, not proof that the Godot game applies those values.
 
@@ -40,42 +40,54 @@ These proposed values are model inputs, not canonical game data. Product/B1 owne
 
 | Profile / hero | Meta ranks | Damage | Cooldown | Hit probability | First level (s) | Level at 2/5/10/15/20 min | Final |
 |---|---|---:|---:|---:|---:|---|---:|
-| fresh / Lin Yue | all 0 | 1.00 | 1.00 | 0.002 | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 |
+| fresh / Lin Yue | all 0 | 1.00 | 1.00 | 0.002 | 39.75 | 2 / 5 / 9 / 13 / —* | death before final boss |
 | fresh / Soyeon Han | all 0 | 1.00 | 1.00 | 0.002 | 39.75 | 2 / 5 / 9 / 13 / 17 | 17 |
 | moderate / Lin Yue | V3/P3/A2/F2/M2/D2 | 1.06 | 0.97 | 0.0015 | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 |
 | moderate / Soyeon Han | V3/P3/A2/F2/M2/D2 | 1.06 | 0.97 | 0.0015 | 38.25 | 2 / 6 / 10 / 13 / 17 | 17 |
 | max_m1 / Lin Yue | all 10 | 1.20 | 0.85 | 0.001 | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 |
 | max_m1 / Soyeon Han | all 10 | 1.20 | 0.85 | 0.001 | 33.25 | 2 / 6 / 10 / 14 / 18 | 18 |
 
-The level values are run-clock checkpoints. They do not advance while a boss encounter is resolving.
+The level values are run-clock checkpoints. They do not advance while a boss encounter is resolving. *Fresh Lin Yue seed 101 dies at wall 1,398.5 s / visible run clock 1,179.0 s, so no 20-minute level is recorded for that route.
 
 ## TTK and incoming risk
 
-Means and p95 values are across the five fixed seeds for the profile/hero row. Focused TTK begins at the first damage event; spawn-to-kill queue delay is reported separately by the simulator.
+For this synchronized rerun, risk values are medians across the five fixed seeds for each profile/hero row; focused TTK fields are medians of the per-run model summaries. Focused TTK begins at the first damage event; spawn-to-kill queue delay is reported separately by the simulator.
 
-| Profile / hero | Ordinary mean / p95 (s) | Elite mean / p95 (s) | Mean incoming damage | Mean minimum HP | Deaths / 5 |
+| Profile / hero | Ordinary median / p95 (s) | Elite median / p95 (s) | Median incoming damage | Median minimum HP | Deaths / 5 |
 |---|---:|---:|---:|---:|---:|
-| fresh / Lin Yue | 1.25 / 3.45 | 25.25 / 59.65 | 66.220 | 23.780 | 0 |
-| fresh / Soyeon Han | 0.75 / 2.85 | 18.00 / 51.00 | 72.320 | 37.680 | 0 |
-| moderate / Lin Yue | 1.25 / 2.90 | 22.95 / 53.75 | 49.451 | 45.949 | 0 |
-| moderate / Soyeon Han | 0.75 / 2.15 | 16.95 / 46.40 | 41.121 | 75.479 | 0 |
-| max_m1 / Lin Yue | 0.75 / 1.80 | 18.15 / 34.65 | 29.430 | 78.570 | 0 |
-| max_m1 / Soyeon Han | 0.50 / 1.50 | 13.90 / 27.50 | 25.092 | 106.908 | 0 |
+| fresh / Lin Yue | 1.25 / 3.25 | 24.75 / 50.00 | 69.200 | 20.800 | 1 |
+| fresh / Soyeon Han | 0.75 / 3.00 | 18.00 / 51.75 | 75.300 | 34.700 | 0 |
+| moderate / Lin Yue | 1.25 / 2.75 | 22.75 / 47.50 | 39.592 | 55.808 | 0 |
+| moderate / Soyeon Han | 0.75 / 2.25 | 16.75 / 42.25 | 29.890 | 86.710 | 0 |
+| max_m1 / Lin Yue | 0.75 / 1.75 | 18.25 / 33.50 | 32.130 | 75.870 | 0 |
+| max_m1 / Soyeon Han | 0.50 / 1.50 | 13.25 / 29.25 | 25.200 | 106.800 | 0 |
 
 The conservative single-hit bound passed in all 30 runs. Spatial collision, telegraph timing and same-frame ordering were not executed.
+
+## Post-boss wave pressure trace
+
+The latest model emits the following deterministic phase samples for every run:
+
+| Cycle | Post-boss start | Recovery end | Ramp peak / siege start | Siege before next boss |
+|---|---:|---:|---:|---:|
+| 5:00 → 10:00 | 0/s actual spawn, density 8/s, cap 64 | 8/s, cap 64 | 15/s, cap 130 at 9:00 | 15/s, cap 130 |
+| 10:00 → 15:00 | 0/s actual spawn, density 12/s, cap 104 | 12/s, cap 104 | 22/s, cap 200 at 14:00 | 22/s, cap 200 |
+| 15:00 → 20:00 | 0/s actual spawn, density 17.6/s, cap 160 | 17.6/s, cap 160 | 30/s, cap 280 at 19:00 | 30/s, cap 280 |
+
+The recovery end is 28 seconds after each boss (8-second suppression plus 20-second recovery). The ramp is 212 seconds, and the siege is 60 seconds. The 0.80 reset factor, 60-second siege duration and linear curve are PROPOSED; the mapping to B1 wave bands and checkpoint spacing is DERIVED. All three cycles passed monotonicity and peak-siege assertions in the 30-run matrix.
 
 ## Active-cap occupancy
 
 Occupancy is sampled on the visible run clock and excludes the time spent inside boss encounters. This prevents a paused boss from inflating 20-minute cap occupancy.
 
-| Profile / hero | Max cap | Mean cap seconds | Suppressed spawn attempts | Sample clock |
+| Profile / hero | Max cap | Median cap seconds | Median suppressed spawn attempts | Sample clock |
 |---|---:|---:|---:|---|
-| fresh / Lin Yue | 280 | 1112.25 | 19928.0 | 1199.25 s run clock |
-| fresh / Soyeon Han | 280 | 1140.00 | 20276.4 | 1199.25 s run clock |
-| moderate / Lin Yue | 280 | 1111.20 | 19847.2 | 1199.25 s run clock |
-| moderate / Soyeon Han | 280 | 1129.40 | 20118.2 | 1199.25 s run clock |
-| max_m1 / Lin Yue | 280 | 1105.70 | 19468.4 | 1199.25 s run clock |
-| max_m1 / Soyeon Han | 280 | 1117.00 | 19656.8 | 1199.25 s run clock |
+| fresh / Lin Yue | 280 | 1126.50 | 16132 | visible run clock; death route ends early |
+| fresh / Soyeon Han | 280 | 1157.00 | 16547 | visible run clock excluding boss time |
+| moderate / Lin Yue | 280 | 1125.75 | 16100 | visible run clock excluding boss time |
+| moderate / Soyeon Han | 280 | 1146.50 | 16348 | visible run clock excluding boss time |
+| max_m1 / Lin Yue | 280 | 1118.00 | 15653 | visible run clock excluding boss time |
+| max_m1 / Soyeon Han | 280 | 1133.75 | 15827 | visible run clock excluding boss time |
 
 Every slice reaches cap 280. This remains a balance/performance watch item, not a runtime acceptance pass.
 
@@ -112,7 +124,14 @@ Boss encounter pause duration, summed over all four bosses, was 340.00 s, 376.50
 
 ## Changed files in this slice
 
-- docs/agents/balance-economy/BALANCE_MODEL.json — renamed the clock rule to boss_clock_policy, applied it to all four checkpoints, and refreshed repository evidence.
+- docs/agents/balance-economy/BALANCE_MODEL.json — added `simulation_model.boss_wave_ramp` with provenance, three post-boss cycle mappings, 28-second recovery, 212-second linear ramp and 60-second siege.
+- docs/agents/balance-economy/balance_simulator.py — added data-driven density/cap/composition interpolation, phase samples and monotonic/peak assertions; no tuning values were added to Python.
+- docs/agents/balance-economy/balance_contract_validator.py — validates the post-boss cycle mapping, reset factor, siege window and positive ramp window.
+- docs/agents/balance-economy/BALANCE_WAVE_TABLE.md — documented the user-requested recovery → ramp → siege curve.
+- docs/agents/balance-economy/BALANCE_COMBAT_MODEL.md — documented event ordering and numeric provenance for the curve.
+- docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md — added ramp/siege acceptance evidence and latest model hash.
+- docs/agents/balance-economy/DECISIONS_AND_UNKNOWNS.md — recorded C-12 and U-15 for the post-boss pressure rule.
+- docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md — refreshed with the synchronized matrix and latest risk results.
 - docs/agents/balance-economy/balance_simulator.py — replaced the final-only post-run special case with a two-clock loop for every boss; added pause traces, encounter wall time, and model-only outcome fields.
 - docs/agents/balance-economy/balance_contract_validator.py — validates all four boss checkpoints and the all-boss clock policy.
 - docs/agents/balance-economy/BALANCE_COMBAT_MODEL.md — documented all-boss pause semantics.
@@ -126,9 +145,11 @@ Boss encounter pause duration, summed over all four bosses, was 340.00 s, 376.50
 1. Godot runtime still does not consume BALANCE_MODEL.json; no RunSession/WaveDirector/BossDirector/RewardLedger trace exists.
 2. Absolute enemy, boss, weapon, passive, synergy, profile and pickup numbers are PROPOSED/DERIVED, not approved CANON.
 3. Active-cap saturation is severe in the model and requires a product decision plus runtime performance test.
-4. Fresh/moderate Soyeon miss the proposed final-boss window; max_m1 Lin Yue is below the proposed final-boss lower bound.
-5. Spatial movement, safe boss spawn, telegraphs, same-frame ordering, XP presentation and Android 30 FPS are unverified.
-6. First-clear artifact selection, refresh, duplicate/stacking and persistence are still pending product/architecture decisions.
+4. Post-boss reset factor 0.80 and 60-second siege are PROPOSED; product/B1 approval is still required.
+5. One fresh Lin Yue seed died at 19:39 before the final boss; success-rate policy for fresh remains unspecified.
+6. Fresh/moderate Soyeon miss the proposed final-boss window; max_m1 Lin Yue is below the proposed final-boss lower bound.
+7. Spatial movement, safe boss spawn, telegraphs, same-frame ordering, XP presentation and Android 30 FPS are unverified.
+8. First-clear artifact selection, refresh, duplicate/stacking and persistence are still pending product/architecture decisions.
 
 ## Exact next implementation slice
 
@@ -136,8 +157,9 @@ Runtime/Architecture must load the single balance model through the versioned Co
 
 1. visible run clock and a separate encounter clock that pauses at 300/600/900/1200 for every boss;
 2. wave selection, active cap and XP pickup gates keyed only to visible run time while a boss is active;
-3. boss interruption/recovery state, combat event ordering, contact cooldown, telegraph metadata, safe spawn and deterministic five-seed traces;
-4. the canonical weapon/passive/synergy IDs, fallback resolver and three-card first-clear artifact-offer boundary;
-5. reward ledger keys, final NO_CHEST settlement, offer selection persistence and replay-safe commands.
+3. load `boss_wave_ramp` from the Content Registry and emit POST_BOSS_RECOVERY/RAMP/SIEGE traces with 8/12/17.6 → 15/22/30 budget and 64/104/160 → 130/200/280 cap transitions;
+4. implement boss interruption/recovery state, combat event ordering, contact cooldown, telegraph metadata, safe spawn and deterministic five-seed traces;
+5. the canonical weapon/passive/synergy IDs, fallback resolver and three-card first-clear artifact-offer boundary;
+6. reward ledger keys, final NO_CHEST settlement, offer selection persistence and replay-safe commands.
 
 Then rerun the same 30 traces against Godot. Until that runtime slice exists, the balance is verified only as a model and the repository status remains PARTIAL, not VERIFIED.
