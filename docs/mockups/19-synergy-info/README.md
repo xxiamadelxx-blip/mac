@@ -1,69 +1,70 @@
-# Stage 19 — Synergy Info
-Status: PLANNED.
+# Этап 19 — Информация о синергиях
+Состояние этапа: PLANNED (запланирован).
 Информационный интерфейс синергий.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — ten synergy/evolution entries
+## Контентный бриф v01 — десять синергий и эволюций
 
-Это текстовый explanatory brief для будущего synergy-info mockup. Он не объявляет эволюции runtime-activated и не создаёт final art.
+Это текстовый пояснительный бриф для будущего мокапа справочника синергий. Он не объявляет эволюции подключёнными к игре и не создаёт готовое художественное оформление.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md + C3_MINI_BOSSES_AND_CHEST_FLOW.md |
-| visual route | UI_ART + MOCKUP |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| dependencies | SynergyResolver, weapon/passive level state, BOSS_CHEST outcome, WeaponRegistry |
-| run limit | maximum 5 synergy claims; final boss creates no chest |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источники | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; C3_MINI_BOSSES_AND_CHEST_FLOW.md |
+| визуальный маршрут | художественный интерфейс + мокап |
+| технический маршрут | UI_ART + MOCKUP |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| зависимости | SynergyResolver, состояние уровней оружия и пассивки, результат BOSS_CHEST, WeaponRegistry |
+| предел забега | максимум 5 получений синергии; финальный босс не создаёт сундук |
 
-### Synergy catalogue
+### Каталог синергий
 
-| synergy ID | required pair | evolved weapon / new behavior | player decision |
+| ID синергии | Требуемая пара | Эволюционировавшее оружие и новое поведение | Решение игрока |
 |---|---|---|---|
-| synergy_moon_dance | weapon_moon_blade + passive_wind_of_travel | Танец Луны: orbital crescent lanes around hero trajectory; stop keeps close defensive arc | пройти по краю волны и проложить lane или держать позицию для radial coverage |
-| synergy_heavenly_seals | weapon_jade_talismans + passive_jade_focus | Небесные печати: resolved marks seed a controlled jade chain without revisiting a node | spread marks по pack или потратить resolve на elite |
-| synergy_phoenix_sky | weapon_crimson_flame_fan + passive_ember_heart | Феникс алого неба: burning zones feed a temporary phoenix flight lane | держать огонь на маршруте следующего flight или менять позицию |
-| synergy_winter_palace | weapon_frost_pearl + passive_frost_thread | Дворец вечной зимы: controlled targets form a temporary frost lattice and safe route | строить compact control field или уйти до нового telegraph |
-| synergy_heavenly_judgment | weapon_thunder_needles + passive_heavenly_seal | Приговор небес: conductive marks call visible overhead judgment and secondary arcs | выбрать marked elite или позволить chain thin wave |
-| synergy_guardian_bell | weapon_spirit_bell + passive_iron_bell | Звон защитницы: radial pulse leaves moving ward rim for eligible deflect/knockback | остаться у rim ради защиты или уйти за XP/priority target |
-| synergy_nine_reflections | weapon_fox_mirage + passive_mirror_shard | Девять отражений: fox route leaves staggered mirror echoes with deterministic cleanup | проложить corridor по pack или направить echoes на flank |
-| synergy_lotus_sanctuary | weapon_lotus_mines + passive_lotus_heart | Святилище лотоса: triggered mines link into control field with bounded recovery interaction | драться вокруг sanctuary или оставить опасную точку |
-| synergy_constellation_rain | weapon_star_bow + passive_star_compass | Дождь созвездий: anchors connect and arrows descend along readable segments | aim across arena at ranged threats или собрать local constellation |
-| synergy_eclipse_vortex | weapon_black_eclipse_umbrella + passive_spirit_lens | Воронка затмения: bounded vortex pulls eligible enemies and pickups, then collapses into burst | кластеризовать/собирать сейчас или беречь под elite |
+| synergy_moon_dance | weapon_moon_blade + passive_wind_of_travel | Танец Луны: орбитальные лунные дорожки вокруг траектории героя; остановка сохраняет ближнюю защитную дугу | пройти по краю волны и проложить дорожку или держать позицию для радиального покрытия |
+| synergy_heavenly_seals | weapon_jade_talismans + passive_jade_focus | Небесные печати: разрешённые метки создают управляемую нефритовую цепь без повторного узла | распределить метки по группе или потратить разрешение на элиту |
+| synergy_phoenix_sky | weapon_crimson_flame_fan + passive_ember_heart | Феникс алого неба: горящие зоны питают временный полёт феникса по дорожке | оставить огонь на маршруте полёта или сменить позицию |
+| synergy_winter_palace | weapon_frost_pearl + passive_frost_thread | Дворец вечной зимы: контролируемые цели образуют временную морозную решётку и безопасный маршрут | строить компактную область контроля или уйти до нового сигнала |
+| synergy_heavenly_judgment | weapon_thunder_needles + passive_heavenly_seal | Приговор небес: проводящие метки вызывают видимый небесный удар и вторичные дуги | выбрать отмеченную элиту или позволить цепи проредить волну |
+| synergy_guardian_bell | weapon_spirit_bell + passive_iron_bell | Звон защитницы: радиальный импульс оставляет движущийся защитный обод для допустимого отражения и отталкивания | остаться у обода ради защиты или уйти за опытом и приоритетной целью |
+| synergy_nine_reflections | weapon_fox_mirage + passive_mirror_shard | Девять отражений: маршрут лисы оставляет зеркальные отголоски с разнесённым временем и полной очисткой | проложить коридор через группу или направить отголоски на фланг |
+| synergy_lotus_sanctuary | weapon_lotus_mines + passive_lotus_heart | Святилище лотоса: сработавшие мины связываются в область контроля с ограниченным восстановлением | драться вокруг святилища или оставить опасную точку |
+| synergy_constellation_rain | weapon_star_bow + passive_star_compass | Дождь созвездий: опорные точки соединяются, стрелы падают по читаемым сегментам | целиться через арену в дальние угрозы или собрать местное созвездие |
+| synergy_eclipse_vortex | weapon_black_eclipse_umbrella + passive_spirit_lens | Воронка затмения: ограниченная воронка стягивает допустимых врагов и предметы, затем схлопывается во взрыв | собрать группу сейчас или сохранить воронку для элиты |
 
-### Eligibility and chest states
+### Условия допуска и состояния сундука
 
-- Full pair gate: weapon_level = 6, passive_rank = 5, matching synergy ID, weapon not evolved.
-- Source gate: only non-final BOSS_CHEST with encounter_kind MAIN_BOSS or MINI_BOSS; ELITE_CHEST is artifact/upgrade/fallback flow.
-- Counter gate: claimed_synergy_count < 5. Ten non-final boss chest windows create opportunities, not guaranteed claims.
-- If no pair is eligible, or the cap is reached, the chest must resolve to documented fallback without consuming a synergy claim.
-- Final boss at 1800 s / 30:00 has no boss chest and cannot claim an evolution.
-- Evolved damage, cadence, lane/field duration, target rules, power budget, priority when several pairs are eligible and fallback presentation are PENDING_BALANCE/PENDING_ARCHITECTURE/PENDING_PRODUCT.
+- Полная пара: уровень оружия = 6, ранг пассивки = 5, совпадающий ID синергии, оружие ещё не эволюционировало.
+- Источник: только нефинальный BOSS_CHEST с видом встречи MAIN_BOSS или MINI_BOSS; ELITE_CHEST использует поток артефакта, улучшения или резервной награды.
+- Предел: claimed_synergy_count < 5. Десять нефинальных окон сундука дают возможности, но не гарантируют получение.
+- Если пара недоступна или предел достигнут, сундук разрешается в описанную резервную награду и не увеличивает счётчик синергий.
+- Финальный босс на 1800 с / 30:00 не создаёт сундук и не может выдать эволюцию.
+- Эволюционировавший урон, темп, длительность дорожки или области, правила целей, бюджет силы, порядок выбора при нескольких парах и показ резервной награды — PENDING_BALANCE/PENDING_ARCHITECTURE/PENDING_PRODUCT.
 
-### Required info states
+### Обязательные состояния информации
 
-| state | copy/behavior |
+| Состояние | Текст и поведение |
 |---|---|
-| LOCKED | show required weapon/passive names and which gate is missing |
-| ELIGIBLE | show pair, new behavior promise, chest source and “может появиться в сундуке” |
-| OFFERED | show current chest opportunity and choose-one/fallback resolution |
-| CLAIMED | show evolution applied and the weapon behavior now active |
-| ALREADY_EVOLVED | show that the weapon no longer accepts a second evolution |
-| CAP_REACHED | show 5-claim cap and fallback path |
-| NO_PAIR | show that this chest cannot invent a missing passive/weapon pair |
-| FINAL_NO_CHEST | show final boss reward rule without empty synergy offer |
+| LOCKED | показать названия требуемых оружия и пассивки и невыполненное условие |
+| ELIGIBLE | показать пару, обещание нового поведения, источник сундука и «может появиться в сундуке» |
+| OFFERED | показать текущую возможность сундука и выбор синергии или резервной награды |
+| CLAIMED | показать применённую эволюцию и активное новое поведение оружия |
+| ALREADY_EVOLVED | показать, что оружие уже не принимает вторую эволюцию |
+| CAP_REACHED | показать предел в 5 получений и путь резервной награды |
+| NO_PAIR | показать, что этот сундук не создаёт отсутствующую пассивку или оружие |
+| FINAL_NO_CHEST | показать правило отсутствия сундука у финального босса без пустого предложения |
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: UI_ART + MOCKUP;
-- stage_path: docs/mockups/19-synergy-info/;
+- маршрут: UI_ART + MOCKUP;
+- папка этапа: docs/mockups/19-synergy-info/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — SynergyResolver + ChestResolver + WeaponRegistry + HUD;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — SynergyResolver, ChestResolver, WeaponRegistry, игровой интерфейс;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
