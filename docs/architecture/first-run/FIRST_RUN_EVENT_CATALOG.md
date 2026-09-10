@@ -1,6 +1,6 @@
 # FIRST_RUN_EVENT_CATALOG — события и команды первого забега
 
-Статус: DRAFT ARCHITECTURE SPECIFICATION  
+Статус: DRAFT ARCHITECTURE SPECIFICATION
 Runtime implemented: NO
 
 ## 1. Event contract
