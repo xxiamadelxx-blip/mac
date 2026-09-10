@@ -54,7 +54,7 @@
     },
     {
       "id": "docs/mockups/01-menu/README.md",
-      "sha256": "7a866dba36f46fd0ccc44738d94b7ff79ba44455",
+      "sha256": "2f0c744db2c4160cc4dda2121d8683b453d9f901",
       "notes": "Stage 01 active family and target viewport."
     },
     {
@@ -74,7 +74,7 @@
     }
   ],
   "art_direction": {
-    "project_revision": "main@0f1695283a7bacdc6e30f87011c11b273b9d6372",
+    "project_revision": "main@5cb0594edfa9b0c1722805fd3ba48c14f5d4793c",
     "request_revision": "user-request-2026-09-10",
     "parent_approved_master_candidate_id": null,
     "notes": "New four-screen menu system candidate after v03 rejection. Existing soft-tonal family retained; navigation order changed to main -> stage -> character."
