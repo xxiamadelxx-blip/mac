@@ -9,7 +9,8 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Live main HEAD observed at the start of this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
 - Balance model commit used: 42966b44650ec63aead33d04cbe34ae1e9d57489.
 - Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
-- Main HEAD observed immediately before this report update: 42966b44650ec63aead33d04cbe34ae1e9d57489.
+- Historical main HEAD observed immediately before the original report update: 42966b44650ec63aead33d04cbe34ae1e9d57489.
+- Latest verified main HEAD before this report refresh: 0536f182c1ae8876b9213e0c2fb761793e503a66.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
 - Runtime executed: false.\n- Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
