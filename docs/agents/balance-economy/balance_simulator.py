@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Data-driven deterministic 20-minute balance model.
+"""Data-driven deterministic 30-minute balance model.
 
 The program reads every tuning input from BALANCE_MODEL.json.  It models the
 wave clock, cap pressure, XP progression, proposed combat math, incoming risk,
@@ -50,16 +50,23 @@ def load_model(path: Path) -> Dict[str, Any]:
         "main_run_duration_seconds",
         "simulation_step_seconds",
         "boss_clock_policy",
+        "mini_boss_clock_policy",
         "boss_wave_ramp",
+        "run_schedule",
+        "mini_boss_stats",
+        "elite_variation_policy",
         "default_seed_set",
     ):
         if key not in simulation:
             raise ValueError(f"simulation_model missing {key}")
     clock_policy = simulation["boss_clock_policy"]
-    if clock_policy.get("applies_to") != "ALL_BOSS_CHECKPOINTS":
-        raise ValueError("boss clock policy must apply to every boss checkpoint")
-    if clock_policy.get("checkpoint_seconds") != [300, 600, 900, 1200]:
-        raise ValueError("boss clock policy must bind to all four boss checkpoints")
+    schedule = simulation["run_schedule"]
+    main_checkpoints = schedule["main_boss_checkpoints"]
+    mini_checkpoints = schedule["mini_boss_checkpoints"]
+    if clock_policy.get("applies_to") != "MAIN_BOSS_CHECKPOINTS":
+        raise ValueError("main boss clock policy must apply to main checkpoints")
+    if clock_policy.get("checkpoint_seconds") != [int(number(row["time_seconds"])) for row in main_checkpoints]:
+        raise ValueError("main boss clock policy must bind to every 30-minute main checkpoint")
     if clock_policy.get("run_clock_stops_at_boss_checkpoint") is not True:
         raise ValueError("boss clock policy must stop the main run clock at every boss")
     if clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is not False:
@@ -73,8 +80,21 @@ def load_model(path: Path) -> Dict[str, Any]:
         raise ValueError("post-boss reset factor must be between zero and one")
     if ramp.get("ramp_curve", {}).get("value") != "LINEAR":
         raise ValueError("boss wave ramp must use the declared linear curve")
-    if len(ramp.get("cycle_band_mapping", [])) != len(model["boss_checkpoints"]) - 1:
+    if len(ramp.get("cycle_band_mapping", [])) != len(main_checkpoints) - 1:
         raise ValueError("boss wave ramp must cover every non-final boss cycle")
+    mini_policy = simulation["mini_boss_clock_policy"]
+    if mini_policy.get("applies_to") != "MINI_BOSS_CHECKPOINTS":
+        raise ValueError("mini-boss clock policy must apply to mini-boss checkpoints")
+    if mini_policy.get("run_clock_stops_at_checkpoint") is not False:
+        raise ValueError("mini-boss encounters must not stop the visible run clock")
+    if mini_policy.get("wave_xp_spawn_clock_advances_during_encounter") is not True:
+        raise ValueError("waves, XP, and spawning must continue during mini-boss encounters")
+    if mini_policy.get("checkpoint_seconds") != [int(number(row["time_seconds"])) for row in mini_checkpoints]:
+        raise ValueError("mini-boss clock policy must bind to every mini-boss checkpoint")
+    if len({int(number(row["time_seconds"])) for row in main_checkpoints + mini_checkpoints}) != len(main_checkpoints) + len(mini_checkpoints):
+        raise ValueError("main and mini-boss checkpoints may not overlap")
+    if number(simulation["main_run_duration_seconds"]) != number(schedule["duration_seconds"]):
+        raise ValueError("schedule duration must match main run duration")
     if model["architecture_contract"]["final_boss_policy"] != "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST":
         raise ValueError("final-boss chest policy drifted from the live architecture contract")
     return model
@@ -113,6 +133,36 @@ def profile_value(profile: Dict[str, Any], key: str) -> Any:
     return unwrap(profile[key])
 
 
+def run_schedule(model: Dict[str, Any]) -> Dict[str, Any]:
+    return model["simulation_model"]["run_schedule"]
+
+
+def main_checkpoints(model: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return list(run_schedule(model)["main_boss_checkpoints"])
+
+
+def mini_checkpoints(model: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return list(run_schedule(model)["mini_boss_checkpoints"])
+
+
+def all_encounter_checkpoints(model: Dict[str, Any]) -> List[Dict[str, Any]]:
+    return sorted(main_checkpoints(model) + mini_checkpoints(model), key=lambda row: number(row["time_seconds"]))
+
+
+def checkpoint_is_final(model: Dict[str, Any], checkpoint_id: str) -> bool:
+    for row in main_checkpoints(model):
+        if str(row["checkpoint_id"]) == checkpoint_id:
+            return bool(row.get("is_final", False))
+    return False
+
+
+def checkpoint_kind(model: Dict[str, Any], checkpoint_id: str) -> str:
+    for row in all_encounter_checkpoints(model):
+        if str(row["checkpoint_id"]) == checkpoint_id:
+            return str(row.get("encounter_kind", "MAIN_BOSS"))
+    raise KeyError(f"unknown checkpoint: {checkpoint_id}")
+
+
 def wave_at(model: Dict[str, Any], elapsed: float) -> Dict[str, Any]:
     bands = model["wave_bands"]
     for band in bands:
@@ -133,7 +183,7 @@ def _band_map(model: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 
 
 def _checkpoint_time_map(model: Dict[str, Any]) -> Dict[str, float]:
-    return {str(row["checkpoint_id"]): number(row["time_seconds"]) for row in model["boss_checkpoints"]}
+    return {str(row["checkpoint_id"]): number(row["time_seconds"]) for row in main_checkpoints(model)}
 
 
 def _blend_composition_weights(
@@ -284,7 +334,7 @@ def boss_interruption_factor(model: Dict[str, Any], elapsed: float) -> float:
     start_factor = number(interruption["recovery_start_factor"])
     end_factor = number(interruption["recovery_end_factor"])
     latest_checkpoint = None
-    for checkpoint in model["boss_checkpoints"]:
+    for checkpoint in main_checkpoints(model):
         checkpoint_time = number(checkpoint["time_seconds"])
         if checkpoint_time <= elapsed:
             latest_checkpoint = checkpoint_time
@@ -309,12 +359,17 @@ def make_entity(
     boss: bool = False,
     boss_key: Optional[str] = None,
     run_elapsed: Optional[float] = None,
+    encounter_kind: str = "MAIN_BOSS",
+    elite_variant: bool = False,
 ) -> Dict[str, Any]:
     if run_elapsed is None:
         run_elapsed = wall_elapsed
     simulation = model["simulation_model"]
     if boss:
-        source = simulation["boss_stats"][boss_key or ""]
+        if encounter_kind == "MINI_BOSS":
+            source = simulation["mini_boss_stats"][boss_key or ""]
+        else:
+            source = simulation["boss_stats"][boss_key or ""]
         hp = number(source["base_hp"])
         damage = number(source["base_damage"])
         speed = number(source["base_speed"])
@@ -336,11 +391,19 @@ def make_entity(
         xp = integer(source["xp_value"])
         telegraph = 0.0
         wave_damage = number(band["enemy_damage_multiplier"])
+        if elite_variant:
+            overlay = simulation["elite_variation_policy"]["variant_overlay"]
+            hp *= number(overlay["hp_multiplier"])
+            damage *= number(overlay["damage_multiplier"])
+            speed *= number(overlay["speed_multiplier"])
+            xp = round_half_up(xp * number(overlay["xp_multiplier"]))
     return {
         "entity_id": entity_id,
         "enemy_id": enemy_id,
         "boss": boss,
         "boss_key": boss_key,
+        "encounter_kind": encounter_kind if boss else "ORDINARY_WAVE",
+        "elite_variant": elite_variant,
         "spawn_time": run_elapsed,
         "spawn_wall_time": wall_elapsed,
         "hp": hp,
@@ -428,29 +491,53 @@ def damage_components(model: Dict[str, Any], profile: Dict[str, Any], hero_id: s
     }
 
 
-def resolve_chest(model: Dict[str, Any], state: Dict[str, Any], checkpoint_id: str, elapsed: float) -> Dict[str, Any]:
+def resolve_chest(
+    model: Dict[str, Any],
+    state: Dict[str, Any],
+    checkpoint_id: str,
+    elapsed: float,
+    final: bool = False,
+    encounter_kind: str = "MAIN_BOSS",
+) -> Dict[str, Any]:
     catalog = model["simulation_model"]["build_catalog"]
-    if checkpoint_id == "boss_final_20":
-        return {"checkpoint_id": checkpoint_id, "outcome": "NO_CHEST", "time": elapsed, "status": "CANON_ARCHITECTURE"}
+    if final:
+        return {
+            "checkpoint_id": checkpoint_id,
+            "encounter_kind": encounter_kind,
+            "outcome": "NO_CHEST",
+            "time": elapsed,
+            "status": "PENDING_ARCHITECTURE_30M_FINAL_POLICY",
+        }
     hero = model["simulation_model"]["heroes_and_profiles"]["heroes"][state["hero_id"]]
     synergy_id = catalog["weapons"][hero["starting_weapon_id"]]["synergy_id"] if "synergy_id" in catalog["weapons"][hero["starting_weapon_id"]] else None
     if synergy_id is None:
         return {"checkpoint_id": checkpoint_id, "outcome": "FALLBACK_REQUIRED", "time": elapsed, "status": "PROPOSED"}
     synergy = catalog["synergies"].get(synergy_id)
+    max_claims = integer(model["simulation_model"]["build_catalog"]["max_synergy_claims_per_run"])
     eligible = (
         synergy is not None
         and state["weapon_level"] >= integer(synergy["requires_weapon_level"])
         and state["passive_rank"] >= integer(synergy["requires_passive_rank"])
-        and not state.get("synergy_id")
+        and state.get("claimed_synergy_count", 0) < max_claims
+        and synergy_id not in state.get("claimed_synergy_ids", [])
     )
     if eligible:
         state["synergy_id"] = synergy_id
+        state.setdefault("claimed_synergy_ids", []).append(synergy_id)
+        state["claimed_synergy_count"] = state.get("claimed_synergy_count", 0) + 1
         outcome = "SYNERGY_GRANTED"
     else:
         fallback = catalog["offer_model"]["fallback"]
         state["fallback_damage_bonus"] += number(fallback["damage_multiplier_additive"])
         outcome = "FALLBACK_UPGRADE"
-    return {"checkpoint_id": checkpoint_id, "outcome": outcome, "time": elapsed, "synergy_id": synergy_id}
+    return {
+        "checkpoint_id": checkpoint_id,
+        "encounter_kind": encounter_kind,
+        "outcome": outcome,
+        "time": elapsed,
+        "synergy_id": synergy_id,
+        "claimed_synergy_count": state.get("claimed_synergy_count", 0),
+    }
 
 
 def grant_once(ledger: Dict[str, Dict[str, Any]], key: str, reward: Dict[str, int]) -> bool:
@@ -496,7 +583,7 @@ def percentile(values: List[float], fraction: float) -> Optional[float]:
     return round(ordered[index], 3)
 
 
-def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) -> Dict[str, Any]:
+def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) -> Dict[str, Any]:
     """Run one deterministic model slice with a paused run clock at every boss.
 
     ``run_elapsed`` is the visible 20-minute clock.  ``wall_elapsed`` is the
@@ -530,6 +617,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         "xp_pickup_budget": 0.0,
         "xp_dropped": 0,
         "xp_collected": 0,
+        "final_boss_outcome_valid": True,
     }
     active: List[Dict[str, Any]] = []
     boss: Optional[Dict[str, Any]] = None
@@ -625,6 +713,8 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         target_pass = number(target_range[0]) <= ttk <= number(target_range[1])
         within_window = (not final) or ttk <= number(simulation["post_final_boss_window_seconds"])
         status = "DEFEATED" if (not final or within_window) else "POST_RUN_WINDOW_EXCEEDED"
+        if final and not within_window:
+            state["final_boss_outcome_valid"] = False
         boss_results.append({
             "checkpoint_id": checkpoint_id,
             "boss_id": boss_entity["enemy_id"],
@@ -955,6 +1045,617 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     }
 
 
+def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) -> Dict[str, Any]:
+    """Run one 30-minute model slice with separate main/mini clock policies.
+
+    Main bosses pause the visible run clock and the wave/XP/spawn clock.  Mini
+    bosses are simultaneous wave events: wall time and visible run time advance,
+    ordinary entities keep spawning, and XP keeps collecting.  Elite variants
+    are spawned only as finite post-mini-boss packs and never as a permanent
+    wave composition member.
+    """
+    simulation = model["simulation_model"]
+    profile = simulation["heroes_and_profiles"]["profiles"][profile_name]
+    dt = number(simulation["simulation_step_seconds"])
+    main_duration = number(simulation["main_run_duration_seconds"])
+    clock_policy = simulation["boss_clock_policy"]
+    mini_clock_policy = simulation["mini_boss_clock_policy"]
+    thresholds = xp_thresholds(model)
+    rng = random.Random(seed)
+    enemy_catalog = simulation["enemy_stats"]
+    archetypes = stat_map(model)
+    weights = simulation["wave_selection"]["composition_weights"]
+    target_policy = simulation["target_policy"]
+    combat = simulation["combat_math"]
+    profile_stats = calculate_profile_stats(model, profile, hero_id)
+    schedule = simulation["run_schedule"]
+    main_schedule = sorted(main_checkpoints(model), key=lambda row: number(row["time_seconds"]))
+    mini_schedule = sorted(mini_checkpoints(model), key=lambda row: number(row["time_seconds"]))
+    state = {
+        "hero_id": hero_id,
+        "profile": profile_name,
+        "level": 1,
+        "xp": 0.0,
+        "weapon_level": 1,
+        "passive_rank": 0,
+        "synergy_id": None,
+        "claimed_synergy_ids": [],
+        "claimed_synergy_count": 0,
+        "fallback_damage_bonus": 0.0,
+        "pending_xp_drops": [],
+        "xp_pickup_budget": 0.0,
+        "xp_dropped": 0,
+        "xp_collected": 0,
+        "final_boss_outcome_valid": True,
+    }
+    active: List[Dict[str, Any]] = []
+    main_boss: Optional[Dict[str, Any]] = None
+    mini_boss: Optional[Dict[str, Any]] = None
+    next_main_index = 0
+    next_mini_index = 0
+    next_entity_id = 1
+    spawn_accumulator = 0.0
+    next_player_attack = 0.0
+    player_hp = profile_stats["max_hp"]
+    min_hp = player_hp
+    total_incoming = 0.0
+    peak_incoming_step = 0.0
+    max_single_incoming_hit = 0.0
+    death_time: Optional[float] = None
+    death_run_clock: Optional[float] = None
+    cap_samples: List[int] = []
+    cap_seconds = 0.0
+    suppressed_spawn_attempts = 0
+    kills: List[Dict[str, Any]] = []
+    boss_results: List[Dict[str, Any]] = []
+    clock_events: List[Dict[str, Any]] = []
+    level_times: Dict[str, float] = {}
+    checkpoint_levels: Dict[str, int] = {}
+    upgrade_events: List[Dict[str, Any]] = []
+    chest_results: List[Dict[str, Any]] = []
+    artifact_offer_results: List[Dict[str, Any]] = []
+    elite_pack_offer_results: List[Dict[str, Any]] = []
+    elite_pack_states: Dict[str, Dict[str, Any]] = {}
+    chest_ledger: Dict[str, Dict[str, Any]] = {}
+    reward_results: List[Dict[str, Any]] = []
+    ledger: Dict[str, Dict[str, Any]] = {}
+    run_id = f"{profile_name}:{hero_id}:{seed}"
+    run_elapsed = 0.0
+    wall_elapsed = 0.0
+    loop_guard = 0
+    xp_pickup = simulation["xp_pickup_model"]
+    magnet_per_rank = number(xp_pickup["magnet_capacity_per_rank"])
+
+    def add_xp(amount: int, run_clock: float) -> None:
+        state["xp"] += amount
+        while state["level"] <= len(thresholds) and state["xp"] >= thresholds[state["level"] - 1]:
+            state["level"] += 1
+            level_times[str(state["level"])] = round(run_clock, 3)
+            upgrade = apply_level_upgrade(model, state)
+            upgrade["time"] = round(run_clock, 3)
+            upgrade_events.append(upgrade)
+
+    def resolve_elite_pack_offer(event_id: str, run_clock: float) -> None:
+        key = f"{run_id}:ELITE_PACK:{event_id}:ARTIFACT_OFFER"
+        first = key not in elite_pack_states.get(event_id, {}).get("offer_ledger", {})
+        event = elite_pack_states[event_id]
+        event.setdefault("offer_ledger", {})
+        if first:
+            event["offer_ledger"][key] = {"event_id": event_id, "choice_count": 3}
+        duplicate = key in event["offer_ledger"]
+        elite_pack_offer_results.append({
+            "event_id": event_id,
+            "source_kind": "ELITE_PACK",
+            "reward_type": "ARTIFACT_OFFER",
+            "choice_count": integer(simulation["elite_variation_policy"]["reward"]["choice_count"]),
+            "offer_created": first,
+            "duplicate_attempt_idempotent": duplicate and not first,
+            "time": round(run_clock, 3),
+            "wallet_mutation": False,
+        })
+
+    def spawn_elite_pack(mini_row: Dict[str, Any], run_clock: float, wall_clock: float, band: Dict[str, Any]) -> None:
+        nonlocal next_entity_id
+        event_id = f"elite_pack_after_{mini_row['checkpoint_id']}"
+        if event_id in elite_pack_states:
+            return
+        policy = simulation["elite_variation_policy"]
+        pack_size = integer(policy["pack_size"])
+        anchor_enemy = weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
+        elite_pack_states[event_id] = {
+            "event_id": event_id,
+            "source_checkpoint_id": mini_row["checkpoint_id"],
+            "anchor_enemy_id": anchor_enemy,
+            "remaining": pack_size,
+            "defeated": 0,
+            "offer_ledger": {},
+        }
+        for member_index in range(pack_size):
+            enemy_id = anchor_enemy if member_index == 0 else weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
+            entity = make_entity(
+                model,
+                enemy_id,
+                wall_clock,
+                band,
+                next_entity_id,
+                run_elapsed=run_clock,
+                elite_variant=member_index == 0,
+            )
+            entity["elite_pack_event_id"] = event_id
+            next_entity_id += 1
+            active.append(entity)
+
+    def register_kill(entity: Dict[str, Any], wall_clock: float, run_clock: float) -> None:
+        spawn_ttk = wall_clock - entity["spawn_wall_time"]
+        focused_start = entity.get("first_damage_time")
+        focused_ttk = wall_clock - focused_start if focused_start is not None else spawn_ttk
+        enemy_id = entity["enemy_id"]
+        role = str(archetypes[enemy_id].get("role", ""))
+        if entity.get("elite_variant"):
+            kind = "elite_variant"
+        else:
+            kind = "elite" if "elite" in role else "ordinary"
+        kills.append({
+            "enemy_id": enemy_id,
+            "kind": kind,
+            "elite_pack_event_id": entity.get("elite_pack_event_id"),
+            "spawn_time": round(entity["spawn_time"], 3),
+            "spawn_wall_time": round(entity["spawn_wall_time"], 3),
+            "defeat_time_wall": round(wall_clock, 3),
+            "defeat_time_run_clock": round(run_clock, 3),
+            "spawn_to_kill_seconds": round(spawn_ttk, 3),
+            "focused_ttk_seconds": round(focused_ttk, 3),
+            "xp": entity["xp"],
+        })
+        state["pending_xp_drops"].append({
+            "available_time": run_clock + number(xp_pickup["drop_delay_seconds"]),
+            "value": entity["xp"],
+        })
+        state["xp_dropped"] += entity["xp"]
+        event_id = entity.get("elite_pack_event_id")
+        if event_id is not None and event_id in elite_pack_states:
+            event = elite_pack_states[event_id]
+            event["remaining"] -= 1
+            event["defeated"] += 1
+            if event["remaining"] == 0:
+                resolve_elite_pack_offer(event_id, run_clock)
+                resolve_elite_pack_offer(event_id, run_clock)
+
+    def collect_xp(run_clock: float, band: Dict[str, Any]) -> None:
+        if run_clock < number(xp_pickup["first_level_window_seconds"]):
+            capacity = number(xp_pickup["first_level_capacity_per_second"])
+        else:
+            capacity = number(xp_pickup["capacity_per_second_by_wave"][band["wave_band_id"]])
+        capacity_multiplier = 1.0 + number(profile["meta_ranks"]["magnet"]) * magnet_per_rank
+        state["xp_pickup_budget"] += capacity * capacity_multiplier * dt
+        ready = sorted(
+            [drop for drop in state["pending_xp_drops"] if drop["available_time"] <= run_clock + 1e-9],
+            key=lambda drop: (drop["available_time"], drop["value"]),
+        )
+        for drop in ready:
+            if state["xp_pickup_budget"] + 1e-9 < drop["value"]:
+                continue
+            state["xp_pickup_budget"] -= drop["value"]
+            state["pending_xp_drops"].remove(drop)
+            state["xp_collected"] += drop["value"]
+            add_xp(drop["value"], run_clock)
+
+    def resolve_chest_once(checkpoint_id: str, elapsed: float, final: bool, encounter_kind: str) -> Dict[str, Any]:
+        key = f"{run_id}:BOSS_CHEST:{checkpoint_id}:CHEST"
+        if key in chest_ledger:
+            return {
+                "checkpoint_id": checkpoint_id,
+                "encounter_kind": encounter_kind,
+                "outcome": "IDEMPOTENT_NOOP",
+                "idempotency_key": key,
+                "duplicate": True,
+                "time": elapsed,
+            }
+        result = resolve_chest(model, state, checkpoint_id, elapsed, final=final, encounter_kind=encounter_kind)
+        result["idempotency_key"] = key
+        result["duplicate"] = False
+        chest_ledger[key] = result
+        return result
+
+    def resolve_encounter(encounter: Dict[str, Any], wall_clock: float, run_clock: float) -> None:
+        checkpoint_id = str(encounter["checkpoint_id"])
+        encounter_kind = str(encounter["encounter_kind"])
+        final = bool(encounter.get("is_final", False))
+        ttk = wall_clock - encounter["boss_start_wall_time"]
+        if final:
+            target_range = target_policy["final_boss_ttk_seconds"]
+        elif encounter_kind == "MINI_BOSS":
+            target_range = target_policy["mini_boss_ttk_seconds"]
+        elif number(encounter["boss_start_run_clock"]) >= 1200:
+            target_range = target_policy["late_main_boss_ttk_seconds"]
+        else:
+            target_range = target_policy["first_slice_boss_ttk_seconds"]
+        target_pass = number(target_range[0]) <= ttk <= number(target_range[1])
+        within_window = (not final) or ttk <= number(simulation["post_final_boss_window_seconds"])
+        status = "DEFEATED" if (not final or within_window) else "POST_RUN_WINDOW_EXCEEDED"
+        if final and not within_window:
+            state["final_boss_outcome_valid"] = False
+        boss_results.append({
+            "checkpoint_id": checkpoint_id,
+            "boss_id": encounter["enemy_id"],
+            "encounter_kind": encounter_kind,
+            "status": status,
+            "spawn_time": round(encounter["boss_start_run_clock"], 3),
+            "encounter_start_wall_time": round(encounter["boss_start_wall_time"], 3),
+            "defeat_time": round(wall_clock, 3),
+            "defeat_time_wall_seconds": round(wall_clock, 3),
+            "defeat_time_run_clock_seconds": round(run_clock, 3),
+            "ttk_seconds": round(ttk, 3),
+            "target_range": list(target_range),
+            "target_pass": target_pass,
+            "within_post_run_window": within_window,
+            "clock_policy": "FREEZE_MAIN" if encounter_kind == "MAIN_BOSS" else "ADVANCE_MINI",
+        })
+        clock_events.append({
+            "checkpoint_id": checkpoint_id,
+            "encounter_kind": encounter_kind,
+            "checkpoint_seconds": round(encounter["boss_start_run_clock"], 3),
+            "run_clock_stop_seconds": round(encounter["boss_start_run_clock"], 3) if encounter_kind == "MAIN_BOSS" else None,
+            "run_clock_resume_seconds": round(run_clock, 3) if encounter_kind == "MAIN_BOSS" and not final else None,
+            "encounter_duration_seconds": round(ttk, 3),
+            "run_clock_advanced_during_encounter": encounter_kind == "MINI_BOSS",
+            "wave_xp_spawn_clock_advanced_during_encounter": encounter_kind == "MINI_BOSS",
+            "status": status,
+        })
+        if not final or within_window:
+            reward_row = boss_reward_map(model).get(checkpoint_id)
+            if reward_row is None:
+                raise KeyError(f"missing reward row for {checkpoint_id}")
+            reward_results.append(resolve_reward(model, ledger, run_id, checkpoint_id, reward_amount(reward_row)))
+            first_chest = resolve_chest_once(checkpoint_id, run_clock, final, encounter_kind)
+            duplicate_chest = resolve_chest_once(checkpoint_id, run_clock, final, encounter_kind)
+            first_chest["duplicate_attempt_idempotent"] = duplicate_chest.get("duplicate", False)
+            chest_results.append(first_chest)
+            if encounter_kind == "MINI_BOSS":
+                spawn_elite_pack(
+                    next(row for row in mini_schedule if str(row["checkpoint_id"]) == checkpoint_id),
+                    run_clock,
+                    wall_clock,
+                    wave_state_at(model, min(run_clock, main_duration - dt)),
+                )
+        if final and within_window:
+            first_clear = model["rewards"]["first_clear_bonus"]
+            reward_results.append(resolve_reward(model, ledger, run_id, "run_result", reward_amount(first_clear)))
+            artifact_model = simulation["artifact_offer_model"]
+            artifact_offer_results.append({
+                "offer_id": f"{run_id}:first_clear_artifact",
+                "source_kind": "FIRST_CLEAR_REWARD",
+                "source_id": "reward_first_clear_bonus",
+                "choice_count": integer(artifact_model["choice_count"]),
+                "status": "OFFER_CREATED_PENDING_SELECTION",
+                "effect_status": artifact_model["effect_parameters_status"],
+            })
+
+    while True:
+        loop_guard += 1
+        if loop_guard > 300000:
+            raise RuntimeError("30-minute simulation loop exceeded deterministic guard")
+        if death_time is not None:
+            break
+
+        if main_boss is None and mini_boss is None:
+            if next_main_index < len(main_schedule) and run_elapsed + 1e-9 >= number(main_schedule[next_main_index]["time_seconds"]):
+                row = main_schedule[next_main_index]
+                checkpoint_id = str(row["checkpoint_id"])
+                main_boss = make_entity(
+                    model,
+                    str(row["boss_id"]),
+                    wall_elapsed,
+                    wave_at(model, min(run_elapsed, main_duration - dt)),
+                    next_entity_id,
+                    True,
+                    checkpoint_id,
+                    run_elapsed=run_elapsed,
+                    encounter_kind="MAIN_BOSS",
+                )
+                next_entity_id += 1
+                main_boss["checkpoint_id"] = checkpoint_id
+                main_boss["boss_start_run_clock"] = run_elapsed
+                main_boss["boss_start_wall_time"] = wall_elapsed
+                main_boss["encounter_kind"] = "MAIN_BOSS"
+                main_boss["is_final"] = bool(row.get("is_final", False))
+                next_main_index += 1
+            elif next_mini_index < len(mini_schedule) and run_elapsed + 1e-9 >= number(mini_schedule[next_mini_index]["time_seconds"]):
+                row = mini_schedule[next_mini_index]
+                checkpoint_id = str(row["checkpoint_id"])
+                mini_boss = make_entity(
+                    model,
+                    str(row["boss_id"]),
+                    wall_elapsed,
+                    wave_state_at(model, run_elapsed),
+                    next_entity_id,
+                    True,
+                    str(row["boss_id"]),
+                    run_elapsed=run_elapsed,
+                    encounter_kind="MINI_BOSS",
+                )
+                next_entity_id += 1
+                mini_boss["checkpoint_id"] = checkpoint_id
+                mini_boss["boss_start_run_clock"] = run_elapsed
+                mini_boss["boss_start_wall_time"] = wall_elapsed
+                mini_boss["encounter_kind"] = "MINI_BOSS"
+                mini_boss["is_final"] = False
+                next_mini_index += 1
+
+        main_active = main_boss is not None
+        if not main_active and run_elapsed < main_duration - 1e-9:
+            band = wave_state_at(model, run_elapsed)
+            collect_xp(run_elapsed, band)
+            spawn_accumulator += number(band["spawn_budget_per_second"]) * dt * boss_interruption_factor(model, run_elapsed)
+            while spawn_accumulator >= 1.0:
+                spawn_accumulator -= 1.0
+                cap = integer(band["active_cap"])
+                if len(active) >= cap:
+                    suppressed_spawn_attempts += 1
+                    continue
+                enemy_id = weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
+                entity = make_entity(model, enemy_id, wall_elapsed, band, next_entity_id, run_elapsed=run_elapsed)
+                next_entity_id += 1
+                active.append(entity)
+
+        occupied = len(active)
+        if not main_active:
+            cap_samples.append(occupied)
+            band_now = wave_state_at(model, min(run_elapsed, main_duration - dt))
+            if occupied >= integer(band_now["active_cap"]):
+                cap_seconds += dt
+
+        incoming_this_step = 0.0
+        candidates = sorted(active, key=lambda entity: (entity["contact_delay"], entity["entity_id"]))
+        if main_boss is not None and main_boss["hp"] > 0.0:
+            candidates.append(main_boss)
+        if mini_boss is not None and mini_boss["hp"] > 0.0:
+            candidates.append(mini_boss)
+        attacker_limit = integer(combat["engaged_attacker_limit"])
+        for entity in candidates[:attacker_limit]:
+            if wall_elapsed + dt < entity["spawn_wall_time"] + entity["contact_delay"]:
+                continue
+            if wall_elapsed + 1e-9 < entity["next_attack"]:
+                continue
+            interval = entity["attack_interval"]
+            while entity["next_attack"] <= wall_elapsed + 1e-9:
+                entity["next_attack"] += interval
+            if rng.random() > number(profile["hit_probability"]):
+                continue
+            damage_taken = entity["base_damage"] * entity["wave_damage"] * (1.0 - profile_stats["damage_reduction"])
+            incoming_this_step += damage_taken
+            max_single_incoming_hit = max(max_single_incoming_hit, damage_taken)
+        player_hp -= incoming_this_step
+        total_incoming += incoming_this_step
+        peak_incoming_step = max(peak_incoming_step, incoming_this_step / dt)
+        min_hp = min(min_hp, player_hp)
+        if player_hp <= 0.0:
+            player_hp = 0.0
+            death_time = wall_elapsed
+            death_run_clock = run_elapsed
+            break
+
+        damage = damage_components(model, profile, hero_id, state)
+        if wall_elapsed + 1e-9 >= next_player_attack:
+            while next_player_attack <= wall_elapsed + 1e-9:
+                next_player_attack += damage["attack_interval"]
+            total_damage = damage["total_attack_damage"]
+            focused = main_boss if main_boss is not None else mini_boss
+            boss_damage = 0.0
+            if focused is not None and focused["hp"] > 0.0:
+                boss_damage = total_damage * number(combat["boss_focus_fraction"])
+                focused["hp"] -= boss_damage
+                focused["damage_taken"] += boss_damage
+                if focused["hp"] <= 0.0:
+                    resolve_encounter(focused, wall_elapsed, run_elapsed)
+                    if focused is main_boss:
+                        main_boss = None
+                    else:
+                        mini_boss = None
+            remaining = total_damage - boss_damage
+            targets = sorted(active, key=lambda entity: (entity["spawn_wall_time"], entity["entity_id"]))[: damage["targets_per_attack"]]
+            if targets:
+                per_target = remaining / len(targets)
+                for entity in list(targets):
+                    hit_damage = per_target
+                    if entity["enemy_id"] == "enemy_bell_crab":
+                        crab = enemy_catalog[entity["enemy_id"]]
+                        if rng.random() < number(crab["rear_hit_probability"]):
+                            hit_damage *= number(crab["rear_weakness_multiplier"])
+                    entity["hp"] -= hit_damage
+                    entity["damage_taken"] += hit_damage
+                    if entity.get("first_damage_time") is None:
+                        entity["first_damage_time"] = wall_elapsed
+
+        survivors = []
+        for entity in active:
+            if entity["hp"] <= 0.0:
+                register_kill(entity, wall_elapsed, run_elapsed)
+            else:
+                survivors.append(entity)
+        active = survivors
+
+        for checkpoint_time in (120.0, 300.0, 600.0, 900.0, 1200.0, 1500.0, 1800.0):
+            key = f"{int(checkpoint_time)}"
+            if run_elapsed + 1e-9 >= checkpoint_time and key not in checkpoint_levels:
+                checkpoint_levels[key] = state["level"]
+
+        if main_boss is None and next_main_index >= len(main_schedule) and run_elapsed >= main_duration - 1e-9:
+            break
+
+        wall_elapsed = round(wall_elapsed + dt, 9)
+        if main_boss is None and run_elapsed < main_duration - 1e-9:
+            run_elapsed = round(min(main_duration, run_elapsed + dt), 9)
+
+    failed_encounter = main_boss if main_boss is not None else mini_boss
+    if failed_encounter is not None and death_time is not None:
+        encounter_duration = wall_elapsed - failed_encounter["boss_start_wall_time"]
+        kind = str(failed_encounter["encounter_kind"])
+        final = bool(failed_encounter.get("is_final", False))
+        target_range = target_policy["final_boss_ttk_seconds"] if final else target_policy["mini_boss_ttk_seconds"] if kind == "MINI_BOSS" else target_policy["late_main_boss_ttk_seconds"] if failed_encounter["boss_start_run_clock"] >= 1200 else target_policy["first_slice_boss_ttk_seconds"]
+        boss_results.append({
+            "checkpoint_id": failed_encounter["checkpoint_id"],
+            "boss_id": failed_encounter["enemy_id"],
+            "encounter_kind": kind,
+            "status": "RUN_FAILED_DURING_ENCOUNTER",
+            "spawn_time": round(failed_encounter["boss_start_run_clock"], 3),
+            "encounter_start_wall_time": round(failed_encounter["boss_start_wall_time"], 3),
+            "defeat_time": None,
+            "defeat_time_wall_seconds": None,
+            "defeat_time_run_clock_seconds": None,
+            "ttk_seconds": None,
+            "target_range": list(target_range),
+            "target_pass": False,
+            "within_post_run_window": False,
+        })
+        clock_events.append({
+            "checkpoint_id": failed_encounter["checkpoint_id"],
+            "encounter_kind": kind,
+            "checkpoint_seconds": round(failed_encounter["boss_start_run_clock"], 3),
+            "run_clock_stop_seconds": round(failed_encounter["boss_start_run_clock"], 3) if kind == "MAIN_BOSS" else None,
+            "run_clock_resume_seconds": None,
+            "encounter_duration_seconds": round(encounter_duration, 3),
+            "run_clock_advanced_during_encounter": kind == "MINI_BOSS",
+            "wave_xp_spawn_clock_advanced_during_encounter": kind == "MINI_BOSS",
+            "status": "RUN_FAILED_DURING_ENCOUNTER",
+        })
+
+    ordinary_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "ordinary"]
+    elite_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] in ("elite", "elite_variant")]
+    elite_variant_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "elite_variant"]
+    ttk_by_enemy: Dict[str, List[float]] = {}
+    for row in kills:
+        ttk_by_enemy.setdefault(row["enemy_id"], []).append(row["focused_ttk_seconds"])
+    cap_stats = {
+        "max_occupancy": max(cap_samples) if cap_samples else 0,
+        "mean_occupancy": round(statistics.mean(cap_samples), 3) if cap_samples else 0.0,
+        "p95_occupancy": percentile([float(value) for value in cap_samples], 0.95),
+        "cap_seconds": round(cap_seconds, 3),
+        "occupancy_fraction_of_sample": round(statistics.mean(cap_samples) / max(1, max(integer(b["active_cap"]) for b in model["wave_bands"])), 6) if cap_samples else 0.0,
+        "suppressed_spawn_attempts": suppressed_spawn_attempts,
+        "sample_clock": "RUN_CLOCK_EXCLUDING_MAIN_BOSS_ENCOUNTER_PAUSE",
+        "sample_seconds": round(sum(dt for _ in cap_samples), 3),
+    }
+    reward_balance = sum_ledger(ledger)
+    survived = death_time is None
+    run_completed = survived and state["final_boss_outcome_valid"] and main_boss is None and mini_boss is None and next_main_index >= len(main_schedule) and next_mini_index >= len(mini_schedule) and run_elapsed >= main_duration - 1e-9
+    return {
+        "status": "SIMULATED_MODEL_ONLY",
+        "source_revision": model["source_of_truth"]["source_revision"],
+        "architecture_revision": model["architecture_contract"]["source_revision"],
+        "seed": seed,
+        "profile": profile_name,
+        "hero_id": hero_id,
+        "model_inputs": {
+            "profile_meta_ranks": profile["meta_ranks"],
+            "profile_stats": {key: round(value, 6) for key, value in profile_stats.items()},
+            "proposed_build": {
+                "weapon_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_weapon_id"],
+                "passive_id": model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]["starting_passive_id"],
+            },
+        },
+        "progression": {
+            "final_level_at_30_minutes": state["level"],
+            "final_xp_at_30_minutes": round(state["xp"], 3),
+            "levels_at_checkpoints": {key: checkpoint_levels.get(key) for key in ("120", "300", "600", "900", "1200", "1500", "1800")},
+            "xp_at_30_minutes": round(state["xp"], 3),
+            "xp_dropped": state["xp_dropped"],
+            "xp_collected": state["xp_collected"],
+            "xp_pending_at_end": sum(drop["value"] for drop in state["pending_xp_drops"]),
+            "level_up_times": level_times,
+            "upgrade_events": upgrade_events,
+            "xp_formula_status": "CANON_FORMULA_SIMULATED_WITH_PROPOSED_30M_PICKUP_CAPACITY",
+        },
+        "combat": {
+            "ordinary_kills": len(ordinary_ttks),
+            "elite_kills": len(elite_ttks),
+            "elite_variant_kills": len(elite_variant_ttks),
+            "ordinary_ttk_seconds": {"mean": percentile(ordinary_ttks, 0.5), "p95": percentile(ordinary_ttks, 0.95), "target": list(target_policy["ordinary_ttk_seconds"])},
+            "elite_ttk_seconds": {"mean": percentile(elite_ttks, 0.5), "p95": percentile(elite_ttks, 0.95), "target": list(target_policy["elite_ttk_seconds"])},
+            "elite_variant_ttk_seconds": {"mean": percentile(elite_variant_ttks, 0.5), "p95": percentile(elite_variant_ttks, 0.95), "target": list(target_policy["elite_variant_ttk_seconds"])},
+            "ttk_by_enemy_seconds": {enemy_id: {"median": percentile(values, 0.5), "p95": percentile(values, 0.95), "samples": len(values)} for enemy_id, values in sorted(ttk_by_enemy.items())},
+            "boss_results": boss_results,
+            "synergy_id": state["synergy_id"],
+            "claimed_synergy_count": state["claimed_synergy_count"],
+            "fallback_damage_bonus": round(state["fallback_damage_bonus"], 6),
+            "chest_results": chest_results,
+            "artifact_offer_results": artifact_offer_results,
+            "elite_pack_offer_results": elite_pack_offer_results,
+        },
+        "risk": {
+            "survived_main_run": survived,
+            "death_time_seconds": death_time,
+            "death_time_wall_seconds": death_time,
+            "death_time_run_clock_seconds": death_run_clock,
+            "min_hp": round(min_hp, 3),
+            "max_hp": round(profile_stats["max_hp"], 3),
+            "total_incoming_damage": round(total_incoming, 3),
+            "peak_incoming_dps": round(peak_incoming_step, 3),
+            "max_single_incoming_hit": round(max_single_incoming_hit, 3),
+            "max_single_hit_fraction_of_base_hp": round(max_single_incoming_hit / number(model["hero_stats"]["base"]["hp"]), 6),
+            "telegraph_bound_target": number(target_policy["incoming_untelegraphed_hit_fraction_of_base_hp"]),
+            "conservative_single_hit_bound_pass": max_single_incoming_hit / number(model["hero_stats"]["base"]["hp"]) <= number(target_policy["incoming_untelegraphed_hit_fraction_of_base_hp"]),
+        },
+        "waves": {
+            "active_cap": cap_stats,
+            "boss_encounter_wall_seconds": round(sum(event["encounter_duration_seconds"] for event in clock_events), 3),
+            "main_boss_encounter_wall_seconds": round(sum(event["encounter_duration_seconds"] for event in clock_events if event["encounter_kind"] == "MAIN_BOSS"), 3),
+            "mini_boss_encounter_wall_seconds": round(sum(event["encounter_duration_seconds"] for event in clock_events if event["encounter_kind"] == "MINI_BOSS"), 3),
+            "visible_run_clock_final_seconds": round(run_elapsed, 3),
+            "wall_clock_final_seconds": round(wall_elapsed, 3),
+            "boss_clock_events": clock_events,
+            "boss_wave_ramp": {"status": simulation["boss_wave_ramp"]["status"], "applies_to": simulation["boss_wave_ramp"]["applies_to"], "phase_order": simulation["boss_wave_ramp"]["phase_order"], "samples": wave_ramp_samples(model)},
+            "boss_interruption_checkpoints": [
+                {"time_seconds": number(row["time_seconds"]), "factor_at_checkpoint": round(boss_interruption_factor(model, number(row["time_seconds"])), 6), "factor_at_plus_8": round(boss_interruption_factor(model, number(row["time_seconds"]) + number(simulation["boss_interruption"]["suppression_seconds"])), 6)}
+                for row in main_schedule
+            ],
+            "mini_boss_clock_policy": mini_clock_policy,
+        },
+        "rewards": {
+            "ledger_balance": reward_balance,
+            "reward_events": reward_results,
+            "idempotency_pass": all(not attempt.get("duplicate_accepted", False) for event in reward_results for attempt in event.get("attempts", [])),
+            "chest_idempotency_pass": all(event.get("duplicate_attempt_idempotent", True) for event in chest_results),
+            "final_boss_chest_offer_created": any(event.get("checkpoint_id") == "boss_final_30" and event.get("outcome") not in ("NO_CHEST", "IDEMPOTENT_NOOP") for event in chest_results),
+            "first_clear_artifact_offer_created": bool(artifact_offer_results),
+            "elite_pack_offer_count": len(elite_pack_offer_results),
+            "elite_pack_offer_idempotency_pass": all(
+                event.get("offer_created", False) or event.get("duplicate_attempt_idempotent", False)
+                for event in elite_pack_offer_results
+            ),
+            "artifact_offer_choice_count": integer(simulation["artifact_offer_model"]["choice_count"]) if artifact_offer_results else 0,
+        },
+        "run_outcome": {
+            "completed_model_run": run_completed,
+            "main_run_clock_duration_seconds": round(main_duration, 3),
+            "visible_run_clock_final_seconds": round(run_elapsed, 3),
+            "wall_clock_duration_seconds": round(wall_elapsed, 3),
+            "main_boss_clock_pause_seconds": round(sum(event["encounter_duration_seconds"] for event in clock_events if event["encounter_kind"] == "MAIN_BOSS"), 3),
+            "mini_boss_clock_advance_seconds": round(sum(event["encounter_duration_seconds"] for event in clock_events if event["encounter_kind"] == "MINI_BOSS"), 3),
+        },
+        "runtime_boundary": {
+            "godot_runtime_executed": False,
+            "collision_and_telegraph_evidence": "NOT_IMPLEMENTED",
+            "android_fps_evidence": "BLOCKED",
+            "model_status": "SIMULATED_MODEL_ONLY_WITH_PROPOSED_30M_INPUTS",
+        },
+        "clock_policy": {
+            "main": clock_policy,
+            "mini": mini_clock_policy,
+            "main_bosses_freeze_visible_clock": True,
+            "mini_bosses_advance_visible_clock": True,
+            "wave_xp_spawn_clock_advances_during_main_boss": False,
+            "wave_xp_spawn_clock_advances_during_mini_boss": True,
+        },
+        "provenance_boundary": {
+            "status": "PROPOSED_MODEL_ONLY",
+            "runtime_verified": False,
+            "architecture_sync": "BLOCKED",
+            "content_registry_sync": "BLOCKED",
+        },
+    }
+
+
 def run_all(model: Dict[str, Any], seeds: List[int]) -> Dict[str, Any]:
     profiles = list(model["simulation_model"]["heroes_and_profiles"]["profiles"].keys())
     heroes = list(model["simulation_model"]["heroes_and_profiles"]["heroes"].keys())
@@ -977,7 +1678,8 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
     if result["status"] != "SIMULATED_MODEL_ONLY":
         raise AssertionError("unexpected simulation status")
     expected_duration = number(model["simulation_model"]["main_run_duration_seconds"])
-    expected_bosses = len(model["boss_checkpoints"])
+    expected_bosses = len(main_checkpoints(model))
+    expected_minibosses = len(mini_checkpoints(model))
     for run in result["runs"]:
         if run["runtime_boundary"]["godot_runtime_executed"]:
             raise AssertionError("model simulator must not claim Godot runtime execution")
@@ -990,19 +1692,28 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
                 raise AssertionError("invalid boss spawn time")
         if not run["rewards"]["idempotency_pass"]:
             raise AssertionError("duplicate reward grant accepted")
-        if run["clock_policy"]["applies_to"] != "ALL_BOSS_CHECKPOINTS":
-            raise AssertionError("run result must expose the all-boss clock policy")
-        if run["clock_policy"]["run_clock_stops_at_boss_checkpoint"] is not True:
-            raise AssertionError("run clock stop policy drifted")
-        if run["clock_policy"]["wave_xp_spawn_clock_advances_during_encounter"] is not False:
-            raise AssertionError("wave/XP/spawn clock advanced during a boss encounter")
-        if run["risk"]["survived_main_run"] and len(run["waves"]["boss_clock_events"]) != expected_bosses:
-            raise AssertionError("surviving run must resolve every boss checkpoint")
+        if run["clock_policy"]["main_bosses_freeze_visible_clock"] is not True:
+            raise AssertionError("main-boss freeze policy drifted")
+        if run["clock_policy"]["mini_bosses_advance_visible_clock"] is not True:
+            raise AssertionError("mini-boss advance policy drifted")
+        if run["clock_policy"]["wave_xp_spawn_clock_advances_during_main_boss"] is not False:
+            raise AssertionError("wave/XP/spawn clock advanced during a main boss")
+        if run["clock_policy"]["wave_xp_spawn_clock_advances_during_mini_boss"] is not True:
+            raise AssertionError("wave/XP/spawn clock stopped during a mini-boss")
+        if run["risk"]["survived_main_run"]:
+            main_events = [event for event in run["waves"]["boss_clock_events"] if event["encounter_kind"] == "MAIN_BOSS"]
+            mini_events = [event for event in run["waves"]["boss_clock_events"] if event["encounter_kind"] == "MINI_BOSS"]
+            if len(main_events) != expected_bosses:
+                raise AssertionError("surviving run must resolve every main boss checkpoint")
+            if len(mini_events) != expected_minibosses:
+                raise AssertionError("surviving run must resolve every mini-boss checkpoint")
         for event in run["waves"]["boss_clock_events"]:
-            if event["run_clock_advanced_during_encounter"]:
-                raise AssertionError("visible run clock advanced during boss encounter")
-            if event["wave_xp_spawn_clock_advanced_during_encounter"]:
-                raise AssertionError("wave/XP/spawn clock advanced during boss encounter")
+            if event["encounter_kind"] == "MAIN_BOSS" and event["run_clock_advanced_during_encounter"]:
+                raise AssertionError("visible run clock advanced during a main boss")
+            if event["encounter_kind"] == "MAIN_BOSS" and event["wave_xp_spawn_clock_advanced_during_encounter"]:
+                raise AssertionError("wave/XP/spawn clock advanced during a main boss")
+            if event["encounter_kind"] == "MINI_BOSS" and not event["run_clock_advanced_during_encounter"]:
+                raise AssertionError("visible run clock stopped during a mini-boss")
         ramp_samples = run["waves"]["boss_wave_ramp"]["samples"]
         cycle_ids = sorted({sample["cycle_id"] for sample in ramp_samples})
         if len(cycle_ids) != expected_bosses - 1:
