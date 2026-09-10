@@ -1,59 +1,60 @@
-# Stage 08 — Artifacts
-Status: PLANNED.
+# Этап 08 — Артефакты
+Состояние этапа: PLANNED (запланирован).
 Артефакты и Кодекс реликвий.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — ten run artifacts
+## Контентный бриф v01 — десять артефактов забега
 
-Артефакты — отдельные run modifiers. Они не занимают weapon/passive slots, не являются pre-run loadout и не превращаются в безымянные flat passives.
+Артефакты — отдельные модификаторы забега. Они не занимают ячейки оружия или пассивки, не являются снаряжением до забега и не превращаются в безымянные плоские пассивки.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C2_ARTIFACTS.md |
-| visual route | SPRITE + VFX + UI_ART |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| offer source | ELITE_PACK или FIRST_CLEAR_REWARD |
-| offer rule | 3 cards → player selects 1 |
-| capacity | отдельный artifact collection; weapon/passive slot capacity не расходуется |
-| dependencies | ArtifactEffectSystem, typed semantic effect keys, Architecture source events, Balance coefficients |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источник | docs/agents/content-design/C2_ARTIFACTS.md |
+| визуальный маршрут | спрайт + визуальные эффекты + художественный интерфейс |
+| технический маршрут | SPRITE + VFX + UI_ART |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| источник предложения | ELITE_PACK или FIRST_CLEAR_REWARD |
+| правило предложения | 3 карточки → игрок выбирает 1 |
+| вместимость | отдельный набор артефактов; ячейки оружия и пассивок не расходуются |
+| зависимости | ArtifactEffectSystem, типизированные ключи эффектов, события архитектуры, числовой баланс |
 
-### Artifact catalogue
+### Каталог артефактов
 
-| stable artifact ID | name | effect family | trigger → target | observable combat result | semantic effect key |
+| Стабильный ID артефакта | Название | Вид эффекта | Событие → цель | Наблюдаемый результат | Ключ эффекта |
 |---|---|---|---|---|---|
-| artifact_jade_compass | Нефритовый компас | AURA | arena drop collected → nearby enemies and route | маршрут врагов слегка смещается к краю/от safe center; pickup остаётся видимым | aura.drop_route_compass |
-| artifact_mirror_shard | Грань зеркала | TRIGGERED_EFFECT | critical weapon hit → source hit zone | echo повторяет форму/направление исходного hit с отдельным timing | trigger.critical_echo |
-| artifact_phoenix_feather | Перо феникса | TRIGGERED_EFFECT | elite defeated → enemies crossing path | поэтапная полоса углей проходит от death point к threat cluster и затухает | trigger.elite_ember_path |
-| artifact_frost_bead | Ледяная бусина | WEAPON_MODIFIER | slow/freeze applied → controlled target and nearby area | ледяная метка consumed первым eligible hit и создаёт frost ring | modifier.control_bloom |
-| artifact_bell_fragment | Осколок колокола | TRIGGERED_EFFECT | post-mitigation guarded hit → nearby threats | resonance ring заполняется и по threshold даёт bounded knockback/interruption | trigger.guard_resonance |
-| artifact_lotus_seed | Семя лотоса | TRIGGERED_EFFECT | full-health heal/overheal → next eligible incoming hit | petal charge смягчает следующее допустимое попадание и исчезает | trigger.overheal_ward |
-| artifact_moon_crown | Лунная корона | TARGET_MODIFIER | boss phase started → current boss phase | crown mark меняет state после resolve phase telegraph, не на spawn | target.boss_phase_window |
-| artifact_black_bead | Чёрная бусина | WEAPON_MODIFIER | eligible elite weapon hit → elite/last eligible weapon source | bead меняет orientation; следующий event показывает PULL или BURST до resolve | modifier.elite_polarity |
-| artifact_tideglass | Приливное стекло | AURA | arena drop collected → enemies crossing snapshot path | путь рисуется от drop point к hero в два beat и даёт один displacement/slow response | aura.drop_tide_path |
-| artifact_silent_lantern | Безмолвный фонарь | TARGET_MODIFIER | elite/high-threat target selected → one current threat | target mark показывает compact preview следующего attack telegraph, не отменяя его | target.threat_telegraph |
+| artifact_jade_compass | Нефритовый компас | AURA | получение предмета арены → ближайшие враги и маршрут | маршрут врагов слегка смещается к краю или от безопасного центра; предмет остаётся видимым | aura.drop_route_compass |
+| artifact_mirror_shard | Грань зеркала | TRIGGERED_EFFECT | критический удар оружия → зона исходного удара | отголосок повторяет форму и направление исходного удара с отдельным временем | trigger.critical_echo |
+| artifact_phoenix_feather | Перо феникса | TRIGGERED_EFFECT | поражение элиты → враги, пересекающие путь | полоса углей поэтапно проходит от места поражения к скоплению угрозы и затухает | trigger.elite_ember_path |
+| artifact_frost_bead | Ледяная бусина | WEAPON_MODIFIER | наложение замедления или заморозки → контролируемая цель и соседняя область | ледяная метка поглощается первым подходящим ударом и создаёт морозное кольцо | modifier.control_bloom |
+| artifact_bell_fragment | Осколок колокола | TRIGGERED_EFFECT | защищённое попадание после расчёта урона → ближайшие угрозы | кольцо резонанса заполняется и после порога даёт ограниченное отталкивание или прерывание | trigger.guard_resonance |
+| artifact_lotus_seed | Семя лотоса | TRIGGERED_EFFECT | лечение при полном здоровье или избыточное лечение → следующий подходящий входящий удар | заряд лепестка смягчает следующее допустимое попадание и исчезает | trigger.overheal_ward |
+| artifact_moon_crown | Лунная корона | TARGET_MODIFIER | начало фазы босса → текущая фаза босса | метка короны меняет состояние после разрешения сигнала фазы, а не при появлении | target.boss_phase_window |
+| artifact_black_bead | Чёрная бусина | WEAPON_MODIFIER | подходящий удар по элите → элита и последнее подходящее оружие | бусина меняет положение; перед разрешением следующего события виден режим PULL или BURST | modifier.elite_polarity |
+| artifact_tideglass | Приливное стекло | AURA | получение предмета арены → враги, пересекающие сохранённый путь | путь рисуется от предмета к герою в два такта и даёт один видимый ответ смещения или замедления | aura.drop_tide_path |
+| artifact_silent_lantern | Безмолвный фонарь | TARGET_MODIFIER | выбор элиты или приоритетной угрозы → одна текущая угроза | метка показывает краткий предварительный вид следующего сигнала атаки и не отменяет его | target.threat_telegraph |
 
-### Offer, stacking and failure rules
+### Правила предложения, накопления и отказа
 
-- Один offer всегда содержит три distinct artifact cards, затем игрок выбирает одну. Offer не добавляет weapon/passive card.
-- Повторный artifact не создаёт скрытый новый слот: показывается upgrade/duplicate state по C2 policy; exact refresh/fallback value — PENDING_BALANCE/PENDING_PRODUCT_DECISION.
-- Каждый effect имеет source event, target whitelist, cleanup/expiry, recursion guard и replay identity.
-- Artifact effect не меняет wallet напрямую. BOSS_CHEST предназначен для synergy/fallback, не для artifact offer.
-- ELITE_PACK и FIRST_CLEAR_REWARD — proposal sources; cadence, rarity, refresh и Codex unlock scope — PENDING_BALANCE/PENDING_ARCHITECTURE.
-- Runtime consumer proposal: ArtifactRegistry, ArtifactEffectSystem, ArtifactOffer projection, Codex.
+- Одно предложение всегда содержит три разные карточки артефактов, затем игрок выбирает одну. В предложение не добавляются карточки оружия или пассивок.
+- Повторный артефакт не создаёт скрытую новую ячейку: показывается состояние улучшения, повтора или резервной награды по политике C2; точная ценность — PENDING_BALANCE/PENDING_PRODUCT_DECISION.
+- Каждый эффект имеет событие-источник, список допустимых целей, очистку или окончание, защиту от рекурсии и ID повторного воспроизведения.
+- Эффект артефакта не меняет кошелёк напрямую. BOSS_CHEST предназначен для синергии или резервной награды, а не для предложения артефакта.
+- ELITE_PACK и FIRST_CLEAR_REWARD — предложенные источники; частота, редкость, повторное предложение и область действия Кодекса — PENDING_BALANCE/PENDING_ARCHITECTURE.
+- Предлагаемые потребители: ArtifactRegistry, ArtifactEffectSystem, ArtifactOffer, Codex.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: SPRITE для identity/icon, VFX для trigger response, UI_ART для offer/Codex;
-- stage_path: docs/mockups/08-artifacts/ и docs/mockups/17-artifact-ui/;
+- маршрут: SPRITE для образа и иконки, VFX для ответа на событие, UI_ART для карточки и Кодекса;
+- папки этапов: docs/mockups/08-artifacts/ и docs/mockups/17-artifact-ui/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — ArtifactRegistry + ArtifactEffectSystem + Artifact UI;
-- visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; crimson/violet только как role/status accent;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — ArtifactRegistry, ArtifactEffectSystem, интерфейс артефактов;
+- визуальный код: тёмный сине-серый, дымчато-бирюзовый, тёплый светлый, приглушённая латунь, мягкий нефрит; багровый и фиолетовый только как акцент роли или состояния;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
