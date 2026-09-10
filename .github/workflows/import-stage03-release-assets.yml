@@ -64,27 +64,7 @@ jobs:
               exit 0
             fi
 
-            request_payload="$(
-              python3 - "${REQUEST_FILE}" <<'PY'
-import json
-import re
-import sys
-from pathlib import Path
-
-data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-for key in ("release_tag", "asset_name"):
-    value = data.get(key)
-    if not isinstance(value, str) or not value:
-        raise SystemExit(f"request field {key!r} must be a non-empty string")
-    print(value)
-
-expected = data.get("expected_sha256", "")
-if expected:
-    if not isinstance(expected, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", expected):
-        raise SystemExit("request field 'expected_sha256' must be a 64-character hexadecimal SHA-256")
-print(expected)
-PY
-            )"
+            request_payload="$(jq -r '.release_tag, .asset_name, (.expected_sha256 // "")' "${REQUEST_FILE}")"
             mapfile -t request_values <<< "${request_payload}"
             if (( ${#request_values[@]} < 2 )); then
               echo "The Stage 03 import request is incomplete." >&2
@@ -93,6 +73,10 @@ PY
             release_tag="${request_values[0]}"
             asset_name="${request_values[1]}"
             expected_sha256="${request_values[2]:-}"
+            if [[ -z "${release_tag}" || -z "${asset_name}" ]]; then
+              echo "The Stage 03 import request has empty release_tag or asset_name." >&2
+              exit 1
+            fi
           else
             echo "Unsupported event: ${GITHUB_EVENT_NAME}" >&2
             exit 1
