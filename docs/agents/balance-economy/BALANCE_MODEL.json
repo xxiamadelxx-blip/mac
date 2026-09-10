@@ -306,8 +306,8 @@
           "enemy_mirror_fox",
           "enemy_bell_crab",
           "enemy_thread_doll",
-          "elite_stone_oni",
-          "elite_eclipse_serpent"
+          "enemy_stone_oni",
+          "enemy_eclipse_serpent"
         ],
         "status": "CANON",
         "source": "B1 section 4"
@@ -624,7 +624,7 @@
       }
     },
     {
-      "enemy_id": "elite_stone_oni",
+      "enemy_id": "enemy_stone_oni",
       "role": "slow_elite_telegraphed_aoe",
       "durability_multiplier": {
         "value": 7,
@@ -654,7 +654,7 @@
       }
     },
     {
-      "enemy_id": "elite_eclipse_serpent",
+      "enemy_id": "enemy_eclipse_serpent",
       "role": "fast_elite_trail_arcs",
       "durability_multiplier": {
         "value": 8,
@@ -1370,8 +1370,8 @@
           "enemy_mirror_fox": 0.08,
           "enemy_bell_crab": 0.07,
           "enemy_thread_doll": 0.07,
-          "elite_stone_oni": 0.04,
-          "elite_eclipse_serpent": 0.03
+          "enemy_stone_oni": 0.04,
+          "enemy_eclipse_serpent": 0.03
         },
         "wave_eclipse_15_20": {
           "enemy_ink_beetle": 0.18,
@@ -1382,8 +1382,8 @@
           "enemy_mirror_fox": 0.08,
           "enemy_bell_crab": 0.1,
           "enemy_thread_doll": 0.1,
-          "elite_stone_oni": 0.06,
-          "elite_eclipse_serpent": 0.06
+          "enemy_stone_oni": 0.06,
+          "enemy_eclipse_serpent": 0.06
         }
       },
       "composition_formula": "weights are normalized only if floating-point sum drifts from 1.0; one weighted choice per spawn budget unit",
@@ -1839,7 +1839,7 @@
         },
         "attack_type": "slow_beam"
       },
-      "elite_stone_oni": {
+      "enemy_stone_oni": {
         "base_hp": {
           "value": 70,
           "source": "PENDING_B1; B1 supplies durability 7.0 and elite TTK target",
@@ -1884,7 +1884,7 @@
         },
         "attack_type": "telegraphed_aoe"
       },
-      "elite_eclipse_serpent": {
+      "enemy_eclipse_serpent": {
         "base_hp": {
           "value": 75,
           "source": "PENDING_B1; B1 supplies durability 8.0 and elite TTK target",
@@ -2612,6 +2612,20 @@
         {
           "model_legacy_id": "wave_15_20",
           "wave_band_id": "wave_eclipse_15_20",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        }
+      ],
+      "enemy_id_mapping": [
+        {
+          "model_legacy_id": "elite_stone_oni",
+          "enemy_id": "enemy_stone_oni",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "model_legacy_id": "elite_eclipse_serpent",
+          "enemy_id": "enemy_eclipse_serpent",
           "status": "CANON",
           "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
         }
