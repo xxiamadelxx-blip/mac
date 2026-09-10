@@ -14,7 +14,7 @@ Naming: STAGE##_AREA_TYPE_v##.
 | technical_status | NOT_RUN |
 | artistic_status | PENDING |
 | runtime | NOT_PROMOTED |
-| source | C1/C2/C3 + screenshot reference supplied by owner |
+| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md; C2_ARTIFACTS.md; C3_MINI_BOSSES_AND_CHEST_FLOW.md + screenshot reference supplied by owner |
 | visual route | UI_ART + MOCKUP |
 | asset_id / family_id / candidate_id | null до Visual Lab intake |
 | target viewport | 390×844 safe-area reference; exact responsive rules — PENDING_VISUAL/ENGINEERING |
