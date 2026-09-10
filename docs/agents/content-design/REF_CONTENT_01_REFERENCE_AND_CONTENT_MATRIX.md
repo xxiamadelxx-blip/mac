@@ -1,171 +1,228 @@
-# REF-CONTENT-01 — MAC reference и content matrix
+# REF-CONTENT-01 — Оригинальная матрица контента MAC
 
-Status: PARTIAL / CONTENT_SPECIFIED_REFERENCE_ONLY  
-Task ID: REF-CONTENT-01  
-Parent HEAD: 9687d10a8e7cea4dd214a67fe63f11cdecf70e8f  
-Write scope: docs/agents/content-design/ only
+Статус пакета: `PARTIAL / CONTENT_SPECIFIED`
+Идентификатор задачи: `REF-CONTENT-01`
+Parent HEAD: `4b081f677d0ffdfc7037146cd3160457162a2186`
+Разрешённый каталог: `docs/agents/content-design/`
 
-Этот срез не вводит новые content IDs. Он собирает в одну проверяемую матрицу уже существующие MAC IDs из C1–C3 и Stage 04, добавляет reference provenance и явно фиксирует unresolved reconciliation. Поэтому для этого файла не существует нового ID, который можно было бы ошибочно считать approved. Existing records остаются CONTENT_SPECIFIED или PROPOSED согласно их исходным документам.
+Этот документ фиксирует результат разработки контента и границы передачи. Он не является разрешением на исполнение, баланс или производство графики.
 
-Runtime approval: NOT_REQUESTED  
-Balance lock: NOT_GRANTED  
-Artistic approval: PENDING  
-Runtime implementation: NOT_CHANGED  
-Binary/mockup changes: NONE
+- Runtime approval: `NOT_REQUESTED`
+- Balance lock: `NOT_GRANTED`
+- Artistic approval: `PENDING`
+- Runtime implementation: `NOT_CHANGED`
+- PNG/SVG и мокапы: `NOT_CREATED`
+- Новые ID в рамках этой задачи: нет; уже предложенные записи явно остаются `PROPOSED`
 
-## 1. Правило оригинальности
+## 1. Цель, пользователь и критерии успеха
 
-Все MAC названия, роли, механики и короткие описания в следующих таблицах являются самостоятельным контентным дизайном Moonveil: Eclipse. Указанные ниже внешние репозитории использовались только как structural reference для разделения ответственности:
+**Цель:** дать агенту баланса, архитектуре/исполнению и Visual Lab одну самостоятельную матрицу оригинального контента MAC с понятными ролями, тегами, зависимостями, точками предложения/появления и границами ответственности.
 
-- XP pickup → threshold/level-up → separate offer;
-- time-keyed composition/density;
-- отдельный boss или special encounter;
-- typed weapon/projectile/zone lifecycle;
-- отдельный reward/chest path.
+**Пользователь результата:** игрок должен за короткое описание понять, зачем нужен предмет, какую опасность он создаёт и какое решение предлагает; следующий агент должен получить стабильный ID и проверяемый контракт без догадок.
 
-Из внешних проектов не перенесены числа, IDs, названия, персонажи, описания, изображения, loot odds или asset paths.
+**Режим работы:** продуктовая спецификация контента, проверка зависимостей, подготовка межагентской передачи.
 
-## 2. Evidence по разрешённым reference repositories
+Критерии успеха:
 
-| Репозиторий и прочитанные файлы | Наблюдаемый общий паттерн | MAC application | Что не импортировано |
+1. Матрица содержит 10 оружий-способностей, 10 общих пассивок забега, 10 прямых синергий, 10 артефактов, 10 защищённых записей противников и 4 базовых записи боссов.
+2. Каждая пассивка забега даёт общую выгоду билду; связанное оружие используется только как `synergy_anchor` для проверки эволюции.
+3. У каждой связи указаны роль, теги, точка предложения/появления, потребители и незакрытые числовые поля.
+4. Указаны два предложенных расширения главных боссов и пять предложенных мини-боссов действующего конверта 30 минут; они не выдаются за утверждённые записи исполнения.
+5. Ни один внешний проект не является источником названий, персонажей, описаний, чисел, изображений, шансов выпадения или ассетов.
+
+## 2. Правило оригинальности и граница источников
+
+Четыре разрешённых репозитория использовались только для анализа общих способов разделить игровые обязанности: сбор опыта и переход уровня, отдельное предложение улучшений, таблица состава волн, специальная встреча, жизненный цикл снаряда/зоны и отдельный путь награды. Все названия, фантазии, роли, теги и поведение ниже написаны для Moonveil: Eclipse.
+
+Из внешних проектов не перенесены значения параметров, имена, герои, противники, боссы, тексты, изображения, таблицы добычи и пути ассетов.
+
+### Доказательства по разрешённым репозиториям
+
+| Репозиторий и зафиксированная ревизия | Проверенные файлы | Наблюдение общего уровня | Граница применения в MAC |
 |---|---|---|---|
-| [Vampire clone: ExperienceManager](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/main/scenes/managers/experience_manager.gd), [UpgradeManager](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/main/scenes/managers/upgrade_manager.gd), [EnemyManager](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/main/scenes/managers/enemy_manager.gd), [ExperienceVial](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/main/scenes/game_objects/experience_vial/experience_vial.gd) | XP collection, level transition, weighted upgrade pool, enemy composition and boss path are separate responsibilities; pickup has its own collect/cleanup lifecycle | ProgressionSystem, UpgradeOfferSystem, WaveDirector, BossDirector и XPDrop остаются раздельными MAC consumers | Ни один foreign value, ID, enemy, boss или asset |
-| [20 Minutes: PlayerController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/PlayerController.java), [AbilityController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/AbilityController.java), [MonsterController](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java), [GameView](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/view/GameView.java) | XP pickup can trigger a level state; ability choice is a separate state with three visible choices; normal spawning and a special encounter are distinct paths | MAC keeps three-card upgrade/artifact presentation, separate encounter records and explicit checkpoint ownership | Не копируются level curve, timers, monster types, UI text или names |
-| [Blaze Magic: enemies.py](https://github.com/Blaze-master/Magic_Survival_Clone/blob/master/enemies.py), [magic.py](https://github.com/Blaze-master/Magic_Survival_Clone/blob/master/magic.py), [objects.py](https://github.com/Blaze-master/Magic_Survival_Clone/blob/master/objects.py), [artifacts.py](https://github.com/Blaze-master/Magic_Survival_Clone/blob/master/artifacts.py) | Enemy data and time-keyed spawn composition are external to object behavior; weapon records describe lifecycle properties; projectiles, lines and zones have distinct object lifecycles; artifact module is a separate boundary | MAC content stays data-driven, with weapon/zone/telegraph/reward consumers named in each entry | Не копируются tables, coefficients, timing, sprites или artifact emptiness as a MAC rule |
-| [syncXL Magic: gamedata.py](https://github.com/syncXL/Magic_Survival_Clone/blob/master/gamedata.py), [magic.py](https://github.com/syncXL/Magic_Survival_Clone/blob/master/magic.py), [objects.py](https://github.com/syncXL/Magic_Survival_Clone/blob/master/objects.py), [artifacts.py](https://github.com/syncXL/Magic_Survival_Clone/blob/master/artifacts.py) | A smaller fork keeps global run data, magic definitions and runtime object shapes separate; field items/chests and attack objects remain distinct | MAC preserves one registry boundary and separate XP, chest and artifact channels | Не копируются fork differences, field sizes, counts, values или implementation defects |
+| [murparreira/vampire-survivors-clone-godot-4, `ea00bccf518b4a6084870e313e10aaad99746540`](https://github.com/murparreira/vampire-survivors-clone-godot-4/tree/ea00bccf518b4a6084870e313e10aaad99746540) | [`experience_manager.gd`](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/ea00bccf518b4a6084870e313e10aaad99746540/scenes/managers/experience_manager.gd), [`upgrade_manager.gd`](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/ea00bccf518b4a6084870e313e10aaad99746540/scenes/managers/upgrade_manager.gd), [`enemy_manager.gd`](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/ea00bccf518b4a6084870e313e10aaad99746540/scenes/managers/enemy_manager.gd), [`experience_vial.gd`](https://github.com/murparreira/vampire-survivors-clone-godot-4/blob/ea00bccf518b4a6084870e313e10aaad99746540/scenes/game_objects/experience_vial/experience_vial.gd) | Опыт, улучшения, состав врагов, особая встреча и жизненный цикл подбираемого опыта разведены по отдельным узлам. | В MAC сохраняются отдельные `ProgressionSystem`, `UpgradeOfferSystem`, `WaveDirector`, `BossDirector` и `XPDrop`; чужие значения не используются. |
+| [ParsaSabzei/20-Minutes-till-dawn, `fe437437a369b620e4c32c36ce2826a14f911230`](https://github.com/ParsaSabzei/20-Minutes-till-dawn/tree/fe437437a369b620e4c32c36ce2826a14f911230) | [`PlayerController.java`](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/fe437437a369b620e4c32c36ce2826a14f911230/core/src/main/java/ap/project/controller/PlayerController.java), [`AbilityController.java`](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/fe437437a369b620e4c32c36ce2826a14f911230/core/src/main/java/ap/project/controller/AbilityController.java), [`MonsterController.java`](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/fe437437a369b620e4c32c36ce2826a14f911230/core/src/main/java/ap/project/controller/MonsterController.java), [`GameView.java`](https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/fe437437a369b620e4c32c36ce2826a14f911230/core/src/main/java/ap/project/view/GameView.java) | Подбор опыта переводит игру в выбор способности; обычный спавн и особая встреча идут разными путями; состояние выбора отделено от обычной игры. | В MAC закреплены три карточки предложения, отдельные encounter-записи и отдельные каналы сундука босса и артефакта. Чужие таймеры, тексты и названия не используются. |
+| [Blaze-master/Magic_Survival_Clone, `27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa`](https://github.com/Blaze-master/Magic_Survival_Clone/tree/27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa) | [`enemies.py`](https://github.com/Blaze-master/Magic_Survival_Clone/blob/27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa/enemies.py), [`magic.py`](https://github.com/Blaze-master/Magic_Survival_Clone/blob/27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa/magic.py), [`objects.py`](https://github.com/Blaze-master/Magic_Survival_Clone/blob/27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa/objects.py), [`artifacts.py`](https://github.com/Blaze-master/Magic_Survival_Clone/blob/27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa/artifacts.py) | Состав врагов и временные группы спавна отделены от объектов поведения; в данных оружия различаются свойства снаряда, линии и зоны. | MAC использует собственную семантику оружия, зон и телеграфов; пустой внешний модуль артефактов не стал основанием для содержания MAC. |
+| [syncXL/Magic_Survival_Clone, `87f460c5385f93f785ec4310edbaa9039f078863`](https://github.com/syncXL/Magic_Survival_Clone/tree/87f460c5385f93f785ec4310edbaa9039f078863) | [`gamedata.py`](https://github.com/syncXL/Magic_Survival_Clone/blob/87f460c5385f93f785ec4310edbaa9039f078863/gamedata.py), [`magic.py`](https://github.com/syncXL/Magic_Survival_Clone/blob/87f460c5385f93f785ec4310edbaa9039f078863/magic.py), [`objects.py`](https://github.com/syncXL/Magic_Survival_Clone/blob/87f460c5385f93f785ec4310edbaa9039f078863/objects.py), [`artifacts.py`](https://github.com/syncXL/Magic_Survival_Clone/blob/87f460c5385f93f785ec4310edbaa9039f078863/artifacts.py) | Глобальные данные, определения атак, объекты поля, границы спавна и сундуки имеют разные области ответственности. | В MAC это применено как единый data-driven реестр с раздельными `XP`, `BOSS_CHEST`, `ELITE_CHEST` и `ArtifactOfferSystem`; код внешней копии не переносится. |
 
-Источник MAC-контрактов: C1_WEAPONS_PASSIVES_SYNERGIES.md, C2_ARTIFACTS.md, C3_MINI_BOSSES_AND_CHEST_FLOW.md, Stage 04 enemy manifests, GAME_MANIFEST.md и FIRST_RUN_DATA_CONTRACT.json. Reference repositories имеют статус REFERENCE_ONLY.
+## 3. Матрица: оружие-способность → общая пассивка → синергия
 
-## 3. Weapon ability → passive → synergy
+Под «способностью» здесь понимается автоматически применяемое оружие забега. Начальные значения урона, частоты, дальности, размера, длительности и ограничения производительности принадлежат агенту баланса и в этот документ не входят.
 
-В этой таблице ability означает автоматически применяемое run weapon. Hero active abilities и их runtime IDs в этот срез не добавляются: они остаются отдельным protected/runtime contract. Точные damage, cadence, cooldown, range, quantity, duration, chance и power budget принадлежат Balance Agent и здесь не назначаются.
-
-| Weapon ID / ability | Role и player decision | Passive ID / axis | Synergy ID / transformed behavior | Tags | Dependencies | Status |
+| Оружие / способность | Роль и решение игрока | Общая пассивка | Синергия и новое поведение | Теги | Зависимости | Точка предложения / статус |
 |---|---|---|---|---|---|---|
-| weapon_moon_blade / Лунный клинок | close-area mobility; вести орду по касательной или держать защитную дугу | passive_wind_of_travel / movement и lane choice | synergy_moon_dance / орбитальные дорожки меняют ценность движения | close, arc, movement, lane | BuildInventory; CombatSystem; SynergyEvaluator; Visual Lab weapon family | EXISTING_CONTENT_SPECIFIED |
-| weapon_jade_talismans / Нефритовые талисманы | ranged control; распределять метки по группе или удерживать priority target | passive_jade_focus / mark consistency | synergy_heavenly_seals / цепочка печатей с visited-set | ranged, mark, homing, chain | MarkStore; CombatSystem; UpgradeOfferSystem; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_crimson_flame_fan / Веер багрового пламени | area/status; закрыть опасный коридор очагом или оставить путь для движения | passive_ember_heart / burn/status axis | synergy_phoenix_sky / phoenix lane проходит через разрешённые ember zones | cone, burn, zone, lane | StatusSystem; ZoneStore; TelegraphResolver; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_frost_pearl / Ледяная жемчужина | control; удержать кластер в выгодной точке или уйти до нового telegraph | passive_frost_thread / control link | synergy_winter_palace / временная морозная lattice с безопасным маршрутом | slow, burst, lattice, control | StatusSystem; ZoneStore; CombatSystem; Boss immunity policy | EXISTING_CONTENT_SPECIFIED |
-| weapon_thunder_needles / Иглы грома | burst/chain; собрать допустимую плотность или не терять чтение угроз | passive_heavenly_seal / conductive/precision axis | synergy_heavenly_judgment / видимый overhead strike по marked nodes | chain, conductive, burst, priority | CombatSystem; MarkStore; TelegraphResolver; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_spirit_bell / Колокол духов | defense/utility; остаться возле ward или выйти за XP/priority target | passive_iron_bell / guard/resonance axis | synergy_guardian_bell / движущийся ward rim для допустимых снарядов | ward, guard, pulse, displacement | HealthSystem; ProjectileResolver; CombatSystem; cleanup registry | EXISTING_CONTENT_SPECIFIED |
-| weapon_fox_mirage / Лисий мираж | skirmish/route; прокладывать echoes по коридору или флангу | passive_mirror_shard / delayed echo axis | synergy_nine_reflections / staggered mirror echoes с source attribution | mirror, echo, corridor, delayed | CombatSystem; EchoGuard; VFX cleanup; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_lotus_mines / Лотосовые мины | area denial; заранее создать sanctuary или отказаться от опасной позиции | passive_lotus_heart / health/healing conversion | synergy_lotus_sanctuary / временное поле контроля с разрешённым recovery hook | mine, zone, sanctuary, healing | ZoneStore; HealthSystem; ArenaDrop/Healing contract; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_star_bow / Звёздный лук | ranged priority; связать дальние точки или локализовать плотную группу | passive_star_compass / critical rhythm | synergy_constellation_rain / anchors соединяются и дают читаемый rain path | ranged, anchor, line, precision | TargetingSystem; TelegraphResolver; CombatSystem; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
-| weapon_black_eclipse_umbrella / Чёрный зонт затмения | utility/control; кластеризовать допустимых врагов и drops или сохранить pull для elite | passive_spirit_lens / pickup/information utility | synergy_eclipse_vortex / ограниченная воронка и contained burst | pull, pickup, vortex, utility | Magnet/Progression; TargetFilter; CombatSystem; SynergyResolver | EXISTING_CONTENT_SPECIFIED |
+| `weapon_moon_blade` — Лунный клинок | Ближняя дуга; вести толпу по касательной или менять направление, чтобы не застрять в контакте | `passive_wind_of_travel` — улучшает качество перемещения и выбор линии для всего билда | `synergy_moon_dance` — орбитальные дорожки меняют ценность движения и оставляют читаемый безопасный ритм | `close`, `arc`, `movement`, `lane` | `BuildInventory`, `CombatSystem`, `SynergyResolver`, `TelegraphResolver` | `STARTING_LOADOUT`/`UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_jade_talismans` — Нефритовые талисманы | Дальний контроль; распределять метки по группе или удерживать приоритетную цель | `passive_jade_focus` — повышает стабильность выбора и разрешения меток у всех подходящих источников | `synergy_heavenly_seals` — цепь печатей проходит по ещё не посещённым узлам и не зацикливается | `ranged`, `mark`, `homing`, `chain` | `MarkStore`, `CombatSystem`, `UpgradeOfferSystem`, `SynergyResolver` | `STARTING_LOADOUT`/`UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_crimson_flame_fan` — Веер багрового пламени | Конус и очаги; закрыть опасный коридор или оставить проход для движения | `passive_ember_heart` — поддерживает осмысленность состояний и зон для всех допустимых источников | `synergy_phoenix_sky` — огненный след проходит через разрешённые очаги и связывает разрозненные зоны | `cone`, `burn`, `zone`, `lane` | `StatusSystem`, `ZoneStore`, `TelegraphResolver`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_frost_pearl` — Ледяная жемчужина | Контроль группы; удержать кластер в выгодной точке или уйти до нового телеграфа | `passive_frost_thread` — связывает контрольные эффекты всего билда, не выключая предупреждения | `synergy_winter_palace` — создаёт временную морозную решётку с видимым безопасным маршрутом | `slow`, `burst`, `lattice`, `control` | `StatusSystem`, `ZoneStore`, `CombatSystem`, `BossImmunityPolicy` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_thunder_needles` — Иглы грома | Всплеск и цепь; собрать допустимую плотность целей, сохраняя чтение угроз | `passive_heavenly_seal` — выстраивает общий порядок точных попаданий и уязвимостей | `synergy_heavenly_judgment` — видимый удар сверху проходит по отмеченным узлам без скрытого урона за экраном | `chain`, `conductive`, `burst`, `priority` | `CombatSystem`, `MarkStore`, `TelegraphResolver`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_spirit_bell` — Колокол духов | Защита и толчок; остаться у оберега или выйти за опытом и приоритетной целью | `passive_iron_bell` — даёт всему билду читаемое окно защиты и стойкости | `synergy_guardian_bell` — движущийся край оберега отталкивает допустимые угрозы и закрывается после окна | `ward`, `guard`, `pulse`, `displacement` | `HealthSystem`, `ProjectileResolver`, `CombatSystem`, `CleanupRegistry` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_fox_mirage` — Лисий мираж | Манёвр и линия; прокладывать атаки в коридор или во фланг, а не всегда в ближайшую цель | `passive_mirror_shard` — разрешает ограниченное повторение подходящих попаданий с защитой от рекурсии | `synergy_nine_reflections` — оставляет отложенные отражения с указанием источника и самостоятельным завершением | `mirror`, `echo`, `corridor`, `delayed` | `CombatSystem`, `EchoGuard`, `VFXCleanup`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_lotus_mines` — Лотосовые мины | Отложенная зона; заранее занять место или отказаться от него перед опасным телеграфом | `passive_lotus_heart` — связывает здоровье и разрешённое лечение как общий выбор выживания | `synergy_lotus_sanctuary` — мины объединяются во временное поле контроля с ограниченным восстановлением | `mine`, `zone`, `sanctuary`, `healing` | `ZoneStore`, `HealthSystem`, `HealingSource`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_star_bow` — Звёздный лук | Приоритетная дальняя цель; соединять дальние точки или собрать плотную группу | `passive_star_compass` — задаёт общий ритм точных ударов для всех источников, допускающих крит | `synergy_constellation_rain` — якоря соединяются, затем по линиям проходит видимый дождь стрел | `ranged`, `anchor`, `line`, `precision` | `TargetingSystem`, `TelegraphResolver`, `CombatSystem`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
+| `weapon_black_eclipse_umbrella` — Чёрный зонт затмения | Стягивание и сбор; объединить допустимую угрозу или сохранить притяжение для элиты | `passive_spirit_lens` — улучшает чтение и сбор подходящих ресурсов без прохода сквозь стены | `synergy_eclipse_vortex` — ограниченная воронка стягивает разрешённых врагов и предметы, затем схлопывается | `pull`, `pickup`, `vortex`, `utility` | `MagnetSystem`, `TargetFilter`, `CombatSystem`, `SynergyResolver` | `UPGRADE_OFFER`; `EXISTING_CONTENT_SPECIFIED` |
 
-Общий gate для десяти пар: weapon max level 6, passive max rank 5, matching pair, weapon не evolved, non-final BOSS_CHEST, encounter kind MAIN_BOSS или MINI_BOSS и общий лимит claims не выше пяти. Эти условия — существующий MAC content/architecture contract; дополнительные числовые правила остаются PENDING_BALANCE или PENDING_PRODUCT_DECISION.
+### Правило общих пассивок
 
-## 4. Run passives и их dependency rule
+Все 10 `passive_*` занимают временные слоты пассивок, но их эффект относится к общему билду и к явно разрешённым источникам, а не только к парному оружию. Связь с одним оружием хранится как `synergy_anchor` и нужна для проверки конкретной эволюции. Она не создаёт скрытого множителя только для этого оружия.
 
-Все десять run-passives являются общими модификаторами билда, занимают passive slot и не усиливают скрыто только парное оружие. Weapon ID используется как synergy anchor, а не как источник эффекта passive.
+Общее условие эволюции: оружие достигло уровня 6, пассивка достигла ранга 5, оружие ещё не эволюционировано, пара совпадает по `synergy_id`, источник — нефинальный `BOSS_CHEST`, `encounter_kind` равен `MAIN_BOSS` или `MINI_BOSS`, а число подтверждённых синергий в забеге меньше 5. Числовой вклад и кривую рангов закрепляет агент баланса.
 
-| Passive ID | Axis и readable promise | Main dependencies | Balance-owned fields | Status |
-|---|---|---|---|---|
-| passive_wind_of_travel | движение меняет качество lane и следующий выбор позиции | StatsCalculator; MovementSystem | derived move/trajectory values, caps, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_jade_focus | стабильнее удерживать и разрешать marks | StatsCalculator; MarkStore | mark response, eligible tags, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_ember_heart | burn/status остаётся осмысленной зоной решения | StatsCalculator; StatusSystem; ZoneStore | status response, zone interaction, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_frost_thread | control effects связывают поток, но не выключают telegraphs | StatsCalculator; StatusSystem; TelegraphResolver | slow/link response, immunity, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_heavenly_seal | conductive hit открывает ограниченное precision решение | StatsCalculator; CombatSystem | charge/crit interaction, source tags, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_iron_bell | guard превращает один рискованный hit в читаемый resonance choice | StatsCalculator; HealthSystem | guard/resonance rule, cap, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_mirror_shard | eligible hit может дать задержанный echo без рекурсии | CombatSystem; EchoGuard | trigger rule, delay, echo cap, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_lotus_heart | здоровье и разрешённое лечение создают bounded survival choice | HealthSystem; HealingSource | max HP/heal/ward fields, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_star_compass | серия обычных hits открывает один общий precision moment | CombatSystem; CritResolver | sequence/window/reset, rank curve | EXISTING_CONTENT_SPECIFIED |
-| passive_spirit_lens | безопаснее читать и собирать eligible resources, не сквозь стены | Magnet/Progression; PickupFilter | radius/path pulse/wall rule, rank curve | EXISTING_CONTENT_SPECIFIED |
+## 4. Матрица десяти артефактов
 
-## 5. Artifact matrix
+Артефакт — временный модификатор текущего забега. Он не занимает слот оружия или пассивки, не образует предзабеговый набор и не меняет кошелёк напрямую. Каждый источник показывает ровно три различные карточки и принимает один выбор.
 
-Артефакты не занимают weapon/passive slots, не образуют pre-run loadout и выдаются через отдельный source с ровно тремя cards и одним выбором. Первые восемь IDs уже присутствуют в architecture registry, но их typed effect definitions ещё не синхронизированы. Два последних ID — существующие content proposals и остаются PROPOSED.
-
-| Artifact ID | Effect family / trigger | Original player decision | Dependencies | Numeric/semantic boundary | Status |
+| Артефакт | Класс и событие | Решение игрока | Теги цели / границы | Зависимости | Источник / статус |
 |---|---|---|---|---|---|
-| artifact_jade_compass | AURA / arena drop collected | забрать drop через route field или обойти риск | ArtifactEffectSystem; PickupFilter; ArenaDrop registry | aura size/lifetime/displacement/drop whitelist: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_mirror_shard | TRIGGERED_EFFECT / critical weapon hit | принять delayed echo ради критического окна | ArtifactEffectSystem; CombatSystem; source_event dedupe | delay/coefficient/tags/internal cooldown: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_phoenix_feather | TRIGGERED_EFFECT / elite defeated | провести угрозу через короткий ember path | ArtifactEffectSystem; Elite event; ZoneStore | path/damage/cooldown/pack target: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_frost_bead | WEAPON_MODIFIER / slow or freeze applied | сохранить marked target до следующего bloom | ArtifactEffectSystem; StatusSystem; TargetFilter | mark/bloom/boss resistance: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_bell_fragment | TRIGGERED_EFFECT / post-mitigation guarded hit | допустить ограниченный риск ради resonance pulse | HealthSystem; CombatSystem; idempotent damage fact | threshold/radius/knockback/boss rule: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_lotus_seed | TRIGGERED_EFFECT / full-health heal or overheal | не тратить лечение сразу и сохранить ward | HealthSystem; HealingSource; artifact trigger dedupe | ward/source whitelist/hazard whitelist: PENDING_BALANCE / PENDING_PRODUCT_DECISION | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_moon_crown | TARGET_MODIFIER / boss phase started | пережить telegraph и попасть в короткое phase window | BossDirector; TelegraphResolver; ArtifactEffectSystem | phase whitelist/window/missed rule: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_black_bead | WEAPON_MODIFIER / eligible elite weapon hit | менять pull/burst mode под угрозу | CombatSystem; TargetFilter; ArtifactEffectSystem | mode coefficient/radius/elite immunity: PENDING_BALANCE | EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING |
-| artifact_tideglass | AURA / arena drop collected | провести путь от drop к герою и изменить маршрут угроз | ArenaDrop registry; ZoneStore; replay state | path/width/displacement/wall interaction: PENDING_BALANCE | PROPOSED / REGISTRY_SYNC_PENDING |
-| artifact_silent_lantern | TARGET_MODIFIER / elite or high-threat target selected | прочитать следующую угрозу, но всё равно выполнить dodge | TargetSelector; TelegraphResolver; ArtifactEffectSystem | threat selector/lead time/eligibility: PENDING_BALANCE / PENDING_ARCHITECTURE | PROPOSED / REGISTRY_SYNC_PENDING |
+| `artifact_jade_compass` — Нефритовый компас | `AURA`; сбор дропа арены | пройти через поле маршрута ради ресурса или обойти риск | допустимые дропы и ближайшие угрозы; не сквозь стену | `ArtifactEffectSystem`, `PickupFilter`, `ArenaDropRegistry` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_mirror_shard` — Грань зеркала | `TRIGGERED_EFFECT`; критическое попадание оружия | принять отложенное эхо ради окна давления | зона исходного попадания, один источник события, без самозапуска | `ArtifactEffectSystem`, `CombatSystem`, `SourceEventDedupe` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_phoenix_feather` — Перо феникса | `TRIGGERED_EFFECT`; поражение элиты | провести следующий поток через короткий огненный след | враги, пересекающие след; путь очищается самостоятельно | `ArtifactEffectSystem`, `EliteEvent`, `ZoneStore` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_frost_bead` — Ледяная бусина | `WEAPON_MODIFIER`; наложение контроля | удержать отмеченную цель до следующего раскрытия зоны | контролируемая цель и соседняя область; защита босса явна | `ArtifactEffectSystem`, `StatusSystem`, `TargetFilter` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_bell_fragment` — Осколок колокола | `TRIGGERED_EFFECT`; защищённое попадание после проверки урона | допустить ограниченный риск ради резонанса | ближайшие угрозы; одно событие урона, без двойного начисления | `HealthSystem`, `CombatSystem`, `DamageFactLedger` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_lotus_seed` — Семя лотоса | `TRIGGERED_EFFECT`; лечение при полном здоровье или излишек лечения | сохранить восстановление как будущий оберег | следующее разрешённое входящее попадание; список источников лечения | `HealthSystem`, `HealingSource`, `ArtifactTriggerDedupe` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_moon_crown` — Лунная корона | `TARGET_MODIFIER`; начало фазы босса | пережить телеграф и использовать короткое окно уязвимости | только текущая разрешённая фаза босса | `BossDirector`, `TelegraphResolver`, `ArtifactEffectSystem` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_black_bead` — Чёрная бусина | `WEAPON_MODIFIER`; попадание по допустимой элите | менять режим притяжения и всплеска под текущую угрозу | последний допустимый источник оружия и список иммунитетов | `CombatSystem`, `TargetFilter`, `ArtifactEffectSystem` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `EXISTING_CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING` |
+| `artifact_tideglass` — Приливное стекло | `AURA`; сбор дропа арены | провести путь от ресурса к герою, меняя маршрут толпы | снимок пути, пересекающие его враги; без кражи награды | `ArenaDropRegistry`, `ZoneStore`, `ReplayState` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `artifact_silent_lantern` — Безмолвный фонарь | `TARGET_MODIFIER`; выбор элиты или цели высокого риска | увидеть следующую угрозу заранее, но всё равно выполнить уклонение | одна текущая телеграфируемая угроза; не отменяет её | `TargetSelector`, `TelegraphResolver`, `ArtifactEffectSystem` | `ELITE_PACK`/`FIRST_CLEAR_REWARD`; `PROPOSED / REGISTRY_SYNC_PENDING` |
 
-## 6. Enemy matrix: ten existing MAC enemy records
+Для каждого артефакта обязательны один источник события, список допустимых целей, граница очистки/окончания, защита от рекурсии и идентификатор повтора. Значения, частота, редкость, режим повтора и числовой эффект — `PENDING_BALANCE` или `PENDING_ARCHITECTURE`.
 
-Current Stage 04 calls this a ten-family roster. Eight records are ordinary role families and two are explicitly elite-family records. This distinction is preserved instead of silently reclassifying elite enemies as ordinary.
+## 5. Полное дерево постоянных пассивок магазина
 
-Exact spawn weights, absolute HP/ATK/speed, elite cadence, variant overlay and active-cap allocation belong to Balance/Content Registry. The time bands below are existing MAC first-appearance points, not copied reference values.
+Полная запись с описанием каждого узла находится в [`META_PASSIVE_TREE.md`](META_PASSIVE_TREE.md). Это отдельный слой между забегами: узлы покупаются за Gold, не занимают шесть временных passive slots и не попадают в обычное предложение улучшений.
 
-| Enemy ID | Role / signature | Tags | First appearance / spawn point | Counter-decision | Dependencies | Status |
-|---|---|---|---|---|---|---|
-| ink_beetle | direct rusher; low shell and short committed contact line | rusher, contact, low_durability | 0–2 min warm-up band; continues in later bands | move tangentially or clear the nearest lane | WaveDirector; CombatSystem; XPDrop; enemy visual manifest | EXISTING_CONTENT_SPECIFIED |
-| lantern_moth | ranged kiter; warm-up lantern projectile | ranged, projectile, spacing | 2–5 min first pressure band | close distance or preserve cover/route | TargetingSystem; ProjectileResolver; TelegraphResolver | EXISTING_CONTENT_SPECIFIED |
-| bone_carp | line dasher; locked path before dash | line_dash, telegraph, recovery | 2–5 min first pressure band | leave the locked line, punish recovery | TelegraphResolver; MovementSystem; CombatSystem | EXISTING_CONTENT_SPECIFIED |
-| paper_ghost | teleporter; visible flicker before reappearance | teleporter, reposition, contact | 5–10 min threat expansion band | read reappear window instead of chasing the vanish | EncounterState; TelegraphResolver; TargetingSystem | EXISTING_CONTENT_SPECIFIED |
-| jade_toad | leap area-denial; landing circle and poison zone | leap, zone, area_denial | 5–10 min threat expansion band | leave landing marker, return after recovery | ZoneStore; TelegraphResolver; StatusSystem | EXISTING_CONTENT_SPECIFIED |
-| mirror_fox | decoy skirmisher; weaker copy and flank | decoy, flank, mirror, target_confusion | 5–10 min threat expansion band | identify source and avoid being pulled into the wrong lane | TargetFilter; DecoyResolver; CombatSystem | EXISTING_CONTENT_SPECIFIED |
-| bell_crab | frontal guard tank; rear knot is readable weakness | guard, tank, directional, contact | 10–15 min elite band | circle behind instead of trading into guard | DirectionalHitResolver; CombatSystem; TelegraphResolver | EXISTING_CONTENT_SPECIFIED |
-| thread_doll | slow-beam controller; distance breaks beam | controller, beam, slow, spacing | 10–15 min elite band | break line/distance before slow locks | ProjectileResolver; StatusSystem; TelegraphResolver | EXISTING_CONTENT_SPECIFIED |
-| stone_oni | elite ground-slam; long wind-up and recovery | elite, slam, zone, heavy | 10–15 min elite entry | leave large telegraph, attack recovery | EliteDirector; TelegraphResolver; ZoneStore; XPDrop | EXISTING_CONTENT_SPECIFIED / ELITE_FAMILY |
-| eclipse_serpent | elite trail dasher; curved path and visible arc edge | elite, dash, trail, arc | 15–20 min eclipse band | cut across after committed turn, avoid trail | EliteDirector; TelegraphResolver; ZoneStore; XPDrop | EXISTING_CONTENT_SPECIFIED / ELITE_FAMILY |
-
-Spawn boundary for 20:00–30:00: no new enemy ID is introduced in this slice. Existing records may continue through the proposed late wave bands only after Balance binds composition, cap and variant policy. Elite records must not spawn at instant contact range.
-
-## 7. Requested four-boss core matrix
-
-These are the four protected first-run boss identities requested for the content matrix. The active 30-minute contract separately contains two proposed extension slots and five mini-boss slots; that reconciliation is intentionally not hidden.
-
-| Boss ID | Checkpoint / spawn point | Role, phase and telegraph | Tags | Reward/dependency boundary | Status |
-|---|---|---|---|---|---|
-| boss_hua_lin | 05:00 / 300s first main checkpoint | area-denial route test; fire circles, lantern fan and safe-zone teleport; each danger has a pre-attack signal | main_boss, fire, lantern, teleport, zone | BossDirector → TelegraphResolver → defeat fact → non-final BOSS_CHEST/SynergyResolver; RewardLedger settles separately | EXISTING_PROTECTED_CONTENT |
-| boss_miyeon | 10:00 / 600s second main checkpoint | deception/target test; true body and two copies, temporary projectile redirection and mirror walls; copy reveal is the read window | main_boss, mirror, decoy, wall, redirect | BossDirector → DecoyResolver → ChestResolver; copy death cannot duplicate XP/chest/reward | EXISTING_PROTECTED_CONTENT |
-| boss_seika | 15:00 / 900s third main checkpoint | armored melee/space test; sword arcs, jade columns and marked ground slam; armor break opens phase two | main_boss, guard, melee, column, phase_break | BossDirector → DirectionalHitResolver → phase state → non-final BOSS_CHEST; reward remains RewardLedger-owned | EXISTING_PROTECTED_CONTENT |
-| boss_black_moon_empress | 30:00 / 1800s final checkpoint in active extension target; legacy root text says 20:00 | final build test; rotating blades, diagonal beams, elite summons, then darkness and three seal-break vulnerability | final_boss, darkness, seal, elite_summon, final_settlement | BossDirector → final defeat → final settlement/victory; final boss chest is forbidden and artifact offer remains separate | EXISTING_ID_RETIMED_BY_EXTENSION / RECONCILIATION_PENDING |
-
-All boss numbers not explicitly inherited from the live contract—HP, phase thresholds, warning lead, damage, summon count, recovery, resistance and target TTK—are PENDING_BALANCE. This matrix does not assign them.
-
-## 8. Dependency map
-
-| Content surface | Required consumer/boundary | Must not own |
+| Ветка | Полный путь узлов | Дополнительные зависимости |
 |---|---|---|
-| Weapon and passive records | Content Registry, BuildInventory, UpgradeOfferSystem, StatsCalculator | exact balance numbers, wallet, UI authority |
-| Synergy/evolution records | SynergyEvaluator, BossChestSystem, EvolutionState, VFX cleanup | artifact offer, final chest, hidden passive rewrite |
-| Artifact records | ArtifactOfferSystem, ArtifactEffectSystem, typed trigger/target/stack policy | weapon/passive slots, boss chest, persistent wallet mutation |
-| Enemy records | WaveDirector, EnemyRegistry, TelegraphResolver, CombatSystem, XPDrop | checkpoint rewards, permanent roster mutation |
-| Four boss records | BossDirector, SimulationClock encounter clock, TelegraphResolver, ChestResolver/RewardLedger | direct wallet mutation, artistic approval |
-| Visual briefs | Visual Lab family/template/manifest route | PNG/SVG production, golden approval, runtime promotion |
-| Balance handoff | B1/BALANCE_MODEL and profile simulation | silent test numbers or second source of truth |
+| `meta_vitality` — Живучесть | `meta_vitality_max_hp` → `meta_vitality_regen` → `meta_vitality_mote_healing` | последний узел требует `meta_magnet_pickup_radius` |
+| `meta_force` — Сила | `meta_force_attack_power` → `meta_force_attack_multiplier` → `meta_force_magic_damage` | магический финал требует корень `meta_focus` или `meta_focus_cooldown` |
+| `meta_agility` — Проворство | `meta_agility_move_speed` → `meta_agility_evasion` → `meta_agility_crit_chance` → `meta_agility_crit_power` | шанс и сила крита требуют `meta_force_attack_power` |
+| `meta_focus` — Фокус | `meta_focus_cooldown` → `meta_focus_duration` → `meta_focus_size` | размер требует `meta_force_magic_damage` |
+| `meta_magnet` — Магнит | `meta_magnet_pickup_radius` → `meta_magnet_mana_gain` | имя «мана/опыт» и единый источник ресурса требуют продуктового решения |
+| `meta_defense` — Защита | `meta_defense_damage_taken` → `meta_defense_enemy_hp` | ослабление врагов требует `meta_force_attack_power` |
 
-## 9. Disputed points for Balance-Economy
+Итого зафиксировано 17 `meta_*` узлов. Распределение десяти покупок ветви между дочерними узлами, цены, величины, порядок сложения и сохранение — `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`. Дерево не смешивает постоянные узлы, run-пассивки и артефакты.
 
-| Decision / risk | Current evidence | Required balance treatment | Status |
-|---|---|---|---|
-| Enemy absolute HP/ATK/speed by ID | B1 gives bands and durability multipliers but not a complete per-ID absolute table | bind in one balance source; no values in this content file | PENDING_BALANCE |
-| Spawn weights and 30-minute composition | Stage 04 gives first appearance only; B1 has bands; late extension is model proposal | define weights, spawn budget share, active-cap share and late-band continuation in BALANCE_MODEL | PENDING_BALANCE |
-| Eight ordinary plus two elite-family interpretation | Stage 04 labels stone_oni/eclipsed_serpent elite; task says ten ordinary enemies | Product/Balance confirms whether count means ten total families or ten non-elite plus bounded variants | PENDING_PRODUCT_DECISION |
-| Four requested bosses versus active 30-minute roster | Root content has four protected identities; architecture target is six main plus five mini; two main extensions and three missing mini records remain | keep four rows protected; reconcile extension/mini registry without reusing or renaming silently | PENDING_ARCHITECTURE / PENDING_PRODUCT_DECISION |
-| boss clock policy | Sync/Runtime target freezes MAIN_BOSS visible clocks; architecture documents contain conflict | Architecture/Runtime owns final clock contract; Balance consumes it | PENDING_ARCHITECTURE |
-| Artifact count and typed effects | Content has ten IDs; architecture registry has eight and zero typed effect definitions | add two only through registry sync; decide effect keys, stacking, refresh and duplicate policy | REGISTRY_SYNC_PENDING |
-| Chest and synergy sources | Content cap is five claims; final boss no chest; architecture has fifteen windows with reserved slots | Balance binds cadence/reward quantities; boss chest and artifact offer stay separate | PENDING_BALANCE / PENDING_ARCHITECTURE |
-| Boss phase and TTK targets | Root B1 has legacy 20-minute targets; 30-minute extensions are model proposals | import no foreign values; derive all late values with source and formula in BALANCE_MODEL | PENDING_BALANCE |
-| Visual identity | Stage 04 and Stage 05 are candidate/proposal material | Visual Lab performs hero-master, provenance, review and approval; content only supplies briefs | ARTISTIC_PENDING |
+## 6. Матрица десяти записей противников первого забега
 
-## 10. Acceptance and evidence boundary
+Эта десятка уже принадлежит защищённому пакету Stage 04 и не заменяется этим документом. Все записи являются противниками пула, а не мини-боссами или главными боссами. `enemy_stone_oni` и `enemy_eclipse_serpent` помечены `ELITE_FAMILY`; это усиленные рядовые записи, а не боссы. Поэтому трактовка требования «10 обычных» как «10 без элитных тегов» остаётся открытым решением, а тихая переклассификация запрещена.
 
-- Matrix covers 10 weapon/passive/synergy links, 10 passive axes, 10 artifact records, 10 enemy records and 4 protected core bosses.
-- Every referenced ID already exists in current MAC content/architecture documents; no new ID is introduced here.
-- Existing proposal IDs artifact_tideglass, artifact_silent_lantern, boss_tideglass_regent, boss_omen_paper_archivist and the three missing mini records remain PROPOSED/PENDING and are not promoted by this task.
-- No PNG/SVG or mockup file was created or modified. The permitted content-design directory contained no empty text/JSON mockup placeholder that required filling; existing stage assets remain protected.
-- No runtime, architecture, balance, root document or content ID was changed.
-- Reference evidence is structural only; all MAC-specific semantics remain sourced to the existing content, architecture and balance documents.
-- A valid content matrix is not runtime proof, balance lock, artistic approval or Android evidence.
+| ID | Роль и подпись поведения | Теги | Первая точка появления | Контр-решение игрока | Зависимости | Статус |
+|---|---|---|---|---|---|---|
+| `enemy_ink_beetle` — Чернильный жук | Прямой натиск с короткой линией контакта | `rusher`, `contact`, `low_durability` | 0–2 мин; затем продолжается | двигаться по касательной или очистить ближайшую линию | `WaveDirector`, `CombatSystem`, `XPDrop`, visual manifest Stage 04 | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_lantern_moth` — Фонарная моль | Дальний преследователь с предупреждаемым снарядом | `ranged`, `projectile`, `spacing` | 2–5 мин; первый слой дальнего давления | сократить дистанцию или сохранить маршрут | `TargetingSystem`, `ProjectileResolver`, `TelegraphResolver` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_bone_carp` — Костяной карп | Рывок по зафиксированной линии с восстановлением | `line_dash`, `telegraph`, `recovery` | 2–5 мин; вместе с первым давлением | выйти из отмеченной линии и наказать восстановление | `TelegraphResolver`, `MovementSystem`, `CombatSystem` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_paper_ghost` — Бумажный призрак | Перемещение с видимым мерцанием до повторного появления | `teleporter`, `reposition`, `contact` | 5–10 мин; расширение угроз | читать окно возвращения, а не преследовать исчезновение | `EncounterState`, `TelegraphResolver`, `TargetingSystem` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_jade_toad` — Нефритовая жаба | Прыжок в отмеченную область и временная зона отравления | `leap`, `zone`, `area_denial` | 5–10 мин; пространственное давление | покинуть метку приземления и вернуться после восстановления | `ZoneStore`, `TelegraphResolver`, `StatusSystem` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_mirror_fox` — Зеркальная лиса | Ложная копия и фланговый манёвр | `decoy`, `flank`, `mirror`, `target_confusion` | 5–10 мин; проверка выбора цели | найти источник и не идти в ложный коридор | `TargetFilter`, `DecoyResolver`, `CombatSystem` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_bell_crab` — Колокольный краб | Лобовая защита; уязвимое место читается сзади | `guard`, `tank`, `directional`, `contact` | 10–15 мин; усиленный рядовой слой | обойти и не обмениваться ударами в защиту | `DirectionalHitResolver`, `CombatSystem`, `TelegraphResolver` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_thread_doll` — Нитяная кукла | Луч замедления; разрыв дистанции ломает связь | `controller`, `beam`, `slow`, `spacing` | 10–15 мин; контроль маршрута | разорвать линию до фиксации замедления | `ProjectileResolver`, `StatusSystem`, `TelegraphResolver` | `EXISTING_CONTENT_SPECIFIED` |
+| `enemy_stone_oni` — Каменный они | Усиленный удар по земле с длинным предупреждением и восстановлением | `elite`, `slam`, `zone`, `heavy` | 10–15 мин; вход усиленного семейства | покинуть крупный телеграф и атаковать восстановление | `EliteDirector`, `TelegraphResolver`, `ZoneStore`, `XPDrop` | `EXISTING_CONTENT_SPECIFIED / ELITE_FAMILY` |
+| `enemy_eclipse_serpent` — Змей затмения | Усиленный рывок по дуге с оставляемым следом | `elite`, `dash`, `trail`, `arc` | 15–20 мин; поздний слой давления | пересечь путь после поворота и не входить в след | `EliteDirector`, `TelegraphResolver`, `ZoneStore`, `XPDrop` | `EXISTING_CONTENT_SPECIFIED / ELITE_FAMILY` |
 
-## 11. Open blockers
+Точные HP, урон, скорость, веса состава, активный лимит, ступень XP, элитный ритм и продолжение после 20 минут принадлежат агенту баланса и `ContentRegistry`; здесь они не задаются.
 
-1. Architecture must reconcile the requested four-boss core with the active 30-minute six-main/five-mini target and resolve extension slot identities without silent remapping.
-2. Balance must bind the absent per-ID numeric fields, late-wave composition, elite policy, boss phase targets and reward quantities in the single balance source.
-3. Architecture/Runtime must reconcile artifact registry count/effect definitions and enemy semantic ID shape before implementation.
-4. Visual Lab approval is still required for any weapon, enemy, boss, artifact or VFX production asset.
+## 7. Матрица четырёх базовых боссов
 
-## 12. Next action
+Ниже сохранены четыре защищённые идентичности из исходного MAC-контракта. Действующий целевой контракт первого забега уже расширен до 30 минут: две дополнительные записи стоят в отдельных предложенных слотах, а финальная идентичность переносится на финальную контрольную точку. Исторический текст 20 минут/4 босса не используется как единственный действующий контракт.
 
-Architecture/Product owner accepts or rejects one explicit reconciliation for the 30-minute encounter envelope—four protected core bosses versus six main plus five mini records—and publishes the resulting ID/checkpoint mapping for Balance and Runtime consumption.
+| ID | Точка появления | Роль, фазы и телеграф | Теги | Граница награды и зависимости | Статус |
+|---|---|---|---|---|---|
+| `boss_hua_lin` — Хуа Линь | 300 с; первая главная контрольная точка | Проверка маршрута: огненные круги, веер фонарей и перенос безопасной зоны; перед каждой опасностью есть сигнал | `main_boss`, `fire`, `lantern`, `teleport`, `zone` | `BossDirector` → `TelegraphResolver` → факт победы → нефинальный `BOSS_CHEST`; расчёт в `RewardLedger` | `EXISTING_PROTECTED_CONTENT` |
+| `boss_miyeon` — Миён | 600 с; вторая главная контрольная точка | Проверка выбора цели: истинное тело, копии, отражение снарядов и временные стены; раскрытие источника — окно чтения | `main_boss`, `mirror`, `decoy`, `wall`, `redirect` | `BossDirector` → `DecoyResolver` → `ChestResolver`; копия не создаёт второй XP/сундук/награду | `EXISTING_PROTECTED_CONTENT` |
+| `boss_seika` — Сэйка | 900 с; третья главная контрольная точка | Проверка пространства: дуги клинка, нефритовые столбы и отмеченный удар по земле; снятие защиты открывает вторую фазу | `main_boss`, `guard`, `melee`, `column`, `phase_break` | `BossDirector` → `DirectionalHitResolver` → состояние фазы → нефинальный `BOSS_CHEST` | `EXISTING_PROTECTED_CONTENT` |
+| `boss_black_moon_empress` — Императрица Чёрной Луны | 1800 с; финальная точка действующего целевого контракта; исторически 1200 с | Финальная проверка билда: вращающиеся лезвия, диагональные лучи, призванные элиты и читаемое окно снятия печатей | `final_boss`, `darkness`, `seal`, `elite_summon`, `final_settlement` | `BossDirector` → финальная победа → итог забега; финальный `BOSS_CHEST` запрещён, артефактное предложение отдельно | `EXISTING_PROTECTED_CONTENT / RETIMING_PENDING` |
+
+Параметры HP, фазовых порогов, времени предупреждения, урона, призывов, сопротивлений и целевого времени убийства — `PENDING_BALANCE`. Художественный образ и производство принадлежат Visual Lab.
+
+### Два предложения расширения главных боссов
+
+| Слот | ID | Рабочее имя | Точка появления | Роль и теги | Статус |
+|---|---|---|---:|---|---|
+| `boss_extension_slot_04` | `boss_tideglass_regent` | Регент Чёрного Прилива | 1200 с | Управляет видимыми дугами потока и временными коридорами; `flow`, `arc`, `route`, `phase` | `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `boss_extension_slot_05` | `boss_omen_paper_archivist` | Архивариус Лунных Знаков | 1500 с | Раскладывает читаемую последовательность знаков и временных зон; `sequence`, `seal`, `zone`, `vulnerability` | `PROPOSED / REGISTRY_SYNC_PENDING` |
+
+Оба расширения создают один нефинальный `BOSS_CHEST` с синергией или резервным результатом; артефактное предложение и прямое изменение кошелька запрещены.
+
+### Пять предложенных мини-боссов
+
+| ID | Точка появления | Роль и проверяемый навык | Теги | Зависимости | Награда / статус |
+|---|---:|---|---|---|---|
+| `miniboss_ink_jade_warden` — Чернильный Нефритовый Страж | 450 с | Читать сходящиеся линии печатей и менять маршрут | `mini_boss`, `line`, `zone`, `route` | `BossDirector`, `TelegraphResolver`, `ZoneStore`, `RewardLedger` | один `BOSS_CHEST`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `miniboss_veil_harvester` — Жнец Завесы | 750 с | Переждать срез завесы и выбрать безопасное окно атаки | `mini_boss`, `sweep`, `veil`, `recovery` | `BossDirector`, `TelegraphResolver`, `MovementSystem`, `ChestResolver` | один `BOSS_CHEST`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `miniboss_lotus_ritekeeper` — Хранительница Лотосового Обряда | 1050 с | Разобрать якоря защиты и не потерять проход | `mini_boss`, `anchor`, `support`, `zone` | `BossDirector`, `TargetFilter`, `TelegraphResolver`, `RewardLedger` | один `BOSS_CHEST`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `miniboss_bell_rhythm_ascetic` — Колокольный аскет | 1350 с | Читать ритм колец и перемещаться через заранее видимый зазор | `mini_boss`, `ring`, `rhythm`, `movement` | `BossDirector`, `TelegraphResolver`, `ProjectileResolver`, `CleanupRegistry` | один `BOSS_CHEST`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+| `miniboss_moonroot_ferryman` — Луннокорневой перевозчик | 1650 с | Пересекать меняющийся маршрут конвоя и не терять приоритетную цель | `mini_boss`, `convoy`, `route`, `drag` | `BossDirector`, `MovementSystem`, `TargetFilter`, `RewardLedger` | один `BOSS_CHEST`; `PROPOSED / REGISTRY_SYNC_PENDING` |
+
+Мини-босс продолжает `run_elapsed_seconds`, волны, XP и обычный спавн. Главный босс по текущему sync-контракту замораживает видимые часы забега, часы волн, XP и обычный спавн от вступления до `settlement`; часы встречи отделены. Это поле требует подтверждения архитектуры/исполнения, а не нового контента.
+
+## 8. Синергии, сундуки и зависимости забега
+
+В действующем конверте 30 минут предусмотрены 10 нефинальных окон `BOSS_CHEST`: главные боссы на 300, 600, 900, 1200 и 1500 с, мини-боссы на 450, 750, 1050, 1350 и 1650 с. Они могут открыть синергию или полезный резервный результат. Максимум подтверждённых синергий — 5; наличие десяти окон не гарантирует пять полученных синергий.
+
+Пять отдельных окон `ELITE_CHEST` предназначены для артефактного/обычного улучшения и не расходуют лимит синергий. Финальный босс на 1800 с не создаёт сундук босса.
+
+Проверка `SynergyResolver`:
+
+```yaml
+synergy_run_policy:
+  catalog_size: 10
+  max_claimed_per_run: 5
+  eligible_encounter_kinds: [MAIN_BOSS, MINI_BOSS]
+  weapon_level: 6
+  passive_rank: 5
+  weapon_not_evolved: true
+  final_boss_chest: forbidden
+  after_cap: FALLBACK_REQUIRED
+  duplicate_claim: idempotent_noop
+```
+
+Один сундук подтверждает не больше одной синергии. Невыбранная карта не считается полученной. Если пара не собрана или лимит достигнут, сундук выдаёт обычное улучшение либо результат `RewardLedger`; пустой экран и скрытая шестая синергия запрещены.
+
+## 9. Карта зависимостей и границы владельцев
+
+| Контентная поверхность | Обязательные потребители | Что эта поверхность не должна владеть |
+|---|---|---|
+| Оружие и пассивки забега | `ContentRegistry`, `BuildInventory`, `UpgradeOfferSystem`, `StatsCalculator` | окончательные числа, кошелёк, право управления интерфейсом |
+| Синергии/эволюции | `SynergyEvaluator`, `BossChestSystem`, `EvolutionState`, `VFXCleanup` | артефактное предложение, финальный сундук, скрытая замена пассивки |
+| Артефакты | `ArtifactOfferSystem`, `ArtifactEffectSystem`, типизированные правила trigger/target/stack, проекция HUD | слоты оружия/пассивок, `BOSS_CHEST`, прямое изменение постоянного кошелька |
+| Противники | `WaveDirector`, `EnemyRegistry`, `TelegraphResolver`, `CombatSystem`, `XPDrop` | награды контрольных точек и постоянная мутация состава |
+| Боссы и мини-боссы | `BossDirector`, часы встречи, `TelegraphResolver`, `ChestResolver`, `RewardLedger` | баланс HP/урона, художественное approval, прямое начисление кошелька |
+| Дерево магазина | `MetaProgression`, `StatsCalculator`, `Wallet`, проекция UI | временные пассивки забега, эффект артефакта и предложение улучшения во время забега |
+| Визуальные задания | маршрут семейств/шаблонов/манифестов Visual Lab | PNG/SVG, утверждение candidate, golden и перевод в production |
+| Числовая передача | B1 / `BALANCE_MODEL` и профильная симуляция | второй источник чисел и скрытые тестовые коэффициенты |
+
+## 10. Спорные места для баланса, экономики и архитектуры
+
+| Вопрос | Текущая граница | Статус |
+|---|---|---|
+| Четыре базовых босса против действующего конверта 6 главных + 5 мини | Сохраняем четыре защищённые идентичности, два расширения и пять мини как отдельные предложения; финальное сопоставление реестра не выполняем молча | `PENDING_ARCHITECTURE / PENDING_PRODUCT_DECISION` |
+| Требование «10 обычных врагов» против 8 обычных + 2 `ELITE_FAMILY` | этап 04 защищает десять записей; два усиленных типа не переклассифицируем без решения, иначе появится конфликт с Visual Lab | `PENDING_PRODUCT_DECISION` |
+| Артефакты 10 против 8 записей в архитектурном реестре | Два ID сохраняются как `PROPOSED`; нужны типизированные определения, правила повторов, обновления и дубликата | `REGISTRY_SYNC_PENDING` |
+| Часы главного босса | `AGENT_SYNC_STATE` требует заморозки видимых часов, но старые документы содержат противоположное правило | `PENDING_ARCHITECTURE` |
+| Поздний состав волн и усиленные типы | Точки первой появления указаны, но веса, активный лимит, ритм и продолжение после 20 минут не заданы | `PENDING_BALANCE` |
+| HP, урон, скорость, длительность, частота, дальность, стоимость и целевое время убийства | Все значения должны прийти из одного B1/`BALANCE_MODEL` источника | `PENDING_BALANCE` |
+| Распределение десяти покупок по 17 узлам магазина | Топология и поперечные зависимости описаны, цены и ранги не закрыты | `PENDING_BALANCE / PENDING_PRODUCT_DECISION` |
+| Сундук босса и артефактное предложение | Каналы разделены; конкретные награды, резервный результат и ритм требуют единого реестра | `PENDING_BALANCE / PENDING_ARCHITECTURE` |
+| Визуальные силуэты и эффекты | Этот пакет даёт краткие задания; Visual Lab должен пройти собственные ворота и получить пользовательское approval | `ARTISTIC_PENDING` |
+
+## 11. Область исключений и приёмка
+
+- Матрица содержит 10 связок оружие-пассивка-синергия, 10 общих пассивок забега, 10 артефактов, 10 защищённых записей противников и 4 базовых босса.
+- Полное дерево магазина содержит 17 узлов в `META_PASSIVE_TREE.md` и не смешивается с десятью временными пассивками.
+- Два `boss_extension_slot_*` и пять `miniboss_*` имеют явно обозначенный статус `PROPOSED / REGISTRY_SYNC_PENDING`; они не объявлены утверждёнными итоговыми ID.
+- В текущей задаче новые ID не добавлялись; существующие `PROPOSED` не повышались до `APPROVED`, `PRODUCTION` или runtime-ready.
+- Не изменялись `AGENTS.md`, корневые документы, баланс, архитектура, runtime, Visual Lab и `docs/mockups/`.
+- В `docs/agents/content-design/` нет пустого текстового/JSON мокап-файла, который требовал бы заполнения; PNG/SVG не создавались.
+- Матрица и ссылки на исходные ревизии являются документальным доказательством, а не доказательством исполнения, Godot/Android, баланса или художественной приёмки.
+
+## 12. Блокеры
+
+1. Архитектура и владелец продукта должны выпустить одно непротиворечивое сопоставление четырёх защищённых базовых боссов с действующим конвертом 6 главных боссов и 5 мини-боссов.
+2. Архитектура и исполнительный агент должны добавить в потребляемый реестр два предложенных главных босса, пять мини-боссов и два недостающих типизированных описания артефактов, не меняя ID молча.
+3. Агент баланса должен закрепить одну числовую таблицу для десяти оружий, десяти пассивок, десяти артефактов, десяти противников, боссов, волн, сундуков, резервных результатов и дерева магазина.
+4. Владелец продукта и агент баланса должны решить, означает ли «10 обычных противников» десять записей пула вместе с двумя `ELITE_FAMILY` или нужны ещё две отдельные обычные записи.
+5. Visual Lab должен отдельно принять или отклонить краткие визуальные задания; этот документ не создаёт и не утверждает графику.
+
+## 13. Следующее действие
+
+Архитектура и владелец продукта публикуют одно решение по сопоставлению четырёх защищённых базовых боссов с конвертом 30 минут (6 главных боссов, 5 мини-боссов и 15 окон наград), после чего агент баланса и исполнительный агент используют эту карту как единственный вход.

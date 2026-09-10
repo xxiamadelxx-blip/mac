@@ -617,7 +617,7 @@
     "task_id": "REF-CONTENT-01",
     "scope": "CONTENT_ONLY",
     "status": "PARTIAL",
-    "source_head": "145d08ca64cca8b3fc795a3d87e0031fc2c7cc69",
+    "source_head": "4b081f677d0ffdfc7037146cd3160457162a2186",
     "document": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
     "new_ids_introduced": [],
     "reused_content": {
@@ -626,7 +626,10 @@
       "synergy_count": 10,
       "artifact_count": 10,
       "enemy_record_count": 10,
-      "requested_core_boss_count": 4
+      "requested_core_boss_count": 4,
+      "proposed_main_extension_count": 2,
+      "proposed_mini_boss_count": 5,
+      "meta_passive_node_count": 17
     },
     "reference_repositories": [
       "murparreira/vampire-survivors-clone-godot-4",
@@ -634,7 +637,49 @@
       "Blaze-master/Magic_Survival_Clone",
       "syncXL/Magic_Survival_Clone"
     ],
-    "reference_policy": "STRUCTURAL_PATTERNS_ONLY; NO_FOREIGN_NUMBERS_IDS_NAMES_CHARACTERS_DESCRIPTIONS_IMAGES_OR_ASSETS",
+    "reference_revisions": {
+      "murparreira/vampire-survivors-clone-godot-4": {
+        "branch": "main",
+        "commit": "ea00bccf518b4a6084870e313e10aaad99746540",
+        "files": [
+          "scenes/managers/experience_manager.gd",
+          "scenes/managers/upgrade_manager.gd",
+          "scenes/managers/enemy_manager.gd",
+          "scenes/game_objects/experience_vial/experience_vial.gd"
+        ]
+      },
+      "ParsaSabzei/20-Minutes-till-dawn": {
+        "branch": "main",
+        "commit": "fe437437a369b620e4c32c36ce2826a14f911230",
+        "files": [
+          "core/src/main/java/ap/project/controller/PlayerController.java",
+          "core/src/main/java/ap/project/controller/AbilityController.java",
+          "core/src/main/java/ap/project/controller/MonsterController.java",
+          "core/src/main/java/ap/project/view/GameView.java"
+        ]
+      },
+      "Blaze-master/Magic_Survival_Clone": {
+        "branch": "master",
+        "commit": "27a3d9e9aeb06f0ffc590fd18fc37fa83367bfaa",
+        "files": [
+          "enemies.py",
+          "magic.py",
+          "objects.py",
+          "artifacts.py"
+        ]
+      },
+      "syncXL/Magic_Survival_Clone": {
+        "branch": "master",
+        "commit": "87f460c5385f93f785ec4310edbaa9039f078863",
+        "files": [
+          "gamedata.py",
+          "magic.py",
+          "objects.py",
+          "artifacts.py"
+        ]
+      }
+    },
+    "reference_policy": "ONLY_STRUCTURAL_MECHANICS; NO_FOREIGN_NUMBERS_IDS_NAMES_CHARACTERS_DESCRIPTIONS_IMAGES_OR_ASSETS",
     "approval_boundary": {
       "runtime": "NOT_REQUESTED",
       "balance": "NOT_LOCKED",
@@ -642,7 +687,7 @@
     },
     "blockers": [
       "30-minute four-core versus six-main/five-mini reconciliation",
-      "artifact registry 8 versus content 10 and missing typed effect definitions",
+      "artifact registry 8 versus content 10 and missing typed definitions",
       "enemy 8 ordinary plus 2 elite-family interpretation",
       "per-ID balance and late-wave values pending"
     ],
