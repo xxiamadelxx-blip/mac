@@ -1,0 +1,185 @@
+{
+  "schema": "moonveil.arena.environment.placement-map",
+  "version": 3,
+  "status": "USER REVIEW",
+  "family_id": "moonveil-lotus-garden-environment-soft-tonal-v03",
+  "candidate_id": "vl-20260910-lotus-garden-topdown-v03",
+  "coordinate_system": {
+    "preview": [
+      390,
+      844
+    ],
+    "world": [
+      1560,
+      2532
+    ],
+    "scale": 4
+  },
+  "base": {
+    "asset_id": "arena.base.moon_lotus.v03",
+    "file": "assets/STAGE02_ARENA_BASE_MOON_LOTUS_v03.svg",
+    "rect": [
+      0,
+      0,
+      390,
+      844
+    ]
+  },
+  "preview_instances": [
+    {
+      "asset_id": "arena.prop.lotus_pond_edge.v03",
+      "file": "assets/STAGE02_ARENA_PROP_LOTUS_POND_EDGE_MASTER_v03.svg",
+      "rect": [
+        18,
+        34,
+        150,
+        128
+      ],
+      "rotation_deg": 0,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.broken_bridge_segment.v03",
+      "file": "assets/STAGE02_ARENA_PROP_BROKEN_BRIDGE_SEGMENT_v03.svg",
+      "rect": [
+        245,
+        76,
+        122,
+        62
+      ],
+      "rotation_deg": 0,
+      "z": 10,
+      "collision": "edge-mask-only"
+    },
+    {
+      "asset_id": "arena.prop.stone_cluster.v03",
+      "file": "assets/STAGE02_ARENA_PROP_STONE_CLUSTER_v03.svg",
+      "rect": [
+        22,
+        245,
+        104,
+        70
+      ],
+      "rotation_deg": -4,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.reed_patch.v03",
+      "file": "assets/STAGE02_ARENA_PROP_REED_PATCH_v03.svg",
+      "rect": [
+        306,
+        174,
+        72,
+        92
+      ],
+      "rotation_deg": 0,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.fallen_moon_shrine.v03",
+      "file": "assets/STAGE02_ARENA_PROP_FALLEN_MOON_SHRINE_v03.svg",
+      "rect": [
+        274,
+        354,
+        96,
+        86
+      ],
+      "rotation_deg": 2,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.vfx.water_ripple_patch.v03",
+      "file": "assets/STAGE02_ARENA_VFX_WATER_RIPPLE_PATCH_v03.svg",
+      "rect": [
+        133,
+        148,
+        112,
+        76
+      ],
+      "rotation_deg": -5,
+      "z": 30,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.root_bank.v03",
+      "file": "assets/STAGE02_ARENA_PROP_ROOT_BANK_v03.svg",
+      "rect": [
+        108,
+        491,
+        192,
+        80
+      ],
+      "rotation_deg": -3,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.jade_lantern.v03",
+      "file": "assets/STAGE02_ARENA_PROP_JADE_LANTERN_v03.svg",
+      "rect": [
+        47,
+        566,
+        42,
+        74
+      ],
+      "rotation_deg": 0,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.lotus_cluster.v03",
+      "file": "assets/STAGE02_ARENA_PROP_LOTUS_CLUSTER_v03.svg",
+      "rect": [
+        260,
+        632,
+        108,
+        82
+      ],
+      "rotation_deg": -3,
+      "z": 10,
+      "collision": "none"
+    },
+    {
+      "asset_id": "arena.prop.fallen_moss_log.v03",
+      "file": "assets/STAGE02_ARENA_PROP_FALLEN_MOSS_LOG_v03.svg",
+      "rect": [
+        18,
+        735,
+        126,
+        74
+      ],
+      "rotation_deg": -5,
+      "z": 10,
+      "collision": "none"
+    }
+  ],
+  "world_anchor_policy": {
+    "anchor_band": "outer third and landmark pockets",
+    "keep_clear_rects": [
+      [
+        480,
+        620,
+        600,
+        920
+      ],
+      [
+        560,
+        720,
+        440,
+        850
+      ]
+    ],
+    "distribution": "props repeat at perimeter; center remains open",
+    "spawn_ring": "outside camera; props never become spawn wall"
+  },
+  "runtime_separation": {
+    "static_props": "individual scene instances",
+    "water_ripples": "poolable collision-free layer",
+    "terrain_collision": "data-driven, not inferred from SVG pixels",
+    "composites": "review evidence only"
+  }
+}
