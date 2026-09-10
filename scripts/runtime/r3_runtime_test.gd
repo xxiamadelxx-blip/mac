@@ -84,7 +84,9 @@ func _test_first_clear_offer_is_separate() -> void:
     var coordinator: Variant = RunCoordinatorType.new()
     _check(bool(coordinator.boot().get("ok", false)), "First-clear registry boots")
     _check(bool(coordinator.start_run("hero_lin_yue", 202, "first-clear-start").get("ok", false)), "First-clear run starts")
-    var boss: Dictionary = coordinator.start_main_boss("boss_final_20")
+    var main_bosses: Array[Dictionary] = coordinator.registry.get_main_bosses()
+    var final_checkpoint := str(main_bosses.back().get("checkpoint_id", "")) if not main_bosses.is_empty() else ""
+    var boss: Dictionary = coordinator.start_main_boss(final_checkpoint)
     if not bool(boss.get("ok", false)):
         _check(false, "Final boss content is available for the first-clear path")
         return
@@ -110,7 +112,9 @@ func _test_main_boss_freeze_and_final_settlement() -> void:
     mini_boss_registry_count = coordinator.registry.get_mini_bosses().size()
     _check(bool(coordinator.start_run("hero_lin_yue", 303, "main-boss-start").get("ok", false)), "Main-boss run starts")
     coordinator.advance(1.0)
-    var started: Dictionary = coordinator.start_main_boss("boss_final_20")
+    var main_bosses: Array[Dictionary] = coordinator.registry.get_main_bosses()
+    var final_checkpoint := str(main_bosses.back().get("checkpoint_id", "")) if not main_bosses.is_empty() else ""
+    var started: Dictionary = coordinator.start_main_boss(final_checkpoint)
     _check(bool(started.get("ok", false)), "Main boss starts from registry checkpoint")
     var frozen_run := coordinator.clock.run_seconds
     coordinator.advance(2.0)

@@ -216,10 +216,10 @@ func get_contact_damage_cooldown() -> float:
 
 func get_main_bosses() -> Array[Dictionary]:
     var result: Array[Dictionary] = []
-    var records: Variant = data.get("boss_checkpoints", [])
+    var records: Variant = data.get("main_bosses", data.get("boss_checkpoints", []))
     if records is Array:
         for record in records:
-            if record is Dictionary:
+            if record is Dictionary and str(record.get("encounter_kind", "MAIN_BOSS")) != "MINI_BOSS":
                 result.append(record.duplicate(true))
     return result
 
@@ -229,6 +229,13 @@ func get_mini_bosses() -> Array[Dictionary]:
     var sources: Array = [data.get("mini_bosses", [])]
     var simulation_model: Dictionary = data.get("simulation_model", {})
     sources.append(simulation_model.get("mini_bosses", []))
+    var checkpoint_records: Variant = data.get("boss_checkpoints", [])
+    if checkpoint_records is Array:
+        var checkpoint_minis: Array[Dictionary] = []
+        for record in checkpoint_records:
+            if record is Dictionary and str(record.get("encounter_kind", "")) == "MINI_BOSS":
+                checkpoint_minis.append(record.duplicate(true))
+        sources.append(checkpoint_minis)
     for source in sources:
         if not (source is Array):
             continue
