@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "3ec40016722244164a90c06024672fcb313f4e92",
+  "source_head": "894e4c35fa626d5c41cfa0d38a3e1e646fa89118",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -12,7 +12,8 @@
     "docs/agents/content-design/META_PASSIVE_TREE.md",
     "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
     "docs/BALANCE_ECONOMY_SPEC.md",
-    "GAME_MANIFEST.md"
+    "GAME_MANIFEST.md",
+    "docs/agents/content-design/C4_ARENA_DROP_CATALOGUE.md"
   ],
   "run_1": {
     "weapon_ids": [
@@ -103,6 +104,26 @@
     ],
     "final_boss_chest": "FORBIDDEN"
   },
+  "arena_drops": {
+    "ids": [
+      "arena_drop_heal_mote",
+      "arena_drop_coin_cache",
+      "arena_drop_xp_magnet",
+      "arena_drop_destruction_seal",
+      "arena_drop_wave_freeze",
+      "arena_drop_ward_shard",
+      "arena_drop_vacuum_bloom"
+    ],
+    "count": 7,
+    "status": "CONTENT_SPECIFIED",
+    "scope": "RUN",
+    "source_model": "EXPLICIT_DROP_TABLE_PENDING_BALANCE",
+    "separate_from_xp_and_aftermath": true,
+    "currency_target_proposal": "GOLD",
+    "resource_semantics": "XP_CANONICAL_MANA_LABEL_PENDING_PRODUCT_DECISION",
+    "registry_sync": "PENDING_ARCHITECTURE",
+    "additional_proposals": []
+  },
   "meta_passive_tree": {
     "branch_ids": [
       "meta_vitality",
@@ -159,7 +180,14 @@
     "enemy_lotus_usher",
     "enemy_moonroot_burrower",
     "enemy_silver_reed_seer",
-    "enemy_moontrail_stalker"
+    "enemy_moontrail_stalker",
+    "arena_drop_heal_mote",
+    "arena_drop_coin_cache",
+    "arena_drop_xp_magnet",
+    "arena_drop_destruction_seal",
+    "arena_drop_wave_freeze",
+    "arena_drop_ward_shard",
+    "arena_drop_vacuum_bloom"
   ],
   "no_mockups_created": true,
   "future_content": {

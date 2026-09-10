@@ -1,6 +1,0 @@
-.godot/
-android/build/
-android/.gradle/
-export.cfg
-*.tmp
-*.import.bak

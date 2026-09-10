@@ -2,7 +2,7 @@
 
 Статус пакета: `CONTENT_SPECIFIED`
 
-Пакет фиксирует контент первого забега и постоянное дерево магазина. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
+Пакет фиксирует контент первого забега, постоянное дерево магазина, future encounter proposals и семь временных drops арены. Он не является runtime implementation, balance lock, visual approval или production-asset delivery.
 
 ## 1. Состав среза
 
@@ -12,6 +12,7 @@
 | `C1_WEAPONS_PASSIVES_SYNERGIES.md` | 10 оружий, 10 run-пассивок, 10 direct pairs/evolutions | `CONTENT_SPECIFIED` |
 | `C2_ARTIFACTS.md` | 10 артефактов, trigger/effect/counterplay и offer contract | `CONTENT_SPECIFIED` |
 | `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 4 future enemy proposals, 2 mini-bosses, 5 chest windows и fallback resolver | `CONTENT_SPECIFIED` |
+| `C4_ARENA_DROP_CATALOGUE.md` | 7 arena drops: heal, Gold, XP magnet, destruction, freeze, ward, vacuum | `CONTENT_SPECIFIED` |
 | `META_PASSIVE_TREE.md` | 6 ветвей, 17 stat nodes и shop/persistence contract | `CONTENT_SPECIFIED` |
 | `CONTENT_CATALOG_INDEX.json` | машинно читаемый roster/count/limit index | `CONTENT_SPECIFIED` |
 
@@ -27,6 +28,7 @@
 - Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Артефакт — отдельный run layer без slot capacity.
 - Дерево магазина содержит 6 macro branches и 17 stat nodes, покрывающих характеристики из пользовательского stat-screen reference.
 - Покупки meta tree выполняются только в hub/shop за Gold и применяются со следующего забега.
+- C4 содержит 7 arena drop IDs. Их source cadence, quantity, effect duration/radius, frequency и target caps не зафиксированы content-агентом; drops не заменяют XP/aftermath, chest, artifact offer или checkpoint reward.
 
 ## 3. Handoff для Balance Agent
 
@@ -63,6 +65,20 @@ Balance Agent должен привязать значения к одному �
 - `enemy_max_hp` имеет явный sign/floor/whitelist;
 - internal armor не становится дублирующим публичным node.
 
+### Arena drops
+
+Для семи IDs нужно закрепить:
+
+- approved source tiers, drop-table weights, cadence/frequency и safe-spawn rules;
+- quantity/value for Gold/healing and resource ownership for XP;
+- pickup boundary, effect radius, duration, concurrent target cap и performance budget;
+- destruction target whitelist, kill credit и reward/aftermath outcome;
+- freeze target whitelist, ordinary spawn-pressure policy, active telegraph resume/cancel и resistance;
+- ward mitigation/absorption model, lethal boundary, charge and duplicate/refresh policy;
+- vacuum eligible set, line-of-sight/wall cost и collection cap;
+- interaction с `meta_vitality_mote_healing`, `meta_magnet_pickup_radius`, `meta_magnet_mana_gain` и artifact triggers только после explicit semantic review.
+
+В C4 нет numeric binding. Balance Agent должен оставить XP formula/grade vocabulary и current reward ledger authority в их канонических источниках.
 ## 4. Handoff для Architecture/Runtime
 
 ### Existing contracts to preserve
@@ -79,6 +95,17 @@ Balance Agent должен привязать значения к одному �
 
 Content consumes/provides projections around the existing `upgrade_applied.v1`, `synergy_eligibility_evaluated.v1`, `synergy_claimed.v1`, `artifact_offer_created.v1`, `artifact_offer_refresh_requested.v1`, `artifact_chosen.v1`, `artifact_obtained.v1` and `first_clear_artifact_offer_requested.v1`. New event names for meta purchases не объявляются canonical этим пакетом; Architecture должен закрепить их отдельно.
 
+### Arena-drop sync decisions
+
+- зарегистрировать семь drop IDs и общий transient instance lifecycle через Content Registry;
+- закрепить drop instance/effect/cleanup schema, wall/safe-spawn policy и per-instance/per-target idempotency;
+- определить owner systems для health, Gold, XP attraction/harvest, destruction, freeze и ward;
+- назвать новые activation/resolve events отдельно; C4 не является event catalog;
+- связать XP magnet/vacuum с существующим XP collection path без duplicate XP;
+- связать coin cache с RewardLedger без silent wallet mutation;
+- определить destruction defeated-vs-removed resolution, чтобы не терять и не дублировать XP/aftermath;
+- сохранить boss/mini-boss immunity, checkpoint and final-boss no-chest boundary;
+- определить reconnect/restore policy для uncollected transient drops.
 ### Required sync decisions
 
 - добавить `artifact_tideglass` и `artifact_silent_lantern` в Registry только после schema/effect mapping review;
@@ -103,6 +130,7 @@ Content consumes/provides projections around the existing `upgrade_applied.v1`, 
 | synergy explanation/evolution | `VFX` + `UI_ART` | `docs/mockups/19-synergy-info/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | mini-boss encounter identity | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/05-bosses/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | future enemy identity | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/04-enemies/` или отдельная будущая stage-папка после решения | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| arena drops / pickup identity | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/02-arena/`, `docs/mockups/09-xp/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | passive meta tree/shop | `UI_ART` | `docs/mockups/07-passives/`, `docs/mockups/16-upgrade-offers/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 
 Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; muted crimson/violet только для role/status accent. Identity должна читаться по silhouette, shape grammar и interaction, а не только цветом. Нужны проверки 390×844 UI scale, true 1× combat scale, telegraph visibility и no-asset-drift.
@@ -120,6 +148,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 | elite pack cadence | определяет реальную частоту десяти artifact effects |
 | simultaneous eligible synergies | нужен deterministic priority/offer rule |
 | mini-boss schedule and chest source | нужно подтвердить 7:30/12:30, encounter kind и fallback outcome |
+| arena-drop source cadence and target semantics | нужно определить risk/reward economy, Gold/XP label и target whitelist |
 | future enemy stage insertion | нужно определить будущую wave/stage band, safe-spawn и не добавлять proposals в Run 1 молча |
 | meta purchase event and reset/refund | нужен authoritative persistence boundary |
 | boss clock conflict | architecture source contains stale key; must be resolved by owner |
@@ -136,6 +165,8 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 - [x] Полное дерево содержит 6 ветвей и 17 stat nodes из stat-screen reference.
 - [x] Все числовые значения, которые ещё не принадлежат content ownership, помечены `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`.
 - [x] Briefs для Visual Lab есть; mockups, PNG/SVG и candidate IDs не создавались.
+- [x] C4 catalog содержит семь arena drops с signal/pickup/intent/feedback/limitations и PENDING_BALANCE fields.
+- [x] Arena drops отделены от XP/aftermath, boss chest, artifact offer и final reward settlement.
 - [ ] Balance Agent должен выполнить numeric binding.
 - [ ] Architecture/Runtime должны синхронизировать Registry/schema/events.
 - [ ] Visual Lab должен отдельно принять briefs и создать свои mockups по master gates.
@@ -148,3 +179,11 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 2. Architecture/Runtime: sync two artifact proposals, two mini-boss proposals, synergy cap, chest source, artifact effect schema and meta purchase boundary.
 3. Visual Lab: create master tree/shop and artifact/synergy/weapon visual briefs/mockups in its protected stages.
 4. QA/Integration: validate offer counts, three-synergy cap, stats aggregation and persistence after the preceding decisions are locked.
+
+## 9. C4 short handoff
+
+- Status: CONTENT_SPECIFIED; seven new IDs remain PROPOSAL / REGISTRY_SYNC_PENDING.
+- Balance owns source cadence, quantities, values, radii, durations, target caps, mitigation and performance budgets.
+- Architecture/Runtime owns instance/effect schema, new event names, idempotency, reward ownership, wall policy and reconnect behavior.
+- Visual Lab receives briefs only; no mockups or candidate IDs were created.
+- C5 remains the next Content Agent stage after the C4 handoff is accepted.
