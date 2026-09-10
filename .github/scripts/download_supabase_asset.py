@@ -55,6 +55,8 @@ def connection_target(url: str) -> tuple[http.client.HTTPConnection, str]:
 
 
 def object_url(base_url: str, bucket: str, object_path: str) -> str:
+    if not bucket or any(char not in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._-" for char in bucket):
+        fail("storage bucket has unsupported characters")
     validate_object_path(object_path)
     return (
         f"{base_url.rstrip('/')}/storage/v1/object/"
@@ -64,6 +66,7 @@ def object_url(base_url: str, bucket: str, object_path: str) -> str:
 
 def main() -> int:
     args = parse_args()
+    temp_path: Path | None = None
     try:
         if not args.base_url:
             fail("SUPABASE_URL is required")
@@ -88,7 +91,6 @@ def main() -> int:
             "Authorization": f"Bearer {auth_token}",
         }
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        temp_path: Path | None = None
         digest = hashlib.sha256()
         size_bytes = 0
         connection, target = connection_target(request_url)
@@ -133,9 +135,13 @@ def main() -> int:
         print(f"SHA256 {actual_sha256}")
         return 0
     except DownloadError as exc:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
         print(str(exc), file=sys.stderr)
         return 2
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, http.client.HTTPException) as exc:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
         print(f"BLOCKED_BINARY_ARTIFACT: {exc}", file=sys.stderr)
         return 2
 

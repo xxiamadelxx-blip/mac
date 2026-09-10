@@ -443,6 +443,8 @@ def main() -> int:
     args = parse_args()
     archive = args.archive.resolve()
     try:
+        if not re.fullmatch(r"[A-Za-z0-9._-]+", args.bucket):
+            fail("Storage bucket has unsupported characters")
         summary = inspect_archive(archive)
         object_path = validate_object_path(
             args.object_path or f"releases/{archive.name}"
@@ -542,7 +544,7 @@ def main() -> int:
     except TransportError as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, http.client.HTTPException) as exc:
         print(f"BLOCKED_BINARY_ARTIFACT: {exc}", file=sys.stderr)
         return 2
 
