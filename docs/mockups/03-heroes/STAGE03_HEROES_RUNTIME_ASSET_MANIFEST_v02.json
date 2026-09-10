@@ -2,8 +2,8 @@
   "schema": "moonveil.stage03.hero_runtime_assets",
   "version": 2,
   "stage": 3,
-  "status": "CANDIDATE",
-  "technical_status": "PNG_RGBA_1024_PASS",
+  "status": "BINARY_INTAKE_PENDING",
+  "technical_status": "BINARY_INTAKE_PENDING",
   "artistic_status": "PENDING",
   "runtime_status": "NOT_PROMOTED",
   "contract": {
@@ -54,6 +54,6 @@
     }
   ],
   "reference_target": "User-attached transparent Lantern Moth cutout 1000046678.png",
-  "implementation_note": "Each hero has 8 direction folders and 12 state files. Front direction contains the clean generated state-sheet bases; the remaining frames are controlled derivatives for the Stage 3 candidate pass.",
-  "next_gate": "Artistic approval and engine import/pivot validation before promotion to runtime."
+  "implementation_note": "Reference boards/manifests exist, but the live repository contains no runtime PNG pack for this hero. Import a real ZIP through the Stage 03 release-assets workflow before claiming technical pass.",
+  "next_gate": "real_zip_release_asset_and_workflow_import"
 }
