@@ -6,11 +6,11 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 
 - Repository: xxiamadelxx-blip/mac
 - Historical live main HEAD at audit start: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
-- Latest verified live main HEAD before this audit revision: dc40704f0907c5a5b15fbb99f5a8069b45f829d7
+- Latest verified live main HEAD before this audit revision: 8c9b5242d7ec97e18cefc226f2b2bf0013c7ae37
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
 - Architecture contract revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0
-- Balance model commit: af3ba789b10768e711bc6b6267e4a206dbd4e7a5
+- Balance model commit: 9ccb935c7d433960098e4027a09b1e5780c81f14
 - Data-driven simulator commit used for the 30-run evidence: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c
 - Current simulator HEAD commit (role-driven elite classification): 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce
 - Simulation status: SIMULATED_MODEL_ONLY
