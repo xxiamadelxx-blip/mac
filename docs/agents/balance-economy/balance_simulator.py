@@ -46,7 +46,13 @@ def load_model(path: Path) -> Dict[str, Any]:
     simulation = model["simulation_model"]
     if simulation["status"] != "PROPOSED_MODEL_ONLY":
         raise ValueError("simulation_model must explicitly be PROPOSED_MODEL_ONLY")
-    for key in ("main_run_duration_seconds", "simulation_step_seconds", "boss_clock_policy", "default_seed_set"):
+    for key in (
+        "main_run_duration_seconds",
+        "simulation_step_seconds",
+        "boss_clock_policy",
+        "boss_wave_ramp",
+        "default_seed_set",
+    ):
         if key not in simulation:
             raise ValueError(f"simulation_model missing {key}")
     clock_policy = simulation["boss_clock_policy"]
@@ -58,6 +64,17 @@ def load_model(path: Path) -> Dict[str, Any]:
         raise ValueError("boss clock policy must stop the main run clock at every boss")
     if clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is not False:
         raise ValueError("wave/XP/spawn clock must remain frozen during every boss encounter")
+    ramp = simulation["boss_wave_ramp"]
+    if ramp.get("applies_to") != "POST_BOSS_CYCLES_BEFORE_EVERY_NEXT_BOSS":
+        raise ValueError("boss wave ramp must apply to every post-boss cycle")
+    if number(ramp["siege_duration_seconds"]) <= 0:
+        raise ValueError("boss wave ramp siege duration must be positive")
+    if not 0 < number(ramp["post_boss_reset_factor"]) < 1:
+        raise ValueError("post-boss reset factor must be between zero and one")
+    if ramp.get("ramp_curve", {}).get("value") != "LINEAR":
+        raise ValueError("boss wave ramp must use the declared linear curve")
+    if len(ramp.get("cycle_band_mapping", [])) != len(model["boss_checkpoints"]) - 1:
+        raise ValueError("boss wave ramp must cover every non-final boss cycle")
     if model["architecture_contract"]["final_boss_policy"] != "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST":
         raise ValueError("final-boss chest policy drifted from the live architecture contract")
     return model
@@ -104,6 +121,137 @@ def wave_at(model: Dict[str, Any], elapsed: float) -> Dict[str, Any]:
         if start <= elapsed < end:
             return band
     return bands[-1]
+
+
+def _lerp(start: float, end: float, fraction: float) -> float:
+    fraction = max(0.0, min(1.0, fraction))
+    return start + (end - start) * fraction
+
+
+def _band_map(model: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    return {str(band["wave_band_id"]): band for band in model["wave_bands"]}
+
+
+def _checkpoint_time_map(model: Dict[str, Any]) -> Dict[str, float]:
+    return {str(row["checkpoint_id"]): number(row["time_seconds"]) for row in model["boss_checkpoints"]}
+
+
+def _blend_composition_weights(
+    model: Dict[str, Any], entry_band_id: str, peak_band_id: str, fraction: float
+) -> Dict[str, float]:
+    weights = model["simulation_model"]["wave_selection"]["composition_weights"]
+    entry = weights[entry_band_id]
+    peak = weights[peak_band_id]
+    keys = sorted(set(entry) | set(peak))
+    blended = {
+        enemy_id: _lerp(number(entry.get(enemy_id, 0.0)), number(peak.get(enemy_id, 0.0)), fraction)
+        for enemy_id in keys
+    }
+    total = sum(blended.values())
+    if total <= 0.0:
+        raise ValueError("blended composition weights must have positive sum")
+    return {enemy_id: value / total for enemy_id, value in blended.items()}
+
+
+def wave_state_at(model: Dict[str, Any], elapsed: float) -> Dict[str, Any]:
+    """Return the canonical band or the post-boss recovery/ramp/siege state.
+
+    Canonical B1 bands remain the authority for the first five minutes.  After
+    each non-final boss, the next band starts below the preceding peak, ramps
+    linearly to its own peak, and holds that peak for the configured siege
+    window.  The separate boss-interruption factor is applied by the caller so
+    the 8-second suppression and 20-second recovery remain visible.
+    """
+    base = wave_at(model, elapsed)
+    ramp = model["simulation_model"].get("boss_wave_ramp")
+    if not ramp:
+        return base
+    band_by_id = _band_map(model)
+    checkpoint_times = _checkpoint_time_map(model)
+    reset_factor = number(ramp["post_boss_reset_factor"])
+    siege_duration = number(ramp["siege_duration_seconds"])
+    interruption = model["simulation_model"]["boss_interruption"]
+    recovery_gate = number(interruption["suppression_seconds"]) + number(interruption["recovery_duration_seconds"])
+    for cycle in ramp["cycle_band_mapping"]:
+        cycle_start = checkpoint_times[str(cycle["from_checkpoint_id"])]
+        cycle_end = checkpoint_times[str(cycle["to_checkpoint_id"])]
+        if not (cycle_start <= elapsed < cycle_end):
+            continue
+        entry = band_by_id[str(cycle["entry_band_id"])]
+        peak = band_by_id[str(cycle["peak_band_id"])]
+        cycle_duration = cycle_end - cycle_start
+        ramp_duration = max(0.0, cycle_duration - recovery_gate - siege_duration)
+        since_start = max(0.0, elapsed - cycle_start)
+        ramp_elapsed = max(0.0, since_start - recovery_gate)
+        fraction = 1.0 if ramp_duration <= 0.0 else min(1.0, ramp_elapsed / ramp_duration)
+        entry_budget = number(entry["spawn_budget_per_second"]) * reset_factor
+        peak_budget = number(peak["spawn_budget_per_second"])
+        entry_cap = number(entry["active_cap"]) * reset_factor
+        peak_cap = number(peak["active_cap"])
+        state = dict(peak)
+        state["spawn_budget_per_second"] = _lerp(entry_budget, peak_budget, fraction)
+        state["active_cap"] = max(1, round_half_up(_lerp(entry_cap, peak_cap, fraction)))
+        state["composition_weights"] = _blend_composition_weights(
+            model, str(entry["wave_band_id"]), str(peak["wave_band_id"]), fraction
+        )
+        state["ramp_cycle_id"] = cycle["cycle_id"]
+        state["ramp_phase"] = (
+            "POST_BOSS_RECOVERY"
+            if since_start < recovery_gate
+            else "SIEGE"
+            if since_start >= recovery_gate + ramp_duration
+            else "RAMP"
+        )
+        state["ramp_fraction"] = fraction
+        state["entry_band_id"] = entry["wave_band_id"]
+        state["peak_band_id"] = peak["wave_band_id"]
+        state["cycle_start_seconds"] = cycle_start
+        state["cycle_end_seconds"] = cycle_end
+        state["ramp_end_seconds"] = cycle_start + recovery_gate + ramp_duration
+        state["density_start_budget_per_second"] = entry_budget
+        state["density_peak_budget_per_second"] = peak_budget
+        state["density_start_active_cap"] = round_half_up(entry_cap)
+        state["density_peak_active_cap"] = round_half_up(peak_cap)
+        state["density_factor_of_peak"] = state["spawn_budget_per_second"] / peak_budget if peak_budget else 0.0
+        return state
+    return base
+
+
+def wave_ramp_samples(model: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Expose auditable phase checkpoints for independent balance checks."""
+    ramp = model["simulation_model"].get("boss_wave_ramp")
+    if not ramp:
+        return []
+    checkpoint_times = _checkpoint_time_map(model)
+    suppression = number(model["simulation_model"]["boss_interruption"]["suppression_seconds"])
+    recovery = number(model["simulation_model"]["boss_interruption"]["recovery_duration_seconds"])
+    siege = number(ramp["siege_duration_seconds"])
+    samples: List[Dict[str, Any]] = []
+    for cycle in ramp["cycle_band_mapping"]:
+        start = checkpoint_times[str(cycle["from_checkpoint_id"])]
+        end = checkpoint_times[str(cycle["to_checkpoint_id"])]
+        ramp_end = end - siege
+        for label, elapsed in (
+            ("post_boss_start", start),
+            ("suppression_end", start + suppression),
+            ("recovery_end", start + suppression + recovery),
+            ("ramp_peak", ramp_end),
+            ("siege_before_boss", max(ramp_end, end - number(model["simulation_model"]["simulation_step_seconds"]))),
+        ):
+            state = wave_state_at(model, elapsed)
+            interruption_factor = boss_interruption_factor(model, elapsed)
+            samples.append({
+                "cycle_id": cycle["cycle_id"],
+                "sample": label,
+                "run_clock_seconds": round(elapsed, 3),
+                "phase": state.get("ramp_phase", "CANONICAL"),
+                "density_factor_of_peak": round(float(state.get("density_factor_of_peak", 1.0)), 6),
+                "density_budget_per_second": round(number(state["spawn_budget_per_second"]), 6),
+                "effective_budget_per_second_after_interruption": round(number(state["spawn_budget_per_second"]) * interruption_factor, 6),
+                "active_cap": integer(state["active_cap"]),
+                "boss_interruption_factor": round(interruption_factor, 6),
+            })
+    return samples
 
 
 def weighted_choice(rng: random.Random, weights: Dict[str, Any]) -> str:
@@ -553,7 +701,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         # Only the visible run clock drives ordinary wave selection, spawning,
         # and XP pickup.  This branch is skipped for the full boss encounter.
         if not encounter_active and run_elapsed < main_duration - 1e-9:
-            band = wave_at(model, run_elapsed)
+            band = wave_state_at(model, run_elapsed)
             collect_xp(run_elapsed, band)
             spawn_accumulator += number(band["spawn_budget_per_second"]) * dt * boss_interruption_factor(model, run_elapsed)
             while spawn_accumulator >= 1.0:
@@ -562,7 +710,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
                 if len(active) >= cap:
                     suppressed_spawn_attempts += 1
                     continue
-                enemy_id = weighted_choice(rng, weights[band["wave_band_id"]])
+                enemy_id = weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
                 entity = make_entity(model, enemy_id, wall_elapsed, band, next_entity_id, run_elapsed=run_elapsed)
                 next_entity_id += 1
                 active.append(entity)
@@ -570,7 +718,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         occupied = len(active)
         if not encounter_active:
             cap_samples.append(occupied)
-            band_now = wave_at(model, min(run_elapsed, main_duration - dt))
+            band_now = wave_state_at(model, min(run_elapsed, main_duration - dt))
             if occupied >= integer(band_now["active_cap"]):
                 cap_seconds += dt
 
@@ -765,6 +913,12 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "visible_run_clock_final_seconds": round(run_elapsed, 3),
             "wall_clock_final_seconds": round(wall_elapsed, 3),
             "boss_clock_events": clock_events,
+            "boss_wave_ramp": {
+                "status": simulation["boss_wave_ramp"]["status"],
+                "applies_to": simulation["boss_wave_ramp"]["applies_to"],
+                "phase_order": simulation["boss_wave_ramp"]["phase_order"],
+                "samples": wave_ramp_samples(model),
+            },
             "boss_interruption_checkpoints": [
                 {"time_seconds": checkpoint, "factor_at_checkpoint": round(boss_interruption_factor(model, checkpoint), 6), "factor_at_plus_8": round(boss_interruption_factor(model, checkpoint + number(simulation["boss_interruption"]["suppression_seconds"])), 6)}
                 for checkpoint in (300.0, 600.0, 900.0, 1200.0)
@@ -849,6 +1003,19 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
                 raise AssertionError("visible run clock advanced during boss encounter")
             if event["wave_xp_spawn_clock_advanced_during_encounter"]:
                 raise AssertionError("wave/XP/spawn clock advanced during boss encounter")
+        ramp_samples = run["waves"]["boss_wave_ramp"]["samples"]
+        cycle_ids = sorted({sample["cycle_id"] for sample in ramp_samples})
+        if len(cycle_ids) != expected_bosses - 1:
+            raise AssertionError("wave ramp must cover every non-final boss cycle")
+        for cycle_id in cycle_ids:
+            samples = [sample for sample in ramp_samples if sample["cycle_id"] == cycle_id]
+            density = [sample["density_factor_of_peak"] for sample in samples]
+            if any(later + 1e-9 < earlier for earlier, later in zip(density, density[1:])):
+                raise AssertionError(f"wave density is not monotonic for {cycle_id}")
+            if samples[-1]["phase"] != "SIEGE":
+                raise AssertionError(f"wave ramp has no siege phase for {cycle_id}")
+            if abs(samples[-1]["density_factor_of_peak"] - 1.0) > 1e-6:
+                raise AssertionError(f"siege is not at peak density for {cycle_id}")
 
 
 def main() -> None:
