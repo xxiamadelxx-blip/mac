@@ -11,9 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "9a025c2186ba30280f1e68e122a554fa262bd0f8",
-    "captured_at": "2026-09-10T16:00:00Z",
-    "note": "Live main HEAD read before this balance handoff refresh; final delivery HEAD is recorded in BALANCE_AUDIT.md."
+    "head": "488c5bbd6b0ad412f0c1647eb99e17d31a6953a0",
+    "captured_at": "2026-09-10T19:16:27.823Z",
+    "note": "Parent main HEAD read immediately before REF-BALANCE-REF-01 writes; this model remains model-only and does not claim runtime verification."
   },
   "units": {
     "time": "seconds",
@@ -453,7 +453,7 @@
         "status_reason": "Absolute enemy stats and late-game TTK require B1 approval."
       },
       "enemy_damage_multiplier": {
-        "value": 2.0,
+        "value": 2,
         "status": "PROPOSED",
         "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 15-20 anchor",
         "derived_formula": "1.75 + (1.75 - 1.55) * 1.25",
@@ -1558,7 +1558,7 @@
       "value": 120,
       "source": "B1 section 3 final-boss TTK target",
       "derived_formula": "upper end of final-boss target window",
-      "rationale": "Bounds the final boss encounter after the visible run clock reaches 20:00 without extending the wave/XP clock.",
+      "rationale": "Bounds the final main-boss encounter after the visible run clock reaches 30:00; wave, XP and ordinary-spawn clocks remain frozen until settlement.",
       "status": "PROPOSED"
     },
     "default_seed_set": {
@@ -2774,7 +2774,10 @@
         "rationale": "Final mini-boss is a pre-final pressure check, still distinct from the 30:00 final boss."
       },
       "target_ttk_seconds": {
-        "value": [20, 55],
+        "value": [
+          20,
+          55
+        ],
         "source": "B1 boss TTK target plus C3 short-encounter intent",
         "derived_formula": "mini-boss target is below main first-slice 45–80 seconds and final 90–120 seconds",
         "rationale": "Mini-bosses create pressure while waves keep moving; they cannot consume the whole interval.",
@@ -2784,7 +2787,10 @@
     "elite_variation_policy": {
       "status": "PROPOSED",
       "source": "USER_PRODUCT_DECISION_ELITE_VARIANTS_FOR_CHESTS_AND_HORDE_PRESSURE; C3 elite-pack artifact source; B1 has no cadence/stats",
-      "purpose": ["ADDITIONAL_ARTIFACT_OFFER_SOURCE", "FINITE_HORDE_PRESSURE_EVENT"],
+      "purpose": [
+        "ADDITIONAL_ARTIFACT_OFFER_SOURCE",
+        "FINITE_HORDE_PRESSURE_EVENT"
+      ],
       "persistent": false,
       "spawn_mode": "FINITE_PACK_AFTER_MINI_BOSS_DEFEAT",
       "variant_ids": {
@@ -3404,7 +3410,13 @@
       "status": "PROPOSED",
       "source": "USER_PRODUCT_DECISION_MINI_BOSSES_DO_NOT_FREEZE_WAVES; C3 mini-boss encounter intent",
       "applies_to": "MINI_BOSS_CHECKPOINTS",
-      "checkpoint_seconds": [450, 750, 1050, 1350, 1650],
+      "checkpoint_seconds": [
+        450,
+        750,
+        1050,
+        1350,
+        1650
+      ],
       "run_clock_stops_at_checkpoint": false,
       "wave_xp_spawn_clock_advances_during_encounter": true,
       "resolution_clock": "SAME_WALL_AND_RUN_CLOCK",
@@ -3582,6 +3594,104 @@
       "ArtifactEffectSystem"
     ],
     "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
+  },
+  "external_reference_patterns": {
+    "status": "DERIVED",
+    "source_policy": "Reference repositories are pattern evidence only. No external numeric value, content ID, asset, or balance constant is imported into MAC.",
+    "captured_at": "2026-09-10T19:16:27.823Z",
+    "sources": [
+      {
+        "repository": "matthiasbroske/VampireSurvivorsClone",
+        "url": "https://github.com/matthiasbroske/VampireSurvivorsClone",
+        "relevant_files": [
+          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/MonsterSpawnTable.cs",
+          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Monsters/BossMonster.cs",
+          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Gameplay/Chest.cs",
+          "https://github.com/matthiasbroske/VampireSurvivorsClone/blob/main/Assets/Scripts/Utilities/LootTable.cs"
+        ],
+        "observed_patterns": [
+          "time-keyed spawn rate, composition chance and HP selection",
+          "boss behavior separated from ordinary monster behavior",
+          "boss death can open a chest through a distinct reward path",
+          "loot is resolved through a table rather than a balance constant in the controller"
+        ]
+      },
+      {
+        "repository": "ParsaSabzei/20-Minutes-till-dawn",
+        "url": "https://github.com/ParsaSabzei/20-Minutes-till-dawn",
+        "relevant_files": [
+          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/PlayerController.java",
+          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/controller/MonsterController.java",
+          "https://github.com/ParsaSabzei/20-Minutes-till-dawn/blob/main/core/src/main/java/ap/project/view/GameView.java"
+        ],
+        "observed_patterns": [
+          "XP pickup is the input to a threshold-based level transition",
+          "level-up pauses normal play and presents three upgrade choices",
+          "spawn pressure and special encounters are gated by elapsed run progress",
+          "a boss/special encounter changes the pressure state instead of being an ordinary spawn"
+        ]
+      },
+      {
+        "repository": "sentry-demos/unity",
+        "url": "https://github.com/sentry-demos/unity",
+        "relevant_files": [
+          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/LevelProgression.cs",
+          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/DifficultyCurve.cs",
+          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/SceneManagers/SpawnDirector.cs",
+          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/Pickups/XpDrop.cs",
+          "https://github.com/sentry-demos/unity/blob/main/Assets/Scripts/Upgrades/UpgradeManager.cs"
+        ],
+        "observed_patterns": [
+          "progression math is isolated from the frame loop and can be tested independently",
+          "enemy unlocks, wave size and hitpoint pressure are separate difficulty concerns",
+          "spawn timers are independent and respect unlock/cap gates",
+          "XP pickup and upgrade selection are separate from enemy spawning"
+        ]
+      }
+    ],
+    "mac_application": [
+      {
+        "pattern_id": "xp_level_up",
+        "source": "three reference repositories above plus B1 section 6 and architecture artifact_offer.choice_count",
+        "derived_formula": "Keep MAC XP_to_next(L) and drop values from B1; apply one level transition, then resolve a data-driven offer of exactly three candidates. External numbers are ignored.",
+        "proposed_value": "No new numeric value; existing MAC XP and offer values remain the only inputs.",
+        "status": "DERIVED"
+      },
+      {
+        "pattern_id": "wave_density",
+        "source": "MonsterSpawnTable.cs, DifficultyCurve.cs and SpawnDirector.cs",
+        "derived_formula": "MAC density(t) = selected B1/proposed band budget × post-encounter state factor, with composition and cap read from BALANCE_MODEL.json.",
+        "proposed_value": "No new external numeric value; current 30-minute bands and cap stay as model CANON/PROPOSED fields.",
+        "status": "DERIVED"
+      },
+      {
+        "pattern_id": "boss_checkpoint",
+        "source": "BossMonster.cs, MonsterController.java and MAC run_schedule",
+        "derived_formula": "At each MAC checkpoint create a typed encounter event, reserve its encounter clock, settle its reward through a ledger, and never infer a checkpoint from ordinary spawn count.",
+        "proposed_value": "No new external timing or reward number.",
+        "status": "DERIVED"
+      },
+      {
+        "pattern_id": "post_boss_ramp",
+        "source": "time-keyed spawn tables and independent spawn-ramp timers in reference repositories, plus B1 boss interruption rule",
+        "derived_formula": "After each main boss: suppress ordinary spawn, recover from reset_factor to band budget, then ramp linearly to the next peak and hold siege; a mini-boss continues the visible clock.",
+        "proposed_value": "Existing reset/suppression/recovery/siege fields stay explicitly PROPOSED/DERIVED in the MAC model; no external number imported.",
+        "status": "DERIVED"
+      },
+      {
+        "pattern_id": "elite_variants",
+        "source": "Boss/miniboss separation and gated enemy unlock patterns in the reference repositories plus MAC elite_variation_policy",
+        "derived_formula": "Select a bounded variant from the model registry, apply its overlay to one event anchor, count the pack against active cap, then return to the ordinary roster.",
+        "proposed_value": "Existing MAC variant IDs/multipliers remain model PROPOSED/PENDING where marked; no external IDs or numeric kits imported.",
+        "status": "DERIVED"
+      },
+      {
+        "pattern_id": "rewards_and_chests",
+        "source": "Chest.cs/LootTable.cs and separate XP/upgrade flows in the reference repositories plus B1/architecture reward policy",
+        "derived_formula": "XP pickup, non-final boss chest, elite artifact offer and post-result first-clear artifact offer are separate idempotent channels; final main boss has no boss chest.",
+        "proposed_value": "Existing MAC reward amounts stay B1 CANON or explicit 30-minute PROPOSED; external loot odds and currency values are not used.",
+        "status": "DERIVED"
+      }
+    ]
   }
 }
-
