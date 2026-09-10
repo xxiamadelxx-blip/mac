@@ -18,7 +18,7 @@
 | C-08 | Визуальные ассеты не входят в работу Balance Agent | AGENTS.md, область этого задания |
 | C-09 | Артефакты — run offers из трёх карт, без pre-run loadout и фиксированных слотов; активный эффект отделён от обычных passive modifiers | Product decision; architecture contract |
 | C-10 | Boss chest и artifact offer — разные потоки: boss chest даёт synergy/evolution/fallback, elite pack/first-clear могут дать artifact offer, final boss не создаёт boss chest | Product decision; B1 reward boundary |
-| C-11 | На финальном боссе в 20:00 основной таймер забега замирает; волны, XP и spawn clock не продвигаются, бой идёт на отдельном encounter-clock | Product decision captured 2026-09-10; model final_boss_clock_policy |
+| C-11 | На каждом боссе в 5/10/15/20 минут основной таймер забега замирает; волны, XP и spawn clock не продвигаются, бой идёт на отдельном encounter-clock, после чего нефинальный таймер возобновляется с той же отметки | Product decision captured 2026-09-10; model boss_clock_policy |
 
 ## Обязательные вопросы
 
