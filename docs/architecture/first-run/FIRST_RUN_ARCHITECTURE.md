@@ -182,7 +182,7 @@ Output is one of eligible, not_eligible, already_claimed, unavailable_context or
 
 ### Chest and artifact subsystem
 
-ChestSystem owns offer lifecycle, not reward wallet mutation. It creates a stable chest_offer_id linked to boss encounter/checkpoint and run seed. SynergyEvaluator determines eligibility. Artifact/fallback outcome remains pending where canon has no exact value. RewardLedger settles only the explicitly defined checkpoint/meta bundle.
+ChestSystem owns offer lifecycle for non-final boss checkpoints, not reward wallet mutation. It creates a stable chest_offer_id linked to a non-final boss encounter/checkpoint and run seed. The final boss checkpoint never creates a chest offer: after final settlement it transitions to victory. SynergyEvaluator determines eligibility only when a non-final chest exists. Artifact/fallback outcome remains pending where canon has no exact value. RewardLedger settles only the explicitly defined checkpoint/meta bundle.
 
 ## 5. Reward boundary and idempotency
 
@@ -275,7 +275,7 @@ Projection builders consume immutable snapshots and expose plain data:
 - CharacterProjection: selected character, role, start weapon, active ability and locked/unlocked state.
 - HudProjection: HP, attack, critical chance/multiplier, speed, cooldown, build, artifacts, XP, level, kills, time, stage, boss, rewards and diagnostics.
 - PauseProjection: resume state, snapshot revision, settings availability, exit policy.
-- ChestProjection: chest_offer_id, eligibility, exact available outcomes, claim state.
+- ChestProjection: chest_offer_id, eligibility, exact available outcomes, claim state; emitted only for non-final checkpoints.
 - ResultProjection: terminal reason, stats, build, checkpoints, committed/pending rewards, wallet revision and unlocks.
 
 A projection is disposable. UI re-requests it after every authoritative state revision and never serializes node references.
@@ -312,7 +312,7 @@ Defer: full roster, bosses, all UI art, final balancing and Android performance 
 
 ### Iteration 2 — complete M1 rules and failure paths
 
-Outcome: all B1 wave bands, ten enemies, four bosses, six-slot build, XP curve, upgrade offers, chest eligible/fallback path, checkpoint ledger, death/victory results and recovery run through one contract.
+Outcome: all B1 wave bands, ten enemies, four bosses, six-slot build, XP curve, upgrade offers, non-final chest eligible/fallback path, checkpoint ledger, death/victory results and recovery run through one contract.
 
 Include:
 
