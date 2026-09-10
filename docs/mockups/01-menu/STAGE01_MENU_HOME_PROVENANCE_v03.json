@@ -26,36 +26,39 @@
     }
   ],
   "art_direction": {
-    "project_revision": "main@259d7ab2ae299c9d6db00ff102f9334a37aaef80",
+    "project_revision": "main@fa7a32828d17d79a1af9f204df43f2412bbcd4f1",
     "request_revision": "user-request-2026-09-10",
     "parent_approved_master_candidate_id": null,
     "notes": "Uses existing soft-tonal v02 family language; no heroine identity changes."
   },
   "generator_or_tool": {
-    "name": "authored SVG",
-    "version": "1.0",
+    "name": "OpenAI built-in image generation + ImageMagick raster composition",
+    "version": "UNVERIFIED",
     "model_or_checkpoint": null,
     "workflow_path": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
     "workflow_sha256": "fa4c5fcb1d6d9ce4cbc650f1dadc32059f724978",
     "seed": null,
-    "plugins_or_nodes": []
+    "plugins_or_nodes": [],
+    "notes": "The final deliverable is a PNG image. No visual code source is retained."
   },
   "editable_source": {
-    "path": "docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.svg",
+    "path": null,
     "sha256": null,
-    "format": "SVG"
+    "format": null,
+    "notes": "Raster candidate; no editable source retained in GitHub."
   },
   "post_processing": [
     {
-      "step": "Author exact 390x844 UI composition",
-      "tool": "manual SVG authoring",
-      "version": "1.0",
-      "notes": "No Base64, data URLs, runtime drawing or external dependencies."
+      "step": "Compose generated garden illustration and menu treatment, then rasterize the final viewport",
+      "tool": "ImageMagick / Inkscape rasterizer",
+      "version": "UNVERIFIED",
+      "notes": "Final output is a self-contained PNG; temporary composition source was discarded."
     }
   ],
   "runtime_export": {
-    "path": null,
-    "format": "SVG candidate only",
+    "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png",
+    "bucket": "visual-assets",
+    "format": "PNG",
     "dimensions": "390x844",
     "scale": 1,
     "pivot": null,
@@ -65,7 +68,10 @@
       "touch-target-primary:274x58",
       "touch-target-secondary:130x52"
     ],
-    "sha256": null
+    "sha256": "be328b1802aa2c5e46e8ddf2a126df852bc16d330879f99e6951171cb07181b0",
+    "bytes": 387921,
+    "storage_status": "BLOCKED_UPLOAD",
+    "object_exists_at_last_check": false
   },
   "gameplay_preview": {
     "path": null,
@@ -76,8 +82,9 @@
     "sha256": null
   },
   "review": {
-    "technical_status": "PARTIAL / STATIC_CONTRACT_CHECKED",
+    "technical_status": "PARTIAL / STATIC_IMAGE_PASS",
     "artistic_status": "PENDING",
+    "storage_status": "BLOCKED_UPLOAD",
     "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
     "creative_director_decision": null,
     "decision_record_path": null,
@@ -85,7 +92,7 @@
   },
   "promotion": {
     "runtime_manifest_path": null,
-    "producing_commit": "06ce46b8eb6348e51663ca7d1df359e784ca1193",
+    "producing_commit": "fa7a32828d17d79a1af9f204df43f2412bbcd4f1",
     "consumer_scene_or_ui": "menu home mockup only; not promoted",
     "fallback_status": "not applicable"
   }
