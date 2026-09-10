@@ -5,7 +5,7 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 ## Audit snapshot
 
 - Repository: xxiamadelxx-blip/mac.
-- Live main HEAD verified immediately before this audit refresh: 03d40129d4e31126b1707c6aac3eb51f735dae51.
+- Live main HEAD verified for the next runtime-slice seam check: 48c71e63b46c526827527041f379067bdd581efa.
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md.
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture contract revision: 2f889f876f2b8aa286523d234786addf0b9b245e.
@@ -43,6 +43,7 @@ All 30 runs produced four boss clock events. In every event, run-clock spawn and
 5. Synchronized combat, acceptance, decisions, simulation report and audit documents.
 6. Repeated the full 30-run output twice and confirmed identical SHA-256.
 7. Preserved explicit source/derived/proposed/status provenance. No missing B1 value was silently changed to CANON.
+8. Rechecked the live runtime seam after the model slice: the architecture contract is still DRAFT/runtime_implemented=false and arena_controller.gd is still preview-only, so no fake runtime integration was added.
 
 ## Findings
 
