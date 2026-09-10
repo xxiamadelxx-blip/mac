@@ -52,7 +52,7 @@ For commands with side effects, the idempotency key is checked before mutation. 
 | upgrade_offer_created.v1 | DOMAIN_EVENT | OfferGenerator | Upgrade UI, RunSession | offer_id, three offer records, expires_policy | after level_up | same offer_id reused | snapshot if policy requires |
 | offer_chosen.v1 | COMMAND | Upgrade UI | RunCoordinator/BuildInventory | offer_id, choice_id, state_revision | while UPGRADE_OFFER | duplicate returns chosen outcome | run metrics |
 | upgrade_applied.v1 | DOMAIN_EVENT | BuildInventory | Stats, HUD, Persistence | content_id, old_level, new_level, modifiers_ref | after valid choice | keyed by offer_id | snapshot at boundary |
-| synergy_eligibility_evaluated.v1 | DOMAIN_EVENT | SynergyEvaluator | Chest UI, RunSession | chest_offer_id, outcome, synergy_id | after boss/chest context | same inputs produce same outcome | diagnostics/metrics |
+| synergy_eligibility_evaluated.v1 | DOMAIN_EVENT | SynergyEvaluator | Chest UI, RunSession | chest_offer_id, outcome, synergy_id | after non-final boss/chest context | same inputs produce same outcome | diagnostics/metrics |
 | synergy_claimed.v1 | COMMAND | Chest UI | RunCoordinator/BuildInventory | chest_offer_id, synergy_id, state_revision | after eligible result | idempotent by chest_offer_id | snapshot/metrics |
 | artifact_obtained.v1 | DOMAIN_EVENT | ChestSystem | RunSession, HUD, Persistence | chest_offer_id, artifact_id | after valid claim | duplicate claim returns same artifact | snapshot/metrics |
 | checkpoint_reached.v1 | DOMAIN_EVENT | SimulationClock/WaveDirector | BossDirector, HUD | checkpoint_id, elapsed_seconds | once per checkpoint | keyed by checkpoint_id | run metrics |
@@ -60,9 +60,9 @@ For commands with side effects, the idempotency key is checked before mutation. 
 | boss_defeated.v1 | DOMAIN_EVENT | Combat/BossDirector | RunCoordinator, RewardBoundary | boss_encounter_id, boss_id, checkpoint_id, stats_ref | after authoritative defeat | encounter ID dedupe | snapshot/metrics |
 | checkpoint_reward_requested.v1 | COMMAND | RunCoordinator | RewardCalculator/Ledger | run_id, checkpoint_id, reward_bundle_id, idempotency_key | after boss_defeated | ledger key dedupe | pending transaction |
 | checkpoint_reward_committed.v1 | DOMAIN_EVENT | RewardLedger | MetaProgression, HUD, Result | ledger_entry_ids, wallet_revision, bundle_id | after atomic commit | existing commit returned | durable ledger + metrics |
-| chest_opened.v1 | DOMAIN_EVENT | ChestSystem | SynergyEvaluator, Chest UI | chest_offer_id, checkpoint_id, offer_seed | after reward commit | same offer remains open | snapshot |
-| chest_claimed.v1 | COMMAND | Chest UI | ChestSystem, BuildInventory, Ledger if needed | chest_offer_id, outcome_id, state_revision | while CHEST_OFFER | idempotent by chest_offer_id | snapshot/metrics |
-| stage_advanced.v1 | DOMAIN_EVENT | RunCoordinator | WaveDirector, HUD, Persistence | from_stage_id, to_stage_id, checkpoint_id | after chest/settlement | same checkpoint no-op | snapshot |
+| chest_opened.v1 | DOMAIN_EVENT | ChestSystem | SynergyEvaluator, Chest UI | chest_offer_id, checkpoint_id, offer_seed | after non-final checkpoint reward commit | same offer remains open | snapshot |
+| chest_claimed.v1 | COMMAND | Chest UI | ChestSystem, BuildInventory, Ledger if needed | chest_offer_id, outcome_id, state_revision | while CHEST_OFFER for non-final checkpoint | idempotent by chest_offer_id | snapshot/metrics |
+| stage_advanced.v1 | DOMAIN_EVENT | RunCoordinator | WaveDirector, HUD, Persistence | from_stage_id, to_stage_id, checkpoint_id | after non-final chest claim/settlement | same checkpoint no-op | snapshot |
 | xp_drop_spawned.v1 | DOMAIN_EVENT | Combat/DropSystem | XpDropStore, HUD | xp_item_id, grade_id, value, source_enemy_id | after enemy death | unique drop id | run metrics |
 | xp_drop_collected.v1 | COMMAND | Magnet/Input adapter | ProgressionSystem, XpDropStore | xp_item_id, run_id, collection_context | once per drop | collected flag makes duplicate no-op | metrics |
 | aftermath_spawned.v1 | DOMAIN_EVENT | Combat/AftermathSystem | AftermathStore, renderer | aftermath_item_id, enemy_id, kind, aggregation_tier | after death, separate from XP | unique aftermath id | density metrics |
@@ -71,7 +71,7 @@ For commands with side effects, the idempotency key is checked before mutation. 
 | save_written.v1 | DOMAIN_EVENT | PersistenceGateway | Recovery, Diagnostics | snapshot_id, revision, checksum, reason | after atomic promotion | same revision no-op | durable metadata |
 | save_restore_failed.v1 | DOMAIN_EVENT | PersistenceGateway | RecoveryReview, Diagnostics | snapshot_id, code, recovery_options | before active resume | retry migration/read only | diagnostic |
 | run_defeated.v1 | DOMAIN_EVENT | Combat/RunCoordinator | RewardCalculator, ResultProjection | run_id, reason, stats_ref, checkpoint_id | once terminal | run terminal dedupe | terminal snapshot |
-| run_victory.v1 | DOMAIN_EVENT | BossDirector/RunCoordinator | RewardCalculator, ResultProjection | run_id, final_boss_id, final_checkpoint_id, stats_ref | after final boss defeat only | final encounter dedupe | terminal snapshot |
+| run_victory.v1 | DOMAIN_EVENT | BossDirector/RunCoordinator | RewardCalculator, ResultProjection | run_id, final_boss_id, final_checkpoint_id, stats_ref | after final boss defeat and final settlement commit; no chest required | final encounter dedupe | terminal snapshot |
 | result_finalized.v1 | DOMAIN_EVENT | RewardBoundary | ResultProjection, MenuFlow | run_id, result_id, ledger_entries, wallet_revision | after reward commit | result idempotency key | durable result |
 | return_to_menu.v1 | COMMAND | Result/Pause UI | MenuFlow | run_id, return_reason | after commit/abandon | duplicate navigation no-op | optional telemetry |
 
@@ -91,7 +91,7 @@ boss_defeated is a domain fact, not a wallet mutation. The reward command uses c
 
 ### chest_opened and chest_claimed
 
-The open offer remains stable across close/reopen/recovery. Eligibility may produce fallback_required, but exact fallback value is not invented by this architecture. Claiming the same chest twice returns the stored outcome.
+The open non-final offer remains stable across close/reopen/recovery. Eligibility may produce fallback_required, but exact fallback value is not invented by this architecture. The final boss has no chest offer. Claiming the same chest twice returns the stored outcome.
 
 ### run_defeated and run_victory
 
