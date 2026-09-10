@@ -52,6 +52,7 @@ def main() -> int:
     schedule = model["simulation_model"]["run_schedule"]
     duration = model["simulation_model"]["main_run_duration_seconds"]["value"]
     max_cap = max(int(row["active_cap"]["value"]) for row in model["wave_bands"])
+    allowed_variant_ids = set(model["simulation_model"]["elite_variation_policy"]["variant_ids"]["value"])
     fail(errors, canonical_hash(first) == canonical_hash(second), "repeat simulation hash differs")
     fail(errors, first.get("run_count") == 30, "expected 30 profile/hero/seed runs")
     fail(errors, duration == 1800, "model duration is not 1800 seconds")
@@ -70,6 +71,7 @@ def main() -> int:
         fail(errors, run["rewards"]["idempotency_pass"], "wallet reward idempotency failed")
         fail(errors, run["rewards"]["chest_idempotency_pass"], "chest idempotency failed")
         fail(errors, run["rewards"]["elite_pack_offer_idempotency_pass"], "elite offer idempotency failed")
+        fail(errors, set(run["combat"].get("elite_variant_ids_used", [])).issubset(allowed_variant_ids), "unregistered elite variant emitted")
         for cycle_id in {sample["cycle_id"] for sample in run["waves"]["boss_wave_ramp"]["samples"]}:
             samples = [sample for sample in run["waves"]["boss_wave_ramp"]["samples"] if sample["cycle_id"] == cycle_id]
             density = [sample["density_factor_of_peak"] for sample in samples]
@@ -91,3 +93,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
