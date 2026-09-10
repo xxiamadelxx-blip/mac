@@ -38,3 +38,46 @@
 - Stage assets имеют candidate/pending statuses; архитектурный агент не должен повышать их статус.
 
 После аудита агент обновляет таблицы, добавляет обнаруженные конфликты и указывает, какие вопросы можно закрыть только пользователем, B1 или runtime-тестом.
+
+
+## Live repository audit for this architecture task
+
+Дата проверки: 2026-09-10  
+Repository: xxiamadelxx-blip/mac  
+Branch: main  
+HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
+
+- Прямой локальный checkout в текущем окружении отсутствует, поэтому git status/branch/дословный локальный diff не выполнялись.
+- Atlas Scout capability в текущем окружении не опубликована; использован разрешённый fallback: GitHub tree, точечное чтение живых файлов и repository search.
+- Фактически проверены project.godot, menu/arena scenes and controllers, B1, живой stage manifest и архитектурные инструкции.
+- docs/architecture/first-run/ — отдельная рабочая зона; runtime и visual package не изменяются этим заданием.
+- AGENT_CONTEXT/ROADMAP/MOCKUP_INDEX имеют drift по status этапа 4; для архитектуры это не блокер, поскольку current task не меняет visual stage и не повышает его статус.
+
+## Архитектурные решения текущего задания
+
+| ID | Status | Решение | Причина и последствия |
+|---|---|---|---|
+| A-01 | RESOLVED_BY_AGENT | RunSession — authoritative source of truth активного забега | UI и scene nodes не смогут незаметно менять time, build, rewards или state; snapshot остаётся сериализуемым |
+| A-02 | RESOLVED_BY_AGENT | RunCoordinator только оркестрирует команды и transitions | Combat, progression, waves и ledger сохраняют собственное ownership; не создаётся god controller |
+| A-03 | RESOLVED_BY_AGENT | Content Registry immutable/versioned на протяжении run | Offer, wave, reward и restore не зависят от локализации/текущего UI |
+| A-04 | RESOLVED_BY_AGENT | XPDrop и AftermathItem — отдельные entity types/stores | XP не теряется при aggregation останков и не становится частью collision/pathfinding |
+| A-05 | RESOLVED_BY_AGENT | Reward Ledger commit атомарен с wallet/unlock revision | Повторные checkpoint/chest/result events не удваивают валюту |
+| A-06 | WORKING_ASSUMPTION | Safe save points: checkpoint, explicit pause, terminal/reward boundary | Снижает data-loss risk без обещания произвольного mid-frame resume; требует product confirmation |
+| A-07 | WORKING_ASSUMPTION | Stage — logical wave/checkpoint projection внутри одной карты, не обязательная отдельная scene | Позволяет закрыть M1 одним runtime path; отдельная scene остаётся будущим seam |
+| A-08 | WORKING_ASSUMPTION | Final victory только после defeat финального босса | GAME_MANIFEST описывает boss на 20-й минуте; timer alone не должен выдавать победу |
+| A-09 | RESOLVED_BY_AGENT | Duplicate effects защищаются idempotency key + state revision + owned entity ID | Одинаково покрывает ledger, chest, offer, XP pickup и terminal result |
+| A-10 | RESOLVED_BY_AGENT | Events are transport/diagnostic contract, not second source of truth | Offline M1 получает replay protection без full event-sourcing complexity |
+
+## Уточнённые открытые вопросы
+
+| ID | Status | Вопрос | Source/impact | Temporary handling | Owner | Next action |
+|---|---|---|---|---|---|---|
+| U-11 | PENDING_B1 | Как округлять 50% Gold при defeat после checkpoint с нечётной наградой? | B1 §7 даёт 50%, но не rounding policy | Не фиксировать округление в JSON/коде | balance owner | Добавить правило в B1 до runtime ledger |
+| U-12 | PENDING_PRODUCT_DECISION | Что именно выдаётся при chest fallback_required? | AGENT_TASK требует fallback, exact outcome не задан | Хранить typed fallback policy/value как pending | product owner | Утвердить fallback table и UI copy |
+| U-13 | PENDING_PRODUCT_DECISION | Можно ли продолжать run после background kill с последнего snapshot и насколько старого? | Влияет на loss/exploit/recovery policy | Использовать safe snapshot + RECOVERY_REVIEW, не обещать mid-frame | product/runtime owner | Утвердить recovery window and abandon behavior |
+| U-14 | PENDING_PRODUCT_DECISION | Является ли current_stage_id отдельной сценой или только wave/checkpoint band? | Влияет на bridge, loading и save boundary | В архитектуре stage — logical projection; scene seam оставлен | product/runtime owner | Подтвердить до implementation Iteration 2 |
+| U-15 | PENDING_PRODUCT_DECISION | Какие optional stats обязательны на HUD/result кроме required fields? | Влияет на projection size и acceptance | Expose required fields plus extensible modifiers_ref | product owner | Утвердить presentation matrix до HUD slice |
+
+## Scope conclusion
+
+Архитектурный пакет проектирует контракт и не закрывает runtime evidence. Отсутствие Godot/Android acceptance здесь не считается дефектом документа; это обязательный следующий implementation slice.
