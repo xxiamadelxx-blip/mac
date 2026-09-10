@@ -1,0 +1,286 @@
+{
+  "schema": "moonveil.arena.environment.asset-manifest",
+  "version": 3,
+  "status": "USER REVIEW",
+  "route": {
+    "primary": "ART",
+    "secondary": "MOCKUP"
+  },
+  "stage_path": "docs/mockups/02-arena",
+  "family_id": "moonveil-lotus-garden-environment-soft-tonal-v03",
+  "candidate_id": "vl-20260910-lotus-garden-topdown-v03",
+  "source_reference": {
+    "id": "user-reference-arena-1000046679",
+    "file": "1000046679.jpg",
+    "sha256": "4db59d02d8e77ffd0f676c1a44324c4bdbfedde2d6f5c4b0d99f374f2a9dc034",
+    "use": "top-down camera language only"
+  },
+  "art_direction": {
+    "quality_target": "GAME_MANIFEST premium mobile 2D top-down fantasy gameplay",
+    "camera": "orthographic top-down",
+    "palette": {
+      "deep_blue_gray": "#1d333b",
+      "smoky_desaturated_teal": "#526d68",
+      "mist_jade": "#a7b99b",
+      "warm_ivory": "#d4c3a6",
+      "muted_brass": "#9b9a7b",
+      "restrained_desaturated_garnet": "#704d55"
+    },
+    "forbidden": [
+      "toxic neon grading",
+      "black sketch rings",
+      "baked HUD",
+      "single giant background illustration",
+      "dense obstacle carpet"
+    ]
+  },
+  "coordinate_contract": {
+    "target_viewport": [
+      390,
+      844
+    ],
+    "world_size": [
+      1560,
+      2532
+    ],
+    "world_to_preview_scale": 4,
+    "preview_files": {
+      "composite": "STAGE02_ARENA_TOPDOWN_COMPOSITE_v03.svg",
+      "inspection": "STAGE02_ARENA_TOPDOWN_INSPECTION_v03.svg",
+      "board": "STAGE02_ARENA_ASSET_BOARD_v03.svg"
+    }
+  },
+  "base_layer": {
+    "asset_id": "arena.base.moon_lotus.v03",
+    "file": "assets/STAGE02_ARENA_BASE_MOON_LOTUS_v03.svg",
+    "dimensions": [
+      390,
+      844
+    ],
+    "collision": "data-driven; SVG is visual evidence only",
+    "excludes": [
+      "props",
+      "plants",
+      "bridges",
+      "landmarks",
+      "hero",
+      "enemies",
+      "xp",
+      "hud"
+    ]
+  },
+  "assets": [
+    {
+      "asset_id": "arena.prop.lotus_pond_edge.v03",
+      "file": "assets/STAGE02_ARENA_PROP_LOTUS_POND_EDGE_MASTER_v03.svg",
+      "dimensions": [
+        180,
+        136
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": false
+    },
+    {
+      "asset_id": "arena.prop.broken_bridge_segment.v03",
+      "file": "assets/STAGE02_ARENA_PROP_BROKEN_BRIDGE_SEGMENT_v03.svg",
+      "dimensions": [
+        190,
+        86
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "edge-mask-only",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.stone_cluster.v03",
+      "file": "assets/STAGE02_ARENA_PROP_STONE_CLUSTER_v03.svg",
+      "dimensions": [
+        150,
+        100
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.reed_patch.v03",
+      "file": "assets/STAGE02_ARENA_PROP_REED_PATCH_v03.svg",
+      "dimensions": [
+        140,
+        132
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.root_bank.v03",
+      "file": "assets/STAGE02_ARENA_PROP_ROOT_BANK_v03.svg",
+      "dimensions": [
+        220,
+        92
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.jade_lantern.v03",
+      "file": "assets/STAGE02_ARENA_PROP_JADE_LANTERN_v03.svg",
+      "dimensions": [
+        64,
+        112
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.lotus_cluster.v03",
+      "file": "assets/STAGE02_ARENA_PROP_LOTUS_CLUSTER_v03.svg",
+      "dimensions": [
+        170,
+        118
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.fallen_moon_shrine.v03",
+      "file": "assets/STAGE02_ARENA_PROP_FALLEN_MOON_SHRINE_v03.svg",
+      "dimensions": [
+        190,
+        138
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.prop.fallen_moss_log.v03",
+      "file": "assets/STAGE02_ARENA_PROP_FALLEN_MOSS_LOG_v03.svg",
+      "dimensions": [
+        190,
+        112
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "landscape_props",
+      "collision": "none",
+      "repeatable": true
+    },
+    {
+      "asset_id": "arena.vfx.water_ripple_patch.v03",
+      "file": "assets/STAGE02_ARENA_VFX_WATER_RIPPLE_PATCH_v03.svg",
+      "dimensions": [
+        180,
+        120
+      ],
+      "pivot": [
+        0.5,
+        1
+      ],
+      "alpha": true,
+      "layer": "ambient_vfx",
+      "collision": "none",
+      "repeatable": true
+    }
+  ],
+  "layer_order": [
+    {
+      "id": "base",
+      "z": 0
+    },
+    {
+      "id": "landscape_props",
+      "z": 10
+    },
+    {
+      "id": "terrain_collision",
+      "z": 20
+    },
+    {
+      "id": "ambient_vfx",
+      "z": 30
+    },
+    {
+      "id": "remains",
+      "z": 40
+    },
+    {
+      "id": "xp",
+      "z": 50
+    },
+    {
+      "id": "hero_enemies",
+      "z": 60
+    },
+    {
+      "id": "foreground",
+      "z": 70
+    },
+    {
+      "id": "hud",
+      "z": 100
+    }
+  ],
+  "visual_budget": {
+    "ordinary_open_playfield_ratio": [
+      0.65,
+      0.75
+    ],
+    "target_preview_landscape_footprint_ratio": 0.24,
+    "max_single_prop_screen_footprint_ratio": 0.16,
+    "late_game_rule": "density and aftermath change; saturation does not"
+  },
+  "promotion": {
+    "runtime_manifest": null,
+    "consumer": "not promoted to scenes/arena/arena.tscn",
+    "approval": "PENDING"
+  }
+}
