@@ -13,7 +13,9 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Latest verified main HEAD before this report refresh: 0536f182c1ae8876b9213e0c2fb761793e503a66.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
-- Runtime executed: false.\n- Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
+- Runtime executed: false.
+- Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).
+- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
 - Repeated full-run SHA-256: f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
 
 The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so. Stable IDs are joined against the architecture registry; the model does not copy architecture tuning values.
