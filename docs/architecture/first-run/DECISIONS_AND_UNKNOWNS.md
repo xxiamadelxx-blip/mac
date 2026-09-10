@@ -22,7 +22,7 @@
 | U-01 | Что именно означает «накопление бонуса»: kill streak, meter, временный buff или другое? | Меняет RunSession, HUD и balance contract | Спроектировать расширяемый bonus state; точную формулу оставить PENDING_PRODUCT_DECISION |
 | U-02 | Что означает лимит слотов оружия/пассивок и каков exact split? | Меняет build inventory и offer legality | Читать GAME_MANIFEST; если неоднозначно, не угадывать, вынести контрактный параметр |
 | U-03 | Какой полный roster оружия, пассивок и exact synergy conditions уже каноничен? | Нельзя реализовать evaluator по выдуманным парам | Использовать stable IDs и schema; отсутствующие пары пометить PENDING_PRODUCT_DECISION |
-| U-04 | Что именно даёт boss chest при eligible и fallback ветках? | Меняет chest offer, rewards и idempotency | Описать outcome types и evaluator, значения оставить pending |
+| U-04 | Что именно даёт boss chest на промежуточных checkpoint при eligible и fallback ветках? | Меняет chest offer, rewards и idempotency; у финального босса сундука нет | Описать outcome types и evaluator для нефинального checkpoint, значения оставить pending |
 | U-05 | Является ли «следующая стадия» отдельной сценой, wave band или checkpoint внутри одной карты? | Меняет state machine и save boundary | Связать stage с wave/checkpoint, но явно отметить implementation decision |
 | U-06 | В какие моменты можно сохранить незавершённый run? | Меняет recovery и exploit surface | Описать snapshot seam и policy placeholder; не обещать mid-run resume без подтверждения |
 | U-07 | Что происходит при выходе в меню, background kill или ошибке restore? | Риск потери прогресса и дубля reward | Разделить abandon, recoverable checkpoint и terminal result |
@@ -64,7 +64,7 @@ HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
 | A-05 | RESOLVED_BY_AGENT | Reward Ledger commit атомарен с wallet/unlock revision | Повторные checkpoint/chest/result events не удваивают валюту |
 | A-06 | WORKING_ASSUMPTION | Safe save points: checkpoint, explicit pause, terminal/reward boundary | Снижает data-loss risk без обещания произвольного mid-frame resume; требует product confirmation |
 | A-07 | WORKING_ASSUMPTION | Stage — logical wave/checkpoint projection внутри одной карты, не обязательная отдельная scene | Позволяет закрыть M1 одним runtime path; отдельная scene остаётся будущим seam |
-| A-08 | WORKING_ASSUMPTION | Final victory только после defeat финального босса | GAME_MANIFEST описывает boss на 20-й минуте; timer alone не должен выдавать победу |
+| A-08 | WORKING_ASSUMPTION | Final victory только после defeat финального босса и final settlement; без финального сундука | GAME_MANIFEST описывает boss на 20-й минуте; timer alone не должен выдавать победу |
 | A-09 | RESOLVED_BY_AGENT | Duplicate effects защищаются idempotency key + state revision + owned entity ID | Одинаково покрывает ledger, chest, offer, XP pickup и terminal result |
 | A-10 | RESOLVED_BY_AGENT | Events are transport/diagnostic contract, not second source of truth | Offline M1 получает replay protection без full event-sourcing complexity |
 
@@ -73,7 +73,7 @@ HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
 | ID | Status | Вопрос | Source/impact | Temporary handling | Owner | Next action |
 |---|---|---|---|---|---|---|
 | U-11 | PENDING_B1 | Как округлять 50% Gold при defeat после checkpoint с нечётной наградой? | B1 §7 даёт 50%, но не rounding policy | Не фиксировать округление в JSON/коде | balance owner | Добавить правило в B1 до runtime ledger |
-| U-12 | PENDING_PRODUCT_DECISION | Что именно выдаётся при chest fallback_required? | AGENT_TASK требует fallback, exact outcome не задан | Хранить typed fallback policy/value как pending | product owner | Утвердить fallback table и UI copy |
+| U-12 | PENDING_PRODUCT_DECISION | Что именно выдаётся при chest fallback_required на нефинальном checkpoint? | AGENT_TASK требует fallback для промежуточного сундука, exact outcome не задан; финальный босс сундук не создаёт | Хранить typed fallback policy/value как pending | product owner | Утвердить fallback table и UI copy |
 | U-13 | PENDING_PRODUCT_DECISION | Можно ли продолжать run после background kill с последнего snapshot и насколько старого? | Влияет на loss/exploit/recovery policy | Использовать safe snapshot + RECOVERY_REVIEW, не обещать mid-frame | product/runtime owner | Утвердить recovery window and abandon behavior |
 | U-14 | PENDING_PRODUCT_DECISION | Является ли current_stage_id отдельной сценой или только wave/checkpoint band? | Влияет на bridge, loading и save boundary | В архитектуре stage — logical projection; scene seam оставлен | product/runtime owner | Подтвердить до implementation Iteration 2 |
 | U-15 | PENDING_PRODUCT_DECISION | Какие optional stats обязательны на HUD/result кроме required fields? | Влияет на projection size и acceptance | Expose required fields plus extensible modifiers_ref | product owner | Утвердить presentation matrix до HUD slice |
