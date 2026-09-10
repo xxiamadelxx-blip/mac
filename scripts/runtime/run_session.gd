@@ -47,6 +47,9 @@ var completed_chest_outcomes: Dictionary = {}
 var completed_artifact_outcomes: Dictionary = {}
 var artifact_refresh_outcomes: Dictionary = {}
 var active_boss_encounter: Dictionary = {}
+var last_boss_encounter_id := ""
+var boss_defeat_outcomes: Dictionary = {}
+var checkpoint_settlement_outcomes: Dictionary = {}
 var reward_ledger_entries: Dictionary = {}
 var artifact_sequence := 0
 var active_enemy: Dictionary = {}
@@ -160,6 +163,9 @@ func to_snapshot(clock_snapshot: Dictionary) -> Dictionary:
         "completed_artifact_outcomes": completed_artifact_outcomes.duplicate(true),
         "artifact_refresh_outcomes": artifact_refresh_outcomes.duplicate(true),
         "active_boss_encounter": active_boss_encounter.duplicate(true),
+        "last_boss_encounter_id": last_boss_encounter_id,
+        "boss_defeat_outcomes": boss_defeat_outcomes.duplicate(true),
+        "checkpoint_settlement_outcomes": checkpoint_settlement_outcomes.duplicate(true),
         "reward_ledger_entries": reward_ledger_entries.duplicate(true),
         "artifact_sequence": artifact_sequence,
         "active_enemy": active_enemy.duplicate(true),
@@ -206,6 +212,9 @@ func restore_snapshot(snapshot: Dictionary) -> bool:
     completed_artifact_outcomes = snapshot.get("completed_artifact_outcomes", {}).duplicate(true)
     artifact_refresh_outcomes = snapshot.get("artifact_refresh_outcomes", {}).duplicate(true)
     active_boss_encounter = snapshot.get("active_boss_encounter", {}).duplicate(true)
+    last_boss_encounter_id = str(snapshot.get("last_boss_encounter_id", last_boss_encounter_id))
+    boss_defeat_outcomes = snapshot.get("boss_defeat_outcomes", {}).duplicate(true)
+    checkpoint_settlement_outcomes = snapshot.get("checkpoint_settlement_outcomes", {}).duplicate(true)
     reward_ledger_entries = snapshot.get("reward_ledger_entries", {}).duplicate(true)
     artifact_sequence = int(snapshot.get("artifact_sequence", artifact_sequence))
     active_enemy = snapshot.get("active_enemy", {}).duplicate(true)

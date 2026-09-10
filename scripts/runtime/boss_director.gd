@@ -9,6 +9,7 @@ const KIND_MINI := "MINI_BOSS"
 var registry: Object
 var sequence := 0
 var active_encounter: Dictionary = {}
+var completed_encounters: Dictionary = {}
 
 
 func _init(p_registry: Object) -> void:
@@ -32,9 +33,7 @@ func begin(kind: String, checkpoint_id: String = "", boss_id: String = "", run_s
         }
 
     sequence += 1
-    var resolved_boss_id := str(record.get("boss_id", record.get("boss_id", boss_id)))
-    if resolved_boss_id.is_empty():
-        resolved_boss_id = str(record.get("mini_boss_id", boss_id))
+    var resolved_boss_id := str(record.get("boss_id", record.get("mini_boss_id", record.get("id", boss_id))))
     var resolved_checkpoint := str(record.get("checkpoint_id", checkpoint_id))
     active_encounter = {
         "encounter_id": "%s:%d" % [resolved_boss_id, sequence],
@@ -47,20 +46,26 @@ func begin(kind: String, checkpoint_id: String = "", boss_id: String = "", run_s
         "encounter_clock": 0.0,
         "telegraph": record.get("telegraph", {"status": "CONTRACT_PENDING"}),
         "safe_spawn": record.get("safe_spawn", {"status": "CONTRACT_PENDING"}),
-        "source_path": record.get("source", record.get("boss_source", "BALANCE_MODEL.json")),
-        "source_status": record.get("boss_status", "PENDING_CONTENT_SYNC")
+        "source_path": record.get("source_path", record.get("source", record.get("boss_source", "BALANCE_MODEL.json"))),
+        "source_status": record.get("content_status", record.get("boss_status", record.get("status", "PENDING_CONTENT_SYNC")))
     }
     return {"ok": true, "encounter": active_encounter.duplicate(true)}
 
 
 func defeat(encounter_id: String) -> Dictionary:
     if active_encounter.is_empty():
+        if completed_encounters.has(encounter_id):
+            var duplicate: Dictionary = completed_encounters[encounter_id].duplicate(true)
+            duplicate["duplicate"] = true
+            return duplicate
         return {"ok": false, "code": "NO_ACTIVE_BOSS"}
     if str(active_encounter.get("encounter_id", "")) != encounter_id:
         return {"ok": false, "code": "STALE_BOSS_ENCOUNTER", "encounter_id": encounter_id}
     var defeated := active_encounter.duplicate(true)
     active_encounter = {}
-    return {"ok": true, "defeated": defeated}
+    var outcome := {"ok": true, "duplicate": false, "defeated": defeated}
+    completed_encounters[encounter_id] = outcome.duplicate(true)
+    return outcome
 
 
 func has_active() -> bool:
@@ -71,7 +76,7 @@ func _find_record(kind: String, checkpoint_id: String, boss_id: String) -> Dicti
     var records: Array[Dictionary] = registry.get_main_bosses() if kind == KIND_MAIN else registry.get_mini_bosses()
     for record in records:
         var record_checkpoint := str(record.get("checkpoint_id", ""))
-        var record_id := str(record.get("boss_id", record.get("mini_boss_id", "")))
+        var record_id := str(record.get("boss_id", record.get("mini_boss_id", record.get("id", ""))))
         if not checkpoint_id.is_empty() and record_checkpoint == checkpoint_id:
             return record.duplicate(true)
         if not boss_id.is_empty() and record_id == boss_id:

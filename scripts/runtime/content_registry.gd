@@ -8,6 +8,9 @@ class_name ContentRegistry
 ## it does not copy tuning numbers into GDScript.
 
 const DEFAULT_PATH := "res://docs/agents/balance-economy/BALANCE_MODEL.json"
+const TARGET_RUN_DURATION_SECONDS := 1800.0
+const TARGET_MAIN_BOSS_COUNT := 6
+const TARGET_MINI_BOSS_COUNT := 5
 const REQUIRED_TOP_LEVEL_KEYS := [
     "schema_version",
     "status",
@@ -84,9 +87,8 @@ func get_wave_band_for_time(seconds: float) -> Dictionary:
         if seconds >= start and seconds < end:
             return band.duplicate(true)
 
-    var last_band: Dictionary = bands.back()
-    if seconds >= float(last_band.get("end_seconds", -1.0)):
-        return last_band.duplicate(true)
+    # Never extend the last source band beyond its declared end. A missing
+    # 30-minute band is a content-sync blocker, not permission to reuse tuning.
     return {}
 
 
@@ -220,7 +222,7 @@ func get_main_bosses() -> Array[Dictionary]:
     if records is Array:
         for record in records:
             if record is Dictionary and str(record.get("encounter_kind", "MAIN_BOSS")) != "MINI_BOSS":
-                result.append(record.duplicate(true))
+                _append_unique_record(result, _normalize_encounter_record(record, "MAIN_BOSS"))
     return result
 
 
@@ -229,19 +231,20 @@ func get_mini_bosses() -> Array[Dictionary]:
     var sources: Array = [data.get("mini_bosses", [])]
     var simulation_model: Dictionary = data.get("simulation_model", {})
     sources.append(simulation_model.get("mini_bosses", []))
-    var checkpoint_records: Variant = data.get("boss_checkpoints", [])
-    if checkpoint_records is Array:
-        var checkpoint_minis: Array[Dictionary] = []
-        for record in checkpoint_records:
-            if record is Dictionary and str(record.get("encounter_kind", "")) == "MINI_BOSS":
-                checkpoint_minis.append(record.duplicate(true))
-        sources.append(checkpoint_minis)
+    for source_key in ["boss_checkpoints", "main_bosses"]:
+        var checkpoint_records: Variant = data.get(source_key, [])
+        if checkpoint_records is Array:
+            var checkpoint_minis: Array[Dictionary] = []
+            for record in checkpoint_records:
+                if record is Dictionary and str(record.get("encounter_kind", "")) == "MINI_BOSS":
+                    checkpoint_minis.append(record.duplicate(true))
+            sources.append(checkpoint_minis)
     for source in sources:
         if not (source is Array):
             continue
         for record in source:
             if record is Dictionary:
-                result.append(record.duplicate(true))
+                _append_unique_record(result, _normalize_encounter_record(record, "MINI_BOSS"))
     return result
 
 
@@ -303,8 +306,91 @@ func get_elite_variants() -> Array[Dictionary]:
             continue
         for record in source:
             if record is Dictionary:
-                result.append(record.duplicate(true))
+                _append_unique_record(result, _normalize_elite_variant(record))
     return result
+
+
+func get_wave_envelope_status() -> Dictionary:
+    var bands: Variant = data.get("wave_bands", [])
+    var coverage_end := 0.0
+    var contiguous := true
+    var expected_start := 0.0
+    if bands is Array:
+        for index in range(bands.size()):
+            var band: Variant = bands[index]
+            if not (band is Dictionary):
+                contiguous = false
+                continue
+            var start := float(band.get("start_seconds", -1.0))
+            var end := float(band.get("end_seconds", -1.0))
+            if index == 0 and not is_equal_approx(start, 0.0):
+                contiguous = false
+            if not is_equal_approx(start, expected_start) or end <= start:
+                contiguous = false
+            expected_start = end
+            coverage_end = max(coverage_end, end)
+    return {
+        "source_path": "BALANCE_MODEL.json.wave_bands",
+        "declared_duration_seconds": get_run_duration_seconds(),
+        "coverage_end_seconds": coverage_end,
+        "target_duration_seconds": TARGET_RUN_DURATION_SECONDS,
+        "contiguous": contiguous,
+        "ready_for_target": contiguous and coverage_end >= TARGET_RUN_DURATION_SECONDS
+    }
+
+
+func get_r2_content_status() -> Dictionary:
+    var main_bosses := get_main_bosses()
+    var mini_bosses := get_mini_bosses()
+    var elite_variants := get_elite_variants()
+    var wave_status := get_wave_envelope_status()
+    var blockers: Array[String] = []
+    var main_count := _count_stable_records(main_bosses, "boss_id")
+    var mini_count := _count_stable_records(mini_bosses, "boss_id")
+    var elite_count := _count_stable_records(elite_variants, "variant_id")
+
+    if main_count != TARGET_MAIN_BOSS_COUNT:
+        blockers.append("MAIN_BOSS_ROSTER_COUNT")
+    if mini_count != TARGET_MINI_BOSS_COUNT:
+        blockers.append("MINI_BOSS_ROSTER_COUNT")
+    if elite_count == 0:
+        blockers.append("ELITE_VARIANT_CONTENT")
+    if float(wave_status.get("declared_duration_seconds", 0.0)) < TARGET_RUN_DURATION_SECONDS:
+        blockers.append("RUN_DURATION_CONTENT")
+    if not bool(wave_status.get("ready_for_target", false)):
+        blockers.append("WAVE_ENVELOPE_CONTENT")
+
+    return {
+        "status": "READY" if blockers.is_empty() else "PENDING_CONTENT_SYNC",
+        "source_path": "BALANCE_MODEL.json",
+        "target_duration_seconds": TARGET_RUN_DURATION_SECONDS,
+        "declared_duration_seconds": wave_status.get("declared_duration_seconds", 0.0),
+        "wave_coverage_end_seconds": wave_status.get("coverage_end_seconds", 0.0),
+        "target_main_boss_count": TARGET_MAIN_BOSS_COUNT,
+        "available_main_boss_count": main_count,
+        "target_mini_boss_count": TARGET_MINI_BOSS_COUNT,
+        "available_mini_boss_count": mini_count,
+        "available_elite_variant_count": elite_count,
+        "blockers": blockers
+    }
+
+
+func get_chest_eligibility(offer_type: String) -> Dictionary:
+    var simulation_model: Dictionary = data.get("simulation_model", {})
+    var build_catalog: Dictionary = simulation_model.get("build_catalog", {})
+    var offer_model: Dictionary = build_catalog.get("offer_model", {})
+    var key := "boss_chest"
+    if offer_type == "MINI_BOSS_CHEST":
+        key = "mini_boss_chest"
+    elif offer_type == "ELITE_CHEST":
+        key = "elite_chest"
+    var eligibility: Variant = offer_model.get(key, {})
+    if eligibility is Dictionary and not eligibility.is_empty():
+        return eligibility.duplicate(true)
+    return {
+        "status": "PENDING_CONTENT_SYNC",
+        "source_path": "simulation_model.build_catalog.offer_model.%s" % key
+    }
 
 
 func get_model_field(path: Array[String], fallback: Variant = null) -> Variant:
@@ -314,6 +400,57 @@ func get_model_field(path: Array[String], fallback: Variant = null) -> Variant:
             return fallback
         current = current[segment]
     return current
+
+
+func _normalize_encounter_record(record: Dictionary, kind: String) -> Dictionary:
+    var normalized := record.duplicate(true)
+    var record_id := str(record.get("boss_id", record.get("mini_boss_id", record.get("id", ""))))
+    if not record_id.is_empty():
+        normalized["boss_id"] = record_id
+        if kind == "MINI_BOSS":
+            normalized["mini_boss_id"] = record_id
+    normalized["encounter_kind"] = kind
+    normalized["source_path"] = str(record.get("source_path", record.get("source", record.get("boss_source", "BALANCE_MODEL.json"))))
+    normalized["content_status"] = str(record.get("content_status", record.get("boss_status", record.get("status", "PENDING_CONTENT_SYNC"))))
+    return normalized
+
+
+func _normalize_elite_variant(record: Dictionary) -> Dictionary:
+    var normalized := record.duplicate(true)
+    var variant_id := str(record.get("variant_id", record.get("elite_variant_id", record.get("id", ""))))
+    if not variant_id.is_empty():
+        normalized["variant_id"] = variant_id
+    normalized["source_path"] = str(record.get("source_path", record.get("source", "BALANCE_MODEL.json")))
+    normalized["content_status"] = str(record.get("content_status", record.get("status", "PENDING_CONTENT_SYNC")))
+    return normalized
+
+
+func _append_unique_record(target: Array[Dictionary], record: Dictionary) -> void:
+    var identity := _record_identity(record)
+    if identity.is_empty():
+        target.append(record)
+        return
+    for existing in target:
+        if _record_identity(existing) == identity:
+            return
+    target.append(record)
+
+
+func _record_identity(record: Dictionary) -> String:
+    var encounter_kind := str(record.get("encounter_kind", ""))
+    var record_id := str(record.get("boss_id", record.get("mini_boss_id", record.get("variant_id", record.get("elite_variant_id", record.get("id", ""))))))
+    if record_id.is_empty():
+        return ""
+    var checkpoint_id := str(record.get("checkpoint_id", record.get("window_id", "")))
+    return "%s:%s:%s" % [encounter_kind, record_id, checkpoint_id]
+
+
+func _count_stable_records(records: Array[Dictionary], id_key: String) -> int:
+    var count := 0
+    for record in records:
+        if not str(record.get(id_key, "")).is_empty():
+            count += 1
+    return count
 
 
 func _validate_top_level_shape() -> void:

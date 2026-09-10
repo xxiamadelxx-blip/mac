@@ -54,7 +54,8 @@ func boot(content_path: String = ContentRegistry.DEFAULT_PATH) -> Dictionary:
         "content_version": registry.content_version,
         "model_id": result.get("model_id", ""),
         "model_status": result.get("model_status", ""),
-        "source_path": content_path
+        "source_path": content_path,
+        "r2_content_status": registry.get_r2_content_status()
     })
     return result
 
@@ -228,9 +229,20 @@ func spawn_wave_fixture() -> Dictionary:
             "active_enemy": session.active_enemy.duplicate(true)
         }
 
-    var band := registry.get_wave_band_for_time(clock.run_seconds)
-    if band.is_empty():
-        return _fail("WAVE_BAND_NOT_FOUND", "No wave band matches the current run clock.", true)
+    var admission := wave_director.evaluate_spawn(
+        clock.run_seconds,
+        _active_boss_kind(),
+        int(session.stats.get("active_enemy_count", 0)),
+        1
+    )
+    if not bool(admission.get("ok", false)):
+        return _fail(
+            str(admission.get("code", "WAVE_SPAWN_REJECTED")),
+            "Wave spawn was rejected by the data-driven wave policy.",
+            true,
+            admission
+        )
+    var band: Dictionary = admission.get("band", {})
     var composition: Variant = band.get("composition", {}).get("value", [])
     var enemy_id := ""
     if composition is Array and not composition.is_empty():
@@ -502,7 +514,14 @@ func start_mini_boss(boss_id: String) -> Dictionary:
 
 
 func defeat_active_boss() -> Dictionary:
-    if session == null or not [RunSession.STATE_MAIN_BOSS_ACTIVE, RunSession.STATE_MINI_BOSS_ACTIVE].has(session.state):
+    if session == null:
+        return _fail("NO_ACTIVE_BOSS", "There is no active boss encounter.", true)
+    if not [RunSession.STATE_MAIN_BOSS_ACTIVE, RunSession.STATE_MINI_BOSS_ACTIVE].has(session.state):
+        if not session.last_boss_encounter_id.is_empty() and session.boss_defeat_outcomes.has(session.last_boss_encounter_id):
+            var duplicate: Dictionary = session.boss_defeat_outcomes[session.last_boss_encounter_id].duplicate(true)
+            duplicate["duplicate"] = true
+            _emit("boss_defeat_duplicate", {"encounter_id": session.last_boss_encounter_id})
+            return duplicate
         return _fail("NO_ACTIVE_BOSS", "There is no active boss encounter.", true)
     var encounter_id := str(session.active_boss_encounter.get("encounter_id", ""))
     var defeated := boss_director.defeat(encounter_id)
@@ -510,13 +529,17 @@ func defeat_active_boss() -> Dictionary:
         return _fail(str(defeated.get("code", "BOSS_DEFEAT_FAILED")), "Boss defeat was stale or missing.", false, defeated)
 
     var encounter: Dictionary = defeated.get("defeated", {}).duplicate(true)
+    encounter_id = str(encounter.get("encounter_id", ""))
+    session.last_boss_encounter_id = encounter_id
     session.active_boss_encounter = encounter
     clock.freeze()
     if str(encounter.get("boss_kind", "")) == BossDirectorType.KIND_MAIN:
         session.state = RunSession.STATE_CHECKPOINT_SETTLEMENT
         session.bump_revision()
         _emit("main_boss_defeated", {"encounter": encounter, "encounter_seconds": clock.encounter_seconds})
-        return settle_checkpoint()
+        var main_result := settle_checkpoint()
+        session.boss_defeat_outcomes[encounter_id] = main_result.duplicate(true)
+        return main_result
 
     session.state = RunSession.STATE_RUN_ACTIVE
     session.bump_revision()
@@ -530,13 +553,22 @@ func defeat_active_boss() -> Dictionary:
     )
     session.reward_ledger_entries[mini_settlement.get("ledger_key", "")] = mini_settlement.duplicate(true)
     session.active_boss_encounter = {}
-    return _create_chest_offer("MINI_BOSS_CHEST", str(encounter.get("boss_id", "")), mini_settlement)
+    var mini_result := _create_chest_offer("MINI_BOSS_CHEST", str(encounter.get("boss_id", "")), mini_settlement)
+    session.boss_defeat_outcomes[encounter_id] = mini_result.duplicate(true)
+    return mini_result
 
 
 func settle_checkpoint() -> Dictionary:
-    if session == null or session.state != RunSession.STATE_CHECKPOINT_SETTLEMENT:
-        return _fail("CHECKPOINT_SETTLEMENT_NOT_ALLOWED", "Checkpoint settlement requires CHECKPOINT_SETTLEMENT.", true)
+    if session == null:
+        return _fail("CHECKPOINT_SETTLEMENT_NOT_ALLOWED", "No RunSession exists.", true)
     var checkpoint_id := str(session.active_boss_encounter.get("checkpoint_id", session.checkpoint_id))
+    if session.state != RunSession.STATE_CHECKPOINT_SETTLEMENT:
+        if session.checkpoint_settlement_outcomes.has(checkpoint_id):
+            var duplicate: Dictionary = session.checkpoint_settlement_outcomes[checkpoint_id].duplicate(true)
+            duplicate["duplicate"] = true
+            _emit("checkpoint_settlement_duplicate", {"checkpoint_id": checkpoint_id})
+            return duplicate
+        return _fail("CHECKPOINT_SETTLEMENT_NOT_ALLOWED", "Checkpoint settlement requires CHECKPOINT_SETTLEMENT.", true)
     var is_final := registry.is_final_checkpoint(checkpoint_id)
     var reward := registry.get_checkpoint_reward(checkpoint_id)
     var reward_type := "FINAL_SETTLEMENT" if is_final else "CHECKPOINT_REWARD"
@@ -564,9 +596,13 @@ func settle_checkpoint() -> Dictionary:
             "boss_chest": false,
             "run_seconds": clock.run_seconds
         })
-        return {"ok": true, "final": true, "state": session.state, "settlement": settlement}
+        var final_result := {"ok": true, "final": true, "state": session.state, "settlement": settlement}
+        session.checkpoint_settlement_outcomes[checkpoint_id] = final_result.duplicate(true)
+        return final_result
 
-    return _create_chest_offer("BOSS_CHEST", checkpoint_id, settlement)
+    var chest_result := _create_chest_offer("BOSS_CHEST", checkpoint_id, settlement)
+    session.checkpoint_settlement_outcomes[checkpoint_id] = chest_result.duplicate(true)
+    return chest_result
 
 
 func claim_chest(offer_id: String, expected_revision: int) -> Dictionary:
@@ -576,7 +612,7 @@ func claim_chest(offer_id: String, expected_revision: int) -> Dictionary:
         _emit("chest_claim_duplicate", {"offer_id": offer_id})
         return duplicate
     if session == null or session.state != RunSession.STATE_BOSS_CHEST:
-        return _fail("CHEST_NOT_OPEN", "No boss chest is open.", true, {"offer_id": offer_id})
+        return _fail("CHEST_NOT_OPEN", "No chest offer is open.", true, {"offer_id": offer_id})
     if str(session.pending_chest_offer.get("offer_id", "")) != offer_id:
         return _fail("STALE_CHEST", "Chest offer ID does not match.", true, {"offer_id": offer_id})
     if expected_revision != int(session.pending_chest_offer.get("created_at_revision", -1)):
@@ -587,6 +623,8 @@ func claim_chest(offer_id: String, expected_revision: int) -> Dictionary:
         "duplicate": false,
         "offer_id": offer_id,
         "offer_type": session.pending_chest_offer.get("offer_type", ""),
+        "source_kind": session.pending_chest_offer.get("source_kind", ""),
+        "source_id": session.pending_chest_offer.get("source_id", ""),
         "checkpoint_id": session.pending_chest_offer.get("checkpoint_id", ""),
         "mutation": "SYNERGY_OR_FALLBACK_CONTRACT"
     }
@@ -836,14 +874,21 @@ func _active_boss_kind() -> String:
     return ""
 
 
-func _create_chest_offer(offer_type: String, checkpoint_id: String, settlement: Dictionary) -> Dictionary:
+func _create_chest_offer(offer_type: String, source_id: String, settlement: Dictionary) -> Dictionary:
+    if not (offer_type in ["BOSS_CHEST", "MINI_BOSS_CHEST", "ELITE_CHEST"]):
+        return _fail("CHEST_TYPE_INVALID", "Chest source is not part of the runtime chest contract.", false, {"offer_type": offer_type})
+
     session.offer_sequence += 1
+    var source_kind := _chest_source_kind(offer_type)
     session.pending_chest_offer = {
         "offer_id": "%s:chest:%d" % [session.run_id, session.offer_sequence],
         "offer_type": offer_type,
-        "checkpoint_id": checkpoint_id,
+        "source_kind": source_kind,
+        "source_id": source_id,
+        "chest_window_id": source_id,
+        "checkpoint_id": source_id,
         "created_at_revision": session.state_revision,
-        "eligibility": registry.get_model_field(["simulation_model", "build_catalog", "offer_model", "boss_chest"], {}),
+        "eligibility": registry.get_chest_eligibility(offer_type),
         "settlement": settlement.duplicate(true),
         "claimed": false
     }
@@ -853,6 +898,16 @@ func _create_chest_offer(offer_type: String, checkpoint_id: String, settlement: 
     clock.pause()
     _emit("chest_offer_created", session.pending_chest_offer)
     return {"ok": true, "state": session.state, "offer": session.pending_chest_offer.duplicate(true)}
+
+
+func _chest_source_kind(offer_type: String) -> String:
+    if offer_type == "BOSS_CHEST":
+        return "MAIN_BOSS"
+    if offer_type == "MINI_BOSS_CHEST":
+        return "MINI_BOSS"
+    if offer_type == "ELITE_CHEST":
+        return "ELITE_VARIANT"
+    return "UNKNOWN"
 
 
 func _apply_wallet_reward(reward: Dictionary) -> void:
