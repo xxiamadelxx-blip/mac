@@ -28,6 +28,12 @@ def ids(rows: Iterable[Dict[str, Any]]) -> set[str]:
     return {str(row["id"]) for row in rows if "id" in row}
 
 
+def scalar(value: Any) -> Any:
+    if isinstance(value, dict) and "value" in value:
+        return value["value"]
+    return value
+
+
 def record_error(errors: List[str], condition: bool, message: str) -> None:
     if not condition:
         errors.append(message)
@@ -134,6 +140,17 @@ def main() -> int:
         == integration.get("architecture_contract_revision"),
         "model and runtime handoff must name the same architecture revision",
     )
+    record_error(
+        errors,
+        int(scalar(architecture.get("canonical", {}).get("duration_seconds", -1))) == int(scalar(schedule.get("duration_seconds", -2))),
+        "balance schedule duration must match the live architecture duration",
+    )
+    record_error(
+        errors,
+        [int(row.get("time_seconds")) for row in schedule_main]
+        == [int(value) for value in architecture.get("canonical", {}).get("boss_checkpoint_seconds", [])],
+        "main-boss schedule must use the live architecture checkpoint seconds",
+    )
 
     character_ids = ids(registry.get("characters", []))
     weapon_ids = ids(registry.get("weapons", []))
@@ -147,6 +164,24 @@ def main() -> int:
         for row in boss_rows
         if "checkpoint_seconds" in row and "id" in row
     }
+    canonical = architecture.get("canonical", {})
+    architecture_intermediate_rows = registry.get("intermediate_bosses", [])
+    architecture_intermediate_by_checkpoint = {
+        int(row["checkpoint_seconds"]): str(row["id"])
+        for row in architecture_intermediate_rows
+        if "checkpoint_seconds" in row and "id" in row
+    }
+    architecture_variant_ids = {
+        str(row["variant_id"])
+        for row in canonical.get("enemy_variant_policy", {}).get("variant_ids", [])
+        if isinstance(row, dict) and "variant_id" in row
+    }
+    if not architecture_variant_ids:
+        architecture_variant_ids = {
+            str(value)
+            for value in canonical.get("enemy_variant_policy", {}).get("variant_ids", [])
+            if isinstance(value, str)
+        }
 
     heroes = simulation.get("heroes_and_profiles", {}).get("heroes", {})
     build = simulation.get("build_catalog", {})
@@ -211,34 +246,62 @@ def main() -> int:
     mini_stats = simulation.get("mini_boss_stats", {})
     for row in schedule_mini:
         record_error(errors, str(row.get("boss_id")) in mini_stats, f"mini-boss stats missing for {row.get('boss_id')}")
+    for checkpoint_seconds, expected_mini_id in architecture_intermediate_by_checkpoint.items():
+        model_mini = next((row for row in schedule_mini if int(row.get("time_seconds", -1)) == checkpoint_seconds), {})
+        record_error(
+            errors,
+            model_mini.get("boss_id") == expected_mini_id,
+            f"architecture intermediate slot {checkpoint_seconds} is not represented by the balance schedule",
+        )
+    for row in schedule_mini:
+        checkpoint_seconds = int(row.get("time_seconds", -1))
+        if checkpoint_seconds not in architecture_intermediate_by_checkpoint:
+            record_error(
+                errors,
+                row.get("id_status") == "PENDING_CONTENT_REGISTRY",
+                f"proposed extra mini-boss at {checkpoint_seconds} must remain pending",
+            )
     record_error(errors, simulation.get("elite_variation_policy", {}).get("persistent") is False, "elite variants must not be persistent wave members")
+    model_variant_ids = set(simulation.get("elite_variation_policy", {}).get("variant_ids", {}).get("value", []))
+    record_error(errors, model_variant_ids == architecture_variant_ids, "elite variation IDs must match the architecture registry")
 
-    wave_by_range = {
-        (int(row["from_seconds"]), int(row["to_seconds"])): str(row["id"])
-        for row in registry.get("wave_bands", [])
-    }
     model_waves = model.get("wave_bands", [])
     model_wave_ids = {str(row.get("wave_band_id")) for row in model_waves}
     declared_wave_ids = {
         str(row.get("wave_band_id"))
         for row in join_policy.get("wave_band_mapping", [])
     }
-    for wave in model_waves:
-        key = (int(wave["start_seconds"]), int(wave["end_seconds"]))
-        expected_id = wave_by_range.get(key)
-        if expected_id is not None:
-            record_error(errors, wave.get("wave_band_id") == expected_id, f"wave range {key} has wrong stable ID")
-        else:
-            record_error(errors, str(wave.get("wave_band_id")) in model_wave_ids - set(wave_by_range.values()), f"unregistered extension wave {wave.get('wave_band_id')}")
-    architecture_wave_ids = set(wave_by_range.values())
-    record_error(errors, architecture_wave_ids.issubset(model_wave_ids), "model wave IDs do not cover architecture wave IDs")
-    record_error(errors, architecture_wave_ids.issubset(declared_wave_ids), "handoff wave mapping is incomplete for architecture waves")
-    for extension_id in model_wave_ids - architecture_wave_ids:
-        record_error(
-            errors,
-            any(row.get("wave_band_id") == extension_id and row.get("status") == "PROPOSED_EXTENSION" for row in join_policy.get("wave_band_mapping", [])),
-            f"extension wave {extension_id} must remain explicitly PROPOSED_EXTENSION",
-        )
+    architecture_wave_rows = registry.get("wave_bands", [])
+    legacy_wave_by_range = {
+        (int(row["from_seconds"]), int(row["to_seconds"])): str(row["id"])
+        for row in architecture_wave_rows
+        if "from_seconds" in row and "to_seconds" in row
+    }
+    if legacy_wave_by_range:
+        for wave in model_waves:
+            key = (int(wave["start_seconds"]), int(wave["end_seconds"]))
+            expected_id = legacy_wave_by_range.get(key)
+            if expected_id is not None:
+                record_error(errors, wave.get("wave_band_id") == expected_id, f"wave range {key} has wrong stable ID")
+            else:
+                record_error(errors, str(wave.get("wave_band_id")) in model_wave_ids - set(legacy_wave_by_range.values()), f"unregistered extension wave {wave.get('wave_band_id')}")
+        architecture_wave_ids = set(legacy_wave_by_range.values())
+        record_error(errors, architecture_wave_ids.issubset(model_wave_ids), "model wave IDs do not cover architecture wave IDs")
+        record_error(errors, architecture_wave_ids.issubset(declared_wave_ids), "handoff wave mapping is incomplete for architecture waves")
+        for extension_id in model_wave_ids - architecture_wave_ids:
+            record_error(
+                errors,
+                any(row.get("wave_band_id") == extension_id and row.get("status") == "PROPOSED_EXTENSION" for row in join_policy.get("wave_band_mapping", [])),
+                f"extension wave {extension_id} must remain explicitly PROPOSED_EXTENSION",
+            )
+    else:
+        architecture_wave_ids = ids(architecture_wave_rows)
+        architecture_wave_mapping = join_policy.get("architecture_wave_cycle_mapping", [])
+        mapped_architecture_wave_ids = {str(row.get("architecture_wave_band_id")) for row in architecture_wave_mapping}
+        mapped_model_wave_ids = {str(row.get("model_wave_band_id")) for row in architecture_wave_mapping}
+        record_error(errors, architecture_wave_ids.issubset(mapped_architecture_wave_ids), "architecture wave-cycle handoff is incomplete")
+        record_error(errors, model_wave_ids.issubset(mapped_model_wave_ids), "every model wave band needs an architecture cycle alias")
+        record_error(errors, mapped_model_wave_ids.issubset(model_wave_ids), "wave-cycle handoff references an unknown model wave band")
 
     ramp_cycles = wave_ramp.get("cycle_band_mapping", [])
     checkpoint_ids = [str(row.get("checkpoint_id")) for row in schedule_main]
@@ -304,3 +367,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
