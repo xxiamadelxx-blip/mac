@@ -18,7 +18,7 @@ Runtime implemented: NO
 | Movement/combat | GAME_MANIFEST; AGENT_TASK | Simulation consumes clock and emits combat facts, not wallet/UI mutation | ARCHITECTURE Simulation; EVENT combat boundary | SPECIFIED | Runtime Iteration 1 |
 | Wave timing | B1 §§4–5 | WaveDirector выбирает B1 bands, spawn budget и active cap, без скрытого роста | DATA wave_bands; FLOW steps 11/16 | SPECIFIED | Runtime Iteration 2 |
 | Bosses at 5/10/15/20 min | GAME_MANIFEST; B1 | Boss checkpoint возникает один раз на каждой canonical boundary | STATE T-11/T-12; DATA bosses | SPECIFIED | Runtime Iteration 2 |
-| Next stage semantics | AGENT_TASK; DECISIONS U-05 | После settlement/chest меняется stage projection; separate scene не обещается | FLOW §§6, 11; STATE T-15/T-17 | PENDING | Product/runtime owner confirms U-05 |
+| Next stage semantics | AGENT_TASK; DECISIONS U-05 | После нефинального settlement/chest меняется stage projection; финальный босс заканчивает забег без следующей стадии | FLOW §§6, 11; STATE T-15 | PENDING | Product/runtime owner confirms U-05 |
 | XP formula and grades | B1 §§6; GAME_MANIFEST | XPDrop collection credits value once and opens level offer at threshold | DATA xp_grades; EVENT xp_* / level_up | SPECIFIED | Runtime Iteration 2 |
 | XP versus aftermath | GAME_MANIFEST; B1 §4 | XPDrop и AftermathItem имеют разные IDs, stores, layers и lifecycle | DATA entity_shapes; ARCHITECTURE §7 | SPECIFIED | Runtime Iteration 1 then 2 |
 | Kills and stats | AGENT_TASK §2/§4 | RunSession counts kills and projects required combat/progression stats | FLOW §9; DATA run_session.stats | SPECIFIED | Runtime Iteration 1/2 |
@@ -27,10 +27,10 @@ Runtime implemented: NO
 | Weapon acquisition/upgrade | GAME_MANIFEST | BuildInventory validates New/Upgrade and emits one mutation per offer | DATA weapons/build_entry; EVENT upgrade_applied | SPECIFIED | Runtime Iteration 1/2 |
 | Passive acquisition/upgrade | GAME_MANIFEST | Passive slots/ranks and modifiers are data-driven | DATA passives/build_entry | SPECIFIED | Runtime Iteration 2 |
 | Slot limits | GAME_MANIFEST; AGENT_TASK | Six weapon and six passive slots; three artifact slots; UI cannot bypass | DATA canonical/build; ARCHITECTURE BuildInventory | SPECIFIED | Runtime Iteration 2 |
-| Synergy eligibility | GAME_MANIFEST; AGENT_TASK | Matching pair, max weapon/passive, non-evolved, chest context and claim guard are checked | DATA synergy_evaluator; FLOW §5 | SPECIFIED | Runtime Iteration 2 |
+| Synergy eligibility | GAME_MANIFEST; AGENT_TASK | Matching pair, max weapon/passive, non-evolved, нефинальный chest context and claim guard are checked | DATA synergy_evaluator; FLOW §5 | SPECIFIED | Runtime Iteration 2 |
 | Synergy/evolution duplicate guard | AGENT_TASK | Repeated claim returns existing outcome; no second evolution | STATE T-15; EVENT synergy_claimed | SPECIFIED | Runtime Iteration 2 |
-| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Boss settlement creates stable chest offer and eligible outcome can be claimed once | FLOW §6; EVENT chest_* | SPECIFIED | Runtime Iteration 2 |
-| Chest fallback path | AGENT_TASK; DECISIONS U-04 | Fallback_required is representable but exact value is not fabricated | DATA chest_offer.fallback_policy | PENDING | Product owner confirms U-04 |
+| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Только нефинальный boss settlement creates stable chest offer and eligible outcome can be claimed once; final boss chest отсутствует | FLOW §6; STATE T-14/T-15; EVENT chest_* | SPECIFIED | Runtime Iteration 2 |
+| Chest fallback path | AGENT_TASK; DECISIONS U-04 | Для нефинального chest fallback_required is representable but exact value is not fabricated; final boss has no fallback chest | DATA chest_offer.fallback_policy | PENDING | Product owner confirms U-04 |
 | HUD/read model | AGENT_TASK §4 | UI can show HP, attack, crit, speed, cooldown, build, artifacts, XP, time, stage, kills, rewards | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Pause | AGENT_TASK §4 | Manual pause freezes clock and preserves resume_state | STATE RUN_PAUSED/T-18/T-19; EVENT run_paused | SPECIFIED | Runtime Iteration 1 |
 | Settings from pause | AGENT_TASK | Settings returns to exact blocking/resume context | FLOW §7; STATE pause model | SPECIFIED | Runtime Iteration 2 |
@@ -38,10 +38,10 @@ Runtime implemented: NO
 | Android background/resume | GAME_MANIFEST; AGENT_TASK | Background forces pause; restore validates snapshot/checksum/content | ARCHITECTURE §6; EVENT run_resumed | SPECIFIED | Runtime Iteration 3 |
 | Save boundary | GAME_MANIFEST; DECISIONS U-06/U-07 | Checkpoint/explicit pause/terminal snapshots are versioned and atomic; arbitrary frame not promised | DATA save_snapshot; ARCHITECTURE §6 | PENDING | Product/runtime owner confirms recovery policy |
 | Death | GAME_MANIFEST; B1 | HP zero yields one terminal defeat result and allowed partial rewards | FLOW §8; STATE T-16; EVENT run_defeated | SPECIFIED | Runtime Iteration 2 |
-| Victory | GAME_MANIFEST | Final victory requires final boss defeat, not timer alone | FLOW §8; STATE T-17/T-15; invariant 6 | SPECIFIED | Runtime Iteration 2 |
+| Victory | GAME_MANIFEST | Final victory requires final boss defeat and final settlement, not timer alone; final boss has no chest | FLOW §8; STATE T-17/T-14F; invariant 6 | SPECIFIED | Runtime Iteration 2 |
 | Result stats | AGENT_TASK | Result projection contains build, kills, XP, stats, checkpoints and reward status | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Reward bundles | B1 §§7–9 | RewardCalculator reads deterministic bundles and separate wallets | DATA reward_bundles; ARCHITECTURE §5 | SPECIFIED | Runtime Iteration 2 |
-| Checkpoint ledger | GAME_MANIFEST; B1 | 5/10/15/20 checkpoint reward settles once | STATE T-14; EVENT checkpoint_reward_* | SPECIFIED | Runtime Iteration 2 |
+| Checkpoint ledger | GAME_MANIFEST; B1 | 5/10/15/20 checkpoint reward settles once | STATE T-14/T-14F; EVENT checkpoint_reward_* | SPECIFIED | Runtime Iteration 2 |
 | First clear/repeat/defeat | B1 §7 | Scopes are separate; defeat after checkpoint uses allowed partial path | FLOW §8; DATA reward ledger | SPECIFIED | Runtime Iteration 2 |
 | Ledger idempotency | AGENT_TASK; GAME_MANIFEST | Duplicate checkpoint/chest/result commands return existing outcome without wallet mutation | ARCHITECTURE §5; EVENT §2/§4 | SPECIFIED | Runtime Iteration 1 test then 2 |
 | Save restore idempotency | AGENT_TASK | Restore cannot replay settled ledger entries | STATE T-19/T-21; DATA reward_ledger_ref | SPECIFIED | Runtime Iteration 2 |
