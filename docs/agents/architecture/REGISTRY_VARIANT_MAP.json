@@ -1,0 +1,641 @@
+{
+  "schema": "moonveil.architecture.registry_variant_map",
+  "schema_version": "1.0",
+  "task_id": "REF-ARCH-02",
+  "title": "Единая registry-карта ordinary и elite enemy variants",
+  "status": "PUBLISHED_ARCHITECTURE_PRODUCT_DECISION",
+  "repository": "xxiamadelxx-blip/mac",
+  "branch": "main",
+  "scope": {
+    "owner": "Architecture/Product",
+    "engine": "Godot 4.x / native 2D / GDScript",
+    "purpose": "Свести стабильные content IDs в единый архитектурный каталог до Balance/Runtime binding.",
+    "runtime_code_changed": false,
+    "balance_values_changed": false,
+    "visual_assets_changed": false,
+    "artistic_approval": false
+  },
+  "publication": {
+    "parent_head": "0ec954c7f6aed51fc309a6b59e7ec3a5e16371d2",
+    "changed_paths": [
+      "docs/agents/architecture/REGISTRY_VARIANT_MAP.json"
+    ],
+    "commit_message": "architecture: publish ordinary and elite variant registry map"
+  },
+  "decisions": {
+    "ordinary_roster": {
+      "decision": "TEN_ORDINARY_BASE_RECORDS",
+      "count": 10,
+      "rule": "Ровно восемь существующих Stage 04 base records плюс два уже предложенных ordinary extension ID.",
+      "legacy_exclusion": [
+        "enemy_stone_oni",
+        "enemy_eclipse_serpent"
+      ],
+      "no_silent_reclassification": true
+    },
+    "elite_variant_limit": {
+      "decision_id": "ARCH-PROD-REG-ELITE-05",
+      "decision": "KEEP_FIVE_RUNTIME_BOUND",
+      "catalog_count": 10,
+      "runtime_registered_limit": 5,
+      "limit_semantics": "Лимит 5 относится к runtime_active_registry — run-scoped projection, которую Runtime может зарегистрировать/активировать за один запуск или registry revision. Полный catalog_registry сохраняет все 10 стабильных ID.",
+      "selection_scope": "RUN",
+      "selection_rule": "Детерминированно выбрать не более пяти ID из полного каталога по content_version и run_seed; exact weighting/cadence/numeric overlays принадлежат Balance.",
+      "selection_inputs": [
+        "content_version",
+        "run_seed",
+        "wave_cycle_id",
+        "state_revision"
+      ],
+      "permanent_roster_mutation": false,
+      "ids_deleted": false,
+      "five_event_cadence_not_implied": "BALANCE_MODEL.json.simulation_model.elite_variation_policy.max_events_per_run остаётся отдельным proposed event-count полем и не переопределяется этой картой."
+    },
+    "legacy_records": {
+      "decision": "PRESERVE_COMPATIBILITY_ONLY",
+      "count": 2,
+      "rule": "Старые Stage 04 IDs сохраняются для совместимости, но не входят в ordinary roster, не считаются новыми elite variants и не попадают в target 30m runtime selection.",
+      "migration": "Стабильные legacy IDs не удалять и не маппить молча на новые IDs; current-run resolver должен quarantine/reject их вне compatibility lookup."
+    }
+  },
+  "namespaces": {
+    "ordinary_roster": "ordinary_roster",
+    "elite_catalog": "elite_variant_catalog",
+    "elite_runtime_projection": "runtime_active_registry",
+    "legacy_compatibility": "stage_04_compatibility"
+  },
+  "ordinary_roster": {
+    "count": 10,
+    "records": [
+      {
+        "record_id": "enemy_ink_beetle",
+        "display_name": "Чернильный жук",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "rusher",
+          "contact",
+          "low_durability"
+        ],
+        "paired_elite_variant_id": "elite_variant_ink_beetle_ironcarapace",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L111"
+      },
+      {
+        "record_id": "enemy_lantern_moth",
+        "display_name": "Фонарная моль",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "ranged",
+          "projectile",
+          "spacing"
+        ],
+        "paired_elite_variant_id": "elite_variant_lantern_moth_prismwing",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L112"
+      },
+      {
+        "record_id": "enemy_bone_carp",
+        "display_name": "Костяной карп",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "line_dash",
+          "telegraph",
+          "recovery"
+        ],
+        "paired_elite_variant_id": "elite_variant_bone_carp_tidepiercer",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L113"
+      },
+      {
+        "record_id": "enemy_paper_ghost",
+        "display_name": "Бумажный призрак",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "teleporter",
+          "reposition",
+          "contact"
+        ],
+        "paired_elite_variant_id": "elite_variant_paper_ghost_sealbreaker",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L114"
+      },
+      {
+        "record_id": "enemy_jade_toad",
+        "display_name": "Нефритовая жаба",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "leap",
+          "zone",
+          "area_denial"
+        ],
+        "paired_elite_variant_id": "elite_variant_jade_toad_mudcrown",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L115"
+      },
+      {
+        "record_id": "enemy_mirror_fox",
+        "display_name": "Зеркальная лиса",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "decoy",
+          "flank",
+          "mirror",
+          "target_confusion"
+        ],
+        "paired_elite_variant_id": "elite_variant_mirror_fox_falsepath",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L116"
+      },
+      {
+        "record_id": "enemy_bell_crab",
+        "display_name": "Колокольный краб",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "guard",
+          "tank",
+          "directional",
+          "contact"
+        ],
+        "paired_elite_variant_id": "elite_variant_bell_crab_resonant_shell",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L117"
+      },
+      {
+        "record_id": "enemy_thread_doll",
+        "display_name": "Нитяная кукла",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_SPECIFIED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "controller",
+          "beam",
+          "slow",
+          "spacing"
+        ],
+        "paired_elite_variant_id": "elite_variant_thread_doll_cutline",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L118"
+      },
+      {
+        "record_id": "enemy_lotus_usher",
+        "display_name": "Лотосовый зазыватель",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "zone",
+          "controller",
+          "telegraph",
+          "route"
+        ],
+        "paired_elite_variant_id": "elite_variant_lotus_usher_bloomguard",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L120"
+      },
+      {
+        "record_id": "enemy_moonroot_burrower",
+        "display_name": "Луннокорневой землерой",
+        "registry_class": "ORDINARY_BASE",
+        "catalog_status": "EXISTING_CONTENT_PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_binding_status": "PENDING_RUNTIME_REGISTRY",
+        "balance_binding_status": "PENDING_B1_OR_EXTENSION_REVIEW",
+        "tags": [
+          "burrow",
+          "ambush",
+          "reposition",
+          "telegraph"
+        ],
+        "paired_elite_variant_id": "elite_variant_moonroot_burrower_gravewake",
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L121"
+      }
+    ]
+  },
+  "elite_variant_catalog": {
+    "count": 10,
+    "relation": "one_variant_per_ordinary_base_family",
+    "records": [
+      {
+        "variant_id": "elite_variant_ink_beetle_ironcarapace",
+        "base_enemy_id": "enemy_ink_beetle",
+        "display_name": "Железнопанцирный чернильный жук",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "rusher",
+          "guard",
+          "recovery"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L140"
+      },
+      {
+        "variant_id": "elite_variant_lantern_moth_prismwing",
+        "base_enemy_id": "enemy_lantern_moth",
+        "display_name": "Призмокрылая фонарная моль",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "ranged",
+          "fan",
+          "spacing"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L141"
+      },
+      {
+        "variant_id": "elite_variant_bone_carp_tidepiercer",
+        "base_enemy_id": "enemy_bone_carp",
+        "display_name": "Приливный костяной карп",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "line_dash",
+          "feint",
+          "recovery"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L142"
+      },
+      {
+        "variant_id": "elite_variant_paper_ghost_sealbreaker",
+        "base_enemy_id": "enemy_paper_ghost",
+        "display_name": "Призрак-разрушитель печатей",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "teleporter",
+          "mark",
+          "reposition",
+          "choice"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L143"
+      },
+      {
+        "variant_id": "elite_variant_jade_toad_mudcrown",
+        "base_enemy_id": "enemy_jade_toad",
+        "display_name": "Жабий грязевой венец",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "leap",
+          "nested_zone",
+          "timing",
+          "area_denial"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L144"
+      },
+      {
+        "variant_id": "elite_variant_mirror_fox_falsepath",
+        "base_enemy_id": "enemy_mirror_fox",
+        "display_name": "Лиса ложного пути",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "decoy",
+          "flank",
+          "targeting"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L145"
+      },
+      {
+        "variant_id": "elite_variant_bell_crab_resonant_shell",
+        "base_enemy_id": "enemy_bell_crab",
+        "display_name": "Краб резонансного панциря",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "guard",
+          "pulse",
+          "directional",
+          "rotation"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L146"
+      },
+      {
+        "variant_id": "elite_variant_thread_doll_cutline",
+        "base_enemy_id": "enemy_thread_doll",
+        "display_name": "Кукла режущей нити",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "beam",
+          "split",
+          "spacing",
+          "control"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L147"
+      },
+      {
+        "variant_id": "elite_variant_lotus_usher_bloomguard",
+        "base_enemy_id": "enemy_lotus_usher",
+        "display_name": "Цветковый страж лотосового зазывателя",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "zone",
+          "feint",
+          "route",
+          "recovery"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L148"
+      },
+      {
+        "variant_id": "elite_variant_moonroot_burrower_gravewake",
+        "base_enemy_id": "enemy_moonroot_burrower",
+        "display_name": "Землерой могильного следа",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "catalog_status": "PROPOSED",
+        "architecture_status": "RECONCILED_ID_ONLY",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "balance_status": "PENDING_B1",
+        "visual_status": "PENDING_VISUAL",
+        "tags": [
+          "elite",
+          "burrow",
+          "ambush",
+          "trail",
+          "recovery"
+        ],
+        "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L149"
+      }
+    ]
+  },
+  "legacy_records": [
+    {
+      "record_id": "enemy_stone_oni",
+      "display_name": "Каменный они",
+      "registry_class": "LEGACY_ELITE_FAMILY",
+      "legacy_namespace": "stage_04_compatibility",
+      "catalog_status": "LEGACY_PRESERVED",
+      "counted_as_ordinary": false,
+      "counted_as_elite_variant": false,
+      "target_30m_runtime_eligible": false,
+      "compatibility_action": "RETAIN_ID_NO_DELETE_NO_SILENT_REMAP",
+      "current_run_action": "QUARANTINE_FROM_TARGET_ROSTER",
+      "replacement_record_id": null,
+      "tags": [
+        "elite",
+        "slam",
+        "zone",
+        "heavy"
+      ],
+      "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L129"
+    },
+    {
+      "record_id": "enemy_eclipse_serpent",
+      "display_name": "Змей затмения",
+      "registry_class": "LEGACY_ELITE_FAMILY",
+      "legacy_namespace": "stage_04_compatibility",
+      "catalog_status": "LEGACY_PRESERVED",
+      "counted_as_ordinary": false,
+      "counted_as_elite_variant": false,
+      "target_30m_runtime_eligible": false,
+      "compatibility_action": "RETAIN_ID_NO_DELETE_NO_SILENT_REMAP",
+      "current_run_action": "QUARANTINE_FROM_TARGET_ROSTER",
+      "replacement_record_id": null,
+      "tags": [
+        "elite",
+        "dash",
+        "trail",
+        "arc"
+      ],
+      "source_anchor": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md#L130"
+    }
+  ],
+  "runtime_projection_contract": {
+    "ordinary": {
+      "source_namespace": "ordinary_roster",
+      "selection": "all ten mapped records after Balance/Runtime validation",
+      "count": 10
+    },
+    "elite": {
+      "source_namespace": "elite_variant_catalog",
+      "active_namespace": "runtime_active_registry",
+      "max_registered_records": 5,
+      "selection": "seeded_deterministic_subset",
+      "no_permanent_roster_mutation": true,
+      "one_reward_boundary_per_base_defeat": true,
+      "no_automatic_artifact_offer": true
+    },
+    "legacy": {
+      "source_namespace": "stage_04_compatibility",
+      "target_30m_selection": "excluded",
+      "current_run_fallback": "diagnostic and quarantine"
+    }
+  },
+  "invariants": {
+    "stable_ids_preserved": true,
+    "every_elite_base_exists_in_ordinary_roster": true,
+    "ordinary_count_excludes_legacy": true,
+    "elite_variant_count_excludes_legacy": true,
+    "legacy_count_is_separate": true,
+    "variant_does_not_replace_base_enemy": true,
+    "variant_does_not_create_second_xp_drop": true,
+    "variant_does_not_create_second_aftermath": true,
+    "variant_does_not_create_boss_chest": true,
+    "variant_does_not_create_automatic_artifact_offer": true,
+    "final_boss_no_chest_unchanged": true,
+    "no_pre_run_artifact_loadout_unchanged": true,
+    "visual_identity_requires_non_color_marker": true
+  },
+  "ownership": {
+    "content": "Owns semantic IDs, behavior signatures and proposed status; no numeric or runtime lock claimed.",
+    "architecture": "Owns namespace separation, count semantics, limit-5 interpretation and legacy compatibility policy.",
+    "balance": "Owns numeric overlays, cadence, weights, pack size and reward values; must not silently rename IDs.",
+    "runtime": "Owns materialization of runtime_active_registry, seeded selection, quarantine diagnostics and duplicate-safe reward boundaries.",
+    "visual_lab": "Owns asset/marker linkage and approval; no visual production claim follows from this map.",
+    "ci_qa": "Owns runtime/Godot evidence; map is not R2/R3 proof."
+  },
+  "sources": {
+    "files": [
+      {
+        "path": "docs/AGENT_SYNC_STATE.md",
+        "sha": "c12706b86521c74fa731f2bf9faaf5be4dd63aa8",
+        "role": "active locks and current blocker baseline"
+      },
+      {
+        "path": "docs/agents/content-design/CONTENT_CATALOG_INDEX.json",
+        "sha": "8f0b088f37008a411258810a9cc865d358afd52a",
+        "role": "10 ordinary / 10 elite counts and stable IDs"
+      },
+      {
+        "path": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
+        "sha": "b9caf6d17df2e2b215e79d9f94e81cfc2ab47a3f",
+        "role": "ordinary↔elite pairing and legacy classification"
+      },
+      {
+        "path": "docs/agents/balance-economy/BALANCE_MODEL.json",
+        "sha": "2f8f724dcacd38d901d74d1ead9462cbfb41f224",
+        "role": "read-only numeric/status boundary; current model remains partial"
+      },
+      {
+        "path": "scripts/runtime/content_registry.gd",
+        "sha": "e6f30419054d665c8ad0fb69c1bd5902f06f79ef",
+        "role": "consumer seam; current runtime getter boundary"
+      }
+    ],
+    "authoritative_for": "ID classification, namespace mapping, limit-5 runtime projection and legacy handling only",
+    "not_authoritative_for": [
+      "numeric balance",
+      "runtime implementation",
+      "Godot/Android evidence",
+      "visual approval"
+    ]
+  },
+  "validation": {
+    "ordinary_count": {
+      "expected": 10,
+      "actual": 10,
+      "result": "PASS"
+    },
+    "elite_variant_count": {
+      "expected": 10,
+      "actual": 10,
+      "result": "PASS"
+    },
+    "legacy_count": {
+      "expected": 2,
+      "actual": 2,
+      "result": "PASS"
+    },
+    "one_to_one_pairing": {
+      "expected": 10,
+      "actual": 10,
+      "result": "PASS"
+    },
+    "unique_ids": {
+      "ordinary": true,
+      "elite": true,
+      "legacy": true,
+      "result": "PASS"
+    },
+    "legacy_exclusion": {
+      "ordinary_ids_do_not_include_legacy": true,
+      "elite_ids_do_not_include_legacy": true,
+      "result": "PASS"
+    },
+    "limit_5": {
+      "catalog_count": 10,
+      "max_runtime_registered": 5,
+      "result": "PASS"
+    },
+    "numeric_values_added": false,
+    "source_assets_created": false,
+    "runtime_executed": false
+  },
+  "blockers": [
+    {
+      "id": "BALANCE_VARIANT_BINDING",
+      "status": "OPEN",
+      "owner": "Balance",
+      "evidence": "BALANCE_MODEL.json remains PARTIAL; its current elite policy exposes only three legacy enemy_ink_beetle_variant_* IDs and proposed overlays, not the ten mapped elite_variant_* IDs.",
+      "impact": "Numeric overlays, cadence and reward binding remain unready."
+    },
+    {
+      "id": "RUNTIME_REGISTRY_CONSUMPTION",
+      "status": "OPEN",
+      "owner": "Runtime",
+      "evidence": "content_registry.gd has getters for elite_variants, but current balance JSON does not expose the ten mapped IDs in the consumed top-level/simulation shape.",
+      "impact": "R2/R3 runtime evidence remains unavailable."
+    },
+    {
+      "id": "ORDINARY_EXTENSION_BINDING",
+      "status": "OPEN",
+      "owner": "Balance + Runtime",
+      "evidence": "enemy_lotus_usher and enemy_moonroot_burrower are content-proposed and require numeric/profile/resource binding.",
+      "impact": "The architecture map is not a playable-content or APK claim."
+    },
+    {
+      "id": "VISUAL_MARKER_APPROVAL",
+      "status": "OPEN",
+      "owner": "Visual Lab",
+      "evidence": "All elite variants remain PENDING_VISUAL; non-color marker and asset linkage are not approved production assets.",
+      "impact": "No visual or production promotion follows from this map."
+    },
+    {
+      "id": "CLOCK_CONTRACT_DRIFT",
+      "status": "OPEN",
+      "owner": "Architecture + Runtime",
+      "evidence": "This map does not rewrite the separate MAIN_BOSS/MINI_BOSS clock contract; current sync state/runtime lock remains authoritative for that issue.",
+      "impact": "Runtime must still use main-boss freeze and mini-boss continuation."
+    }
+  ],
+  "evidence": {
+    "source_snapshot_head": "0ec954c7f6aed51fc309a6b59e7ec3a5e16371d2",
+    "map_checks": "JSON structure and cross-reference checks executed before publication.",
+    "not_run": [
+      "Godot runtime",
+      "Android/APK",
+      "Balance simulation",
+      "local git diff --check (no checkout)"
+    ],
+    "scope_check": "Only the new architecture map path is intended to be changed."
+  },
+  "next_action": "Balance Agent reconciles BALANCE_MODEL.json with this map: bind the ten ordinary base IDs and ten elite variant IDs, preserve the maximum-five runtime projection, and keep every absent numeric field explicitly PROPOSED or PENDING_B1."
+}
