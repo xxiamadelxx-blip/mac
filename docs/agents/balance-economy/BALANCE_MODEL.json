@@ -11,9 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "29215a95ca2b043c8e042ab5def6b5c9c73add6d",
-    "captured_at": "2026-09-10T12:00:00Z",
-    "note": "Baseline HEAD immediately before this balance extension; final delivery HEAD is recorded in BALANCE_AUDIT.md."
+    "head": "9a025c2186ba30280f1e68e122a554fa262bd0f8",
+    "captured_at": "2026-09-10T16:00:00Z",
+    "note": "Live main HEAD read before this balance handoff refresh; final delivery HEAD is recorded in BALANCE_AUDIT.md."
   },
   "units": {
     "time": "seconds",
@@ -919,7 +919,7 @@
       "boss_id": "boss_hua_lin",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
     },
     {
       "checkpoint_id": "boss_02_10",
@@ -927,7 +927,7 @@
       "boss_id": "boss_miyeon",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
     },
     {
       "checkpoint_id": "boss_03_15",
@@ -935,15 +935,31 @@
       "boss_id": "boss_seika",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
     },
     {
-      "checkpoint_id": "boss_final_20",
+      "checkpoint_id": "boss_04_20",
       "time_seconds": 1200,
+      "boss_id": "boss_extension_slot_04",
+      "boss_status": "PENDING_CONTENT_REGISTRY",
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+    },
+    {
+      "checkpoint_id": "boss_05_25",
+      "time_seconds": 1500,
+      "boss_id": "boss_extension_slot_05",
+      "boss_status": "PENDING_CONTENT_REGISTRY",
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+    },
+    {
+      "checkpoint_id": "boss_final_30",
+      "time_seconds": 1800,
       "boss_id": "boss_black_moon_empress",
-      "boss_status": "CANON",
-      "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+      "boss_status": "CANON_ARCHITECTURE_RETIMED",
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
     }
   ],
   "rewards": {
@@ -978,7 +994,7 @@
         "source": "B1 section 7"
       },
       {
-        "checkpoint_id": "boss_final_20",
+        "checkpoint_id": "boss_04_20",
         "gold": 200,
         "moon_seals": 60,
         "boss_essence": 2,
@@ -1349,8 +1365,8 @@
   },
   "architecture_contract": {
     "path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "source_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
-    "status": "DRAFT_READ_ONLY",
+    "source_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+    "status": "VERIFIED_ARCHITECTURE_READ_ONLY",
     "canonical_ids": [
       "hero_lin_yue",
       "hero_seoyeon_han",
@@ -1377,8 +1393,8 @@
       "status": "CANON",
       "source": "architecture contract canonical"
     },
-    "non_final_chest": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
-    "final_boss_policy": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST",
+    "non_final_chest": "CHECKPOINT_REWARD_THEN_CONFIGURED_CHEST_OR_NEXT_STAGE",
+    "final_boss_policy": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST",
     "reward_idempotency_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
     "status_notes": [
       "Architecture contract is read-only input for this balance slice.",
@@ -1395,16 +1411,16 @@
     "model_version": "0.4",
     "status": "PROPOSED_MODEL_ONLY",
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
-    "architecture_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
+    "architecture_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
     "runtime_status": "NOT_IMPLEMENTED",
     "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; elite variants are finite event packs",
     "main_run_duration_seconds": {
       "value": 1800,
-      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10; old architecture/B1 value is 1200",
+      "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10; B1 baseline value is 1200 and requires extension approval",
       "derived_formula": "30 minutes × 60 seconds",
-      "rationale": "Extends the balance slice to the requested 30-minute run while leaving the old architecture contract read-only and visibly out of sync.",
+      "rationale": "Extends the balance slice to the requested 30-minute run; the live architecture duration is now 1800, while B1 numeric extension values remain pending.",
       "status": "PROPOSED",
-      "status_reason": "Architecture and B1 source docs still declare 1200 seconds."
+      "status_reason": "Architecture duration is synced to 1800; B1 still lacks approved extension wave, XP, combat and reward numbers."
     },
     "run_schedule": {
       "status": "PROPOSED",
@@ -1418,7 +1434,7 @@
       },
       "derived_formula": "main checkpoints remain on a 5-minute cadence; five mini-bosses occupy the midpoint of each 5-minute interval before the final checkpoint",
       "rationale": "Gives the requested two additional main-boss slots and five mini-boss opportunities without placing encounters on top of one another.",
-      "architecture_sync_status": "BLOCKED_PENDING_ARCHITECTURE_REGISTRY_UPDATE",
+      "architecture_sync_status": "BLOCKED_CLOCK_POLICY_AND_FIVE_MINI_CONTENT_SYNC",
       "main_boss_checkpoints": [
         {
           "checkpoint_id": "boss_01_05",
@@ -1448,18 +1464,18 @@
           "schedule_status": "PROPOSED_30M_CONTEXT"
         },
         {
-          "checkpoint_id": "boss_final_20",
+          "checkpoint_id": "boss_04_20",
           "time_seconds": 1200,
-          "boss_id": "boss_black_moon_empress",
+          "boss_id": "boss_extension_slot_04",
           "encounter_kind": "MAIN_BOSS",
           "is_final": false,
-          "id_status": "CANON_ARCHITECTURE",
-          "schedule_status": "PENDING_ARCHITECTURE_RECLASSIFICATION_FROM_FINAL"
+          "id_status": "PENDING_CONTENT_REGISTRY",
+          "schedule_status": "ARCHITECTURE_SLOT_ID_PENDING_CONTENT"
         },
         {
           "checkpoint_id": "boss_05_25",
           "time_seconds": 1500,
-          "boss_id": "boss_pending_25",
+          "boss_id": "boss_extension_slot_05",
           "encounter_kind": "MAIN_BOSS",
           "is_final": false,
           "id_status": "PENDING_CONTENT_REGISTRY",
@@ -1468,11 +1484,11 @@
         {
           "checkpoint_id": "boss_final_30",
           "time_seconds": 1800,
-          "boss_id": "boss_pending_final_30",
+          "boss_id": "boss_black_moon_empress",
           "encounter_kind": "MAIN_BOSS",
           "is_final": true,
-          "id_status": "PENDING_CONTENT_REGISTRY",
-          "schedule_status": "PROPOSED_NEW_FINAL_BOSS"
+          "id_status": "CANON_ARCHITECTURE",
+          "schedule_status": "ARCHITECTURE_FINAL_SLOT_RETIMED"
         }
       ],
       "mini_boss_checkpoints": [
@@ -1506,11 +1522,12 @@
         {
           "checkpoint_id": "miniboss_04_22_30",
           "time_seconds": 1350,
-          "boss_id": "miniboss_pending_04",
+          "boss_id": "miniboss_extension_slot_03",
           "encounter_kind": "MINI_BOSS",
           "clock_policy": "ADVANCES_WITH_WAVES_XP_AND_VISIBLE_RUN_CLOCK",
           "reward_type": "BOSS_CHEST",
-          "id_status": "PENDING_CONTENT_REGISTRY"
+          "id_status": "PENDING_CONTENT_REGISTRY",
+          "schedule_status": "ARCHITECTURE_INTERMEDIATE_SLOT_PENDING_CONTENT"
         },
         {
           "checkpoint_id": "miniboss_05_27_30",
@@ -1907,7 +1924,7 @@
         {
           "cycle_id": "cycle_after_boss_03",
           "from_checkpoint_id": "boss_03_15",
-          "to_checkpoint_id": "boss_final_20",
+          "to_checkpoint_id": "boss_04_20",
           "entry_band_id": "wave_elite_10_15",
           "peak_band_id": "wave_eclipse_15_20",
           "status": "DERIVED",
@@ -1915,7 +1932,7 @@
         },
         {
           "cycle_id": "cycle_after_boss_04",
-          "from_checkpoint_id": "boss_final_20",
+          "from_checkpoint_id": "boss_04_20",
           "to_checkpoint_id": "boss_05_25",
           "entry_band_id": "wave_eclipse_15_20",
           "peak_band_id": "wave_cataclysm_20_25",
@@ -2446,7 +2463,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
       },
       "boss_02_10": {
         "boss_id": "boss_miyeon",
@@ -2494,7 +2511,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
       },
       "boss_03_15": {
         "boss_id": "boss_seika",
@@ -2542,23 +2559,23 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
       },
-      "boss_final_20": {
-        "boss_id": "boss_black_moon_empress",
-        "checkpoint_id": "boss_final_20",
+      "boss_04_20": {
+        "boss_id": "boss_extension_slot_04",
+        "checkpoint_id": "boss_04_20",
         "base_hp": {
           "value": 9600,
-          "source": "PENDING_B1; B1 supplies final boss TTK 90–120 seconds",
-          "derived_formula": "target_final_ttk_midpoint × reference_final_boss_dps",
-          "rationale": "Final boss is resolved after the 20-minute wave clock in the explicit post-run window.",
+          "source": "PENDING_B1; B1 supplies late main-boss TTK 60–100 seconds",
+          "derived_formula": "target_late_main_ttk_midpoint × reference_late_boss_dps",
+          "rationale": "The 20:00 slot is now an intermediate late main boss; the final encounter is reserved for 30:00.",
           "status": "PROPOSED"
         },
         "base_damage": {
           "value": 22,
           "source": "PENDING_B1",
-          "derived_formula": "final_boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
-          "rationale": "Final pressure remains readable instead of being a surprise burst.",
+          "derived_formula": "late_main_boss_damage_budget ÷ telegraphed_attack_interval ÷ hit_probability",
+          "rationale": "Late-main pressure remains readable instead of becoming a surprise final-boss burst.",
           "status": "PROPOSED"
         },
         "base_speed": {
@@ -2589,11 +2606,11 @@
           "rationale": "Uses existing XP vocabulary only.",
           "status": "PROPOSED"
         },
-        "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+        "boss_id_status": "PENDING_CONTENT_REGISTRY",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
       },
       "boss_05_25": {
-        "boss_id": "boss_pending_25",
+        "boss_id": "boss_extension_slot_05",
         "checkpoint_id": "boss_05_25",
         "base_hp": {
           "value": 10000,
@@ -2640,7 +2657,7 @@
         "boss_id_status": "PENDING_CONTENT_REGISTRY"
       },
       "boss_final_30": {
-        "boss_id": "boss_pending_final_30",
+        "boss_id": "boss_black_moon_empress",
         "checkpoint_id": "boss_final_30",
         "base_hp": {
           "value": 11200,
@@ -2684,7 +2701,7 @@
           "rationale": "Avoids silently adding a new progression spike at victory.",
           "status": "PROPOSED"
         },
-        "boss_id_status": "PENDING_CONTENT_REGISTRY"
+        "boss_id_status": "CANON_ARCHITECTURE_RETIMED"
       }
     },
     "mini_boss_stats": {
@@ -2730,8 +2747,8 @@
         "derived_formula": "3600 = 24-second lower target × 150 reference late-mini DPS",
         "rationale": "Reserved slot grows pressure gradually; it is not a registry claim."
       },
-      "miniboss_pending_04": {
-        "boss_id": "miniboss_pending_04",
+      "miniboss_extension_slot_03": {
+        "boss_id": "miniboss_extension_slot_03",
         "base_hp": 3900,
         "base_damage": 20,
         "base_speed": 28,
@@ -2739,9 +2756,9 @@
         "telegraph_seconds": 0.8,
         "xp_value": 80,
         "stat_status": "PROPOSED",
-        "source": "USER_REQUESTED_FIVE_MINI_BOSSES; content ID and skill kit are missing",
+        "source": "ARCHITECTURE_INTERMEDIATE_SLOT_03 plus USER_REQUESTED_FIVE_MINI_BOSSES; skill kit and numeric values are missing",
         "derived_formula": "3900 = 26-second lower target × 150 reference late-mini DPS",
-        "rationale": "Late mini-boss pressure rises through encounter length and damage, not instant burst."
+        "rationale": "Uses the registered third intermediate slot at 22:30 while the two additional five-mini slots remain separate proposals; pressure rises through encounter length and damage, not instant burst."
       },
       "miniboss_pending_05": {
         "boss_id": "miniboss_pending_05",
@@ -2770,6 +2787,17 @@
       "purpose": ["ADDITIONAL_ARTIFACT_OFFER_SOURCE", "FINITE_HORDE_PRESSURE_EVENT"],
       "persistent": false,
       "spawn_mode": "FINITE_PACK_AFTER_MINI_BOSS_DEFEAT",
+      "variant_ids": {
+        "value": [
+          "enemy_ink_beetle_variant_01",
+          "enemy_ink_beetle_variant_02",
+          "enemy_ink_beetle_variant_03"
+        ],
+        "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00 canonical.enemy_variant_policy.variant_ids",
+        "derived_formula": "select one stable variant ID from the seeded pack index; numeric overlay remains in this model",
+        "rationale": "The simulator must emit the same stable variant records the runtime registry will consume; it must not invent hidden IDs.",
+        "status": "CANON"
+      },
       "max_events_per_run": {
         "value": 5,
         "source": "USER_REQUESTED_FIVE_MINI_BOSSES",
@@ -3389,7 +3417,7 @@
     "owner": "Runtime/Architecture",
     "balance_model_path": "docs/agents/balance-economy/BALANCE_MODEL.json",
     "architecture_contract_path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "architecture_contract_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
+    "architecture_contract_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
     "join_policy": {
       "stable_id_key": "semantic IDs",
       "checkpoint_boss_mapping": [
@@ -3397,29 +3425,41 @@
           "checkpoint_id": "boss_01_05",
           "boss_id": "boss_hua_lin",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "checkpoint_id": "boss_02_10",
           "boss_id": "boss_miyeon",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "checkpoint_id": "boss_03_15",
           "boss_id": "boss_seika",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
-          "checkpoint_id": "boss_final_20",
+          "checkpoint_id": "boss_04_20",
+          "boss_id": "boss_extension_slot_04",
+          "status": "PENDING_CONTENT_REGISTRY",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "checkpoint_id": "boss_05_25",
+          "boss_id": "boss_extension_slot_05",
+          "status": "PENDING_CONTENT_REGISTRY",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "checkpoint_id": "boss_final_30",
           "boss_id": "boss_black_moon_empress",
-          "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "status": "CANON_ARCHITECTURE_RETIMED",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         }
       ],
       "run_30m_extension": {
-        "status": "BLOCKED_PENDING_ARCHITECTURE_REGISTRY_UPDATE",
+        "status": "BLOCKED_CLOCK_AND_MINI_SCHEDULE_CONFLICT",
         "main_boss_mapping": "read from simulation_model.run_schedule.main_boss_checkpoints",
         "mini_boss_mapping": "read from simulation_model.run_schedule.mini_boss_checkpoints",
         "clock_split": {
@@ -3427,19 +3467,18 @@
           "mini_boss": "ADVANCE_VISIBLE_RUN_WAVE_XP_SPAWN_CLOCK"
         },
         "unresolved_ids": [
-          "boss_pending_25",
-          "boss_pending_final_30",
+          "boss_extension_slot_04",
+          "boss_extension_slot_05",
           "miniboss_pending_03",
-          "miniboss_pending_04",
+          "miniboss_extension_slot_03",
           "miniboss_pending_05"
         ],
         "required_architecture_fields": [
-          "duration_seconds_1800",
-          "main_boss_checkpoint_registry",
-          "mini_boss_encounter_kind",
-          "mini_boss_timer_policy",
-          "elite_variant_overlay_or_registry_ids",
-          "30m_wave_band_registry"
+          "main_boss_clock_policy_alignment_with_balance_freeze",
+          "five_mini_boss_content_registry_records",
+          "mini_boss_timer_policy_for_all_five_slots",
+          "elite_variant_numeric_overrides_and_visual_records",
+          "30m_wave_numeric_profiles_and_rewards"
         ]
       },
       "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
@@ -3449,27 +3488,27 @@
         {
           "wave_band_id": "wave_warmup_0_2",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "wave_band_id": "wave_pressure_2_5",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "wave_band_id": "wave_threat_5_10",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "wave_band_id": "wave_elite_10_15",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "wave_band_id": "wave_eclipse_15_20",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
         },
         {
           "wave_band_id": "wave_cataclysm_20_25",
@@ -3480,6 +3519,50 @@
           "wave_band_id": "wave_apocalypse_25_30",
           "status": "PROPOSED_EXTENSION",
           "source": "simulation_model 30-minute extension; not in architecture registry"
+        }
+      ],
+      "architecture_wave_cycle_mapping": [
+        {
+          "model_wave_band_id": "wave_warmup_0_2",
+          "architecture_wave_band_id": "wave_cycle_01",
+          "status": "CANON_ARCHITECTURE_ALIAS",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "model_wave_band_id": "wave_pressure_2_5",
+          "architecture_wave_band_id": "wave_cycle_01",
+          "status": "CANON_ARCHITECTURE_ALIAS",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "model_wave_band_id": "wave_threat_5_10",
+          "architecture_wave_band_id": "wave_cycle_02",
+          "status": "CANON_ARCHITECTURE_ALIAS",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "model_wave_band_id": "wave_elite_10_15",
+          "architecture_wave_band_id": "wave_cycle_03",
+          "status": "CANON_ARCHITECTURE_ALIAS",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "model_wave_band_id": "wave_eclipse_15_20",
+          "architecture_wave_band_id": "wave_cycle_04",
+          "status": "CANON_ARCHITECTURE_ALIAS",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+        },
+        {
+          "model_wave_band_id": "wave_cataclysm_20_25",
+          "architecture_wave_band_id": "wave_cycle_05",
+          "status": "PROPOSED_EXTENSION_PHASE_MAPPING",
+          "source": "simulation_model 30-minute extension plus architecture wave_cycle_05"
+        },
+        {
+          "model_wave_band_id": "wave_apocalypse_25_30",
+          "architecture_wave_band_id": "wave_cycle_06",
+          "status": "PROPOSED_EXTENSION_PHASE_MAPPING",
+          "source": "simulation_model 30-minute extension plus architecture wave_cycle_06"
         }
       ],
       "enemy_id_policy": {
@@ -3501,3 +3584,4 @@
     "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
   }
 }
+
