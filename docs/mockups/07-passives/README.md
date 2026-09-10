@@ -1,58 +1,59 @@
-# Stage 07 — Passives
-Status: PLANNED.
+# Этап 07 — Пассивки
+Состояние этапа: PLANNED (запланирован).
 Иконки и карточки пассивных навыков.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — ten global run passives
+## Контентный бриф v01 — десять общих пассивок забега
 
-Пассивка в этом каталоге — общий run modifier. Связь с оружием ниже является только eligibility anchor для synergy; passive не превращается в апгрейд этого оружия.
+Пассивка в этом каталоге — общий модификатор забега. Связь с оружием ниже является только условием допуска к синергии; пассивка не превращается в улучшение этого оружия.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md |
-| visual route | SPRITE + UI_ART |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| run slot rule | пул 10; в одном забеге максимум 6 passive slots |
-| synergy gate | weapon level 6 + passive rank 5 + matching synergy ID + weapon not evolved |
-| dependencies | C1 synergy resolver, StatsCalculator, Health/Targeting/Progression contracts |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источник | docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md |
+| визуальный маршрут | спрайт + художественный интерфейс |
+| технический маршрут | SPRITE + UI_ART |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| правило ячеек забега | пул из 10; одновременно максимум 6 ячеек пассивок |
+| условие синергии | уровень оружия 6 + ранг пассивки 5 + совпадающий ID синергии + оружие ещё не эволюционировало |
+| зависимости | разрешатель синергий C1, StatsCalculator, договоры здоровья, выбора целей и развития |
 
-### Passive catalogue
+### Каталог пассивок
 
-| stable passive ID | name | global axis and benefit | bound weapon for eligibility only | synergy |
+| Стабильный ID пассивки | Название | Общая ось и польза | Связанное оружие только для допуска | Синергия |
 |---|---|---|---|---|
-| passive_wind_of_travel | Ветер странствий | mobility/momentum: улучшает управление движением и даёт общий MOMENTUM context после непрерывного движения | weapon_moon_blade | synergy_moon_dance |
-| passive_jade_focus | Нефритовый фокус | targeting/consistency: auto-targeted sources дольше удерживают valid priority target; manual aim не перехватывается | weapon_jade_talismans | synergy_heavenly_seals |
-| passive_ember_heart | Сердце углей | overkill/chain tempo: подтверждённое убийство создаёт bounded ember charge, следующий eligible hit выпускает afterspark | weapon_crimson_flame_fan | synergy_phoenix_sky |
-| passive_frost_thread | Морозная нить | control/cooldown-tempo: после slow/freeze следующий hit по controlled target даёт общий ограниченный tempo response | weapon_frost_pearl | synergy_winter_palace |
-| passive_heavenly_seal | Небесная печать | damage sequencing/vulnerability: distinct hits по одной цели открывают короткое universal vulnerability window | weapon_thunder_needles | synergy_heavenly_judgment |
-| passive_iron_bell | Железный колокол | defense/poise: снижает допустимый incoming damage и даёт bounded grace против повторного stagger/chain-hit | weapon_spirit_bell | synergy_guardian_bell |
-| passive_mirror_shard | Осколок зеркала | bounded replication: периодически повторяет часть eligible hit любого оружия/ability с отдельным event ID | weapon_fox_mirage | synergy_nine_reflections |
-| passive_lotus_heart | Сердце лотоса | health/healing conversion: повышает survival axis и превращает approved healing в один Petal state для следующего hit | weapon_lotus_mines | synergy_lotus_sanctuary |
-| passive_star_compass | Звёздный компас | critical rhythm: серия обычных hit открывает общий precision window для eligible sources | weapon_star_bow | synergy_constellation_rain |
-| passive_spirit_lens | Духовная линза | pickup/information utility: расширяет сбор eligible drops и XP/mana и коротко подсвечивает resource path | weapon_black_eclipse_umbrella | synergy_eclipse_vortex |
+| passive_wind_of_travel | Ветер странствий | мобильность и темп: улучшает управление движением и даёт общий контекст MOMENTUM после непрерывного движения | weapon_moon_blade | synergy_moon_dance |
+| passive_jade_focus | Нефритовый фокус | выбор цели и устойчивость: самонаводящиеся источники дольше удерживают приоритетную цель; ручное наведение не перехватывается | weapon_jade_talismans | synergy_heavenly_seals |
+| passive_ember_heart | Сердце углей | избыточный урон и темп цепи: подтверждённое убийство создаёт ограниченный заряд углей, следующий подходящий удар выпускает послевспышку | weapon_crimson_flame_fan | synergy_phoenix_sky |
+| passive_frost_thread | Морозная нить | контроль и темп перезарядки: после замедления или заморозки следующий удар по цели даёт общий ограниченный ответ темпа | weapon_frost_pearl | synergy_winter_palace |
+| passive_heavenly_seal | Небесная печать | последовательность урона и уязвимость: отдельные попадания по одной цели открывают короткое общее окно уязвимости | weapon_thunder_needles | synergy_heavenly_judgment |
+| passive_iron_bell | Железный колокол | защита и стойкость: снижает допустимый входящий урон и даёт ограниченную защиту от повторного оглушения или цепного удара | weapon_spirit_bell | synergy_guardian_bell |
+| passive_mirror_shard | Осколок зеркала | ограниченное копирование: иногда повторяет часть подходящего удара любого оружия или способности с отдельным ID события | weapon_fox_mirage | synergy_nine_reflections |
+| passive_lotus_heart | Сердце лотоса | здоровье и преобразование лечения: укрепляет выживаемость и превращает разрешённое лечение в состояние Petal для следующего удара | weapon_lotus_mines | synergy_lotus_sanctuary |
+| passive_star_compass | Звёздный компас | ритм критического удара: серия обычных попаданий открывает общее точное окно для подходящих источников | weapon_star_bow | synergy_constellation_rain |
+| passive_spirit_lens | Духовная линза | сбор и информация: расширяет сбор подходящих предметов и опыта/маны и кратко подсвечивает путь ресурса | weapon_black_eclipse_umbrella | synergy_eclipse_vortex |
 
-### Passive invariants
+### Неприкосновенные правила пассивок
 
-- Каждая passive усиливает общую ось билда и не читает/не мутирует состояние bound weapon.
-- Повторный offer повышает rank этой passive; hidden per-weapon modifier и nested invulnerability запрещены.
-- Все значения modifier, sequence length, charge/window duration, target whitelist, mitigation, rank curve, crit response и pickup radius — PENDING_BALANCE.
-- UI copy должна объяснять общий результат: что меняется для build, когда срабатывает, что сбрасывает/потребляет состояние.
-- Passive icon и card показывают axis, trigger state и synergy hint, но не подменяют weapon icon.
-- Runtime consumer proposal: StatsCalculator, MovementSystem, TargetingSystem, CombatSystem, HealthSystem, Magnet/Progression, SynergyResolver.
-- Boss/mini-boss chest может предложить synergy только при полной паре; обычный passive upgrade не расходует synergy cap.
+- Каждая пассивка усиливает общую ось билда и не читает и не меняет состояние связанного оружия.
+- Повторное предложение повышает ранг этой пассивки; скрытый модификатор одного оружия и вложенная неуязвимость запрещены.
+- Все значения модификаторов, длина последовательности, длительность зарядов и окон, список целей, снижение урона, кривая рангов, ответ критического удара и радиус сбора — PENDING_BALANCE.
+- Текст карточки объясняет общий результат: что изменится для билда, когда сработает, что сбросит или израсходует состояние.
+- Иконка и карточка показывают ось, состояние срабатывания и подсказку синергии, но не подменяют иконку оружия.
+- Предлагаемые потребители: StatsCalculator, MovementSystem, TargetingSystem, CombatSystem, HealthSystem, Magnet/Progression, SynergyResolver.
+- Сундук главного или мини-босса может предложить синергию только при полной паре; обычное улучшение пассивки не расходует предел синергий.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: SPRITE + UI_ART;
-- stage_path: docs/mockups/07-passives/;
+- маршрут: SPRITE + UI_ART;
+- папка этапа: docs/mockups/07-passives/;
 - asset_id/family_id/candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — PassiveRegistry + UpgradeOffer projection + SynergyInfo;
-- evidence: отсутствует до фактического mockup/review.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — PassiveRegistry, UpgradeOffer, SynergyInfo;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки.
