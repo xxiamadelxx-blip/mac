@@ -11,8 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "07940fbc7ff487bef606b25d60474c8b0365d774",
-    "captured_at": "2026-09-10T10:36:29Z"
+    "head": "29215a95ca2b043c8e042ab5def6b5c9c73add6d",
+    "captured_at": "2026-09-10T12:00:00Z",
+    "note": "Baseline HEAD immediately before this balance extension; final delivery HEAD is recorded in BALANCE_AUDIT.md."
   },
   "units": {
     "time": "seconds",
@@ -1330,13 +1331,18 @@
     "B1 CANON values remain unchanged; missing inputs are added only under simulation_model with explicit PROPOSED/PENDING provenance.",
     "The simulator must read this BALANCE_MODEL.json and must not duplicate tuning numbers in Python.",
     "Model-only results are not runtime verification.",
-    "The architecture contract is the live source for stable IDs, six weapon/six passive slots, separate boss-chest/artifact-offer IDs, unbounded active artifact effects and final-boss NO_CHEST policy."
+    "The architecture contract is the live source for stable IDs, six weapon/six passive slots, separate boss-chest/artifact-offer IDs, unbounded active artifact effects and final-boss NO_CHEST policy.",
+    "The 30-minute schedule, two new main-boss slots, five mini-boss slots and elite overlay are proposed balance inputs until Architecture/Content registry sync."
   ],
   "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
   "verification": {
     "json_parse": "PASS",
-    "data_driven_simulation": "PASS",
-    "independent_seed_runs": "PASS",
+    "data_driven_simulation": "PASS_30M_MODEL_ONLY",
+    "independent_seed_runs": "PASS_30_SEEDS_REPEAT_HASH_STABLE",
+    "main_boss_clock_policy": "PASS_MODEL_ONLY",
+    "mini_boss_clock_policy": "PASS_MODEL_ONLY",
+    "elite_variant_policy": "PASS_FINITE_EVENT_MODEL_ONLY",
+    "model_extension_registry_sync": "BLOCKED",
     "runtime_integration": "NOT_IMPLEMENTED",
     "android_performance": "BLOCKED",
     "overall": "PARTIAL"
