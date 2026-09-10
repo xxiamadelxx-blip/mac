@@ -26,24 +26,28 @@ Runtime implemented: NO
 | Level-up freeze | GAME_MANIFEST; AGENT_TASK | Clock stops, exactly three valid offer projections are shown | STATE T-09/T-10; EVENT level_up/offer_* | SPECIFIED | Runtime Iteration 1/2 |
 | Weapon acquisition/upgrade | GAME_MANIFEST | BuildInventory validates New/Upgrade and emits one mutation per offer | DATA weapons/build_entry; EVENT upgrade_applied | SPECIFIED | Runtime Iteration 1/2 |
 | Passive acquisition/upgrade | GAME_MANIFEST | Passive slots/ranks and modifiers are data-driven | DATA passives/build_entry | SPECIFIED | Runtime Iteration 2 |
-| Slot limits | GAME_MANIFEST; AGENT_TASK | Six weapon and six passive slots; three artifact slots; UI cannot bypass | DATA canonical/build; ARCHITECTURE BuildInventory | SPECIFIED | Runtime Iteration 2 |
-| Synergy eligibility | GAME_MANIFEST; AGENT_TASK | Matching pair, max weapon/passive, non-evolved, нефинальный chest context and claim guard are checked | DATA synergy_evaluator; FLOW §5 | SPECIFIED | Runtime Iteration 2 |
+| Slot limits | GAME_MANIFEST; AGENT_TASK | Six weapon and six passive slots; artifacts have no fixed slot capacity and do not consume either build slot type | DATA canonical/build; ARCHITECTURE BuildInventory | SPECIFIED | Runtime Iteration 2 |
+| Artifact offer choice | GAME_MANIFEST; product decision | An elite-pack or first-clear source opens an offer with exactly three cards; `Get` selects one effect | DATA artifact_offer; EVENT artifact_offer_created/artifact_chosen | SPECIFIED | Runtime Iteration 2 |
+| Artifact refresh | Product decision | `Refresh` is a separate idempotent command; cost, limit and reroll policy remain explicit pending fields | DATA artifact_offer.refresh_policy; EVENT artifact_offer_refresh_* | PENDING | Product owner |
+| Artifact effect boundary | GAME_MANIFEST; AGENT_TASK | Active artifact effects are typed run modifiers (aura, derived stat, target, weapon or triggered effect), separate from ordinary passive modifiers | DATA content_registry.artifact_effects; ARCHITECTURE ArtifactEffectSystem | SPECIFIED / PENDING_DEFINITIONS | Product + runtime |
+| Artifact sources | Product decision; B1 first-clear reward | Elite packs may create offers between bosses; first-clear creates a separate post-result offer; boss chest remains synergy/fallback only | FLOW; STATE; EVENT elite_pack_defeated/artifact_offer_created | SPECIFIED / PENDING_CADENCE | Product + balance |
+| Synergy eligibility | GAME_MANIFEST; AGENT_TASK | Matching pair, max weapon/passive, non-evolved, non-final boss-chest context and claim guard are checked | DATA synergy_evaluator; FLOW §5 | SPECIFIED | Runtime Iteration 2 |
 | Synergy/evolution duplicate guard | AGENT_TASK | Repeated claim returns existing outcome; no second evolution | STATE T-15; EVENT synergy_claimed | SPECIFIED | Runtime Iteration 2 |
-| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Только нефинальный boss settlement creates stable chest offer and eligible outcome can be claimed once; final boss chest отсутствует | FLOW §6; STATE T-14/T-15; EVENT chest_* | SPECIFIED | Runtime Iteration 2 |
+| Chest eligible path | GAME_MANIFEST; AGENT_TASK | Only non-final boss settlement creates a stable boss-chest offer; eligible synergy/evolution or fallback can be claimed once; final boss chest отсутствует | FLOW §6; STATE T-14/T-15; EVENT chest_* | SPECIFIED | Runtime Iteration 2 |
 | Chest fallback path | AGENT_TASK; DECISIONS U-04 | Для нефинального chest fallback_required is representable but exact value is not fabricated; final boss has no fallback chest | DATA chest_offer.fallback_policy | PENDING | Product owner confirms U-04 |
-| HUD/read model | AGENT_TASK §4 | UI can show HP, attack, crit, speed, cooldown, build, artifacts, XP, time, stage, kills, rewards | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
+| HUD/read model | AGENT_TASK §4 | UI can show HP, attack, crit, speed, cooldown, build, active artifact effects, pending three-card offer, XP, time, stage, kills, rewards | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Pause | AGENT_TASK §4 | Manual pause freezes clock and preserves resume_state | STATE RUN_PAUSED/T-18/T-19; EVENT run_paused | SPECIFIED | Runtime Iteration 1 |
 | Settings from pause | AGENT_TASK | Settings returns to exact blocking/resume context | FLOW §7; STATE pause model | SPECIFIED | Runtime Iteration 2 |
 | Exit to menu | AGENT_TASK | Confirmation distinguishes cancel from abandon; no unearned rewards | FLOW §7; STATE T-22 | SPECIFIED | Runtime Iteration 2 |
 | Android background/resume | GAME_MANIFEST; AGENT_TASK | Background forces pause; restore validates snapshot/checksum/content | ARCHITECTURE §6; EVENT run_resumed | SPECIFIED | Runtime Iteration 3 |
 | Save boundary | GAME_MANIFEST; DECISIONS U-06/U-07 | Checkpoint/explicit pause/terminal snapshots are versioned and atomic; arbitrary frame not promised | DATA save_snapshot; ARCHITECTURE §6 | PENDING | Product/runtime owner confirms recovery policy |
 | Death | GAME_MANIFEST; B1 | HP zero yields one terminal defeat result and allowed partial rewards | FLOW §8; STATE T-16; EVENT run_defeated | SPECIFIED | Runtime Iteration 2 |
-| Victory | GAME_MANIFEST | Final victory requires final boss defeat and final settlement, not timer alone; final boss has no chest | FLOW §8; STATE T-17/T-14F; invariant 6 | SPECIFIED | Runtime Iteration 2 |
+| Victory | GAME_MANIFEST | Final victory requires final boss defeat and final settlement, not timer alone; final boss has no boss chest and first-clear artifact is separate | FLOW §8; STATE T-17/T-14F; invariant 6 | SPECIFIED | Runtime Iteration 2 |
 | Result stats | AGENT_TASK | Result projection contains build, kills, XP, stats, checkpoints and reward status | FLOW §9; ARCHITECTURE §8 | SPECIFIED | Runtime Iteration 2 |
 | Reward bundles | B1 §§7–9 | RewardCalculator reads deterministic bundles and separate wallets | DATA reward_bundles; ARCHITECTURE §5 | SPECIFIED | Runtime Iteration 2 |
 | Checkpoint ledger | GAME_MANIFEST; B1 | 5/10/15/20 checkpoint reward settles once | STATE T-14/T-14F; EVENT checkpoint_reward_* | SPECIFIED | Runtime Iteration 2 |
 | First clear/repeat/defeat | B1 §7 | Scopes are separate; defeat after checkpoint uses allowed partial path | FLOW §8; DATA reward ledger | SPECIFIED | Runtime Iteration 2 |
-| Ledger idempotency | AGENT_TASK; GAME_MANIFEST | Duplicate checkpoint/chest/result commands return existing outcome without wallet mutation | ARCHITECTURE §5; EVENT §2/§4 | SPECIFIED | Runtime Iteration 1 test then 2 |
+| Ledger idempotency | AGENT_TASK; GAME_MANIFEST | Duplicate checkpoint/boss-chest/artifact-offer/result commands return existing outcome without wallet mutation or duplicate effect | ARCHITECTURE §5; EVENT §2/§4 | SPECIFIED | Runtime Iteration 1 test then 2 |
 | Save restore idempotency | AGENT_TASK | Restore cannot replay settled ledger entries | STATE T-19/T-21; DATA reward_ledger_ref | SPECIFIED | Runtime Iteration 2 |
 | Diagnostics/fallback | GAME_MANIFEST; AGENT_CONTEXT | Missing resources produce code/path/severity/recovery, never blank screen | ARCHITECTURE §7; EVENT content_load_failed | SPECIFIED | Runtime Iteration 1 |
 | Data-driven content | GAME_MANIFEST; AGENT_TASK | Registry owns content and version; UI does not encode invariants | ARCHITECTURE §4; DATA registry | SPECIFIED | Runtime Iteration 1/2 |
@@ -53,7 +57,7 @@ Runtime implemented: NO
 | Current prototype distinction | REPO_CONTEXT; live code | Menu/arena prototypes are adapters/evidence, not target runtime | ARCHITECTURE §3 and FLOW §10 | VERIFIED_BY_DOC_CHECK | Runtime migration review |
 | JSON schema validity | DELIVERABLES; AGENT_TASK | Contract parses without comments/trailing comma | json validator after commit | VERIFIED_BY_DOC_CHECK | Architecture verification |
 | Internal path validity | README; AGENT_TASK | Links point to existing repository paths or same-folder deliverables | repository path audit after commit | VERIFIED_BY_DOC_CHECK | Architecture verification |
-| Scope boundary | README; AGENT_TASK | Only docs/architecture/first-run changed by this task | changed-path inspection | VERIFIED_BY_DOC_CHECK | Architecture verification |
+| Scope boundary | README; AGENT_TASK; explicit product decision | Only the architecture package plus explicitly synchronized canonical/balance documents changed; no runtime/scenes/assets | changed-path inspection | VERIFIED_BY_DOC_CHECK | Architecture verification |
 
 ## 2. Status interpretation
 

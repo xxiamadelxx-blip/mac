@@ -14,6 +14,9 @@
 | C-04 | Награды checkpoint должны быть идемпотентными | GAME_MANIFEST.md, docs/BALANCE_ECONOMY_SPEC.md |
 | C-05 | Игра — Godot 4.x native 2D, Android, offline-first | README.md, AGENT_CONTEXT.md |
 | C-06 | Нейтральный раздел меню называется ПЕРСОНАЖИ | AGENT_CONTEXT.md, stage-01 docs |
+| C-07 | Артефакты не выбираются и не экипируются до старта забега; фиксированных artifact slots нет | Product decision; Magic Survival reference |
+| C-08 | Каждый artifact source показывает три карты; игрок выбирает одну, и эффект активен до конца текущего забега | Product decision |
+| C-09 | Boss chest — отдельная нефинальная награда для synergy/evolution/fallback; elite pack и first-clear reward могут открывать отдельные artifact offers; final boss не создаёт boss chest | Product decision; B1 reward boundary |
 
 ## Вопросы, которые агент обязан проверить
 
@@ -45,12 +48,12 @@
 Дата проверки: 2026-09-10
 Repository: xxiamadelxx-blip/mac
 Branch: main
-HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
+HEAD at inspection: b8b4ad022af80217652c1f38a3d341d47af18e2b
 
 - Прямой локальный checkout в текущем окружении отсутствует, поэтому git status/branch/дословный локальный diff не выполнялись.
 - Atlas Scout capability в текущем окружении не опубликована; использован разрешённый fallback: GitHub tree, точечное чтение живых файлов и repository search.
 - Фактически проверены project.godot, menu/arena scenes and controllers, B1, живой stage manifest и архитектурные инструкции.
-- docs/architecture/first-run/ — отдельная рабочая зона; runtime и visual package не изменяются этим заданием.
+- docs/architecture/first-run/ — основная рабочая зона; runtime и visual package не изменяются. Синхронизация корневых/балансовых документов допускается только для утверждённого product decision об artifact offers.
 - AGENT_CONTEXT/ROADMAP/MOCKUP_INDEX имеют drift по status этапа 4; для архитектуры это не блокер, поскольку current task не меняет visual stage и не повышает его статус.
 
 ## Архитектурные решения текущего задания
@@ -77,6 +80,8 @@ HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
 | U-13 | PENDING_PRODUCT_DECISION | Можно ли продолжать run после background kill с последнего snapshot и насколько старого? | Влияет на loss/exploit/recovery policy | Использовать safe snapshot + RECOVERY_REVIEW, не обещать mid-frame | product/runtime owner | Утвердить recovery window and abandon behavior |
 | U-14 | PENDING_PRODUCT_DECISION | Является ли current_stage_id отдельной сценой или только wave/checkpoint band? | Влияет на bridge, loading и save boundary | В архитектуре stage — logical projection; scene seam оставлен | product/runtime owner | Подтвердить до implementation Iteration 2 |
 | U-15 | PENDING_PRODUCT_DECISION | Какие optional stats обязательны на HUD/result кроме required fields? | Влияет на projection size и acceptance | Expose required fields plus extensible modifiers_ref | product owner | Утвердить presentation matrix до HUD slice |
+
+| U-16 | PENDING_PRODUCT_DECISION | Что сохраняется между забегами: только артефакт в Codex или также его активный эффект? | Разделяет persistent collection и temporary run state | В текущем контракте artifact instance active only within run; persistent unlock остаётся отдельным вопросом | product owner | Утвердить Codex/meta-progression policy до result slice |
 
 ## Scope conclusion
 

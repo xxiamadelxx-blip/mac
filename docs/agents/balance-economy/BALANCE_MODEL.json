@@ -793,7 +793,7 @@
       "boss_id": "boss_hua_lin",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
     },
     {
       "checkpoint_id": "boss_02_10",
@@ -801,7 +801,7 @@
       "boss_id": "boss_miyeon",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
     },
     {
       "checkpoint_id": "boss_03_15",
@@ -809,7 +809,7 @@
       "boss_id": "boss_seika",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
     },
     {
       "checkpoint_id": "boss_final_20",
@@ -817,7 +817,7 @@
       "boss_id": "boss_black_moon_empress",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
     }
   ],
   "rewards": {
@@ -864,9 +864,14 @@
       "gold": 300,
       "moon_seals": 180,
       "boss_essence": 1,
-      "artifact_chest": true,
       "status": "CANON",
-      "source": "B1 section 7"
+      "source": "B1 section 7",
+      "artifact_offer": {
+        "value": true,
+        "source": "B1 section 7 plus approved product decision",
+        "semantics": "separate post-result three-card FIRST_CLEAR_REWARD offer; one selected effect becomes active in the run/result flow",
+        "status": "CANON_PRODUCT_RESOLUTION"
+      }
     },
     "full_first_clear_total": {
       "gold": 725,
@@ -1137,7 +1142,7 @@
     "B1 CANON values remain unchanged; missing inputs are added only under simulation_model with explicit PROPOSED/PENDING provenance.",
     "The simulator must read this BALANCE_MODEL.json and must not duplicate tuning numbers in Python.",
     "Model-only results are not runtime verification.",
-    "The current architecture contract is the live source for stable IDs, slots, reward ledger key shape, and final-boss NO_CHEST policy."
+    "The architecture contract is the live source for stable IDs, six weapon/six passive slots, separate boss-chest/artifact-offer IDs, unbounded active artifact effects and final-boss NO_CHEST policy."
   ],
   "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
   "verification": {
@@ -1150,7 +1155,7 @@
   },
   "architecture_contract": {
     "path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "source_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "source_revision": "__NEW_DATA_CONTRACT_SHA__",
     "status": "DRAFT_READ_ONLY",
     "canonical_ids": [
       "hero_lin_yue",
@@ -1178,19 +1183,25 @@
       "status": "CANON",
       "source": "architecture contract canonical"
     },
-    "non_final_chest": "CHECKPOINT_REWARD_THEN_CHEST_THEN_NEXT_STAGE",
+    "non_final_chest": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
     "final_boss_policy": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST",
     "reward_idempotency_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
     "status_notes": [
       "Architecture contract is read-only input for this balance slice.",
-      "B1 first-clear artifact-chest wording and final-boss no-chest_offer policy require an explicit result-reward resolution; the simulator models the artifact as a run-result grant, not a final chest_offer."
-    ]
+      "Boss chest is reserved for non-final synergy/evolution/fallback; the final boss never creates one.",
+      "First-clear artifact delivery is a separate post-result three-card artifact offer; selection is required before the effect exists."
+    ],
+    "artifact_offer_sources": [
+      "ELITE_PACK",
+      "FIRST_CLEAR_REWARD"
+    ],
+    "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
   },
   "simulation_model": {
-    "model_version": "0.2",
+    "model_version": "0.3",
     "status": "PROPOSED_MODEL_ONLY",
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
-    "architecture_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "architecture_revision": "__NEW_DATA_CONTRACT_SHA__",
     "runtime_status": "NOT_IMPLEMENTED",
     "scope": "deterministic 20-minute wave/economy model plus post-20-minute final-boss resolution window",
     "main_run_duration_seconds": {
@@ -1977,7 +1988,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
       },
       "boss_02_10": {
         "boss_id": "boss_miyeon",
@@ -2025,7 +2036,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
       },
       "boss_03_15": {
         "boss_id": "boss_seika",
@@ -2073,7 +2084,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
       },
       "boss_final_20": {
         "boss_id": "boss_black_moon_empress",
@@ -2121,7 +2132,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
       }
     },
     "combat_math": {
@@ -2474,14 +2485,6 @@
         }
       },
       "offer_model": {
-        "slots": {
-          "value": 3,
-          "source": "PENDING_PRODUCT_DECISION; architecture exposes chest offer but not slot count",
-          "derived_formula": "offer_count = fixed slot count per chest",
-          "rationale": "Three choices is the minimum useful decision surface for this model.",
-          "status": "PROPOSED"
-        },
-        "non_final_chest_only": "CANON_ARCHITECTURE",
         "fallback": {
           "id": "fallback_damage_resonance",
           "type": {
@@ -2499,7 +2502,40 @@
             "status": "PROPOSED"
           }
         },
-        "final_boss_offer": "NO_CHEST_CANON_ARCHITECTURE"
+        "choice_count": {
+          "value": 3,
+          "source": "Product decision; architecture contract canonical artifact_offer.choice_count",
+          "derived_formula": "choice_count = three cards per artifact source",
+          "rationale": "Matches the approved artifact-offer decision surface.",
+          "status": "CONFIRMED_PRODUCT_RULE"
+        },
+        "boss_chest": {
+          "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
+          "outcome": "SYNERGY_OR_FALLBACK",
+          "final_boss": "NO_CHEST"
+        },
+        "artifact_offer": {
+          "sources": [
+            "ELITE_PACK",
+            "FIRST_CLEAR_REWARD"
+          ],
+          "choice_count": 3,
+          "selection": "ONE_OF_THREE",
+          "active_capacity": "UNBOUNDED_WITHIN_RUN",
+          "effect_types": [
+            "AURA",
+            "DERIVED_STAT",
+            "TARGET_MODIFIER",
+            "WEAPON_MODIFIER",
+            "TRIGGERED_EFFECT",
+            "COOLDOWN_MODIFIER"
+          ],
+          "exact_definitions": "PENDING_PRODUCT_DECISION",
+          "refresh_policy": "PENDING_PRODUCT_DECISION",
+          "duplicate_stacking_policy": "PENDING_PRODUCT_DECISION"
+        },
+        "non_final_boss_chest_only": "CANON_ARCHITECTURE",
+        "boss_chest_final_offer": "NO_CHEST_CANON_ARCHITECTURE"
       }
     },
     "target_policy": {
@@ -2535,16 +2571,64 @@
       "checkpoint_rewards": "read from canonical rewards.checkpoint_rewards",
       "first_clear_bonus": "read from canonical rewards.first_clear_bonus",
       "repeat_clear_total": "read from canonical rewards.repeat_clear_total",
-      "artifact_delivery": {
-        "value": "run_result_artifact_grant",
-        "source": "B1 says first-clear artifact chest; architecture final policy forbids final chest_offer",
-        "derived_formula": "deliver artifact as result grant after final ledger commit, not a final chest_offer",
-        "rationale": "Preserves first-clear value while obeying the current architecture final-boss no-chest contract.",
-        "status": "PROPOSED"
-      },
       "ledger_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
       "duplicate_behavior": "return existing committed entry without applying currency again",
-      "defeat_policy": "read from canonical rewards.defeat_after_checkpoint"
+      "defeat_policy": "read from canonical rewards.defeat_after_checkpoint",
+      "first_clear_artifact_offer": {
+        "source_kind": "FIRST_CLEAR_REWARD",
+        "timing": "AFTER_RESULT_FINALIZED",
+        "choice_count": 3,
+        "selection": "ONE_OF_THREE",
+        "automatic_grant": false,
+        "separate_from_boss_chest": true,
+        "exact_effects": "PENDING_PRODUCT_DECISION",
+        "refresh_policy": "PENDING_PRODUCT_DECISION",
+        "duplicate_stacking_policy": "PENDING_PRODUCT_DECISION",
+        "status": "PROPOSED_MODEL_ONLY"
+      }
+    },
+    "artifact_offer_model": {
+      "status": "PROPOSED_MODEL_ONLY",
+      "choice_count": 3,
+      "choice_rule": "ONE_OF_THREE",
+      "sources": [
+        "ELITE_PACK",
+        "FIRST_CLEAR_REWARD"
+      ],
+      "active_capacity": "UNBOUNDED_WITHIN_RUN",
+      "consumes_build_slots": false,
+      "effect_types": [
+        "AURA",
+        "DERIVED_STAT",
+        "TARGET_MODIFIER",
+        "WEAPON_MODIFIER",
+        "TRIGGERED_EFFECT",
+        "COOLDOWN_MODIFIER"
+      ],
+      "effect_parameters_status": "PENDING_PRODUCT_DECISION",
+      "refresh_policy": {
+        "status": "PENDING_PRODUCT_DECISION",
+        "cost_type": null,
+        "cost_value": null,
+        "max_refreshes": null,
+        "reroll_behavior": null
+      },
+      "duplicate_stacking_policy": {
+        "status": "PENDING_PRODUCT_DECISION",
+        "policy": null
+      },
+      "elite_pack_schedule": {
+        "status": "PENDING_B1",
+        "cadence": null,
+        "size": null,
+        "composition": null
+      },
+      "first_clear_offer": {
+        "source_kind": "FIRST_CLEAR_REWARD",
+        "timing": "AFTER_RESULT_FINALIZED",
+        "automatic_grant": false,
+        "separate_from_boss_chest": true
+      }
     }
   },
   "runtime_integration": {
@@ -2552,7 +2636,7 @@
     "owner": "Runtime/Architecture",
     "balance_model_path": "docs/agents/balance-economy/BALANCE_MODEL.json",
     "architecture_contract_path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "architecture_contract_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "architecture_contract_revision": "__NEW_DATA_CONTRACT_SHA__",
     "join_policy": {
       "stable_id_key": "semantic IDs",
       "checkpoint_boss_mapping": [
@@ -2560,25 +2644,25 @@
           "checkpoint_id": "boss_01_05",
           "boss_id": "boss_hua_lin",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "checkpoint_id": "boss_02_10",
           "boss_id": "boss_miyeon",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "checkpoint_id": "boss_03_15",
           "boss_id": "boss_seika",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "checkpoint_id": "boss_final_20",
           "boss_id": "boss_black_moon_empress",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         }
       ],
       "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
@@ -2588,27 +2672,27 @@
         {
           "wave_band_id": "wave_warmup_0_2",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "wave_band_id": "wave_pressure_2_5",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "wave_band_id": "wave_threat_5_10",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "wave_band_id": "wave_elite_10_15",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         },
         {
           "wave_band_id": "wave_eclipse_15_20",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
         }
       ],
       "enemy_id_policy": {
@@ -2623,7 +2707,9 @@
       "WaveDirector/BossDirector",
       "CombatSystem",
       "ProgressionSystem",
-      "RewardLedger"
+      "RewardLedger",
+      "ArtifactOfferSystem",
+      "ArtifactEffectSystem"
     ],
     "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
   }

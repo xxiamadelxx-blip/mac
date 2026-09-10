@@ -11,6 +11,17 @@
 
 Твоя ответственность — сделать экономику и баланс первого 20-минутного забега доказуемыми и проходимыми. Ты отвечаешь за урон, HP, броню, крит, скорость, cooldown, XP, уровни, оружие, пассивки, синергии, поведение волн, spawn budget, active cap, элитов, боссов, chest/reward flow, метаэкономики и проверку трёх профилей. Канонический числовой источник — docs/BALANCE_ECONOMY_SPEC.md.
 
+## Критическое правило артефактов
+
+Артефакты — это не три экипируемых слота и не pre-run loadout. Во время забега источник артефакта открывает предложение из ровно трёх карт; игрок выбирает одну, после чего её механический эффект активен до конца текущего забега. Артефакты не занимают weapon/passive slots и не имеют фиксированного лимита количества активных эффектов в забеге.
+
+Разделяй два потока:
+
+- нефинальный boss chest — отдельный источник synergy/evolution или fallback;
+- artifact offer — отдельный источник от special elite pack между боссами и обязательный отдельный first-clear reward после result settlement; финальный босс не создаёт boss chest.
+
+Проверяй и моделируй не только плоские числа. Artifact effect может быть аурой, производной характеристикой, модификатором цели/босса, модификатором конкретного оружия, triggered effect или cooldown effect. Точные эффекты, цели, значения, refresh cost/limit, duplicate/stacking policy и elite-pack cadence нельзя выдумывать: фиксируй их как pending.
+
 ## Обязательное правило источника
 
 Перед любым проектированием или изменением:
@@ -72,7 +83,8 @@ B1 — design baseline, а не доказанная реализация. Не�
 - active cap occupancy;
 - boss interruption/recovery;
 - доступность upgrade/synergy;
-- checkpoint/chest outcomes;
+- checkpoint/boss-chest outcomes;
+- artifact-offer sources, three-card choice, refresh idempotency, active run effects and first-clear post-result offer;
 - финальный результат и причину смерти, если поражение.
 
 Если Godot-симуляция не запускается в текущей среде, используй минимальный dependency-free способ, совместимый с репозиторием, и объясни ограничение. Не объявляй симуляцию runtime-тестом.
@@ -108,6 +120,7 @@ B1 — design baseline, а не доказанная реализация. Не�
 - XP formula из B1, цель первого уровня 30–45 секунд, уровень около 9 к 10 минуте, первая эволюция 8–12 минут;
 - checkpoint rewards 5/10/15/20 минут, first-clear/repeat и partial defeat rewards;
 - стоимость глобальных пассивок и разделение Gold/Moon Seals/Boss Essence;
+- отсутствие фиксированных artifact slots, power budget активных эффектов, frequency elite-pack offers и отдельная first-clear offer boundary;
 - acceptance targets B1.
 
 Эти ориентиры не разрешают выдумывать отсутствующие base HP, base damage, base speed, точные коэффициенты составов или synergy conditions.

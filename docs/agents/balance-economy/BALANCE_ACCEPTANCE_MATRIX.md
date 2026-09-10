@@ -3,13 +3,13 @@
 Status: SIMULATED_MODEL_ONLY / PARTIAL
 
 B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-Architecture source revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
+Architecture source revision: __NEW_DATA_CONTRACT_SHA__.
 Model run: 30 runs, 3 profiles × 2 heroes × 5 seeds.
 
 | Requirement | Source | Model/runtime behavior | Check | Observed | Status | Next owner |
 |---|---|---|---|---|---|---|
 | One auditable balance model | B1 + architecture contract | BALANCE_MODEL.json contains CANON, DERIVED, PROPOSED, PENDING fields | JSON parse and provenance inspection | Valid model; simulator reads this file | SIMULATED_MODEL_ONLY | Balance + Architecture |
-| Balance↔architecture stable IDs | Architecture contract revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0 | Boss, wave-band, enemy and build references join by semantic ID; numeric tuning is not duplicated | balance_contract_validator.py | PASS: 4 boss IDs, 5 wave IDs, build references and final policy | SIMULATED_MODEL_ONLY | Runtime + Architecture |
+| Balance↔architecture stable IDs | Architecture contract revision __NEW_DATA_CONTRACT_SHA__ | Boss, wave-band, enemy and build references join by semantic ID; numeric tuning is not duplicated | balance_contract_validator.py | PASS: 4 boss IDs, 5 wave IDs, build references and final policy | SIMULATED_MODEL_ONLY | Runtime + Architecture |
 | Five wave bands and caps | B1 section 4 | Canonical rates/caps plus proposed weighted composition | 30 deterministic runs | All bands traversed; cap reached in every slice | SIMULATED_MODEL_ONLY | Runtime |
 | Exact composition ratios | B1 section 4 | Ratios exposed in model, not hidden in Python | Compare model weights to output | Ratios are PROPOSED; Product decision pending | PROPOSED | Product + Balance |
 | Boss interruption/recovery | B1 section 4 | 8 s, 0.70→1.00/20 s plus proposed first factor 0.0 | Fixed checkpoint factor assertions | Deterministic factors reproduced | SIMULATED_MODEL_ONLY | Runtime |
@@ -22,12 +22,15 @@ Model run: 30 runs, 3 profiles × 2 heroes × 5 seeds.
 | Incoming damage/risk | B1 section 10 | Deterministic landed-hit model and mitigation | HP/damage trace | All 30 runs survive; conservative single-hit bound passes; spatial collision unverified | SIMULATED_MODEL_ONLY | Combat Runtime + QA |
 | No same-frame stacking/contact gate | B1 section 5 | Contract documented; simulator is not event-runtime | Runtime event trace | Not exercised in Godot | BLOCKED | Combat Runtime |
 | Boss safe spawn/reaction window | B1 section 10 | Boss timing only; no positions/telegraphs | Runtime property test | Not implemented | BLOCKED | Boss Runtime + QA |
-| Weapon/passive/synergy IDs | Architecture contract | Canonical IDs and proposed numeric effects | Build/evolution trace | Both proposed routes resolve synergy; final checkpoint creates no chest | SIMULATED_MODEL_ONLY | Runtime + Product |
+| Weapon/passive/synergy IDs | Architecture contract | Canonical IDs and proposed numeric effects | Build/evolution trace | Both proposed routes resolve boss-chest synergy; final checkpoint creates no boss chest | SIMULATED_MODEL_ONLY | Runtime + Product |
+| Artifact offer boundary | Architecture contract; product decision | Elite pack/first-clear source opens exactly three cards; one chosen effect is active in-run and consumes no weapon/passive slot | Offer lifecycle/idempotency trace | Contract specified; elite cadence and exact effects pending | SIMULATED_MODEL_ONLY / PENDING | Balance + Runtime + Product |
+| Artifact effect power/types | GAME_MANIFEST; architecture contract | Typed aura/derived-stat/target/weapon/triggered/cooldown effects are modeled separately from passive modifiers | Effect attribution and stacking trace | Contract boundary specified; definitions pending | PENDING | Balance + Product |
 | Synergy ≤40% total damage | B1 section 10 | Formula clamps attribution share | Damage attribution output | Model cap is enforced; no runtime attribution | SIMULATED_MODEL_ONLY | Combat Runtime |
-| Fallback offer | Architecture contract open question | Proposed +3% fallback on unresolved non-final chest | Chest resolver trace | Fallback is deterministic and visible | PROPOSED | Product |
+| Boss-chest fallback offer | Architecture contract open question | Proposed +3% fallback on unresolved non-final boss chest | Boss-chest resolver trace | Fallback is deterministic and visible | PROPOSED | Product |
+| Artifact refresh/choice idempotency | Architecture contract; product decision | Refresh and Get commands are replay-safe; one of three cards creates one active effect | Duplicate command trace | Not implemented in runtime; simulator models first-clear offer creation | PENDING | Runtime + Product |
 | Checkpoint rewards | B1 section 7 | Canonical values read from model | Ledger sum | Full first clear 725/300/6; repeat 425/120/5 arithmetic preserved | SIMULATED_MODEL_ONLY | Reward Runtime |
 | Reward idempotency | Architecture contract | Canonical key format and duplicate rejection | Duplicate grant attempts | PASS in all 30 model runs | SIMULATED_MODEL_ONLY | Reward Runtime |
-| Final boss chest policy | Architecture latest HEAD | NO_CHEST final policy; artifact as result grant proposal | Assert final chest_offer=false | PASS in model; result-artifact delivery remains proposed | SPECIFIED / PROPOSED | Architecture + Product |
+| Final boss chest policy | Architecture latest HEAD | NO_CHEST final policy; first-clear artifact is a separate post-result three-card offer | Assert final boss chest=false and artifact offer source=FIRST_CLEAR_REWARD | PASS in model; offer selection/persistence remains pending | SPECIFIED / PENDING | Architecture + Product |
 | Post-clear progression pacing | B1 sections 7–9 | Reward totals exist; summon/catalog pacing absent | Full economy replay | Not runtime-verified | BLOCKED | Economy + Product |
 | Minimum 30 FPS Android | B1 section 10 | No device/frame-time model | Device profiling | Target device and Godot runtime absent | BLOCKED | Performance + Runtime |
 | Readability of telegraphs/XP/aftermath | B1 sections 4/6/10 | No scene execution | Visual/runtime QA | Not measured | BLOCKED | Runtime + Visual QA |

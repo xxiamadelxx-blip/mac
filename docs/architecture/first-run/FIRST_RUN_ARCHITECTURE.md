@@ -10,8 +10,8 @@ Runtime implemented: NO
 
 Защищённый scope этого задания:
 
-- изменяются только документы в docs/architecture/first-run/;
-- scripts, scenes, project.godot, root docs, B1, visual assets и runtime manifests не изменяются;
+- основной scope — docs/architecture/first-run/; явно синхронизируются только документы, затронутые утверждённым artifact-offer product decision;
+- scripts, scenes, project.godot, B1, visual assets и runtime manifests не изменяются;
 - точные числа берутся из [BALANCE_ECONOMY_SPEC.md](../../../docs/BALANCE_ECONOMY_SPEC.md);
 - текущие menu/arena scripts — evidence прототипа, не готовый runtime.
 
@@ -67,7 +67,7 @@ Must not own damage, waves, XP, build mutation or wallet arithmetic.
 Responsibilities:
 
 - render main menu, ПЕРСОНАЖИ, settings and run setup;
-- validate character_id/unlock state and optional artifact selection;
+- validate character_id/unlock state; do not accept pre-run artifact selection or artifact loadout;
 - send commands to RunCoordinator;
 - derive menu read models from SaveSnapshot and Content Registry.
 
@@ -95,7 +95,7 @@ Responsibilities:
 - hold authoritative live state for one run;
 - expose validated commands for clock, movement/combat result, XP collection, upgrade choice, boss/checkpoint and pause;
 - own state_revision and transition guards;
-- contain selected hero, stage/checkpoint, build, stats, counters, drops, pending offers and diagnostics references.
+- contain selected hero, stage/checkpoint, build, active artifact instances/effects, stats, counters, drops, pending upgrade/boss-chest/artifact offers and diagnostics references.
 
 RunSession does not reference Godot UI nodes, textures, scene paths or network services. It may contain stable IDs and plain serializable data.
 
@@ -106,7 +106,7 @@ RunSession does not reference Godot UI nodes, textures, scene paths or network s
 - consumes delta only while RUN_ACTIVE or BOSS_ACTIVE;
 - derives elapsed_seconds;
 - emits boundary candidate, never settles reward itself;
-- freezes on pause, offer, chest and terminal states;
+- freezes on pause, upgrade offer, boss-chest offer, artifact offer and terminal states;
 - uses a monotonic run clock, not wall-clock time, for gameplay.
 
 #### WaveDirector
@@ -150,7 +150,7 @@ Records are data-driven and versioned. At minimum:
 - weapons, passives and ten direct synergy pairs from GAME_MANIFEST;
 - ten enemy records and four boss records;
 - five B1 wave bands;
-- artifacts, XP grades and reward bundles;
+- artifact definitions and typed artifact-effect contracts, XP grades and reward bundles;
 - telegraph metadata, fallback references and schema version.
 
 Registry load validates IDs, references, numeric source refs and required consumers before a run starts. Missing optional decorative content can use a diagnostic fallback; missing gameplay content blocks run creation.
@@ -161,8 +161,8 @@ Owns:
 
 - six weapon slots and six passive slots;
 - weapon level and passive rank;
-- three run artifact slots;
 - evolved flags and claimed synergy IDs;
+- BuildInventory owns no artifact capacity; active artifact effects are owned by ArtifactEffectSystem;
 - legal New/Upgrade outcomes.
 
 Limits come from GAME_MANIFEST/B1-derived data, not UI. Full slots remove illegal New offers from the pool. If no legal offer exists, the offer contract returns fallback_required; fallback value is pending product decision.
@@ -180,9 +180,15 @@ Input:
 
 Output is one of eligible, not_eligible, already_claimed, unavailable_context or fallback_required. It never invents a pair. The ten current direct pairs come from GAME_MANIFEST; exact future cross-synergy schema remains extensible.
 
-### Chest and artifact subsystem
+### Boss chest subsystem
 
-ChestSystem owns offer lifecycle for non-final boss checkpoints, not reward wallet mutation. It creates a stable chest_offer_id linked to a non-final boss encounter/checkpoint and run seed. The final boss checkpoint never creates a chest offer: after final settlement it transitions to victory. SynergyEvaluator determines eligibility only when a non-final chest exists. Artifact/fallback outcome remains pending where canon has no exact value. RewardLedger settles only the explicitly defined checkpoint/meta bundle.
+BossChestSystem owns offer lifecycle for non-final boss checkpoints, not reward wallet mutation. It creates a stable `chest_offer_id` linked to a non-final boss encounter/checkpoint and run seed. SynergyEvaluator determines synergy/evolution eligibility and fallback only in this boss-chest context. The final boss checkpoint never creates a boss chest; after final settlement it transitions to victory. RewardLedger settles only the explicitly defined checkpoint/meta bundle.
+
+### Artifact offer and effect subsystem
+
+ArtifactOfferSystem is separate from BossChestSystem and BuildInventory. It accepts two sources: `ELITE_PACK` between bosses when the pending cadence/composition policy allows it, and `FIRST_CLEAR_REWARD` after result finalization. Each source creates an `artifact_offer_id` with exactly three candidate cards. There is no pre-run artifact loadout and no fixed active-artifact capacity (`UNBOUNDED_WITHIN_RUN`); the chosen artifact does not consume a weapon/passive slot. `Get` selects one card and creates one `artifact_instance_id` owned by the current run. `Refresh` is a separate idempotent command whose cost, limit and reroll policy remain pending.
+
+ArtifactEffectSystem evaluates typed effects such as AURA, DERIVED_STAT, TARGET_MODIFIER, WEAPON_MODIFIER, TRIGGERED_EFFECT and COOLDOWN_MODIFIER. It owns trigger/target/parameter/stacking evaluation and exposes active effects to Stats/HUD. Artifact effects are not flattened into ordinary passive modifiers without preserving their effect contract. The first-clear artifact offer is a separate post-result reward boundary, never the final boss chest.
 
 ## 5. Reward boundary and idempotency
 
@@ -217,7 +223,7 @@ SaveSnapshot is a versioned document containing:
 - revision, checksum and saved_at;
 - meta progression and wallet balances;
 - active RunSession if policy permits;
-- pending offers;
+- pending upgrade/boss-chest/artifact offers and active artifact instances;
 - reward ledger cursor/entries needed for replay protection;
 - migration and diagnostic metadata.
 
@@ -273,9 +279,10 @@ Projection builders consume immutable snapshots and expose plain data:
 
 - MenuProjection: characters, unlocks, wallets, available sections and diagnostic badges.
 - CharacterProjection: selected character, role, start weapon, active ability and locked/unlocked state.
-- HudProjection: HP, attack, critical chance/multiplier, speed, cooldown, build, artifacts, XP, level, kills, time, stage, boss, rewards and diagnostics.
+- HudProjection: HP, attack, critical chance/multiplier, speed, cooldown, build, active artifact effects, XP, level, kills, time, stage, boss, rewards and diagnostics.
 - PauseProjection: resume state, snapshot revision, settings availability, exit policy.
-- ChestProjection: chest_offer_id, eligibility, exact available outcomes, claim state; emitted only for non-final checkpoints.
+- ChestProjection: boss-chest offer_id, eligibility, exact available synergy/evolution/fallback outcomes, claim state; emitted only for non-final checkpoints.
+- ArtifactOfferProjection: artifact_offer_id, source, exactly three candidate cards, effect previews, selected/refresh state and pending policy; emitted for elite-pack or first-clear sources.
 - ResultProjection: terminal reason, stats, build, checkpoints, committed/pending rewards, wallet revision and unlocks.
 
 A projection is disposable. UI re-requests it after every authoritative state revision and never serializes node references.
@@ -312,7 +319,7 @@ Defer: full roster, bosses, all UI art, final balancing and Android performance 
 
 ### Iteration 2 — complete M1 rules and failure paths
 
-Outcome: all B1 wave bands, ten enemies, four bosses, six-slot build, XP curve, upgrade offers, non-final chest eligible/fallback path, checkpoint ledger, death/victory results and recovery run through one contract.
+Outcome: all B1 wave bands, ten enemies, four bosses, six-weapon/six-passive build, XP curve, upgrade offers, separate non-final boss-chest eligible/fallback path, elite-pack/first-clear artifact-offer path, checkpoint ledger, death/victory results and recovery run through one contract.
 
 Include:
 
@@ -342,6 +349,7 @@ Include:
 - A coordinator plus domain owners avoids one god controller, at the cost of command/event plumbing.
 - Snapshot plus durable ledger is simpler than full event sourcing for an offline M1; replay is limited to idempotency and recovery boundaries.
 - Deterministic offer generation improves reproducibility, but exact content availability still depends on versioned registry.
+- Keeping artifact-effect evaluation outside BuildInventory preserves the difference between ordinary passive slots and expressive run-modifier mechanics, at the cost of a separate offer/effect projection and pending stacking policy.
 - Safe pause snapshots reduce data-loss risk, but arbitrary mid-frame resume is not promised.
 - Read models make UI replaceable and testable, but require projection refresh after every state revision.
 - Controlled pools protect mobile performance, but pool exhaustion must surface a diagnostic rather than silently drop XP or rewards.
@@ -358,4 +366,4 @@ Include:
 
 ## 13. Next implementation handoff
 
-Next primary module: implementation/runtime slice for Iteration 1. Before it starts, the coding agent must read the six documents in this folder, implement only the thin path, and return fresh tests/evidence. Runtime changes must be performed outside this architecture scope by the authorized runtime agent.
+Next primary module: implementation/runtime slice for Iteration 1. Before it starts, the coding agent must read the six documents in this folder, implement only the thin path, and return fresh tests/evidence. Iteration 2 must add the separate artifact-offer path after boss-chest synergy is stable. Runtime changes must be performed outside this architecture scope by the authorized runtime agent.

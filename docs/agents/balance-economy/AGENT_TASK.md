@@ -60,6 +60,8 @@
 - частоту уровней и первое значимое решение;
 - выбор оружия/пассивки;
 - eligibility синергии;
+- артефактные предложения: три кандидата, выбор одного, источник (elite pack/first-clear), refresh boundary и активный эффект забега;
+- разделение boss chest (synergy/evolution/fallback) и artifact offer; финальный босс не создаёт boss chest;
 - chest eligible и fallback outcome;
 - power budget синергий;
 - boss checkpoint и reward ledger;
@@ -88,7 +90,9 @@
 - XP/progression/reward model;
 - contract оружия, пассивок, синергий и fallback;
 - модель трёх профилей;
-- список invariants, которые нельзя нарушать.
+- список invariants, которые нельзя нарушать;
+- отдельный artifact-offer/effect contract без pre-run loadout и без фиксированного artifact slot cap;
+- frequency model для elite-pack offers и first-clear offer с явной маркировкой PENDING, если B1 не задаёт cadence.
 
 Сначала создаётся контракт. Числа в коде без связи с контрактом считаются drift.
 
@@ -109,7 +113,8 @@
 - occupancy active cap;
 - boss duration и окна реакции;
 - DPS по компонентам билда;
-- checkpoint rewards и отсутствие дублей;
+- checkpoint/boss-chest outcomes и отсутствие дублей;
+- artifact-offer creation, three-card choice, refresh idempotency, active-effect application and first-clear post-result boundary;
 - смерть, победу и повторное воспроизведение результата.
 
 Используй фиксированные seed/входы, если выбранная модель случайная. Отчёт должен быть повторяемым на чистом checkout и не должен зависеть от ручного «удачного» прохождения.
@@ -177,7 +182,9 @@
 - обе стартовые героини имеют минимум два устойчивых пути к победе;
 - boss spawn оставляет окно реакции и не возникает внутри модели игрока;
 - active mass остаётся в cap или переходит в безопасный режим;
-- checkpoint и chest rewards не дублируются при retry/reopen/replay;
+- checkpoint и boss-chest rewards не дублируются при retry/reopen/replay;
+- artifact offer refresh/choice не создают дубликаты эффекта, не используют weapon/passive slots и сохраняют ровно один выбор из трёх;
+- artifact effects materially differ from ordinary flat passive modifiers, while exact effect numbers, refresh cost/limit, duplicate stacking and elite-pack cadence remain explicit pending fields;
 - новый профиль достигает 8–12 минут и имеет шанс пройти после нескольких попыток;
 - умеренный профиль проходит разными билдами;
 - максимальный профиль может победить, но ошибки всё ещё наказуемы;

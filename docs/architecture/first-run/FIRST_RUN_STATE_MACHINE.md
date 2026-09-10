@@ -14,7 +14,8 @@ Runtime implemented: NO
 | RunSession | RunSession aggregate | Clock, state, stage, build, stats, drops, pending offers, counters | UI nodes, textures, persistence I/O |
 | Content Registry | ContentLoader/Registry | Версионированные immutable data records | Live run mutation |
 | Simulation | SimulationClock, WaveDirector, CombatSystem, ProgressionSystem | Time, waves, combat, XP and level rules | Menu navigation, meta wallet |
-| Build | BuildInventory + SynergyEvaluator | Slots, levels, evolution eligibility/claim | Rendering |
+| Build | BuildInventory + BossChestEvaluator | Six weapon/six passive slots, levels, evolution eligibility/claim | Rendering |
+| Artifact effects | ArtifactOfferSystem + ArtifactEffectSystem | Three-card source offers, active run effects, refresh/duplicate guards | Boss chest, ordinary passive slots |
 | Rewards | RewardCalculator + RewardLedger | Deterministic bundles, idempotency, wallet settlement | UI-only reward text |
 | Persistence | PersistenceGateway | Versioned snapshots, atomic write/read, migration | Gameplay decisions |
 | UI read model | HudProjection/ResultProjection | Derived display model and diagnostics presentation | Domain mutations |
@@ -37,7 +38,8 @@ Runtime implemented: NO
 | BOSS_INTRO | blocking run state | Boss checkpoint reached | Intro complete | Frozen |
 | BOSS_ACTIVE | simulation | Boss intro complete | Boss defeated/death/pause | Running |
 | CHECKPOINT_SETTLEMENT | transaction state | Boss defeated | Ledger committed; final branch or non-final chest selected | Frozen |
-| CHEST_OFFER | blocking run state | Non-final settlement committed | Chest claimed/closed by policy; no victory transition | Frozen |
+| CHEST_OFFER | blocking run state | Non-final boss-chest settlement committed | Boss-chest synergy/evolution/fallback claimed/closed by policy; no victory transition | Frozen |
+| ARTIFACT_OFFER | blocking run state | Elite pack or first-clear artifact source committed | One of three cards chosen, or refresh under policy | Frozen |
 | RUN_PAUSED | overlay state | User pause/background | Resume, settings, exit | Frozen |
 | RECOVERY_REVIEW | recovery state | Invalid/available snapshot | Restore accepted, abandon, diagnostic | Frozen |
 | RUN_DEFEAT | terminal run state | HP reaches zero | Result opened/finalized | Frozen |
@@ -68,6 +70,10 @@ stateDiagram-v2
     BOSS_ACTIVE --> CHECKPOINT_SETTLEMENT
     CHECKPOINT_SETTLEMENT --> CHEST_OFFER
     CHECKPOINT_SETTLEMENT --> RUN_VICTORY
+    RUN_ACTIVE --> ARTIFACT_OFFER
+    RESULT_REVIEW --> ARTIFACT_OFFER
+    ARTIFACT_OFFER --> RUN_ACTIVE
+    ARTIFACT_OFFER --> RESULT_REVIEW
     CHEST_OFFER --> RUN_ACTIVE
     RUN_ACTIVE --> RUN_PAUSED
     BOSS_ACTIVE --> RUN_PAUSED
@@ -87,7 +93,7 @@ stateDiagram-v2
     MAIN_MENU_RETURN --> MAIN_MENU
 ~~~
 
-Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. Its defeat goes through CHECKPOINT_SETTLEMENT and final ledger settlement directly to RUN_VICTORY; no CHEST_OFFER is created for the final boss. Timer expiry alone is not victory.
+Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. Its defeat goes through CHECKPOINT_SETTLEMENT and final ledger settlement directly to RUN_VICTORY; no CHEST_OFFER is created for the final boss. The final boss never creates a boss chest. Timer expiry alone is not victory.
 
 ## 4. Transition contract
 
@@ -101,7 +107,7 @@ Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second
 | T-04 | MAIN_MENU ↔ SETTINGS | open/back settings | Menu context valid | SettingsFlow reads/writes validated settings | Invalid value rejected; previous valid value remains |
 | T-05 | MAIN_MENU → CHARACTER_SELECT | open characters | Registry has selectable records | Character read model | Missing card shown as non-selectable diagnostic |
 | T-06 | CHARACTER_SELECT → RUN_SETUP | select_character | character_id exists and unlocked | RunSetupModel stores selection | Unknown/stale ID is no-op with error |
-| T-07 | RUN_SETUP → RUN_LOADING | confirm_start | Character, artifact selection and content version valid | RunCoordinator creates run_id/seed and provisional RunSession | Validation failure returns to setup |
+| T-07 | RUN_SETUP → RUN_LOADING | confirm_start | Character, no pre-run artifact selection, and content version valid | RunCoordinator creates run_id/seed and provisional RunSession | Any artifact_ids/pre-run loadout is rejected; validation failure returns to setup |
 | T-08 | RUN_LOADING → RUN_ACTIVE | arena_ready | Session schema and required gameplay content validated | Clock starts; first wave band derived | Resource failure → recoverable run error; no false reward |
 | T-09 | RUN_ACTIVE → UPGRADE_OFFER | level_up | Offer generator can produce valid projection | Freeze clock; persist pending offer if policy requires | Invalid pool → deterministic fallback or diagnostic, never illegal card |
 | T-10 | UPGRADE_OFFER → RUN_ACTIVE | offer_chosen | offer_id belongs to open offer and not claimed | Apply BuildInventory/Stats mutation; clear offer | Duplicate/stale choice is rejected/no-op |
@@ -109,8 +115,13 @@ Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second
 | T-12 | BOSS_INTRO → BOSS_ACTIVE | intro_complete | Boss record and safe spawn available | Start boss pattern/telegraph contract | Safe spawn retry; failure → paused diagnostic |
 | T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Non-final encounter active; final boss uses T-17 | Freeze; create checkpoint settlement command | Duplicate defeat ignored by encounter id |
 | T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Non-final checkpoint; ledger commit succeeded | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable |
-| T-14F | CHECKPOINT_SETTLEMENT → RUN_VICTORY | final_settlement_committed | Final checkpoint; ledger commit succeeded; no chest offer pending | Mark terminal victory and build result projection | Persistence failure keeps settlement retryable |
-| T-15 | CHEST_OFFER → RUN_ACTIVE | chest_claimed | Non-final offer valid; evaluator outcome not already claimed | Apply synergy/artifact/fallback; mark offer claimed; advance stage | Duplicate claim returns existing outcome |
+| T-14F | CHECKPOINT_SETTLEMENT → RUN_VICTORY | final_settlement_committed | Final checkpoint; ledger commit succeeded; no boss chest pending | Mark terminal victory and build result projection; first-clear artifact offer is opened only after result finalization | Persistence failure keeps settlement retryable |
+| T-15 | CHEST_OFFER → RUN_ACTIVE | boss_chest_claimed | Non-final boss-chest offer valid; evaluator outcome not already claimed | Apply synergy/evolution/fallback; mark boss chest claimed; advance stage | Duplicate claim returns existing outcome |
+| T-15E | RUN_ACTIVE → ARTIFACT_OFFER | elite_pack_defeated | Elite-pack source is authoritative and offer policy allows it | ArtifactOfferSystem creates exactly three candidate cards and freezes clock | Duplicate elite encounter does not create a second offer |
+| T-15R | ARTIFACT_OFFER → ARTIFACT_OFFER | artifact_offer_refresh_requested | Refresh policy allows it; expected revision/idempotency key valid | Reroll three cards and increment refresh count; no artifact instance yet | Duplicate refresh returns the stored offer without a second charge/reroll |
+| T-15A | ARTIFACT_OFFER → RUN_ACTIVE | artifact_chosen | Selected ID belongs to the three-card offer; choice not claimed | ArtifactEffectSystem creates one active run effect/instance; close offer | Duplicate choice returns the same artifact instance |
+| T-15F | RESULT_REVIEW → ARTIFACT_OFFER | first_clear_artifact_offer_requested | Result finalized and first-clear reward is eligible | Create separate post-result three-card artifact offer; no boss chest is involved | Repeat clear does not create first-clear offer |
+| T-15FR | ARTIFACT_OFFER → RESULT_REVIEW | artifact_chosen after first-clear result | Offer source is FIRST_CLEAR_REWARD; selected ID belongs to offer | Commit one first-clear artifact effect/instance and close offer | Duplicate choice returns same instance |
 | T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | Death not settled | Freeze and create defeat result | Duplicate death ignored |
 | T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | Create final settlement command; do not create chest offer; victory waits for T-14F | Invalid final result returns to checkpoint recovery |
 | T-18 | RUN_ACTIVE/BOSS_ACTIVE → RUN_PAUSED | pause_requested/background | Current state resumable | Freeze clock; write allowed snapshot | Snapshot failure leaves in-memory paused state with diagnostic |
@@ -130,10 +141,10 @@ RUN_PAUSED содержит:
 - paused_from_state;
 - pause_reason: MANUAL, ANDROID_BACKGROUND, RECOVERY;
 - last_coherent_snapshot_revision;
-- whether a pending offer/chest exists;
+- whether a pending upgrade, boss-chest or artifact offer exists;
 - diagnostic code, если snapshot/content mismatch.
 
-UPGRADE_OFFER и CHEST_OFFER сами замораживают simulation; вход в Settings из них возвращается в тот же blocking state. В RUN_PAUSED Settings открывается отдельным transition без возобновления clock; выход ведёт в подтверждение/MAIN_MENU_RETURN. Android background не считается победой, поражением или выходом из забега.
+UPGRADE_OFFER, CHEST_OFFER и ARTIFACT_OFFER сами замораживают simulation; вход в Settings из них возвращается в тот же blocking state. В RUN_PAUSED Settings открывается отдельным transition без возобновления clock; выход ведёт в подтверждение/MAIN_MENU_RETURN. Android background не считается победой, поражением или выходом из забега.
 
 Working assumption: snapshot делается на checkpoint, при явной паузе и в terminal/reward boundary. Полный произвольный mid-frame resume не обещается до отдельного product decision.
 
@@ -143,18 +154,20 @@ Working assumption: snapshot делается на checkpoint, при явной
 - RESULT_REVIEW можно открывать повторно; это read-only projection.
 - REWARD_COMMITTING повторяется только с теми же idempotency keys.
 - После committed result старый run нельзя возобновить как active.
-- Повторный event для boss defeat, chest claim, checkpoint reward или result claim возвращает уже сохранённый outcome.
+- Повторный event для boss defeat, boss-chest claim, checkpoint reward, artifact choice/refresh или result claim возвращает уже сохранённый outcome.
 - Новый забег всегда получает новый run_id и новый deterministic seed.
 
 ## 7. Invariants
 
-1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT or RewardLedger; final settlement transitions directly to RUN_VICTORY without CHEST_OFFER.
+1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT or RewardLedger; final settlement transitions directly to RUN_VICTORY without CHEST_OFFER or any boss chest.
 2. UI не меняет authoritative state напрямую.
 3. Clock не идёт в paused/blocking states.
 4. XPDrop не превращается в AftermathItem и наоборот.
 5. Checkpoint reward не применяется без ledger idempotency key.
-6. Final victory невозможна без final boss defeat и финального settlement; final boss не создаёт chest_offer.
+6. Final victory невозможна без final boss defeat и финального settlement; final boss не создаёт boss chest, а first-clear artifact offer создаётся отдельной post-result boundary.
 7. Unknown/stale content не превращается в silent default.
 8. Ошибка persistence не подтверждает reward commit.
 9. Повторная доставка одного effect command не меняет итог.
 10. Все неизвестные числовые/продуктовые решения отмечены в data contract и decisions file.
+11. Artifact offer всегда содержит ровно три кандидата; один выбор создаёт один active run effect без фиксированного capacity и без weapon/passive slot consumption.
+12. Boss chest и artifact offer имеют разные state IDs, event IDs, idempotency keys и outcome contracts.

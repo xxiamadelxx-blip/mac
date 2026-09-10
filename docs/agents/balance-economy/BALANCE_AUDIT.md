@@ -5,11 +5,11 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 ## Audit snapshot
 
 - Repository: xxiamadelxx-blip/mac
-- Live main HEAD verified immediately before this final audit refresh: 6fe9d4428f3484a9b9e7d5fded346d41f852c4da
+- Live main HEAD verified immediately before this artifact-offer correction: 9a4236e66e0bc88ec6952c54918f799c30602d57
 - Historical audit baseline before this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
-- Architecture contract revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0
+- Architecture contract revision: __NEW_DATA_CONTRACT_SHA__
 - Balance model commit used for the 30-run evidence: 42966b44650ec63aead33d04cbe34ae1e9d57489
 - Balance model repository-evidence refresh commit: 0536f182c1ae8876b9213e0c2fb761793e503a66
 - Data-driven simulator commit used for the 30-run evidence: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c
@@ -23,7 +23,7 @@ This update supersedes the previous stale statement that no simulator existed. T
 ## Completed since the previous audit
 
 1. Added explicit simulation_model input data to BALANCE_MODEL.json.
-2. Added provenance for missing enemy/boss stats, composition weights, pickup cadence, combat formulas, profiles, builds, synergies, fallback, and final artifact delivery.
+2. Added provenance for missing enemy/boss stats, composition weights, pickup cadence, combat formulas, profiles, builds, synergies, fallback, artifact-offer cadence/effects and first-clear artifact delivery.
 3. Replaced the placeholder simulator with a 20-minute model covering waves, cap, XP, levels, damage, TTK, incoming risk, bosses, rewards, idempotency, builds, synergies, and fallback.
 4. Ran 30 model runs across fresh, moderate, max_m1 × Lin Yue/Soyeon × seeds 101/202/303/404/505.
 5. Repeated the full run twice; both JSON outputs produced SHA-256 f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
@@ -82,11 +82,11 @@ Confidence: High.
 
 Next owner: Balance/Product decision on whether target ranges apply to fresh, moderate, max, or a reference build.
 
-### F-06 — Watch — final artifact delivery requires product confirmation
+### F-06 — Watch — first-clear artifact offer boundary requires product confirmation
 
-Evidence: B1 defines a first-clear artifact chest value, while the current architecture contract requires final checkpoint reward → run victory → no final chest_offer. The model uses a run-result artifact grant as a proposed reconciliation.
+Evidence: B1 defines a first-clear artifact reward value, while the architecture contract requires final checkpoint reward → run victory → no final boss chest. The corrected model represents this as a separate post-result `FIRST_CLEAR_REWARD` artifact offer with three choices, not as a boss chest or automatic artifact award attached directly to the result.
 
-Impact: reward UI and wallet/unlock transaction can diverge unless the result-grant policy is approved.
+Impact: result UI, artifact choice persistence and Codex/meta-progression can diverge until the post-result offer, refresh, duplicate and persistence policies are approved.
 
 Confidence: High.
 
@@ -117,7 +117,7 @@ Next owner: Runtime + Performance + Visual QA.
 - Approval/promotion of PROPOSED values to CANON.
 - Spatial movement, contact, telegraphs, safe boss spawn, and same-frame ordering.
 - Final boss profile target policy.
-- Final artifact result-grant policy.
+- First-clear artifact-offer presentation, refresh, selection and persistence policy.
 - Android performance and readability evidence.
 - Full build/evolution catalog and real offer UI.
 
@@ -129,7 +129,7 @@ The next slice is not another document pass. Runtime/Architecture should:
 2. Create RunSession fields for elapsed time, seeded wave selection, active cap, boss checkpoint state, XP drops/pickup queue, and diagnostics.
 3. Implement the combat event pipeline with contact cooldown, telegraph metadata, mitigation, crit attribution, and no same-frame stacking.
 4. Implement the XP pickup queue and level-up offer resolver using the weapon/passive/synergy IDs and explicit fallback outcome.
-5. Implement the reward ledger key format and final-boss NO_CHEST settlement, including the proposed run-result artifact decision.
+5. Implement the reward ledger key format and final-boss NO_CHEST settlement, then open the separate post-result first-clear artifact offer and persist its choice idempotently.
 6. Emit deterministic runtime traces for the same five seeds so the model can be compared against actual behavior.
 
 Until that slice exists, the correct status remains PARTIAL, not VERIFIED.

@@ -5,12 +5,12 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 ## Run snapshot
 
 - Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-- Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
+- Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__.
 - Historical live main HEAD observed at the start of the original implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
 - Balance model commit used: 42966b44650ec63aead33d04cbe34ae1e9d57489.
 - Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
 - Historical main HEAD observed immediately before the original report update: 42966b44650ec63aead33d04cbe34ae1e9d57489.
-- Latest verified main HEAD before this report refresh: 0536f182c1ae8876b9213e0c2fb761793e503a66.
+- Latest verified main HEAD before this artifact-offer correction: 9a4236e66e0bc88ec6952c54918f799c30602d57.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
 - Runtime executed: false.
@@ -19,6 +19,8 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Repeated full-run SHA-256: f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
 
 The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so. Stable IDs are joined against the architecture registry; the model does not copy architecture tuning values.
+
+The recorded 30-run hash is historical evidence from before the artifact-offer correction. The corrected simulator now records a separate three-card `FIRST_CLEAR_REWARD` offer instead of automatically attaching an artifact to the result; rerun is required before using the hash as evidence for artifact-offer behavior.
 
 ## Concrete profile inputs
 
@@ -120,9 +122,9 @@ Interpretation:
 
 These are explicit model findings. They are not hidden by profile-specific scaling.
 
-## Rewards, synergy, fallback, and idempotency
+## Rewards, boss chest, artifact offer, fallback, and idempotency
 
-| Profile / hero | Ledger balance | Idempotency | Final chest_offer | Synergy | Fallback damage bonus |
+| Profile / hero | Ledger balance | Idempotency | Final boss chest | Boss-chest outcome | Fallback damage bonus |
 |---|---|---|---|---|---|
 | fresh/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
 | fresh/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
@@ -134,10 +136,11 @@ These are explicit model findings. They are not hidden by profile-specific scali
 The canonical arithmetic remains:
 
 - full first clear: 725 gold / 300 Moon Seals / 6 boss essence;
-- repeat clear: 425 gold / 120 Moon Seals / 5 boss essence;
+- repeat clear: 425 / 120 / 5;
 - duplicate reward attempts: rejected in all 30 model runs;
-- final boss chest_offer: false in all model runs;
-- artifact delivery: proposed run-result artifact grant, because the architecture contract currently says final boss NO_CHEST while B1 specifies first-clear artifact value.
+- final boss chest: false in all model runs;
+- corrected model boundary: first-clear reward creates a separate three-card `FIRST_CLEAR_REWARD` artifact offer after result finalization; one card must be chosen before an active effect exists;
+- elite-pack artifact-offer cadence, exact effects, refresh, duplicate/stacking and Codex persistence remain pending.
 
 ## Remaining blockers
 
@@ -146,9 +149,9 @@ The canonical arithmetic remains:
 3. Active-cap saturation needs a product decision and runtime performance test.
 4. Fresh/moderate Soyeon and max Lin Yue do not share the final-boss target window.
 5. Spatial movement, telegraphs, same-frame ordering, XP presentation, and Android 30 FPS are not executed.
-6. The result-artifact settlement needs Product/Architecture confirmation.
+6. The first-clear artifact-offer selection, refresh, duplicate/stacking and persistence policy needs Product/Architecture confirmation.
 
 ## Exact next implementation slice
 
-Runtime/Architecture must load this model through the versioned Content Registry, create the RunSession wave/XP/combat/reward fields, implement the event pipeline and final NO_CHEST settlement, then emit the same five-seed traces. Balance can only promote PROPOSED inputs or tune against those traces after that evidence exists.
+Runtime/Architecture must load this model through the versioned Content Registry, create the RunSession wave/XP/combat/reward/artifact-offer fields, implement the event pipeline, final NO_CHEST settlement and separate first-clear offer boundary, then emit the same five-seed traces. Balance can only promote PROPOSED inputs or tune against those traces after that evidence exists.
 

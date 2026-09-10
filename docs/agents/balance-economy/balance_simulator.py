@@ -3,7 +3,7 @@
 
 The program reads every tuning input from BALANCE_MODEL.json.  It models the
 wave clock, cap pressure, XP progression, proposed combat math, incoming risk,
-checkpoint bosses, reward settlement, idempotency, and build offers.  It is a
+checkpoint bosses, reward settlement, idempotency, boss-chest outcomes, artifact offers, and build offers.  It is a
 model-only result: it does not execute the Godot runtime and cannot establish
 runtime FPS, collision, telegraph, or player-behavior evidence.
 """
@@ -382,6 +382,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     checkpoint_levels: Dict[str, int] = {}
     upgrade_events: List[Dict[str, Any]] = []
     chest_results: List[Dict[str, Any]] = []
+    artifact_offer_results: List[Dict[str, Any]] = []
     reward_results: List[Dict[str, Any]] = []
     ledger: Dict[str, Dict[str, Any]] = {}
     run_id = f"{profile_name}:{hero_id}:{seed}"
@@ -587,11 +588,16 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             first_clear = model["rewards"]["first_clear_bonus"]
             first_clear_reward = reward_amount(first_clear)
             reward_results.append(resolve_reward(model, ledger, run_id, "run_result", first_clear_reward))
-            artifact_key = reward_key(model, run_id, "RUN_RESULT", "run_result", "artifact_result")
-            artifact_accepted = grant_once(ledger, artifact_key, {"artifact_result": 1})
-            artifact_duplicate = grant_once(ledger, artifact_key, {"artifact_result": 1})
-            reward_results.append({"checkpoint_id": "run_result_artifact", "attempts":[{"key":artifact_key,"accepted":artifact_accepted,"duplicate_accepted":artifact_duplicate}]})
-            chest_results.append({"checkpoint_id": checkpoint_id, "outcome": "NO_CHEST", "status": "CANON_ARCHITECTURE"})
+            artifact_model = simulation["artifact_offer_model"]
+            artifact_offer_results.append({
+                "offer_id": f"{run_id}:first_clear_artifact",
+                "source_kind": "FIRST_CLEAR_REWARD",
+                "source_id": "reward_first_clear_bonus",
+                "choice_count": integer(artifact_model["choice_count"]),
+                "status": "OFFER_CREATED_PENDING_SELECTION",
+                "effect_status": artifact_model["effect_parameters_status"],
+            })
+            chest_results.append({"checkpoint_id": checkpoint_id, "outcome": "NO_BOSS_CHEST", "status": "CANON_ARCHITECTURE"})
 
     ordinary_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "ordinary"]
     elite_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "elite"]
@@ -646,6 +652,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "synergy_id": state["synergy_id"],
             "fallback_damage_bonus": round(state["fallback_damage_bonus"], 6),
             "chest_results": chest_results,
+            "artifact_offer_results": artifact_offer_results,
         },
         "risk": {
             "survived_main_run": death_time is None,
@@ -671,7 +678,8 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "reward_events": reward_results,
             "idempotency_pass": all(not attempt.get("duplicate_accepted", False) for event in reward_results for attempt in event.get("attempts", [])),
             "final_boss_chest_offer_created": False,
-            "artifact_delivery": "run_result_artifact_grant" if any(event.get("checkpoint_id") == "run_result_artifact" for event in reward_results) else "not_granted",
+            "first_clear_artifact_offer_created": bool(artifact_offer_results),
+            "artifact_offer_choice_count": integer(simulation["artifact_offer_model"]["choice_count"]) if artifact_offer_results else 0,
         },
         "runtime_boundary": {
             "godot_runtime_executed": False,

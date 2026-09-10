@@ -16,6 +16,8 @@
 | C-06 | Gold, Moon Seals и Boss Essence — разные кошельки | B1 |
 | C-07 | Баланс проверяется fresh, moderate и max M1 профилями | B1 |
 | C-08 | Визуальные ассеты не входят в работу Balance Agent | AGENTS.md, область этого задания |
+| C-09 | Артефакты — run offers из трёх карт, без pre-run loadout и фиксированных слотов; активный эффект отделён от обычных passive modifiers | Product decision; architecture contract |
+| C-10 | Boss chest и artifact offer — разные потоки: boss chest даёт synergy/evolution/fallback, elite pack/first-clear могут дать artifact offer, final boss не создаёт boss chest | Product decision; B1 reward boundary |
 
 ## Обязательные вопросы
 
@@ -31,6 +33,10 @@
 | U-08 | Какой runtime seam станет владельцем balance data? | Определяет, где числа будут жить | Контракт и simulator в этой папке; integration handoff | Architecture/coding agent |
 | U-09 | На каком Android-устройстве подтверждать 30 FPS? | Без device baseline performance только risk | Отдельно пометить performance unverified | QA/technical owner |
 | U-10 | Разрешено ли менять B1 при обнаружении противоречия? | Предотвращает незаметный drift канона | Только decision request, не silent edit | Project owner |
+| U-11 | Какова политика artifact refresh: cost, currency, max count and reroll scope? | Меняет offer frequency and economy | Expose three-card refresh command with pending policy; no numeric cost invented | Product owner | Approve refresh contract |
+| U-12 | Разрешены ли дубликаты артефактов и как они stack? | Меняет power curve and active-effect attribution | Keep stacking_policy pending per artifact effect | Product/gameplay owner | Approve duplicate/stacking matrix |
+| U-13 | Какова cadence/size/composition special elite packs between bosses? | Меняет artifact-offer frequency and wave budget | Model source as allowed pending elite event; do not inject spawn count | B1/balance owner | Add elite-pack schedule to B1 |
+| U-14 | Какие exact artifact effects, triggers, targets and values входят в first slice? | Меняет DPS/survivability/weapon interactions and test fixtures | Use typed effect contract and examples only; numbers remain pending | Product/balance owner | Approve effect catalog |
 
 ## Правило обновления
 

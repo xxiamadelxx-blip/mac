@@ -42,8 +42,8 @@ Android acceptance: NOT_PERFORMED
 | 4. Settings | Пользователь открывает Настройки | MAIN_MENU или pause context | SETTINGS, SettingsFlow | Звук, доступность и прочие реально доступные настройки | Неизвестная настройка игнорируется с diagnostic entry; возврат сохраняет только валидированные значения |
 | 5. Characters | Пользователь открывает ПЕРСОНАЖИ | Registry содержит selectable character | CHARACTER_SELECT, MenuFlow | Имя, portrait/full-body reference, стартовое оружие, активная способность, role и ограничения | Повреждённая карточка → placeholder с идентификатором ошибки; выбор такого персонажа запрещён |
 | 6. Character selection | Нажатие на карточку | character_id существует и unlocked | CHARACTER_SELECT, RunSetupModel | Выбранная карточка и её стартовые свойства | Повторное нажатие идемпотентно; неизвестный ID отклоняется |
-| 7. Run setup | Пользователь нажимает «Начать забег» | Персонаж выбран; optional artifacts validated | RUN_SETUP → RUN_LOADING, RunCoordinator | Selected character, доступные артефакты и подтверждение старта | Невалидный artifact или stale selection → offer refresh; RunSession ещё не создаётся |
-| 8. Run creation | Confirm start command | Content version и save revision согласованы | RUN_LOADING, RunCoordinator создаёт RunSession | Loading screen | Ошибка создания/seed → RUN_ERROR или MAIN_MENU; частичный RunSession не считается начатым |
+| 7. Run setup | Пользователь нажимает «Начать забег» | Персонаж выбран; artifact pre-run selection отсутствует | RUN_SETUP → RUN_LOADING, RunCoordinator | Selected character и подтверждение старта; артефакты не экипируются заранее | Любая попытка передать artifact_ids отклоняется; RunSession ещё не создаётся |
+| 8. Run creation | Confirm start command | Content version и save revision согласованы | RUN_LOADING, RunCoordinator создаёт RunSession | Loading screen | Ошибка создания/seed → CONTENT_ERROR или MAIN_MENU; частичный RunSession не считается начатым |
 | 9. Arena load | RunCoordinator загружает карту | RunSession создана, arena contract найден | RUN_ACTIVE, Arena/Simulation adapters | Героиня в стартовой точке, HUD и открытое поле | Ошибка visual/runtime resource → fallback + diagnostic; запуск запрещён только при отсутствии обязательного gameplay resource |
 | 10. Active simulation | Clock tick | Не paused, RunSession active | RUN_ACTIVE, RunSession + SimulationClock | Движение, автоматическое оружие, враги, HUD, XP и aftermath | Ошибка одного декоративного ресурса не останавливает simulation; ошибка authoritative state переводит в recoverable pause |
 | 11. Wave band | Elapsed time пересекает B1 boundary | RunSession active | RUN_ACTIVE, WaveDirector | Состав, плотность и pressure меняются по полосе B1 | Повторный tick той же границы не создаёт вторую смену |
@@ -55,17 +55,19 @@ Android acceptance: NOT_PERFORMED
 | 17. Boss combat | Boss pattern event | Boss active | BOSS_ACTIVE, Combat/BossDirector | Wind-up, telegraph, reaction window, damage | Повторный boss spawn с тем же checkpoint_id ignored; отсутствие telegraph — contract failure |
 | 18. Boss defeated | Authoritative defeat | Boss active и HP <= zero | CHECKPOINT_SETTLEMENT, RunCoordinator | Death beat; settlement промежуточного или финального босса | Повторный defeat event не повторяет rewards; повреждённое result → recoverable checkpoint state |
 | 19. Checkpoint reward | Settlement command | checkpoint_id not settled | CHECKPOINT_SETTLEMENT, RewardLedger | Gold, Lunar Seals, Boss Essence и ledger status | Для финального босса это последняя награда перед victory; idempotency key не допускает повтор |
-| 20. Chest (non-final checkpoints) | Reward settlement completed | Нефинальный boss checkpoint разрешает chest | CHEST_OFFER, Chest/Evolution system | Сундук, eligible/fallback explanation | Финальный босс сундук не создаёт; закрытие без claim не теряет pending offer |
-| 21. Synergy or fallback | Claim non-final chest offer | Offer valid, evaluator result known | RUN_ACTIVE | Evolution, artifact или fallback reward согласно offer | Применяется только к нефинальному сундуку; exact fallback values остаются PENDING_PRODUCT_DECISION |
-| 22. Next stage | Non-final chest claim complete | Reward and chest claim committed | RUN_ACTIVE, RunCoordinator | Следующая wave band и updated HUD | Финальный checkpoint не открывает следующую стадию; повторный command — no-op |
-| 23. Pause | User taps pause or Android background | RunSession is resumable | RUN_PAUSED, RunSession | Pause overlay, Continue, Settings, Exit | SimulationClock = paused; save snapshot создаётся только по defined policy |
-| 24. Resume | Continue / Android foreground | Snapshot and content version valid | Previous resumable state | Simulation continues without time jump | Invalid snapshot → RECOVERY_REVIEW/diagnostic; rewards не начисляются автоматически |
-| 25. Exit attempt | User chooses menu from pause | Confirmation required for active run | Exit confirmation overlay | Ясно указано: abandon или recoverable save policy | Cancel returns to pause; confirm follows abandon policy and не выдаёт незаработанные rewards |
-| 26. Death | HP reaches zero | Run active; death not already settled | RUN_DEFEAT → RESULT_REVIEW | Причина смерти, stats, partial rewards | Repeated death event ignored; partial rewards считаются один раз |
-| 27. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; финальный босс не создаёт сундук |
-| 28. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_FINALIZED / REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards | Повторное открытие read-only; claim использует ledger idempotency |
-| 29. Return to menu | Result claim or explicit menu action | Result settlement committed or abandon confirmed | MAIN_MENU, MenuFlow | Updated wallets/unlocks and start options | Неудача save → result остаётся recoverable; возврат не теряет committed ledger |
-| 30. New run | User starts another run | Previous result committed/abandoned | New RUN_LOADING | New run_id и fresh session | Старый RunSession не переиспользуется |
+| 20. Boss chest (non-final checkpoints) | Reward settlement completed | Нефинальный boss checkpoint разрешает boss chest | CHEST_OFFER, BossChestSystem | Сундук босса, synergy/evolution eligibility и fallback explanation | Финальный босс boss chest не создаёт; закрытие без claim не теряет pending offer |
+| 21. Boss-chest outcome | Claim non-final boss-chest offer | Offer valid, evaluator result known | RUN_ACTIVE, BossChestSystem | Synergy/evolution или fallback reward согласно offer | Применяется только к нефинальному boss chest; exact fallback values остаются PENDING_PRODUCT_DECISION |
+| 22. Elite-pack artifact source | Special elite pack defeated between bosses | Elite encounter is authoritative; cadence/composition policy allows source | ARTIFACT_OFFER, ArtifactOfferSystem | Three-card artifact offer | Elite-pack cadence and card pool remain explicit pending fields |
+| 23. Artifact offer choice/refresh | Artifact source opens offer | Exactly three cards; offer owned by current run | ARTIFACT_OFFER → RUN_ACTIVE or RESULT_REVIEW | `Get` selects one card; `Refresh` rerolls the offer only under pending policy | One choice creates one active run effect; no weapon/passive slot is consumed; duplicate commands are idempotent |
+| 24. Next stage | Non-final boss-chest claim complete | Reward and boss-chest claim committed | RUN_ACTIVE, RunCoordinator | Следующая wave band и updated HUD | Финальный checkpoint не открывает следующую стадию; повторный command — no-op |
+| 25. Pause | User taps pause or Android background | RunSession is resumable | RUN_PAUSED, RunSession | Pause overlay, Continue, Settings, Exit | SimulationClock = paused; save snapshot создаётся только по defined policy |
+| 26. Resume | Continue / Android foreground | Snapshot and content version valid | Previous resumable state | Simulation continues without time jump | Invalid snapshot → RECOVERY_REVIEW/diagnostic; rewards не начисляются автоматически |
+| 27. Exit attempt | User chooses menu from pause | Confirmation required for active run | Exit confirmation overlay | Ясно указано: abandon или recoverable save policy | Cancel returns to pause; confirm follows abandon policy and не выдаёт незаработанные rewards |
+| 28. Death | HP reaches zero | Run active; death not already settled | RUN_DEFEAT → RESULT_REVIEW | Причина смерти, stats, partial rewards | Repeated death event ignored; partial rewards считаются один раз |
+| 29. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; финальный босс не создаёт сундук |
+| 30. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_FINALIZED / REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards | Повторное открытие read-only; claim использует ledger idempotency |
+| 31. Return to menu | Result claim or explicit menu action | Result settlement committed or abandon confirmed | MAIN_MENU, MenuFlow | Updated wallets/unlocks and start options | Неудача save → result остаётся recoverable; возврат не теряет committed ledger |
+| 32. New run | User starts another run | Previous result committed/abandoned | New RUN_LOADING | New run_id и fresh session | Старый RunSession не переиспользуется |
 
 ## 4. Что считается активным забегом
 
@@ -76,11 +78,11 @@ RunSession создаётся только на шаге 8 после подтв
 - elapsed_seconds, current wave_band_id, current_stage_id и checkpoint_id;
 - current state и resume_state;
 - build, stats, XP, level, kills и расширяемый bonus_state;
-- pending upgrade/chest offer;
+- pending upgrade, boss-chest and artifact offers;
 - XP drops, aftermath items и их pooling/aggregation status;
 - reward ledger reference и diagnostics.
 
-Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он останавливается на UPGRADE_OFFER, CHEST_OFFER и RUN_PAUSED. Exact pause/background save policy описана как working assumption и вынесена в pending decisions.
+Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он останавливается на UPGRADE_OFFER, CHEST_OFFER, ARTIFACT_OFFER и RUN_PAUSED. Exact pause/background save policy описана как working assumption и вынесена в pending decisions.
 
 Временные полосы, spawn budget, active cap, boss interruption и восстановление после boss берутся только из B1. Архитектура не дублирует их как второй источник чисел.
 
@@ -88,12 +90,13 @@ Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он ос
 
 - В момент level-up authoritative simulation замораживается.
 - Offer generator выдаёт три детерминированных offer_id, связанных с run_id, level/choice sequence, seed и content version.
-- Offer может быть New weapon, Weapon upgrade, New passive, Passive upgrade, Evolution или fallback, если это разрешено registry.
-- Шесть weapon slots и шесть passive slots — канонический M1 limit.
+- Offer может быть New weapon, Weapon upgrade, New passive, Passive upgrade или fallback, если это разрешено registry.
+- Шесть weapon slots и шесть passive slots — канонический M1 limit; artifact effects не входят в BuildInventory slots.
 - Weapon max level = 6, passive max rank = 5.
-- Evolution проверяет: matching synergy_id, weapon max, passive max, weapon не evolved, chest available и offer не claimed.
-- BuildInventory применяет изменения; UI только показывает projection.
-- Повторная доставка offer chosen, synergy claimed или chest claimed не меняет build второй раз.
+- Boss-chest evaluator проверяет matching synergy_id, weapon max, passive max, weapon не evolved, boss-chest context и offer не claimed.
+- ArtifactOfferSystem отдельно проверяет source, ровно три карты, choice/refresh state и pending refresh policy; ArtifactEffectSystem применяет выбранный typed run effect.
+- BuildInventory применяет только weapon/passive/evolution изменения; UI только показывает projection.
+- Повторная доставка offer chosen, synergy claimed, boss chest claimed, artifact chosen или artifact refresh не меняет итог второй раз.
 
 Точная семантика bonus/series state и некоторые fallback outcomes не выдумываются; они отмечены в DECISIONS_AND_UNKNOWNS.md и data contract.
 
@@ -107,9 +110,11 @@ Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он ос
 4. BOSS_ACTIVE принимает только boss-owned combat transitions;
 5. после defeat создаётся один settlement command;
 6. RewardLedger применяет checkpoint bundle по idempotency key;
-7. Только для нефинального checkpoint ChestSystem создаёт persistent chest_offer; финальный checkpoint сундук не создаёт;
-8. SynergyEvaluator возвращает eligible, already_claimed или fallback_required;
-9. после claim нефинального сундука открывается следующий wave band; после финального settlement начинается result flow без сундука.
+7. Только для нефинального checkpoint BossChestSystem создаёт persistent `CHEST_OFFER`; финальный checkpoint boss chest не создаёт;
+8. SynergyEvaluator возвращает eligible, already_claimed или fallback_required для boss chest;
+9. ElitePackDirector может после special elite pack (`source_kind=ELITE_PACK`) открыть отдельный `ARTIFACT_OFFER` из трёх карт; cadence/composition остаются pending;
+10. First-clear reward после result finalization открывает отдельный `FIRST_CLEAR_REWARD` artifact offer, а не boss chest;
+11. после claim нефинального boss chest открывается следующий wave band; после финального settlement начинается result flow без boss chest.
 
 Точное содержимое fallback-награды и правила округления 50% Gold при defeat после checkpoint отсутствуют в B1 и не заполняются агентом.
 
@@ -154,7 +159,8 @@ Victory:
 | Character | character_id, name, HP current/max, state, selected ability |
 | Combat stats | attack, critical_chance, critical_multiplier, movement_speed, cooldown, armor и derived modifiers |
 | Build | six weapon slots, six passive slots, levels/ranks, evolved flags |
-| Artifacts | up to three run artifact slots, source and active effect |
+| Active artifact effects | unbounded run instances, source/trigger/target/effect contract; no weapon/passive slot consumption |
+| Pending artifact offer | source, three candidate cards, selected card/refresh state, policy status |
 | Progression | level, xp_current, xp_to_next, kills, bonus_state |
 | Run | elapsed time, current wave band/stage, boss state, checkpoint |
 | Drops | XP visible count/value, aftermath density/status |
@@ -180,7 +186,8 @@ Victory:
 Следующие вопросы не замаскированы архитектурными defaults:
 
 - exact bonus/kill-series semantics;
-- exact chest fallback reward and selection;
+- exact boss-chest fallback reward and selection;
+- artifact effect definitions, elite-pack cadence, refresh cost/limit, duplicate/stacking and Codex persistence;
 - rounding rule for 50% Gold after defeat;
 - whether “next stage” is only a wave/checkpoint band or a future scene boundary;
 - precise safe-save/recovery window for background kill;

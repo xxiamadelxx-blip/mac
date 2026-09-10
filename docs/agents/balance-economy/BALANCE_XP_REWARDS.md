@@ -42,18 +42,19 @@ B1 does not define pickup latency or collection capacity. The model exposes each
 
 Fresh reaches its first level-up at 39.75 s in both hero routes. Moderate reaches it at 38.25 s; max M1 at 33.25 s. Fresh matches the B1 2/5/9/13/17–18 cadence in this model. Moderate and max M1 are intentionally faster at later checkpoints and should be treated as stress profiles, not canonical timing proof.
 
-## Rewards, chest, and fallback
+## Rewards, boss chest, artifact offer, and fallback
 
 B1 checkpoint totals remain CANON. The architecture contract adds the live settlement policy:
 
 - reward ledger key: {run_id}:{reward_scope}:{checkpoint_id}:{reward_type};
 - duplicate commit returns the existing entry without applying currency again;
-- non-final checkpoints may create chest offers;
-- final boss creates no chest_offer;
-- the B1 first-clear artifact value is represented by a run-result artifact grant in this model, not a final chest_offer; this is PROPOSED pending Product confirmation;
+- non-final checkpoints may create a **boss chest** for synergy/evolution or fallback;
+- final boss creates no boss chest;
+- the B1 first-clear artifact value is represented by a separate post-result `FIRST_CLEAR_REWARD` artifact offer with exactly three choices; it is not a final boss chest and is not automatically granted before the player chooses;
+- special elite packs between bosses may create the same three-card artifact offer; cadence and composition remain PENDING until B1/product defines them;
 - when a non-final synergy is not eligible, the model applies one proposed +3% fallback damage upgrade.
 
-| Profile / hero | Ledger balance | Idempotency | Final chest_offer | Synergy | Fallback bonus |
+| Profile / hero | Ledger balance | Idempotency | Final boss chest | Boss-chest outcome | Fallback bonus |
 |---|---|---|---|---|---|
 | fresh/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
 | fresh/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
@@ -62,7 +63,7 @@ B1 checkpoint totals remain CANON. The architecture contract adds the live settl
 | moderate/hero_lin_yue | {"boss_essence": 6, "gold": 725, "moon_seals": 300} | PASS | false | synergy_heavenly_seals | 0.06 |
 | moderate/hero_seoyeon_han | {"boss_essence": 3, "gold": 225, "moon_seals": 60} | PASS | false | synergy_moon_dance | 0.06 |
 
-The B1 first-clear totals are 725 gold / 300 Moon Seals / 6 boss essence. The repeat-clear totals are 425 / 120 / 5. They remain arithmetic CANON values; whether each model run reaches final settlement is shown above.
+The B1 first-clear totals are 725 gold / 300 Moon Seals / 6 boss essence. The repeat-clear totals are 425 / 120 / 5. They remain arithmetic CANON values. The first-clear artifact offer is a separate three-card post-result boundary; exact artifact effect, refresh, duplicate/stacking and Codex persistence rules remain pending.
 
 ## Evidence boundary
 

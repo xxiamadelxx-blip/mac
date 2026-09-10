@@ -24,7 +24,12 @@
       "boss_id",
       "chest_offer_id",
       "reward_ledger_entry_id",
-      "event_id"
+      "event_id",
+      "artifact_offer_id",
+      "artifact_instance_id",
+      "elite_pack_id",
+      "boss_encounter_id",
+      "ability_id"
     ],
     "content_version_required": true,
     "unknown_ids": "Quarantine optional records; block authoritative run restore."
@@ -39,7 +44,6 @@
     ],
     "weapon_slot_limit": 6,
     "passive_slot_limit": 6,
-    "artifact_slot_limit": 3,
     "weapon_max_level": 6,
     "passive_max_rank": 5,
     "contact_damage_cooldown_seconds": 0.8,
@@ -69,12 +73,35 @@
         "field": "bonus_series_formula",
         "status": "PENDING_PRODUCT_DECISION",
         "reason": "The existence of an extensible bonus state is required; its exact semantics are not canonical."
+      },
+      {
+        "field": "artifact_effect_definitions",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "Artifacts are run-modifier effects, not ordinary passive slot modifiers; exact definitions, triggers, targets and values require product approval."
+      },
+      {
+        "field": "artifact_refresh_policy",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "The three-card offer exposes Get and Refresh, but cost, currency and refresh limit are not canonical."
+      },
+      {
+        "field": "artifact_duplicate_and_stacking_policy",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "Duplicate and stacking behavior for active artifact effects is not canonical."
+      },
+      {
+        "field": "elite_pack_schedule_and_composition",
+        "status": "PENDING_B1",
+        "reason": "Elite-pack artifact sources are requested, but cadence, size and composition are not defined by B1."
       }
     ],
     "checkpoint_outcome_policy": {
       "non_final_boss": "CHECKPOINT_REWARD_THEN_CHEST_THEN_NEXT_STAGE",
       "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST"
-    }
+    },
+    "artifact_offer_choice_count": 3,
+    "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
+    "artifact_effect_model": "RUN_MODIFIER_EFFECTS_SEPARATE_FROM_PASSIVE_SLOTS"
   },
   "content_registry": {
     "characters": [
@@ -460,9 +487,47 @@
         "id": "reward_first_clear_bonus",
         "gold": 300,
         "lunar_seals": 180,
-        "boss_essence": 1
+        "boss_essence": 1,
+        "artifact_offer": {
+          "required": true,
+          "source_kind": "FIRST_CLEAR_REWARD",
+          "presentation": "POST_RESULT_REWARD_BOUNDARY"
+        }
       }
-    ]
+    ],
+    "abilities": [
+      {
+        "id": "ability_moon_seal",
+        "name": "Лунная печать",
+        "source": "../../../GAME_MANIFEST.md"
+      },
+      {
+        "id": "ability_crimson_dash",
+        "name": "Багровый рывок",
+        "source": "../../../GAME_MANIFEST.md"
+      }
+    ],
+    "artifact_effects": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "effect_types": [
+        "AURA",
+        "DERIVED_STAT",
+        "TARGET_MODIFIER",
+        "WEAPON_MODIFIER",
+        "TRIGGERED_EFFECT",
+        "COOLDOWN_MODIFIER"
+      ],
+      "required_fields": [
+        "effect_type",
+        "trigger",
+        "scope",
+        "target",
+        "parameters_ref",
+        "stacking_policy"
+      ],
+      "definitions": [],
+      "source": "product decision; examples are documented in GAME_MANIFEST.md"
+    }
   },
   "run_session": {
     "schema_version": 1,
@@ -482,10 +547,8 @@
     "build": {
       "weapon_slots": 6,
       "passive_slots": 6,
-      "artifact_slots": 3,
       "weapons": [],
       "passives": [],
-      "artifacts": [],
       "claimed_synergy_ids": []
     },
     "stats": {
@@ -517,9 +580,16 @@
       "run_id": null,
       "last_committed_revision": null,
       "settled_checkpoint_ids": [],
-      "result_claimed": false
+      "result_claimed": false,
+      "committed_idempotency_keys": []
     },
-    "diagnostics": []
+    "diagnostics": [],
+    "active_artifacts": [],
+    "pending_offers": {
+      "upgrade": null,
+      "boss_chest": null,
+      "artifact": null
+    }
   },
   "entity_shapes": {
     "xp_drop": {
@@ -548,6 +618,22 @@
       "max_level_or_rank": null,
       "evolved": false,
       "modifiers_ref": null
+    },
+    "artifact_instance": {
+      "artifact_instance_id": null,
+      "artifact_id": null,
+      "run_id": null,
+      "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
+      "source_id": null,
+      "effect_type": null,
+      "effect_contract_ref": "content_registry.artifact_effects",
+      "trigger": null,
+      "scope": "RUN",
+      "target": null,
+      "parameters_ref": null,
+      "stacking_policy": null,
+      "acquired_at_elapsed_seconds": null,
+      "active": true
     }
   },
   "chest_offer": {
@@ -560,7 +646,6 @@
     "status": "OPEN",
     "evaluator_outcome": "PENDING",
     "eligible_synergy_id": null,
-    "artifact_id": null,
     "fallback_policy": {
       "status": "PENDING_PRODUCT_DECISION",
       "reward_type": null,
@@ -569,7 +654,10 @@
     "claimed_outcome": null,
     "idempotency_key": null,
     "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
-    "final_boss_policy": "NO_CHEST"
+    "final_boss_policy": "NO_CHEST",
+    "source_kind": "BOSS_CHEST",
+    "outcome_type": "SYNERGY_OR_FALLBACK",
+    "outcome_id": null
   },
   "synergy_evaluator": {
     "inputs": [
@@ -578,7 +666,7 @@
       "weapon_max_level",
       "passive_max_rank",
       "weapon_not_evolved",
-      "chest_available",
+      "boss_chest_context",
       "claimed_synergy_ids",
       "checkpoint_is_final"
     ],
@@ -644,7 +732,13 @@
       "arbitrary_mid_frame_resume": "NOT_PROMISED",
       "invalid_snapshot": "RECOVERY_REVIEW",
       "missing_snapshot": "ABANDON_WITHOUT_UNEARNED_REWARDS"
-    }
+    },
+    "pending_offers": {
+      "upgrade": null,
+      "boss_chest": null,
+      "artifact": null
+    },
+    "active_artifact_instances": []
   },
   "event_envelope": {
     "event_id": null,
@@ -669,8 +763,13 @@
     "Unknown numeric values remain pending until confirmed by B1.",
     "Unknown product rules remain pending until confirmed by the product owner.",
     "Missing resource errors produce diagnostics, never a blank screen.",
-    "Non-final checkpoint, chest and result effects are idempotent.",
-    "Final boss settlement creates no chest_offer and transitions to victory after ledger commit."
+    "Final boss settlement creates no chest_offer and transitions to victory after ledger commit.",
+    "Non-final boss-chest, artifact-offer and result effects are idempotent.",
+    "A boss chest is only a non-final checkpoint synergy/evolution/fallback offer; the final boss never creates one.",
+    "Every artifact offer contains exactly three candidates and one chosen candidate becomes one active run effect.",
+    "Active artifacts have no fixed run capacity and do not consume weapon or passive slots.",
+    "Artifact effects use typed contracts separate from ordinary passive modifiers.",
+    "The first-clear artifact offer is a separate post-result reward boundary, not a final boss chest."
   ],
   "open_questions": [
     {
@@ -714,6 +813,60 @@
       "status": "PENDING_B1",
       "field": "defeat_gold_rounding",
       "owner": "balance owner"
+    },
+    {
+      "id": "U-12",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.refresh_policy",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-13",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.duplicate_and_stacking_policy",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-14",
+      "status": "PENDING_B1",
+      "field": "elite_pack_schedule_and_composition",
+      "owner": "balance/gameplay owner"
+    },
+    {
+      "id": "U-15",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "content_registry.artifact_effects.definitions",
+      "owner": "product owner"
     }
-  ]
+  ],
+  "artifact_offer": {
+    "artifact_offer_id": null,
+    "run_id": null,
+    "content_version": null,
+    "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
+    "source_id": null,
+    "offer_seed": null,
+    "status": "OPEN",
+    "choice_count": 3,
+    "choice_artifact_ids": [],
+    "selected_artifact_id": null,
+    "refresh_count": 0,
+    "refresh_policy": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "cost_type": null,
+      "cost_value": null,
+      "max_refreshes": null,
+      "reroll_behavior": null
+    },
+    "effect_contract_ref": "content_registry.artifact_effects",
+    "active_effect_preview_ref": null,
+    "claimed_outcome": null,
+    "idempotency_key": null,
+    "source_constraints": {
+      "elite_pack": "ALLOWED_PENDING_SCHEDULE",
+      "first_clear_reward": "REQUIRED_BY_B1",
+      "boss_chest": "SEPARATE_SYNERGY_OFFER",
+      "final_boss": "NO_BOSS_CHEST"
+    }
+  }
 }
