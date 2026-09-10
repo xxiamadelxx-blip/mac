@@ -7,20 +7,21 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e.
 - Historical live main HEAD observed at the start of the original implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
-- Balance model commit used: 42966b44650ec63aead33d04cbe34ae1e9d57489.
-- Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
+- Balance model commit used for the current v0.3 run: 0f9bbc72d2ceb77d5d1c51f5da74f0845705e2b7.
+- Simulator commit used for the current v0.3 run: 7fa90fce9f70c71ede3da54dc52c52a2fee5c5a6.
 - Historical main HEAD observed immediately before the original report update: 42966b44650ec63aead33d04cbe34ae1e9d57489.
-- Latest verified main HEAD before this artifact-offer correction: 9a4236e66e0bc88ec6952c54918f799c30602d57.
+- Latest verified main HEAD before this report refresh: b4e5d917615be9f0167cf07b1a79ea4d22c2e0cb.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
 - Runtime executed: false.
+- Final-boss clock policy: main run clock freezes at 1200 seconds; wave/XP/spawn clock remains frozen; boss resolves on a separate encounter clock.
 - Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).
-- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
-- Repeated full-run SHA-256: f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
+- Contract validator commit used for the current v0.3 run: 87730846c35d74087c727cfaf0518c5914ec19d1.
+- Repeated current v0.3 full-run SHA-256: 6ace894187a6ca540561268123b3ec6abfc993570350a3aeef83686cf300bbce.
 
 The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so. Stable IDs are joined against the architecture registry; the model does not copy architecture tuning values.
 
-The recorded 30-run hash is historical evidence from before the artifact-offer correction. The corrected simulator now records a separate three-card `FIRST_CLEAR_REWARD` offer instead of automatically attaching an artifact to the result; rerun is required before using the hash as evidence for artifact-offer behavior.
+The current 30-run hash includes the artifact-offer correction and the final-boss clock policy. It records a separate three-card `FIRST_CLEAR_REWARD` offer instead of automatically attaching an artifact directly to the result.
 
 ## Concrete profile inputs
 
@@ -141,6 +142,7 @@ The canonical arithmetic remains:
 - final boss chest: false in all model runs;
 - corrected model boundary: first-clear reward creates a separate three-card `FIRST_CLEAR_REWARD` artifact offer after result finalization; one card must be chosen before an active effect exists;
 - elite-pack artifact-offer cadence, exact effects, refresh, duplicate/stacking and Codex persistence remain pending.
+- Current v0.3 model created 20 first-clear artifact offers out of 30 runs; every created offer contains 3 choices.
 
 ## Remaining blockers
 
