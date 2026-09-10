@@ -719,7 +719,7 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", default=str(Path(__file__).with_name("BALANCE_MODEL.next.json")))
+    parser.add_argument("--model", default=str(Path(__file__).with_name("BALANCE_MODEL.json")))
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
