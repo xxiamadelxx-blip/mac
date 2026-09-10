@@ -1,5 +1,5 @@
 <!-- LIVE-AGENT-SYNC: read docs/AGENT_SYNC_STATE.md at current main before using this file -->
-> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](docs/AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
+> **Live coordination pointer:** continuation work is routed through [`docs/AGENT_SYNC_STATE.md`](../../AGENT_SYNC_STATE.md). Legacy 20-minute/4-boss passages below are historical until reconciled.
 
 # Рабочая папка агента: архитектура первого забега
 
