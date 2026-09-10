@@ -4,6 +4,10 @@
 
 Этот документ фиксирует, от чего строится новый content package. Он не переписывает канонические документы и не объявляет runtime или визуалы готовыми.
 
+### Revision note после product review
+
+Первоначальный C1-дизайн passives, слишком прямо усиливавших свои парные weapons, отклонён. Текущая revision в `C1_WEAPONS_PASSIVES_SYNERGIES.md` делает все 10 run-passives общими модификаторами билда; weapon ID сохраняется только как synergy anchor для evolution gate. Лимит synergy claims пересмотрен с 3 до 5, а два дополнительных chest windows оформлены в `C3_MINI_BOSSES_AND_CHEST_FLOW.md`.
+
 ## 1. Идентичность и evidence
 
 | Поле | Значение |
@@ -57,7 +61,7 @@
 |---|---|---|---|
 | Weapons | 10 стабильных ID и названий есть в `FIRST_RUN_DATA_CONTRACT.json` и `GAME_MANIFEST.md`; подробных entries нет | architecture contract, manifest | сохранить ID и разработать полную механику |
 | Run passives | 10 стабильных ID и названий есть; подробных entries нет | architecture contract, manifest | сохранить ID и разработать ось/триггеры/контр-решения |
-| Synergies/evolutions | 10 прямых пар уже перечислены; detailed evolution contract отсутствует | architecture contract, manifest | сохранить пары и описать результат; добавить лимит не более 3 claimed synergy за run как пользовательское решение |
+| Synergies/evolutions | 10 прямых пар уже перечислены; detailed evolution contract отсутствует | architecture contract, manifest | сохранить пары и описать результат; текущий product decision — не более 5 claimed synergy за run |
 | Artifacts | В registry перечислены 8 ID; effect definitions пусты и имеют `PENDING_PRODUCT_DECISION` | `FIRST_RUN_DATA_CONTRACT.json` | сохранить 8, добавить 2 новые как `PROPOSAL`, не притворяться, что registry уже синхронизирован |
 | Meta passives | B1 описывает 6 плоских веток по 10 рангов: Vitality, Force, Agility, Focus, Magnet, Defense | `docs/BALANCE_ECONOMY_SPEC.md` | сохранить 6 macro-веток и спроектировать внутри них 17 stat nodes с pending numeric binding |
 | Stage 06–08 | Существуют только плановые README; production icons/effects отсутствуют | `docs/mockups/*` | передать briefs в Visual Lab, не создавать mockups |
@@ -104,7 +108,7 @@
 ## 6. Продуктовые решения этого среза
 
 1. Каталог первого забега содержит 10 weapons, 10 run passives, 10 direct synergy/evolution pairs и 10 artifacts.
-2. За один run можно claim не более трёх synergy/evolution. Рекомендуемые окна — три нефинальных boss chest на контрольных точках 5/10/15 минут; финальный босс chest не создаёт.
+2. За один run можно claim не более пяти synergy/evolution. Рекомендуемые окна — три main boss chest на 5/10/15 минутах и два mini-boss chest на 7:30/12:30; финальный босс chest не создаёт.
 3. Шесть weapon slots и шесть passive slots сохраняются; наличие десяти записей означает пул контента, а не расширение слотов.
 4. Run passive и persistent shop node — разные сущности: первые сбрасываются между забегами, вторые живут в `MetaProgression`.
 5. Artifact effect — run modifier, не slot item и не pre-run loadout. Каждый offer имеет ровно три cards и один выбор.
@@ -120,9 +124,11 @@
 | C0-04 | В screenshot есть «Исцеление от крупицы», «Получение маны» и «Макс. HP врага», но их точная семантика не описана в B1 | требуется согласовать display и stat semantics | сделать отдельные stat nodes с явными open decisions | Product + Balance |
 | C0-05 | Artifact effect values, refresh, duplicate/stacking и elite cadence pending | нельзя доказать power budget | entries fully describe behavior, all numbers pending | Product + Balance + Runtime |
 | C0-06 | Полноценный shop исключён из M1 runtime scope, но нужен как persistent design | нельзя объявлять shop playable | design now, runtime integration later | Product + Runtime |
+| C0-07 | Product review отклонил passives, привязанные механикой к одному weapon | старый passive contract давал узкий билд | passive effect общий для eligible build; weapon остаётся только hidden synergy anchor | Product + Balance |
+| C0-08 | Product review увеличил cap с 3 до 5 и добавил 2 mini-boss encounters | меняется chest cadence, reward fallback и snapshot contract | сохранить пять нефинальных chest windows; final boss без chest | Architecture + Balance |
 
 ## 8. C0 verdict
 
-Аудит подтверждает достаточную основу для C1/C2: стабильные weapon/passive/synergy IDs есть, визуальная tonal family закреплена, архитектурные consumers определены. Основные unresolved items вынесены в handoff и не скрыты в описаниях.
+Аудит подтверждает достаточную основу для C1/C2/C3: стабильные weapon/passive/synergy IDs есть, визуальная tonal family закреплена, архитектурные consumers определены. После product review узкая weapon-bound passive logic отклонена; новая общая passive logic и mini-boss chest flow вынесены в отдельную revision. Основные unresolved items вынесены в handoff и не скрыты в описаниях.
 
-Следующий результат: `C1_WEAPONS_PASSIVES_SYNERGIES.md`, `C2_ARTIFACTS.md`, `META_PASSIVE_TREE.md` и сводный handoff.
+Следующий результат: `C1_WEAPONS_PASSIVES_SYNERGIES.md`, `C2_ARTIFACTS.md`, `C3_MINI_BOSSES_AND_CHEST_FLOW.md`, `META_PASSIVE_TREE.md` и сводный handoff.

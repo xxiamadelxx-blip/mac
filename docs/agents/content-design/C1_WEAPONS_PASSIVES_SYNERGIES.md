@@ -13,16 +13,17 @@
 | Weapon progression | максимум уровня 6 по архитектурному контракту |
 | Passive progression | максимум ранга 5 по архитектурному контракту |
 | Upgrade offer | три карточки; New/Upgrade/Evolution — разные outcome types |
-| Evolution gate | weapon max level + paired passive max rank + non-final boss chest + weapon not evolved |
+| Evolution gate | weapon max level + paired passive max rank + non-final boss/mini-boss chest + weapon not evolved |
 | Synergy catalogue | 10 стабильных direct pairs |
-| Synergy claims per run | **не более 3**; это пользовательское product decision для Run 1 |
-| Synergy windows | рекомендуются нефинальные boss chest на 5/10/15 минутах |
-| Final boss | не создаёт boss chest и не выдаёт четвёртую synergy |
+| Synergy claims per run | **не более 5**; это пользовательское product decision для Run 1 |
+| Synergy windows | пять нефинальных chest windows: main bosses на 5/10/15 минутах и mini-bosses на 7:30/12:30 |
+| Final boss | не создаёт boss chest и не выдаёт шестую synergy |
 | Если подходящей пары нет | существующий fallback contract, значение назначает Balance/Product |
 
 ### Разделение сущностей
 
-- **Run passive** — временный элемент билда, занимает один из шести passive slots и улучшается внутри забега.
+- **Run passive** — временный общий элемент билда, занимает один из шести passive slots и улучшает разрешённую глобальную ось, а не конкретное оружие.
+- **Synergy anchor** — скрытая content-связь passive с одним weapon ID, используемая только для проверки evolution gate; она не превращает passive в weapon upgrade.
 - **Synergy/evolution** — преобразует конкретное оружие после выполнения gate; не добавляет новый slot.
 - **Meta tree node** — постоянное улучшение за Gold, описано отдельно в `META_PASSIVE_TREE.md`; не является run passive.
 - **Artifact** — отдельный run modifier без slot capacity; описан в `C2_ARTIFACTS.md`.
@@ -210,157 +211,157 @@
 
 ### 4.1 `passive_wind_of_travel` — Ветер странствий
 
-- **Fantasy / promise:** постоянное движение делает героиню легче и помогает превращать смену позиции в часть атаки.
-- **Axis:** `mobility`.
-- **Activation:** `always_on` for movement baseline; `on_move` for a temporary momentum hook if approved.
-- **Affected systems:** movement speed, dash/active-ability recovery hook, close-weapon directional state.
-- **Mechanic:** усиливает mobility axis и может открывать momentum window после смены направления; window должен быть наблюдаемым и не превращаться в скрытый DPS multiplier.
-- **Decision/trade-off:** выгоден на открытой арене и для Moon Blade, но не заменяет защиту и не даёт пользы, если игрок зажат в углу.
-- **Stacking intent:** repeated offers upgrade same entry; duplicate application is no-op; exact cap `PENDING_BALANCE` beyond canonical passive max rank 5.
-- **Compatible content:** `weapon_moon_blade`, `synergy_moon_dance`; secondary mobility artifacts only after stacking review.
-- **UI copy:** short — «Двигайся легче»; detail — «Усиливает мобильность и поддерживает атаки, зависящие от смены позиции.»
-- **VFX brief:** thin jade wind ribbon at feet only while movement hook is active; no permanent aura that hides floor telegraphs.
-- **PENDING_BALANCE:** movement modifier, momentum window, dash recovery, conditional attack hook, rank curve.
-- **Runtime contract:** StatsCalculator reads persistent modifier; MovementSystem may emit `movement_started/direction_changed`; no UI mutation of RunSession.
+- **Fantasy / promise:** движение становится ресурсом выживания и темпа всего билда.
+- **Axis:** `mobility / momentum`.
+- **Activation:** `always_on` for movement axis; `on_movement_sequence` for a shared momentum state.
+- **General effect:** повышает управляемость перемещения; после непрерывного движения любой eligible weapon hit получает общий `MOMENTUM` context до остановки/истечения окна.
+- **Affected systems:** hero movement, universal hit context, telegraph navigation; не только close-range attacks.
+- **Synergy anchor:** `weapon_moon_blade` — связь используется только для `synergy_moon_dance` eligibility; passive не усиливает Moon Blade отдельно.
+- **Decision/trade-off:** игрок выбирает между постоянным маршрутом и остановкой для точного позиционирования; остановка сбрасывает momentum, но не наказывает весь билд.
+- **Stacking intent:** ranks усиливают одну mobility/momentum ось; duplicate offer upgrades this entry, hidden per-weapon modifiers forbidden.
+- **UI copy:** short — «Сохрани темп»; detail — «Улучшает перемещение и создаёт общий momentum для следующего удачного действия.»
+- **VFX brief:** тонкий jade wind ribbon только при активном momentum; не показывать постоянную ауру, скрывающую floor telegraphs.
+- **PENDING_BALANCE:** movement modifier, sequence definition, momentum window, eligible hit outcome, rank curve.
+- **Runtime contract:** StatsCalculator supplies derived mobility; MovementSystem owns sequence state; passive never reads Moon Blade state and never mutates a single weapon.
 
 ### 4.2 `passive_jade_focus` — Нефритовый фокус
 
-- **Fantasy / promise:** концентрация удерживает талисманы и дальние заклинания на выбранной угрозе.
-- **Axis:** `offense / status / targeting`.
-- **Activation:** `always_on` for projectile-control axis; `on_mark` for a conditional mark hook.
-- **Affected systems:** homing stability, mark retention, long-range targeting priority, projectile travel behavior.
-- **Mechanic:** improves consistency of marked-target loop and rewards finishing meaningful targets instead of randomizing every shot.
-- **Decision/trade-off:** stronger single-target control can reduce coverage of scattered enemies; TargetingSystem must expose why a target was chosen.
-- **Stacking intent:** same passive upgrades; no separate hidden mark stack outside the weapon's mark contract.
-- **Compatible content:** `weapon_jade_talismans`, `weapon_star_bow`, `synergy_heavenly_seals`.
-- **UI copy:** short — «Удерживай цель»; detail — «Улучшает контроль дальних атак и делает метки талисманов стабильнее.»
-- **VFX brief:** icon uses a jade eye/anchor motif; feedback is a small ring around a valid marked target, not a full-screen glow.
-- **PENDING_BALANCE:** homing correction, mark lifetime, target priority weight, projectile behavior, rank curve.
-- **Runtime contract:** Content Registry supplies modifier tags; Combat/Targeting consume them; emitted mark events remain idempotent per hit/event ID.
+- **Fantasy / promise:** фокус не привязан к талисману — он удерживает любую выбранную угрозу в центре решения игрока.
+- **Axis:** `targeting / consistency`.
+- **Activation:** `always_on` for target-selection quality; `on_target_lock` for a shared focus state.
+- **General effect:** auto-targeted weapons and spells дольше сохраняют valid priority target, меньше теряют цель при смене pack; manual aim не перехватывается.
+- **Affected systems:** TargetingSystem, homing/retarget rules and priority projection for all eligible weapons.
+- **Synergy anchor:** `weapon_jade_talismans` — только condition для `synergy_heavenly_seals`; passive не повышает damage/marks именно талисманов.
+- **Decision/trade-off:** удержание elite улучшает single-target pressure, но может оставить ближайшего rush enemy без внимания; причина выбора цели должна быть видимой.
+- **Stacking intent:** ranks улучшают общую стабильность выбора; один shared focus state, без отдельных per-weapon lock stacks.
+- **UI copy:** short — «Удерживай угрозу»; detail — «Улучшает выбор и удержание приоритетной цели для всех автоматических атак.»
+- **VFX brief:** jade eye/anchor motif; маленькое кольцо у выбранной цели, не full-screen glow.
+- **PENDING_BALANCE:** target retention, retarget delay, priority weights, valid target classes, rank curve.
+- **Runtime contract:** TargetingSystem consumes typed priority/focus tags; passive never checks or upgrades a specific weapon state.
 
 ### 4.3 `passive_ember_heart` — Сердце углей
 
-- **Fantasy / promise:** каждый очаг дышит дольше и помогает строить огненный маршрут.
-- **Axis:** `status / area`.
-- **Activation:** `always_on` for burn axis; `on_hit`/`on_zone_created` for ember hook.
-- **Affected systems:** burn lifecycle, fire-zone persistence, spread eligibility.
-- **Mechanic:** extends the burn identity and gives the Flame Fan a choice between broad coverage and sustained lanes; no unnamed global damage bonus.
-- **Decision/trade-off:** выгоден, если игрок планирует маршрут через очаги; слабее против целей, которые обходят zones.
-- **Stacking intent:** rank upgrades burn-related fields; multiple independent burn sources retain source IDs and do not refresh forever.
-- **Compatible content:** `weapon_crimson_flame_fan`, `synergy_phoenix_sky`, fire-tagged artifacts.
-- **UI copy:** short — «Раздувай очаг»; detail — «Усиливает поведение горения и делает огненные зоны частью маршрута.»
-- **VFX brief:** ember icon with a contained core; feedback adds small rising sparks only during a valid burn event.
-- **PENDING_BALANCE:** burn duration, zone persistence, spread rule, status intensity, rank curve.
-- **Runtime contract:** StatusSystem owns burn; ZoneStore owns zones; passive cannot directly spawn VFX or mutate HP.
+- **Fantasy / promise:** каждый сильный исход оставляет запас тепла, который можно превратить в следующий общий всплеск.
+- **Axis:** `overkill / chain tempo`.
+- **Activation:** `on_enemy_defeated` or approved overkill result; `on_next_eligible_hit` consumes one ember charge.
+- **General effect:** избыточный damage/подтверждённое убийство создаёт ограниченный ember charge; следующий hit любого eligible weapon может выпустить afterspark по соседней valid area.
+- **Affected systems:** damage result, defeat attribution, universal follow-up hit and area response; не только fire-tagged sources.
+- **Synergy anchor:** `weapon_crimson_flame_fan` — только condition для `synergy_phoenix_sky`; passive не продлевает и не усиливает зоны Flame Fan.
+- **Decision/trade-off:** выгодно добивать цели и вести цепочку, но заряд ограничен и теряется при неудачном выборе/истечении; игрок не получает постоянный flat damage.
+- **Stacking intent:** charges имеют bounded cap and source IDs; rank improves charge economy, never infinite recursive afterspark.
+- **UI copy:** short — «Сохрани жар»; detail — «Удачное добивание оставляет заряд для следующего общего всплеска.»
+- **VFX brief:** contained ember core with one rising spark on charge and a compact afterspark on consume.
+- **PENDING_BALANCE:** overkill definition, charge cap, expiry, afterspark area/coefficient, eligible hit tags, rank curve.
+- **Runtime contract:** Damage/Defeat systems own authoritative result; passive consumes typed result and cannot directly spawn zones or mutate HP.
 
 ### 4.4 `passive_frost_thread` — Морозная нить
 
-- **Fantasy / promise:** замедленные враги связываются в удобный для прицела холодный узор.
-- **Axis:** `status / crit_conditional`.
-- **Activation:** `on_hit` when slow/freeze is applied; `timed_window` for conditional follow-up.
-- **Affected systems:** slow effectiveness, controlled-target damage tag, conditional critical interaction.
-- **Mechanic:** makes a slowed target a deliberate follow-up target; the benefit is conditional and visible, not universal crit power.
-- **Decision/trade-off:** focus fire improves control but may allow another lane to approach; player chooses between finishing frozen pack and repositioning.
-- **Stacking intent:** one controlled-target window per source event; duplicate passive ranks improve the same axis, not create nested infinite windows.
-- **Compatible content:** `weapon_frost_pearl`, `weapon_thunder_needles`, `synergy_winter_palace`.
-- **UI copy:** short — «Свяжи холодом»; detail — «Усиливает замедление и открывает выгодное продолжение атаки по подконтрольным целям.»
-- **VFX brief:** thin frost thread between controlled targets; must not mimic arena water ripples.
-- **PENDING_BALANCE:** slow modifier, conditional critical modifier, window duration, target linkage, rank curve.
-- **Runtime contract:** consumes status events, never infers status from sprite color; CombatSystem validates target/source and clears window on expiry.
+- **Fantasy / promise:** контроль врага становится временным окном темпа для всего арсенала.
+- **Axis:** `control / cooldown-tempo`.
+- **Activation:** `on_slow_or_freeze_applied`; `on_controlled_hit` grants a bounded shared tempo response.
+- **General effect:** когда любой eligible source накладывает slow/freeze, следующий hit по controlled target даёт ограниченное ускорение готовности всем eligible weapons/abilities, а не только источнику холода.
+- **Affected systems:** status pipeline, controlled-target validation and universal cooldown/tempo response.
+- **Synergy anchor:** `weapon_frost_pearl` — только condition для `synergy_winter_palace`; passive не усиливает Frost Pearl damage или slow отдельно.
+- **Decision/trade-off:** игрок может добить controlled target ради темпа или уйти с линии telegraph; tempo не выдаётся без корректного control event.
+- **Stacking intent:** one pending control window per target/source rule; ranks improve the shared window, no nested cooldown loops.
+- **UI copy:** short — «Поймай момент»; detail — «Попадание по подконтрольной цели ускоряет следующий общий темп заклинаний.»
+- **VFX brief:** thin frost thread between status marker and next hit; it must not mimic arena water ripples.
+- **PENDING_BALANCE:** slow/freeze whitelist, window duration, cooldown response, target cap, rank curve.
+- **Runtime contract:** consumes authoritative status events, never infers status from sprite color; StatsCalculator/TimerSystem own cooldown mutation.
 
 ### 4.5 `passive_heavenly_seal` — Небесная печать
 
-- **Fantasy / promise:** удар по одной цели оставляет проводящий знак для следующей молнии.
-- **Axis:** `chain / status`.
-- **Activation:** `on_hit` and `on_chain`.
-- **Affected systems:** conductive mark, chain target selection, chain resolution feedback.
-- **Mechanic:** makes Thunder Needles better at building a chain rhythm; the mark expires or resolves deterministically, so the player can read why a jump happened.
-- **Decision/trade-off:** dense packs are valuable, but spreading the first hit too widely can lose the priority target.
-- **Stacking intent:** marks from the same source obey a cap and refresh policy owned by Balance; no duplicate passive entry.
-- **Compatible content:** `weapon_thunder_needles`, `weapon_jade_talismans`, `synergy_heavenly_judgment`.
-- **UI copy:** short — «Замкни цепь»; detail — «Поддерживает проводящие метки и цепную логику электрических атак.»
-- **VFX brief:** small geometric seal at the target; chain lines remain thin and leave telegraphs visible.
-- **PENDING_BALANCE:** mark duration, chain reach, target cap, proc rule, rank curve.
-- **Runtime contract:** ChainResolver consumes typed mark state; passive never chooses wallet/reward outcome.
+- **Fantasy / promise:** печать отмечает момент, когда любой источник может превратить последовательность ударов в общий burst.
+- **Axis:** `damage sequencing / vulnerability`.
+- **Activation:** `on_distinct_hit` against the same valid target; `on_next_damage` consumes the seal.
+- **General effect:** после заданной последовательности distinct hits любой следующий damage source может consume seal и открыть короткое universal vulnerability window.
+- **Affected systems:** hit sequence, target status and damage calculation for all eligible sources.
+- **Synergy anchor:** `weapon_thunder_needles` — только condition для `synergy_heavenly_judgment`; passive не добавляет chain/lightning mechanics сам по себе.
+- **Decision/trade-off:** фокус по одной цели создаёт сильное окно, но распыление урона сбрасывает ценность последовательности; игрок выбирает target discipline.
+- **Stacking intent:** one seal per target with deterministic refresh/consume; ranks improve sequence access, not universal permanent vulnerability.
+- **UI copy:** short — «Открой уязвимость»; detail — «Последовательные попадания открывают короткое окно общего усиления урона.»
+- **VFX brief:** small geometric seal and one clear state transition on consume; no chain lines unless the weapon itself owns them.
+- **PENDING_BALANCE:** hit sequence length, seal lifetime, vulnerability coefficient, eligible damage categories, rank curve.
+- **Runtime contract:** CombatSystem owns typed hit sequence and damage tags; passive never chooses a weapon or reward outcome.
 
 ### 4.6 `passive_iron_bell` — Железный колокол
 
-- **Fantasy / promise:** защита становится слышимой: удар отбрасывает угрозу и даёт место для ответа.
-- **Axis:** `defense / knockback`.
-- **Activation:** `always_on` for defensive axis; `on_guard`/`on_pulse` for bell hook.
-- **Affected systems:** damage reduction/guard tags, knockback, projectile interruption eligibility.
-- **Mechanic:** strengthens the defensive identity of Spirit Bell and allows a pulse to create a readable reset of nearby pressure.
-- **Decision/trade-off:** defensive control is strongest near the hero but does not kill distant ranged threats; movement remains necessary.
-- **Stacking intent:** rank upgrades one defensive lane; guard and knockback cannot be independently multiplied by duplicate hidden stacks.
-- **Compatible content:** `weapon_spirit_bell`, `synergy_guardian_bell`, defense-oriented artifacts.
-- **UI copy:** short — «Отзови удар»; detail — «Усиливает защитный импульс, отбрасывание и работу с угрожающими снарядами.»
-- **VFX brief:** brass ring with ivory center; feedback appears at pulse onset, not as a permanent shield bubble.
-- **PENDING_BALANCE:** damage taken modifier, knockback, interruption rule, pulse interaction, rank curve.
-- **Runtime contract:** CombatSystem emits guard/deflect facts; StatsCalculator and projectile tags remain separate owners.
+- **Fantasy / promise:** один пережитый удар создаёт место для следующего решения, а не бесконечный щит.
+- **Axis:** `defense / poise`.
+- **Activation:** `always_on` for incoming damage axis; `on_damage_taken` opens a bounded grace/poise state.
+- **General effect:** снижает eligible incoming damage и после подтверждённого попадания даёт короткое окно устойчивости к повторному stagger/chain-hit эффекту для героя.
+- **Affected systems:** HealthSystem, damage mitigation, hit-stun/poise and universal projectile interaction.
+- **Synergy anchor:** `weapon_spirit_bell` — только condition для `synergy_guardian_bell`; passive не создаёт bell pulse и не усиливает его радиус.
+- **Decision/trade-off:** защита помогает пережить ошибку, но не отменяет telegraph, ground zone или следующий независимый hit; позиционирование остаётся обязательным.
+- **Stacking intent:** one authoritative mitigation and one grace window; duplicate ranks cannot create nested invulnerability.
+- **UI copy:** short — «Выдержи удар»; detail — «Снижает получаемый урон и уменьшает цепную цену одной ошибки.»
+- **VFX brief:** small brass ring with ivory center at hit resolution; no permanent shield bubble.
+- **PENDING_BALANCE:** damage categories, mitigation, poise/grace duration, repeat-hit rules, rank curve.
+- **Runtime contract:** CombatSystem emits post-mitigation damage facts; HealthSystem owns HP; passive cannot cancel arbitrary hazards.
 
 ### 4.7 `passive_mirror_shard` — Осколок зеркала
 
-- **Fantasy / promise:** удачный удар может оставить за собой короткий отражённый след.
-- **Axis:** `replication / crit`.
-- **Activation:** `on_crit` or `on_hit` according to Balance binding; exact trigger pending.
-- **Affected systems:** echo creation, source attack replay, target selection for the echo.
-- **Mechanic:** creates a bounded echo of an eligible attack with its own event ID; echo cannot recursively create another echo without an explicit rule.
-- **Decision/trade-off:** replication rewards accurate high-value hits, but offers less reliable coverage than a flat area passive.
-- **Stacking intent:** duplicate ranks improve bounded echo behavior; recursion forbidden by default.
-- **Compatible content:** `weapon_fox_mirage`, `weapon_star_bow`, `synergy_nine_reflections`.
-- **UI copy:** short — «Оставь отражение»; detail — «Некоторые удачные попадания могут повторить часть атаки зеркальным эхом.»
-- **VFX brief:** translucent ivory/jade afterimage with a clear source-to-echo relationship.
-- **PENDING_BALANCE:** trigger chance, echo power, delay, eligible attack tags, echo cap, rank curve.
-- **Runtime contract:** CombatSystem creates an `echo_instance_id`; recursion guard and cleanup are mandatory; no duplicate reward/XP path.
+- **Fantasy / promise:** любой сильный момент может оставить короткий след, но отражение никогда не становится самостоятельным оружием.
+- **Axis:** `bounded replication`.
+- **Activation:** `on_eligible_hit` or approved `on_critical_hit`; internal cooldown and source whitelist are Balance-owned.
+- **General effect:** периодически повторяет часть последнего eligible hit любого оружия/способности с отдельным event ID; echo не наследует passive trigger.
+- **Affected systems:** universal attack replay, source attribution, target/area snapshot and cleanup.
+- **Synergy anchor:** `weapon_fox_mirage` — только condition для `synergy_nine_reflections`; passive не выдаёт fox route и не усиливает Mirage отдельно.
+- **Decision/trade-off:** точный высокий hit может получить echo, но эффект не так надёжен, как постоянный area bonus; игрок сохраняет цель и позицию.
+- **Stacking intent:** ranks улучшают bounded echo; recursion and echo-of-echo forbidden by default.
+- **UI copy:** short — «Оставь след»; detail — «Некоторые попадания повторяются коротким зеркальным эхом независимо от оружия.»
+- **VFX brief:** translucent ivory/jade afterimage with a clear source-to-echo relationship; no clone swarm.
+- **PENDING_BALANCE:** trigger rule, coefficient, delay, eligible source tags, echo cap, internal cooldown, rank curve.
+- **Runtime contract:** CombatSystem creates `echo_instance_id`; recursion guard, attribution and cleanup are mandatory; no duplicate reward/XP path.
 
 ### 4.8 `passive_lotus_heart` — Сердце лотоса
 
-- **Fantasy / promise:** запас здоровья и осознанный подбор лечения позволяют пережить ошибку без бессмертия.
-- **Axis:** `defense / healing`.
-- **Activation:** `always_on` for max HP; `on_pickup`/`on_heal` for recovery hook.
-- **Affected systems:** max HP, healing intake, overheal/temporary-ward boundary if approved.
-- **Mechanic:** strengthens survival and gives Lotus Mines a recovery identity; healing remains limited by actual pickup/effect rules.
-- **Decision/trade-off:** safer route supports close play, but investing in recovery reduces opportunity for offensive passives in six slots.
-- **Stacking intent:** one authoritative heal pipeline; passive must not create a second hidden heal from XP.
-- **Compatible content:** `weapon_lotus_mines`, `synergy_lotus_sanctuary`, `artifact_lotus_seed`.
-- **UI copy:** short — «Сохрани жизнь»; detail — «Усиливает запас здоровья и ценность разрешённых источников лечения.»
-- **VFX brief:** lotus heart icon; heal feedback is a restrained petal pulse around the hero, not a permanent aura.
-- **PENDING_BALANCE:** max HP, healing modifier, overheal policy, recovery cap, rank curve.
-- **Runtime contract:** HealthSystem owns HP/heal; passive consumes `heal_applied` fact; XPDrop remains separate from heal pickup.
+- **Fantasy / promise:** здоровье — это запас решений, а лечение в правильный момент превращается в устойчивость всего билда.
+- **Axis:** `health / healing conversion`.
+- **Activation:** `always_on` for max HP; `on_heal_applied` and `on_full_health_heal` for a bounded Petal state.
+- **General effect:** увеличивает survival axis и позволяет approved healing source накопить один Petal state, который смягчает следующий eligible hit; это работает независимо от оружия.
+- **Affected systems:** HealthSystem, healing intake, max HP and universal incoming-hit response.
+- **Synergy anchor:** `weapon_lotus_mines` — только condition для `synergy_lotus_sanctuary`; passive не усиливает mine damage/placement.
+- **Decision/trade-off:** игрок может подобрать лечение при полном HP ради Petal или отказаться ради позиции; state не становится второй полосой HP.
+- **Stacking intent:** one authoritative heal pipeline and one bounded Petal state; XP pickup never counts as heal.
+- **UI copy:** short — «Сохрани жизнь»; detail — «Укрепляет здоровье и превращает разрешённое лечение в краткую защиту.»
+- **VFX brief:** lotus-heart icon; heal/Petal feedback is a restrained petal pulse, not a permanent aura.
+- **PENDING_BALANCE:** max HP, healing modifier, full-health rule, ward strength/duration, hazard whitelist, rank curve.
+- **Runtime contract:** HealthSystem owns HP/heal; passive consumes `heal_applied` fact after cap; XPDrop remains separate.
 
 ### 4.9 `passive_star_compass` — Звёздный компас
 
-- **Fantasy / promise:** фокус удерживает дальнюю цель и сокращает паузу между значимыми выстрелами.
-- **Axis:** `cooldown / targeting`.
-- **Activation:** `always_on`; optional `on_long_hit` targeting hook.
-- **Affected systems:** weapon cooldown, long-range priority, anchor selection.
-- **Mechanic:** gives Star Bow a clear long-range identity and can support other weapons that deliberately choose high-threat targets; it does not globally accelerate every unrelated system by hidden logic.
-- **Decision/trade-off:** prioritizing a distant elite can leave a close rusher alive; player accepts target-selection risk.
-- **Stacking intent:** cooldown is calculated once by StatsCalculator; no separate per-weapon hidden multiplier.
-- **Compatible content:** `weapon_star_bow`, `weapon_jade_talismans`, `synergy_constellation_rain`.
-- **UI copy:** short — «Выбери звезду»; detail — «Сокращает паузу оружия и помогает удерживать дальнюю приоритетную цель.»
-- **VFX brief:** compass needle icon, a small target reticle for selected high-threat target.
-- **PENDING_BALANCE:** cooldown modifier, targeting priority, anchor behavior, rank curve.
-- **Runtime contract:** StatsCalculator returns derived cooldown; TargetingSystem receives explicit priority tags; no UI timer as source of truth.
+- **Fantasy / promise:** каждый промах приближает точный момент, который может решить бой.
+- **Axis:** `critical rhythm`.
+- **Activation:** `on_eligible_hit_result`; non-critical sequence charges a shared precision state, next valid hit consumes it.
+- **General effect:** создаёт общий ритм критических ударов для всех eligible weapons/abilities: последовательность обычных hit открывает гарантированный/усиленный precision window по правилам Balance.
+- **Affected systems:** crit roll, crit power window, hit sequence and universal source tags.
+- **Synergy anchor:** `weapon_star_bow` — только condition для `synergy_constellation_rain`; passive не повышает дальность/anchor count Star Bow.
+- **Decision/trade-off:** игрок решает сохранять precision window для elite или тратить его на обычную волну; missed/invalid target не должен скрыто переносить заряд.
+- **Stacking intent:** one shared precision meter; ranks improve access/window, not per-weapon crit multipliers.
+- **UI copy:** short — «Выбери момент»; detail — «Серия обычных ударов открывает общий точный критический момент.»
+- **VFX brief:** compass needle fills a small ring; precision state has one readable accent at the hero, not a permanent starfield.
+- **PENDING_BALANCE:** sequence length, crit chance/power response, window duration, eligible sources, reset rule, rank curve.
+- **Runtime contract:** CombatSystem owns crit result and meter state; StatsCalculator provides base crit values; passive never reads Star Bow internals.
 
 ### 4.10 `passive_spirit_lens` — Духовная линза
 
-- **Fantasy / promise:** линза показывает ценность предметов и расширяет управляемую зону подбора/воздействия.
-- **Axis:** `pickup / area / utility`.
-- **Activation:** `always_on` for acquisition radius; `on_pickup` for feedback hook.
-- **Affected systems:** XP/item pickup radius, selected field readability, umbrella utility interactions.
-- **Mechanic:** increases useful awareness and acquisition area; it does not automatically collect through walls and does not convert XP into Gold.
-- **Decision/trade-off:** wider pickup encourages routes through drops, but chasing distant items can pull the player into danger.
-- **Stacking intent:** one derived pickup radius from StatsCalculator; artifact auras remain separate modifiers with source attribution.
-- **Compatible content:** `weapon_black_eclipse_umbrella`, `synergy_eclipse_vortex`, `weapon_lotus_mines`.
-- **UI copy:** short — «Увидь поток»; detail — «Расширяет радиус подбора опыта и предметов, сохраняя правила стен и опасных зон.»
-- **VFX brief:** lens ring with a dark center and jade rim; no large radial overlay on gameplay.
-- **PENDING_BALANCE:** pickup radius, XP/item distinction, wall/LOS rule, field interaction, rank curve.
+- **Fantasy / promise:** линза связывает получение ресурсов, чтение поля и безопасный маршрут, а не одно конкретное заклинание.
+- **Axis:** `pickup / information utility`.
+- **Activation:** `always_on` for pickup radius; `on_pickup` for a short resource/information pulse.
+- **General effect:** расширяет радиус сбора eligible arena drops and XP/mana pickups и кратко выделяет собранный resource path; не превращает pickup в automatic through-wall vacuum.
+- **Affected systems:** Magnet/Progression, pickup validation, resource feedback and readable drop priority for the whole run.
+- **Synergy anchor:** `weapon_black_eclipse_umbrella` — только condition для `synergy_eclipse_vortex`; passive не меняет pull/burst umbrella behavior.
+- **Decision/trade-off:** большой радиус позволяет безопаснее собирать drops, но может заманить игрока к опасной границе; маршрут остаётся выбором.
+- **Stacking intent:** one derived pickup radius; artifacts and run passive retain separate source attribution; no XP-to-Gold conversion.
+- **UI copy:** short — «Увидь поток»; detail — «Расширяет сбор ресурсов и помогает читать ценность предметов по всему забегу.»
+- **VFX brief:** lens ring with dark center and jade rim; no large radial overlay on gameplay.
+- **PENDING_BALANCE:** pickup radius, resource whitelist, path pulse duration, wall/LOS rule, rank curve.
 - **Runtime contract:** Magnet/Progression owns collection validation; passive provides derived modifier; `xp_drop_collected.v1` remains idempotent.
 
 ## 5. Synergy/evolution entries
 
-Все десять entries используют один gate: `weapon_level = 6`, `passive_rank = 5`, matching `synergy_id`, weapon not evolved, non-final `BOSS_CHEST`, `claimed_synergy_count < 3`. Точные значения и priority при нескольких eligible pairs — `PENDING_BALANCE/PRODUCT`.
+Все десять entries используют один gate: `weapon_level = 6`, `passive_rank = 5`, matching `synergy_id`, weapon not evolved, non-final `BOSS_CHEST`, `encounter_kind ∈ {MAIN_BOSS, MINI_BOSS}`, `claimed_synergy_count < 5`. Связь passive с weapon здесь проверяется только как pair gate; сам passive продолжает работать на общий eligible build. Точные значения и priority при нескольких eligible pairs — `PENDING_BALANCE/PRODUCT`.
 
 ### 5.1 `synergy_moon_dance` — Танец Луны
 
@@ -463,15 +464,19 @@
 ```yaml
 synergy_run_policy:
   catalog_size: 10
-  max_claimed_per_run: 3
+  max_claimed_per_run: 5
   eligible_sources: [BOSS_CHEST]
-  eligible_checkpoints_seconds: [300, 600, 900]
+  eligible_encounter_kinds: [MAIN_BOSS, MINI_BOSS]
+  eligible_checkpoints_seconds: [300, 450, 600, 750, 900]
+  mini_boss_checkpoints_seconds: [450, 750]
   final_boss_chest: forbidden
   after_cap: FALLBACK_REQUIRED
   duplicate_claim: idempotent_noop
 ```
 
-Если у игрока одновременно несколько eligible pairs, порядок выбора должен быть deterministic и видимым в projection; конкретная priority policy остаётся `PENDING_PRODUCT_DECISION`. Четвёртый claim запрещён даже после финального босса.
+Рекомендуемая cadence: main boss chest на 300/600/900 секундах, mini-boss chest на 450/750 секундах, финальный boss на 1200 секундах без chest. Числа и encounter ownership требуют Architecture/Balance sync; этот документ фиксирует content target: пять возможностей получить synergy chest до финала.
+
+Если у игрока одновременно несколько eligible pairs, порядок выбора должен быть deterministic и видимым в projection; конкретная priority policy остаётся `PENDING_PRODUCT_DECISION`. Шестой claim запрещён даже после финального босса. Если gate не выполнен, chest выдаёт fallback reward по `C3_MINI_BOSSES_AND_CHEST_FLOW.md`.
 
 ### Required runtime facts
 

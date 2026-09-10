@@ -3,11 +3,12 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "40b00b6a4aa3cbcc98b916912707644c4f11d6d4",
+  "source_head": "93e6406f5722ec472a64bf6785d84e64d8a5c954",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
     "docs/agents/content-design/C2_ARTIFACTS.md",
+    "docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md",
     "docs/agents/content-design/META_PASSIVE_TREE.md",
     "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
     "docs/BALANCE_ECONOMY_SPEC.md",
@@ -62,18 +63,25 @@
       "artifact_tideglass",
       "artifact_silent_lantern"
     ],
+    "mini_boss_ids": [
+      "miniboss_ink_jade_warden",
+      "miniboss_veil_harvester"
+    ],
     "limits": {
       "weapon_slots": 6,
       "passive_slots": 6,
       "weapon_max_level": 6,
       "passive_max_rank": 5,
-      "max_synergy_claims_per_run": 3,
+      "max_synergy_claims_per_run": 5,
       "artifact_offer_cards": 3,
       "artifact_selected_cards": 1,
       "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
     },
     "synergy_sources": ["BOSS_CHEST"],
-    "synergy_checkpoints_seconds": [300, 600, 900],
+    "synergy_encounter_kinds": ["MAIN_BOSS", "MINI_BOSS"],
+    "synergy_checkpoints_seconds": [300, 450, 600, 750, 900],
+    "mini_boss_checkpoints_seconds": [450, 750],
+    "main_boss_checkpoints_seconds": [300, 600, 900, 1200],
     "final_boss_chest": "FORBIDDEN"
   },
   "meta_passive_tree": {
@@ -122,7 +130,11 @@
   "registry_sync_pending": [
     "artifact_tideglass",
     "artifact_silent_lantern",
-    "max_synergy_claims_per_run",
+    "miniboss_ink_jade_warden",
+    "miniboss_veil_harvester",
+    "max_synergy_claims_per_run_5",
+    "mini_boss_encounter_kind",
+    "mini_boss_chest_fallback",
     "meta_passive_tree_17_nodes",
     "artifact_effect_definitions"
   ],
