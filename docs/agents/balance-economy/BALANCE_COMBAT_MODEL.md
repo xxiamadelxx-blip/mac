@@ -40,6 +40,18 @@ At every boss checkpoint (300/600/900/1200 seconds, or 5/10/15/20 minutes), the 
 - Model key: simulation_model.boss_clock_policy.
 - Evidence: every one of the 30 deterministic model runs emits four pause events with run_clock_stop_seconds equal to defeat_time_run_clock_seconds; runtime trace is still absent.
 
+## Post-boss pressure event ordering
+
+Every non-final boss cycle now has an explicit density sequence:
+
+1. `POST_BOSS_RECOVERY`: 8 seconds at zero ordinary spawn, followed by the existing 20-second 0.70→1.00 recovery factor.
+2. `RAMP`: after recovery, effective spawn budget and active cap rise linearly from 80% of the preceding canonical peak to the next canonical peak.
+3. `SIEGE`: the last 60 seconds before the next boss hold the peak budget/cap.
+
+The model uses `entry_budget = preceding_peak_budget × 0.80`, `entry_cap = preceding_peak_cap × 0.80`, and `ramp_duration = 300 − 8 − 20 − 60 = 212) seconds. At the three post-boss starts the density budgets/caps are 8/s/64, 12/s/104 and 17.6/s/160; the peak/siege values are 15/s/130, 22/s/200 and 30/s/280. These are PROPOSED anchors where B1 does not specify the curve, with the formula and cycle mapping DERIVED from B1 bands/checkpoints. Composition weights are blended between entry and peak IDs; tuning remains in BALANCE_MODEL.json.
+
+The independent model trace confirms monotonic density and a peak siege for all three cycles on every run. This is not runtime evidence: Godot wave scheduling, spatial pressure, telegraph readability and frame time remain unimplemented.
+
 ## Profile/build inputs
 
 | Profile | Meta ranks | Damage multiplier | Cooldown multiplier | Landed-hit probability | Build status |
