@@ -7,9 +7,9 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
 - Live main HEAD observed at the start of this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
-- Balance model commit used: af3ba789b10768e711bc6b6267e4a206dbd4e7a5.
+- Balance model commit used: 9ccb935c7d433960098e4027a09b1e5780c81f14.
 - Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
-- Main HEAD observed immediately before this report update: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
+- Main HEAD observed immediately before this report update: 9ccb935c7d433960098e4027a09b1e5780c81f14.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
 - Runtime executed: false.\n- Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
