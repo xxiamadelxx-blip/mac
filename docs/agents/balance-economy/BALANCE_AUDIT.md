@@ -6,13 +6,13 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 
 - Repository: xxiamadelxx-blip/mac
 - Historical live main HEAD at audit start: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
-- Latest verified live main HEAD before this audit revision: b4b2c66a91b5df9c6e00871bd6ee015514a3a902
+- Latest verified live main HEAD before this audit revision: dc40704f0907c5a5b15fbb99f5a8069b45f829d7
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
 - Architecture contract revision: 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0
-- Balance model commit: 094a544d09635e855f84bf46ae53bf225d37cfe4
-- Data-driven simulator commit used for the 30-run evidence: 57ae67766ef7f5b5e25779ecd210d4127de4da8c
-- Current simulator HEAD commit (default model path fix): b4b2c66a91b5df9c6e00871bd6ee015514a3a902
+- Balance model commit: af3ba789b10768e711bc6b6267e4a206dbd4e7a5
+- Data-driven simulator commit used for the 30-run evidence: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c
+- Current simulator HEAD commit (role-driven elite classification): 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce
 - Simulation status: SIMULATED_MODEL_ONLY
 - Runtime status: NOT_IMPLEMENTED
 
@@ -24,8 +24,9 @@ This update supersedes the previous stale statement that no simulator existed. T
 2. Added provenance for missing enemy/boss stats, composition weights, pickup cadence, combat formulas, profiles, builds, synergies, fallback, and final artifact delivery.
 3. Replaced the placeholder simulator with a 20-minute model covering waves, cap, XP, levels, damage, TTK, incoming risk, bosses, rewards, idempotency, builds, synergies, and fallback.
 4. Ran 30 model runs across fresh, moderate, max_m1 × Lin Yue/Soyeon × seeds 101/202/303/404/505.
-5. Repeated the full run twice; both JSON outputs produced SHA-256 13e7c864d08be7c8b35d023482e122c9c26457374fad0fb43d3eac23b5f8f92f.
+5. Repeated the full run twice; both JSON outputs produced SHA-256 f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
 6. Synchronized the wave, combat, XP/reward, and acceptance documents with the model-only evidence and the current final-boss NO_CHEST architecture policy.
+7. Reconciled model boss, wave-band and elite enemy IDs with the architecture registry; added a contract validator and confirmed PASS without changing tuning numbers.
 
 ## Findings
 
