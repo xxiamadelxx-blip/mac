@@ -6,7 +6,7 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 
 - Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
-- Live main HEAD observed at the start of this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
+- Historical live main HEAD observed at the start of the original implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
 - Balance model commit used: 42966b44650ec63aead33d04cbe34ae1e9d57489.
 - Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
 - Historical main HEAD observed immediately before the original report update: 42966b44650ec63aead33d04cbe34ae1e9d57489.
