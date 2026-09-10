@@ -77,11 +77,11 @@
 
 ### Доказано
 
-- 
+-
 
 ### Только реализовано, но не runtime-verified
 
-- 
+-
 
 ### Blocked
 
@@ -91,7 +91,7 @@
 
 ### Pending product decisions
 
-- 
+-
 
 ## 7. Handoff
 
