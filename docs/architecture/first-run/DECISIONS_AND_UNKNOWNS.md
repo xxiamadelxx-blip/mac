@@ -42,9 +42,9 @@
 
 ## Live repository audit for this architecture task
 
-Дата проверки: 2026-09-10  
-Repository: xxiamadelxx-blip/mac  
-Branch: main  
+Дата проверки: 2026-09-10
+Repository: xxiamadelxx-blip/mac
+Branch: main
 HEAD at inspection: 1b057c70a5cdf38f9705cff1469d88e83dbaddfb
 
 - Прямой локальный checkout в текущем окружении отсутствует, поэтому git status/branch/дословный локальный diff не выполнялись.
