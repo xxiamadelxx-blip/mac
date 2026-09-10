@@ -1,75 +1,58 @@
-# Balance Combat Model
+# Balance Combat Model — 30-minute extension
 
-Status: SIMULATED_MODEL_ONLY / PARTIAL
+Status: `PARTIAL / SIMULATED_MODEL_ONLY`
 
-This document separates B1 CANON targets from the explicit PROPOSED inputs used by the deterministic model. The complete proposed input set is in BALANCE_MODEL.json under simulation_model.enemy_stats, boss_stats, combat_math, heroes_and_profiles, and build_catalog.
+## Clock and encounter math
 
-## Canonical targets and invariants
+- Main boss: visible run clock stops at checkpoint; wave selection, ordinary spawning and XP pickup stop; a separate wall encounter clock advances.
+- Mini-boss: visible run clock, waves, XP pickup and ordinary spawning continue; the mini encounter uses the same wall/run clock.
+- Elite variation: finite overlay entity; it counts against the ordinary/elite active cap and never becomes a permanent composition member.
 
-| Requirement | B1 value | Status |
-|---|---:|---|
-| Ordinary TTK | 0.5–2.5 s | CANON target |
-| Elite TTK | 10–25 s | CANON target |
-| First-slice boss TTK | 45–80 s | CANON target |
-| Final boss TTK | 90–120 s | CANON target |
-| Contact damage cooldown | 0.8 s | CANON |
-| No same-frame damage stacking | forbidden | CANON |
-| No untelegraphed hit above base HP × 15% | 15% | CANON acceptance target |
-| Boss safe spawn and readable reaction window | required | CANON acceptance target |
+## Data-driven formulas
 
-B1 does not define absolute enemy HP/damage/speed, boss stats, armor mitigation, crit values, weapon cadence, exact composition ratios, or profile definitions. Those values are now visible as PROPOSED or DERIVED entries in the model; they have not been promoted to CANON.
+`post_armor_damage = raw_damage × (1 − min(mitigation_cap, armor + defense_rank × 0.01))`
 
-## Model formulas
+`weapon_level_multiplier = 1 + weapon_level_damage_per_level × (weapon_level − 1)`
 
-- enemy HP = proposed base HP × B1 durability multiplier × canonical wave HP multiplier;
-- enemy damage = proposed base damage × canonical wave damage multiplier;
-- outgoing damage = raw hit × hero multiplier × weapon-level multiplier × passive multiplier × profile multiplier × expected critical multiplier;
-- mitigation = raw incoming damage × (1 − proposed damage-reduction fraction);
-- weapon-level multiplier = 1 + proposed 0.10 × (weapon level − 1);
-- focused TTK = effective HP ÷ focused sustained DPS;
-- incoming damage = landed attack damage × wave damage multiplier × (1 − mitigation).
+`focused_TTK = effective_HP ÷ (player_attack_damage × boss_focus_fraction)`
 
-The simulator reports focused TTK from the first damage event, separately from spawn-to-kill delay. This prevents queueing behind an active horde from being misreported as enemy durability.
+`effective_spawn_budget = density_ramp_budget × boss_interruption_factor`
 
-## All-boss clock policy
+For every post-main-boss cycle:
 
-At every boss checkpoint (300/600/900/1200 seconds, or 5/10/15/20 minutes), the visible run clock freezes. Wave selection, ordinary spawning, XP pickup and level progression do not advance while that boss is alive. The boss and existing active enemies continue on a separate encounter/wall clock; once a non-final boss is defeated, the visible clock resumes from the same checkpoint. The final boss has no resume step because it ends the model run.
+- entry budget/cap = 0.80 × preceding/entry anchor;
+- 8s suppression;
+- 20s recovery factor 0.70→1.00;
+- linear ramp;
+- final 60s at the peak siege.
 
-- Source: user product decision captured 2026-09-10.
-- Status: CANON product behavior in the model; runtime implementation is NOT_IMPLEMENTED.
-- Model key: simulation_model.boss_clock_policy.
-- Evidence: every one of the 30 deterministic model runs emits four pause events with run_clock_stop_seconds equal to defeat_time_run_clock_seconds; runtime trace is still absent.
+All non-B1 numbers are stored in the JSON model with `source`, `derived_formula`, `rationale` and `status`.
 
-## Post-boss pressure event ordering
+## Targets and observed model ranges
 
-Every non-final boss cycle now has an explicit density sequence:
+| Measure | Proposed target | Observed model result |
+|---|---|---|
+| Ordinary TTK | 0.5–2.5s | medians remain in band |
+| Existing elite TTK | 10–25s | reported per archetype; model-only |
+| Elite-variant TTK | 5–15s | 5.0–36.0s means across profiles; high-durability anchors need tuning |
+| Mini-boss TTK | 20–55s | fresh 42.5–54.75s; moderate 39.0–50.25s; max 30.25–38.25s |
+| Main boss 05/10/15 | 45–80s | reported per profile/seed |
+| Late main boss 20/25 | 60–100s | fresh/moderate exceed proposed target; max is inside |
+| Final 30 | 90–120s | moderate/max mostly inside; fresh is a stress case |
 
-1. `POST_BOSS_RECOVERY`: 8 seconds at zero ordinary spawn, followed by the existing 20-second 0.70→1.00 recovery factor.
-2. `RAMP`: after recovery, effective spawn budget and active cap rise linearly from 80% of the preceding canonical peak to the next canonical peak.
-3. `SIEGE`: the last 60 seconds before the next boss hold the peak budget/cap.
+Incoming damage is computed from up to the data-model engaged-attacker limit and the landed-hit probability in each profile. The single-hit check is measured against the 15% base-HP telegraph bound. These are deterministic model assumptions, not player telemetry.
 
-The model uses `entry_budget = preceding_peak_budget × 0.80`, `entry_cap = preceding_peak_cap × 0.80`, and `ramp_duration = 300 − 8 − 20 − 60 = 212) seconds. At the three post-boss starts the density budgets/caps are 8/s/64, 12/s/104 and 17.6/s/160; the peak/siege values are 15/s/130, 22/s/200 and 30/s/280. These are PROPOSED anchors where B1 does not specify the curve, with the formula and cycle mapping DERIVED from B1 bands/checkpoints. Composition weights are blended between entry and peak IDs; tuning remains in BALANCE_MODEL.json.
+## Required runtime proof
 
-The independent model trace confirms monotonic density and a peak siege for all three cycles on every run. This is not runtime evidence: Godot wave scheduling, spatial pressure, telegraph readability and frame time remain unimplemented.
+Runtime must consume `BALANCE_MODEL.json` and produce traces for:
 
-## Profile/build inputs
+- visible timer freeze for all main bosses;
+- visible timer continuation for all five mini-bosses;
+- wave density reset/ramp/siege;
+- active-cap occupancy and overflow;
+- XP/levels at 02/05/10/15/20/25/30;
+- ordinary, existing elite, elite-variant, mini and main TTK;
+- incoming damage/death;
+- reward/chest/elite-offer idempotency.
 
-| Profile | Meta ranks | Damage multiplier | Cooldown multiplier | Landed-hit probability | Build status |
-|---|---|---:|---:|---:|---|
-| fresh | all 0 | 1.00 | 1.00 | 0.002 | PROPOSED model profile |
-| moderate | V3/P3/A2/F2/M2/D2 | 1.06 | 0.97 | 0.0015 | PROPOSED model profile |
-| max_m1 | all 10 | 1.20 | 0.85 | 0.001 | PROPOSED model profile |
-
-Lin Yue uses architecture IDs hero_lin_yue + weapon_jade_talismans + passive_jade_focus + synergy_heavenly_seals. Soyeon Han uses hero_seoyeon_han + weapon_moon_blade + passive_wind_of_travel + synergy_moon_dance. Weapon/passive numeric values, crit pipeline, and synergy damage multipliers are PROPOSED because B1/architecture provide IDs and requirements but not tuning values.
-
-## Model-only result summary
-
-The five-seed result is in BALANCE_SIMULATION_REPORT.md. Ordinary and elite rows are not blanket passes: mean focused TTK is usually inside the target, while some p95 values and hero/profile combinations remain outside it. Boss results are reported per checkpoint and per profile. This is evidence about the proposed equations and inputs only, not runtime combat.
-
-## Remaining combat blockers
-
-- absolute values need Product/Balance approval;
-- contact/telegraph positions are not simulated spatially;
-- incoming hit probability is a mean-field proposal, not collision evidence;
-- synergy attribution is computed by formula but not by runtime event trace;
-- Android performance and same-frame event ordering are unverified.
+No runtime or Android evidence is present in this slice.
