@@ -70,7 +70,11 @@ def main() -> int:
     integration = model.get("runtime_integration", {})
     join_policy = integration.get("join_policy", {})
     clock_policy = simulation.get("boss_clock_policy", {})
+    mini_clock_policy = simulation.get("mini_boss_clock_policy", {})
     wave_ramp = simulation.get("boss_wave_ramp", {})
+    schedule = simulation.get("run_schedule", {})
+    schedule_main = schedule.get("main_boss_checkpoints", [])
+    schedule_mini = schedule.get("mini_boss_checkpoints", [])
 
     record_error(errors, model.get("status") == "PARTIAL", "model status must remain PARTIAL")
     record_error(
@@ -85,19 +89,27 @@ def main() -> int:
     )
     record_error(
         errors,
-        clock_policy.get("applies_to") == "ALL_BOSS_CHECKPOINTS",
-        "boss clock policy must apply to all boss checkpoints",
+        clock_policy.get("applies_to") == "MAIN_BOSS_CHECKPOINTS",
+        "main-boss clock policy must apply to all main checkpoints",
     )
     record_error(
         errors,
-        clock_policy.get("checkpoint_seconds") == [300, 600, 900, 1200],
-        "boss clock policy must bind to 5/10/15/20 minute checkpoints",
+        clock_policy.get("checkpoint_seconds") == [int(row["time_seconds"]) for row in schedule_main],
+        "main-boss clock policy must bind to every 30-minute main checkpoint",
     )
     record_error(
         errors,
         clock_policy.get("run_clock_stops_at_boss_checkpoint") is True
         and clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is False,
         "boss clock policy must freeze the run/wave/XP/spawn clock",
+    )
+    record_error(
+        errors,
+        mini_clock_policy.get("applies_to") == "MINI_BOSS_CHECKPOINTS"
+        and mini_clock_policy.get("run_clock_stops_at_checkpoint") is False
+        and mini_clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is True
+        and mini_clock_policy.get("checkpoint_seconds") == [int(row["time_seconds"]) for row in schedule_mini],
+        "mini-boss clock policy must advance the visible/wave/XP clock at all five mini checkpoints",
     )
     record_error(
         errors,
@@ -185,6 +197,22 @@ def main() -> int:
         record_error(errors, stats.get("boss_id") in boss_ids, f"stats {checkpoint_id} uses unknown boss ID")
         record_error(errors, declared_mapping.get(checkpoint_seconds) == expected_boss_id, f"handoff mapping {checkpoint_seconds} is stale")
 
+    schedule_main_ids = {str(row.get("checkpoint_id")) for row in schedule_main}
+    record_error(errors, len(schedule_main) == 6, "30-minute extension must expose six main-boss checkpoints")
+    record_error(errors, len(schedule_mini) == 5, "30-minute extension must expose five mini-boss checkpoints")
+    for row in schedule_main:
+        checkpoint_id = str(row.get("checkpoint_id"))
+        stats = model_stats.get(checkpoint_id, {})
+        record_error(errors, stats.get("boss_id") == row.get("boss_id"), f"30m stats {checkpoint_id} has wrong boss ID")
+        if row.get("id_status") == "CANON_ARCHITECTURE":
+            record_error(errors, row.get("boss_id") in boss_ids, f"30m canonical boss {checkpoint_id} is not in architecture registry")
+        else:
+            record_error(errors, stats.get("boss_id_status") == "PENDING_CONTENT_REGISTRY" or row.get("id_status") != "CANON_ARCHITECTURE", f"30m extension boss {checkpoint_id} must remain pending")
+    mini_stats = simulation.get("mini_boss_stats", {})
+    for row in schedule_mini:
+        record_error(errors, str(row.get("boss_id")) in mini_stats, f"mini-boss stats missing for {row.get('boss_id')}")
+    record_error(errors, simulation.get("elite_variation_policy", {}).get("persistent") is False, "elite variants must not be persistent wave members")
+
     wave_by_range = {
         (int(row["from_seconds"]), int(row["to_seconds"])): str(row["id"])
         for row in registry.get("wave_bands", [])
@@ -198,15 +226,25 @@ def main() -> int:
     for wave in model_waves:
         key = (int(wave["start_seconds"]), int(wave["end_seconds"]))
         expected_id = wave_by_range.get(key)
-        record_error(errors, wave.get("wave_band_id") == expected_id, f"wave range {key} has wrong stable ID")
-    record_error(errors, model_wave_ids == set(wave_by_range.values()), "model wave IDs do not cover architecture wave IDs")
-    record_error(errors, declared_wave_ids == set(wave_by_range.values()), "handoff wave mapping is incomplete")
+        if expected_id is not None:
+            record_error(errors, wave.get("wave_band_id") == expected_id, f"wave range {key} has wrong stable ID")
+        else:
+            record_error(errors, str(wave.get("wave_band_id")) in model_wave_ids - set(wave_by_range.values()), f"unregistered extension wave {wave.get('wave_band_id')}")
+    architecture_wave_ids = set(wave_by_range.values())
+    record_error(errors, architecture_wave_ids.issubset(model_wave_ids), "model wave IDs do not cover architecture wave IDs")
+    record_error(errors, architecture_wave_ids.issubset(declared_wave_ids), "handoff wave mapping is incomplete for architecture waves")
+    for extension_id in model_wave_ids - architecture_wave_ids:
+        record_error(
+            errors,
+            any(row.get("wave_band_id") == extension_id and row.get("status") == "PROPOSED_EXTENSION" for row in join_policy.get("wave_band_mapping", [])),
+            f"extension wave {extension_id} must remain explicitly PROPOSED_EXTENSION",
+        )
 
     ramp_cycles = wave_ramp.get("cycle_band_mapping", [])
-    checkpoint_ids = [str(row.get("checkpoint_id")) for row in model.get("boss_checkpoints", [])]
+    checkpoint_ids = [str(row.get("checkpoint_id")) for row in schedule_main]
     checkpoint_times = {
         str(row.get("checkpoint_id")): int(row.get("time_seconds"))
-        for row in model.get("boss_checkpoints", [])
+        for row in schedule_main
     }
     record_error(
         errors,
@@ -246,7 +284,7 @@ def main() -> int:
     record_error(
         errors,
         model.get("architecture_contract", {}).get("final_boss_policy") == final_boss_policy(architecture),
-        "final-boss policy differs between balance and architecture contracts",
+        "legacy final-boss policy differs between balance and architecture contracts",
     )
 
     if errors:
@@ -260,6 +298,7 @@ def main() -> int:
     print(f"architecture={args.architecture.resolve()}")
     print(f"boss_ids={len(boss_ids)} wave_ids={len(model_wave_ids)}")
     print("runtime_claim=NOT_IMPLEMENTED")
+    print("extension_status=BLOCKED_PENDING_ARCHITECTURE_AND_CONTENT_REGISTRY_SYNC")
     return 0
 
 
