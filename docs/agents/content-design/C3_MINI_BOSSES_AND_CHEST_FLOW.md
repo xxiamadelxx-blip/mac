@@ -1,8 +1,10 @@
-# C3 — Два промежуточных минибосса и поток сундуков
+# C3 — Будущие противники, боссы и поток checkpoint-наград
 
 Статус пакета: `CONTENT_SPECIFIED`
 
-Это content proposal для расширения первого забега. Новые mini-boss IDs и дополнительные поля encounter/chest требуют синхронизации Architecture/Runtime. Мокапы, sprites, VFX assets и production manifests этим документом не создаются.
+Это content-only proposal для будущего контента и расширения checkpoint flow первого забега. Два mini-boss ID, четыре future enemy ID и дополнительные поля encounter/chest требуют синхронизации Architecture/Runtime. Мокапы, sprites, VFX assets и production manifests этим документом не создаются.
+
+Existing first-run roster остаётся каноническим и не заменяется. Четыре regular enemy proposals ниже не добавляются в Run 1 автоматически; два mini-boss proposal используют пять нефинальных chest windows только после Architecture/Balance sync.
 
 ## 1. Ритм первого забега
 
@@ -92,6 +94,90 @@
 - `asset_id`, `family_id`, `candidate_id`: `null` до Visual Lab intake.
 - `status`: `PROPOSAL`; `technical_status: NOT_RUN`; `artistic_status: PENDING`.
 - `visual code`: deep blue-grey silhouette, warm ivory target marker, restrained violet only for status distinction; no black-on-black telegraph.
+
+
+## 3.3 Mandatory field coverage for the two mini-bosses
+
+The existing mini-boss entries above already define role, signature, player question, counters, patterns, reward intent and visual direction. To close the canonical C3 field set, the following explicit fields apply to each entry:
+
+### miniboss_ink_jade_warden
+
+- Silhouette brief: broad shoulders, smoky jade mask, heavy shoulder guard and two ink ribbons that fold into geometric lines; the body must read as a space controller, not a large rusher.
+- Arena interaction: folding lines alter the route but never become collision walls; safe lanes remain visible and XP stays readable.
+- Phase/spawn behavior: safe external spawn; an approved health threshold changes rotation/spacing only; add composition, phase threshold and interruption rules remain pending.
+- VFX/audio/haptic hooks: seal trigger, ivory line warning, jade/brass resolve flash, visible recovery and full cleanup; low ink stroke plus one brass fracture note; one light haptic tap on resolve and one stronger tap on phase change.
+- Drop/reward boundary: authoritative defeat enters checkpoint reward, then one non-final BOSS_CHEST proposal; no artifact offer and no direct wallet mutation.
+- Balance questions: HP, damage, speed, warning lead time, line geometry, safe-lane width, phase threshold, add composition, recovery and reward weight are PENDING_BALANCE/PENDING_B1.
+
+### miniboss_veil_harvester
+
+- Silhouette brief: tall blue-grey hooded figure with crescent mask and dense body shape that is distinct from the shadow markers; violet is a restrained status accent only.
+- Arena interaction: delayed shadow paths change the route temporarily but do not block movement or hide other telegraphs; resolution order is visible.
+- Phase/spawn behavior: safe external spawn after the second main boss checkpoint; an approved health threshold may shorten delay or change target priority without changing telegraph grammar; all selector and immunity rules remain pending.
+- VFX/audio/haptic hooks: ivory marker trigger, smoky teal path, restrained violet/silver strike, inward fold on expiry and full cleanup; muted click, dry slice and low phase double-note; one short haptic tap per first marker state.
+- Drop/reward boundary: defeat creates one checkpoint-owned BOSS_CHEST; a selected synergy consumes one of five run claims, fallback consumes zero; final boss remains no-chest.
+- Balance questions: HP, damage, speed, marker delay, marker geometry, target priority, phase threshold, recovery, resistance, VFX cap and reward weight are PENDING_BALANCE/PENDING_B1.
+
+## 3.4 Future enemy proposal batch
+
+These four entries are future-stage proposals only. They do not enter the first-run registry, do not change the 20-minute schedule and do not replace any of the ten canonical enemy IDs.
+
+### enemy_lotus_usher — Лотосовый распорядитель
+
+Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+- Silhouette brief: narrow tall figure with a lotus collar, two hanging binding ribbons and a small bell knot on the back; vertical silhouette and visible links are the primary recognition cues.
+- Role/signature: support tether. The Usher selects two enemy targets and joins them with a lotus knot. While the link is active, the pair receives one shared guard/resonance state; formula and strength belong to Balance.
+- Readable telegraphs: paired lotus mark appears first, a visible thread connects the targets second, and the knot gives a short ivory pulse before any guard refresh.
+- Arena interaction: the thread is a route marker without collision; it must not hide ground telegraphs. Defeating the Usher or applying the approved break rule changes the linked pair state.
+- Player counter-decision: remove the support enemy to weaken the pack or continue pressure on the priority target while accepting temporary protection. The linked targets and consequence must be visible.
+- Phase/spawn behavior: future support packs only, external safe spawn, deterministic target selector from seed/state revision. Pack size, active link cap and spawn budget are PENDING_BALANCE/PENDING_B1.
+- VFX/audio/haptic hooks: trigger is the lotus mark; active phase is a thin smoky teal thread with an ivory knot; resolve is a jade/brass pulse; expiry retracts the thread and clears it. Audio is one soft knot click on create and one dry bell on break. Haptic is one short pulse on link-state change.
+- Drop/reward boundary: normal XP and aftermath after authoritative defeat; no Gold, boss chest, artifact offer or direct wallet mutation. Special drops require a separate C4/Balance contract.
+- Balance questions: guard rule, duration, link range, refresh, break condition, target selector, spawn budget, XP grade/value, elite interaction and performance cap are PENDING_BALANCE/PENDING_ARCHITECTURE.
+
+### enemy_moonroot_burrower — Луннокорневой землерой
+
+Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+- Silhouette brief: low root-backed body with a rounded moon bud on the head, short digging limbs and a visible soil line under the body; horizontal profile and emergence trail distinguish it from the existing crab.
+- Role/signature: ambush route shaper. The Burrower previews a path below the arena, emerges at an endpoint and leaves a temporary root patch that changes the safe route.
+- Readable telegraphs: a segmented moving soil ridge precedes the emergence, a root circle opens at the endpoint and only after the warning window does the zone resolve. Burrowing is not invisible movement.
+- Arena interaction: root patch changes movement by an approved hazard category without becoming a collision wall. Water and ground may have different surface reactions, but danger remains one readable rule.
+- Player counter-decision: leave the endpoint and preserve a route or stay close to punish the emergence and recovery window.
+- Phase/spawn behavior: future ambush bands with external safe spawn and safe-spawn validation; emergence timing, patch lifetime, interruptibility and hazard overlap are PENDING_BALANCE/PENDING_ARCHITECTURE.
+- VFX/audio/haptic hooks: ripple trail on trigger, two-stage ivory root circle in warning, jade endpoint burst on resolve and roots retracting on expiry. Audio is a muted scrape followed by one low impact. Haptic is one weak pulse on zone creation, never a loop.
+- Drop/reward boundary: normal XP and aftermath only; root cleanup does not create XP, Gold, a chest or an artifact offer.
+- Balance questions: trail lead time, endpoint selector, patch geometry, slow/lock category, interrupt rule, recovery window, spawn budget, XP grade/value and pool cost are PENDING_BALANCE/PENDING_B1.
+
+### enemy_silver_reed_seer — Серебряный камышовый провидец
+
+Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+- Silhouette brief: thin reed-built figure with a long petal sleeve and an elongated silver mask; the sharp upright profile and opening sleeve identify it in a dense pack.
+- Role/signature: lane sniper. The Seer selects a straight corridor and fires one long moonline after preparation; it is not a homing projectile.
+- Readable telegraphs: the mask turns toward the selected line, a warm ivory guide appears on the ground and the sleeve opens before the line resolves.
+- Arena interaction: the line crosses water, bridge or open ground without becoming an invisible wall; after one resolution the Seer enters recovery.
+- Player counter-decision: cross before resolution, route around the line while dealing with the pack, or focus the distant threat first.
+- Phase/spawn behavior: future ranged-pressure packs with external safe spawn and visible aim lock. Active line count, priority selector and interrupt rule are PENDING_BALANCE/PENDING_ARCHITECTURE.
+- VFX/audio/haptic hooks: mask-turn trigger, thin ivory line with smoky teal shadow during aim, short silver flash on resolve and fade from source to endpoint on expiry. Audio is a dry breath then a short firing tone. Haptic is one directional pulse on resolve.
+- Drop/reward boundary: standard XP and aftermath; no special currency, boss chest, artifact offer or wallet mutation.
+- Balance questions: lead time, width class, damage category, interrupt rule, recovery, target selector, spawn budget, XP grade/value and telegraph overlap budget are PENDING_BALANCE/PENDING_B1.
+
+### enemy_moontrail_stalker — Лунный следопыт
+
+Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+
+- Silhouette brief: four-legged smoky figure with a crescent muzzle and a narrow trail that repeats the last movement direction; it has no fox-like shard tail and no clone flash.
+- Role/signature: predictive flanker. The Stalker records a short recent route, fixes an endpoint and attacks along a shown crescent instead of teleporting behind the player.
+- Readable telegraphs: smoky teal trail appears first, an ivory crescent opens at the endpoint and the body locks briefly before the dash.
+- Arena interaction: the trail marks a route segment but does not block it or persist as a permanent hazard. Changing direction before resolution reduces the threat value.
+- Player counter-decision: change direction, leave the crescent or spend damage during the lock window; standing on the marked route is a clear, avoidable risk.
+- Phase/spawn behavior: future flank bands after support/ranged pressure is introduced; safe edge spawn and an available escape zone are required. Prediction horizon, dash recovery, pairing and active cap are PENDING_BALANCE/PENDING_ARCHITECTURE.
+- VFX/audio/haptic hooks: trail-record trigger, crescent fill during lock, short silver/jade arc on resolve and backward trail dissolve on expiry. Audio is a dry rustle and low dash snap. Haptic is one directional tap on lock.
+- Drop/reward boundary: ordinary XP and aftermath; no Gold, boss chest, artifact offer or synergy-counter change.
+- Balance questions: prediction horizon, arc geometry, lead time, dash damage category, recovery, safe-spawn distance, active cap, XP grade/value and overlap with existing teleport/dash patterns are PENDING_BALANCE/PENDING_B1.
+
 
 ## 4. Единый chest resolver
 

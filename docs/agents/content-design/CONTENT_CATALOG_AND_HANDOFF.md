@@ -11,7 +11,7 @@
 | `C0_CONTENT_AUDIT.md` | C0 source-of-truth audit, protected scope и gaps | `READ_ONLY_AUDIT_COMPLETE` |
 | `C1_WEAPONS_PASSIVES_SYNERGIES.md` | 10 оружий, 10 run-пассивок, 10 direct pairs/evolutions | `CONTENT_SPECIFIED` |
 | `C2_ARTIFACTS.md` | 10 артефактов, trigger/effect/counterplay и offer contract | `CONTENT_SPECIFIED` |
-| `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 2 mini-bosses, 5 chest windows и fallback resolver | `CONTENT_SPECIFIED` |
+| `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | 4 future enemy proposals, 2 mini-bosses, 5 chest windows и fallback resolver | `CONTENT_SPECIFIED` |
 | `META_PASSIVE_TREE.md` | 6 ветвей, 17 stat nodes и shop/persistence contract | `CONTENT_SPECIFIED` |
 | `CONTENT_CATALOG_INDEX.json` | машинно читаемый roster/count/limit index | `CONTENT_SPECIFIED` |
 
@@ -22,6 +22,7 @@
 - Все 10 run-passives дают общий эффект eligible build; их weapon ID — только synergy anchor для проверки evolution gate, не отдельный weapon buff.
 - В одном Run 1 разрешено **максимум 5 synergy claims**. Шестая synergy не появляется даже после финального босса.
 - Для synergy предусмотрены пять нефинальных boss chest windows: 300/450/600/750/900 секунд; 450 и 750 — два mini-boss encounter. Если eligible content нет или cap достигнут, используется fallback contract.
+- C3 добавляет четыре future enemy proposals и оставляет их вне Run 1 до отдельного stage/Registry decision; существующие 10 enemy IDs и 4 boss IDs не заменяются.
 - Build ограничен 6 weapon slots и 6 passive slots; weapon max level 6, passive max rank 5 согласно first-run architecture.
 - Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Артефакт — отдельный run layer без slot capacity.
 - Дерево магазина содержит 6 macro branches и 17 stat nodes, покрывающих характеристики из пользовательского stat-screen reference.
@@ -41,7 +42,8 @@ Balance Agent должен привязать значения к одному �
 - deterministic priority, если в одной boss chest одновременно eligible несколько pairs;
 - поведение upgrade offer после evolved weapon;
 - exact max 5 enforcement и duplicate idempotency;
-- баланс двух mini-bosses: telegraph, HP budget, cadence, фаз и состава support pack.
+- баланс двух mini-bosses: telegraph, HP budget, cadence, фаз и состава support pack;
+- balance future enemy batch: support tether, route shaping, lane sniper, predictive flanker и их safe-spawn/active-cap rules.
 
 ### Artifacts
 
@@ -82,6 +84,7 @@ Content consumes/provides projections around the existing `upgrade_applied.v1`, 
 - добавить `artifact_tideglass` и `artifact_silent_lantern` в Registry только после schema/effect mapping review;
 - добавить canonical `max_synergy_claims_per_run: 5` и authoritative run counter;
 - добавить два mini-boss encounter proposals и два chest windows; сохранить main boss windows;
+- зарегистрировать четыре future enemy proposals только после отдельного stage decision; до этого держать их вне Run 1 registry и save restore.
 - сохранить checkpoint source и final-boss prohibition;
 - определить persistence scope first-clear artifact reward;
 - определить trigger guards для echo/pulse/ward effects, включая replay/idempotency;
@@ -99,6 +102,7 @@ Content consumes/provides projections around the existing `upgrade_applied.v1`, 
 | artifact identity/offer | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/08-artifacts/`, `docs/mockups/17-artifact-ui/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | synergy explanation/evolution | `VFX` + `UI_ART` | `docs/mockups/19-synergy-info/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | mini-boss encounter identity | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/05-bosses/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
+| future enemy identity | `SPRITE` + `VFX` + `UI_ART` | `docs/mockups/04-enemies/` или отдельная будущая stage-папка после решения | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | passive meta tree/shop | `UI_ART` | `docs/mockups/07-passives/`, `docs/mockups/16-upgrade-offers/` | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 
 Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; muted crimson/violet только для role/status accent. Identity должна читаться по silhouette, shape grammar и interaction, а не только цветом. Нужны проверки 390×844 UI scale, true 1× combat scale, telegraph visibility и no-asset-drift.
@@ -116,6 +120,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 | elite pack cadence | определяет реальную частоту десяти artifact effects |
 | simultaneous eligible synergies | нужен deterministic priority/offer rule |
 | mini-boss schedule and chest source | нужно подтвердить 7:30/12:30, encounter kind и fallback outcome |
+| future enemy stage insertion | нужно определить будущую wave/stage band, safe-spawn и не добавлять proposals в Run 1 молча |
 | meta purchase event and reset/refund | нужен authoritative persistence boundary |
 | boss clock conflict | architecture source contains stale key; must be resolved by owner |
 
@@ -127,6 +132,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 - [x] Все run-passives описаны как общие эффекты; weapon связи оставлены только как synergy anchors.
 - [x] Synergy rule «не более 5 за забег» и два mini-boss chest windows явно повторены в C1, C3 и index.
 - [x] Каждый mini-boss имеет distinct skill-check, telegraph contract и fallback path.
+- [x] Четыре future enemy proposals имеют silhouette, role/signature, telegraph, arena interaction, counter-decision, spawn behavior, hooks, reward boundary и balance questions.
 - [x] Полное дерево содержит 6 ветвей и 17 stat nodes из stat-screen reference.
 - [x] Все числовые значения, которые ещё не принадлежат content ownership, помечены `PENDING_BALANCE`/`PENDING_PRODUCT_DECISION`.
 - [x] Briefs для Visual Lab есть; mockups, PNG/SVG и candidate IDs не создавались.

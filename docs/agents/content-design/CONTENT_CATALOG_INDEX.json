@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "93e6406f5722ec472a64bf6785d84e64d8a5c954",
+  "source_head": "3ec40016722244164a90c06024672fcb313f4e92",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -77,11 +77,30 @@
       "artifact_selected_cards": 1,
       "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
     },
-    "synergy_sources": ["BOSS_CHEST"],
-    "synergy_encounter_kinds": ["MAIN_BOSS", "MINI_BOSS"],
-    "synergy_checkpoints_seconds": [300, 450, 600, 750, 900],
-    "mini_boss_checkpoints_seconds": [450, 750],
-    "main_boss_checkpoints_seconds": [300, 600, 900, 1200],
+    "synergy_sources": [
+      "BOSS_CHEST"
+    ],
+    "synergy_encounter_kinds": [
+      "MAIN_BOSS",
+      "MINI_BOSS"
+    ],
+    "synergy_checkpoints_seconds": [
+      300,
+      450,
+      600,
+      750,
+      900
+    ],
+    "mini_boss_checkpoints_seconds": [
+      450,
+      750
+    ],
+    "main_boss_checkpoints_seconds": [
+      300,
+      600,
+      900,
+      1200
+    ],
     "final_boss_chest": "FORBIDDEN"
   },
   "meta_passive_tree": {
@@ -136,7 +155,27 @@
     "mini_boss_encounter_kind",
     "mini_boss_chest_fallback",
     "meta_passive_tree_17_nodes",
-    "artifact_effect_definitions"
+    "artifact_effect_definitions",
+    "enemy_lotus_usher",
+    "enemy_moonroot_burrower",
+    "enemy_silver_reed_seer",
+    "enemy_moontrail_stalker"
   ],
-  "no_mockups_created": true
+  "no_mockups_created": true,
+  "future_content": {
+    "enemy_ids": [
+      "enemy_lotus_usher",
+      "enemy_moonroot_burrower",
+      "enemy_silver_reed_seer",
+      "enemy_moontrail_stalker"
+    ],
+    "boss_ids": [
+      "miniboss_ink_jade_warden",
+      "miniboss_veil_harvester"
+    ],
+    "status": "CONTENT_SPECIFIED",
+    "registry_sync": "PENDING_ARCHITECTURE",
+    "not_part_of_run_1_registry": true,
+    "no_existing_first_run_replacement": true
+  }
 }
