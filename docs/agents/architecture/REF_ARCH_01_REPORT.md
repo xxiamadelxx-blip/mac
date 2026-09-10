@@ -6,7 +6,7 @@
 - Repository: xxiamadelxx-blip/mac
 - Branch: main
 - Parent HEAD: d23019af2f98463bf5d72026a9e5deeff54beb18
-- Resulting HEAD: RESULTING_HEAD_PENDING_PUBLICATION
+- Resulting HEAD: a9e49743bac4740af061cbbcb0ac2ee63dcc5216
 - Changed files: docs/agents/architecture/REF_ARCH_01_REPORT.md
 - Status: VERIFIED_RESEARCH
 - Scope: read-only исследование пяти внешних репозиториев и архитектурные рекомендации для MAC; runtime-код, сцены MAC, баланс, mockups и assets не изменялись.
@@ -254,7 +254,7 @@ Not implemented or verified here: Godot runtime, pooling code, scene wiring, And
 ## Handoff
 
 - Parent HEAD: d23019af2f98463bf5d72026a9e5deeff54beb18
-- Resulting HEAD: RESULTING_HEAD_PENDING_PUBLICATION
+- Resulting HEAD: a9e49743bac4740af061cbbcb0ac2ee63dcc5216
 - Changed files: docs/agents/architecture/REF_ARCH_01_REPORT.md
 - Status: VERIFIED_RESEARCH
 - Evidence: five repository trees, 61 selected source paths, current MAC sync/runtime documents, scope and report-content checks.
