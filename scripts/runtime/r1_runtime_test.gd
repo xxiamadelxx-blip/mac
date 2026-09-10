@@ -16,7 +16,7 @@ func _init() -> void:
 
 
 func _run_acceptance_fixture() -> void:
-    var coordinator = RunCoordinatorType.new()
+    var coordinator: Variant = RunCoordinatorType.new()
     var boot_result: Dictionary = coordinator.boot()
     _check(bool(boot_result.get("ok", false)), "Content Registry boots BALANCE_MODEL.json")
     _check(not coordinator.registry.content_version.is_empty(), "Registry derives a content version")
@@ -114,7 +114,7 @@ func _run_acceptance_fixture() -> void:
 
 
 func _run_deterministic_trace(seed: int) -> String:
-    var coordinator = RunCoordinatorType.new()
+    var coordinator: Variant = RunCoordinatorType.new()
     coordinator.boot()
     coordinator.start_run("hero_lin_yue", seed, "determinism-start")
     coordinator.spawn_wave_fixture()
