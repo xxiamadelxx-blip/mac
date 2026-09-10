@@ -1,65 +1,66 @@
-# Stage 05 — Bosses
-Status: PLANNED.
-Мокапы четырёх боссов и фаз.
-Фактические результаты этапа, preview и evidence добавляются сюда после начала этапа. Пустая папка или этот README сами по себе не означают DONE.
-Naming: STAGE##_AREA_TYPE_v##.
+# Этап 05 — Боссы
+Состояние этапа: PLANNED (запланирован).
+Мокапы четырёх боссов и их фаз.
+Фактические результаты этапа, предварительный просмотр и подтверждающие материалы добавляются сюда после начала этапа. Одна папка или этот файл сами по себе не означают завершение этапа.
+Правило именования: STAGE##_AREA_TYPE_v##.
 
-## Content-design brief v01 — text-only input
+## Контентный бриф v01 — текстовый материал
 
-Это контентный бриф для Visual Lab, а не готовый мокап, preview или production asset. Он заполняет content-зону стадии и не меняет protected first-run enemy/boss assets.
+Это бриф для агента визуального оформления, а не готовый мокап, предварительный просмотр или производственный ресурс. Он заполняет контентную часть этапа и не меняет уже защищённые ресурсы первого забега.
 
-| Field | Value |
+| Поле | Значение |
 |---|---|
-| status | PROPOSAL |
-| technical_status | NOT_RUN |
-| artistic_status | PENDING |
-| runtime | NOT_PROMOTED |
-| source | docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md |
-| visual route | SPRITE + VFX + UI_ART |
-| asset_id / family_id / candidate_id | null до intake Visual Lab |
-| dependencies | BossDirector/checkpoint registry, C1 synergy resolver, Balance telegraph/encounter budget |
-| next action | Visual Lab выбирает representative encounter после content/architecture reconciliation |
+| состояние контента | PROPOSAL |
+| техническая проверка | NOT_RUN |
+| художественное утверждение | PENDING |
+| подключение к игре | NOT_PROMOTED |
+| источник | docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md |
+| визуальный маршрут | спрайт + визуальные эффекты + художественный интерфейс |
+| технический маршрут | SPRITE + VFX + UI_ART |
+| asset_id / family_id / candidate_id | null до приёма агентом визуального оформления |
+| зависимости | реестр BossDirector и контрольных точек, разрешатель синергий C1, баланс сигналов атаки |
+| следующее действие | агент визуального оформления выбирает один показательный бой после согласования контента и архитектуры |
 
-### Encounter roster input
+### Входной список встреч
 
-Первые три main-boss записи и финальный boss остаются protected existing content. Ниже — две новые main-boss записи и пять mini-boss записей из C3; их ID имеют статус PROPOSAL/REGISTRY_SYNC_PENDING до подтверждения Architecture.
+Первые три записи главных боссов и финальный босс остаются защищённым существующим контентом. Ниже приведены две новые записи главных боссов и пять записей мини-боссов из C3. Их идентификаторы имеют состояние PROPOSAL/REGISTRY_SYNC_PENDING до подтверждения архитектурой.
 
-| checkpoint | encounter_kind | stable content ID | identity and player decision | readable counterplay | reward boundary | dependencies |
+| Контрольная точка | Вид встречи | Стабильный ID контента | Образ и решение игрока | Читаемая контригра | Граница награды | Зависимости |
 |---:|---|---|---|---|---|---|
-| 1200 s / 20:00 | MAIN_BOSS | boss_tideglass_regent | Регент Чёрного Прилива — flow director; выбрать безопасный коридор или переждать convergence ради окна уязвимости | источник прилива и дуга сначала читаемо предупреждают, затем разрешаются; дуги не становятся невидимыми стенами | один non-final BOSS_CHEST: synergy если есть eligible pair, иначе fallback | C1 synergy resolver; BossDirector; PENDING_BALANCE |
-| 1500 s / 25:00 | MAIN_BOSS | boss_omen_paper_archivist | Архивариус Лунных Знаков — pattern sequencer; уничтожить активный знак, сменить позицию или сохранить cooldown под vulnerability window | warm-ivory порядок печатей и линия активации видны заранее; phase меняет ритм, не grammar telegraph | один non-final BOSS_CHEST; final-boss no-chest rule сохраняется | C1 synergy resolver; BossDirector; PENDING_BALANCE/PENDING_B1 |
-| 450 s / 07:30 | MINI_BOSS | miniboss_ink_jade_warden | Чернильный Нефритовый Страж — space controller; найти следующий проход между складывающимися линиями | ground seals → visible lines → resolve; gap остаётся проходимым | один MINI_BOSS BOSS_CHEST; synergy/fallback | C3 checkpoint flow; C1 resolver; PENDING_BALANCE |
-| 750 s / 12:30 | MINI_BOSS | miniboss_veil_harvester | Жнец Завесы — priority hunter; продолжать damage или сначала очистить delayed threat route | shadow marker и порядок разрешения видны; decoy не скрывает реальный telegraph | один MINI_BOSS BOSS_CHEST; claim расходует общий cap только при synergy | C3 checkpoint flow; C1 resolver; PENDING_BALANCE/PENDING_ARCHITECTURE |
-| 1050 s / 17:30 | MINI_BOSS | miniboss_lotus_ritekeeper | Хранительница Лотосового Обряда — support ritual controller; ломать anchor или использовать окно для damage | ivory anchor, link и exposed anchor читаемы; ритуал не создаёт full-arena lock | один MINI_BOSS BOSS_CHEST; synergy/fallback, без artifact offer | C3 checkpoint flow; C1 resolver; PENDING_BALANCE |
-| 1350 s / 22:30 | MINI_BOSS | miniboss_bell_rhythm_ascetic | Колокольный аскет — timing/rhythm controller; пересечь gap, держать позицию или отступить | внешний и внутренний resonance ring видны до resolve; audio/haptic лишь усиливают сигнал | один MINI_BOSS BOSS_CHEST; synergy/fallback | C3 checkpoint flow; C1 resolver; PENDING_BALANCE |
-| 1650 s / 27:30 | MINI_BOSS | miniboss_moonroot_ferryman | Луннокорневой перевозчик — convoy pressure; выбрать точку перехвата маршрута | route и endpoint видны, convoy не телепортируется и не создаёт permanent collision wall | один MINI_BOSS BOSS_CHEST; synergy/fallback, без wallet mutation | C3 checkpoint flow; C1 resolver; PENDING_BALANCE |
+| 1200 с / 20:00 | MAIN_BOSS | boss_tideglass_regent | Регент Чёрного Прилива — управляет потоками; выбрать безопасный коридор или переждать схождение ради окна уязвимости | источник прилива и дуга сначала предупреждают, затем разрешаются; дуги не становятся невидимыми стенами | один нефинальный BOSS_CHEST: синергия при полной паре, иначе резервная награда | разрешатель синергий C1; BossDirector; PENDING_BALANCE |
+| 1500 с / 25:00 | MAIN_BOSS | boss_omen_paper_archivist | Архивариус Лунных Знаков — выстраивает последовательность; уничтожить знак, сменить позицию или сохранить перезарядку под окно уязвимости | порядок печатей и линия активации видны заранее; фаза меняет ритм, но не правило сигнала | один нефинальный BOSS_CHEST; правило отсутствия сундука у финального босса сохраняется | разрешатель синергий C1; BossDirector; PENDING_BALANCE/PENDING_B1 |
+| 450 с / 07:30 | MINI_BOSS | miniboss_ink_jade_warden | Чернильный Нефритовый Страж — управляет пространством; найти следующий проход между складывающимися линиями | печать на земле → видимые линии → разрешение; проход остаётся доступным | один BOSS_CHEST мини-босса; синергия или резервная награда | поток контрольных точек C3; разрешатель C1; PENDING_BALANCE |
+| 750 с / 12:30 | MINI_BOSS | miniboss_veil_harvester | Жнец Завесы — охотится за приоритетной целью; продолжать наносить урон или сначала очистить маршрут от отложенной угрозы | метка тени и порядок разрешения видны; приманка не скрывает настоящий сигнал | один BOSS_CHEST мини-босса; получение синергии расходует общий предел только при синергии | поток контрольных точек C3; разрешатель C1; PENDING_BALANCE/PENDING_ARCHITECTURE |
+| 1050 с / 17:30 | MINI_BOSS | miniboss_lotus_ritekeeper | Хранительница Лотосового Обряда — управляет ритуалом поддержки; разрушить опорную печать или использовать окно для урона | светлая опорная печать, связь и открытая цель читаемы; ритуал не запирает всю арену | один BOSS_CHEST мини-босса; синергия или резервная награда, без предложения артефакта | поток контрольных точек C3; разрешатель C1; PENDING_BALANCE |
+| 1350 с / 22:30 | MINI_BOSS | miniboss_bell_rhythm_ascetic | Колокольный аскет — управляет ритмом; пройти через разрыв, удержать позицию или отступить | внешнее и внутреннее кольца видны до разрешения; звук и вибрация только усиливают сигнал | один BOSS_CHEST мини-босса; синергия или резервная награда | поток контрольных точек C3; разрешатель C1; PENDING_BALANCE |
+| 1650 с / 27:30 | MINI_BOSS | miniboss_moonroot_ferryman | Луннокорневой перевозчик — создаёт давление маршрутом; выбрать точку перехвата колонны | маршрут и конечная точка видны, колонна не телепортируется и не создаёт постоянную стену | один BOSS_CHEST мини-босса; синергия или резервная награда, без изменения кошелька | поток контрольных точек C3; разрешатель C1; PENDING_BALANCE |
 
-### Encounter and visual language
+### Образ и язык сигналов
 
-- Регент: высокий силуэт из тёмных полупрозрачных пластин, три приливных кольца, warm-ivory crest; smoky teal resolve и jade edge.
-- Архивариус: бумажный веер талисманов, прямоугольная лунная маска, подвесные печати; ivory outline, muted brass resolve, smoky teal impact.
-- Страж: broad shoulders, smoky-jade mask, ink ribbons as geometric lines; no toxic neon ink.
-- Жнец: blue-grey hood, crescent mask, restrained violet status accent; telegraph не должен сливаться с тенью.
-- Хранительница: folded lotus crown, three anchor seals, smoky-teal links.
-- Аскет: narrow silhouette, visible brass bell, concentric ivory rings; читаемость не зависит от звука.
-- Перевозчик: low moonroot barge, crescent lantern, ivory route line; distinct from moonroot_burrower and Bell Crab.
+- Регент: высокий силуэт из тёмных полупрозрачных пластин, три приливных кольца и тёплый светлый гребень; дымчато-бирюзовое разрешение и нефритовый край.
+- Архивариус: веер бумажных талисманов, прямоугольная лунная маска и подвесные печати; светлый контур, приглушённое латунное разрешение, дымчато-бирюзовый удар.
+- Страж: широкие плечи, дымчато-нефритовая маска, чернильные ленты в виде геометрических линий; без ядовитого неона.
+- Жнец: сине-серый капюшон, серповидная маска, приглушённый фиолетовый акцент состояния; сигнал не должен сливаться с тенью.
+- Хранительница: сложенная корона лотоса, три опорные печати и дымчато-бирюзовые связи.
+- Аскет: узкий силуэт, видимый латунный колокол, концентрические светлые кольца; читаемость не зависит от звука.
+- Перевозчик: низкая луннокорневая баржа, серповидный фонарь, светлая линия маршрута; отличается от moonroot_burrower и Bell Crab.
 
-Каждый encounter обязан иметь safe external spawn, phase identity, visible warning → resolve → cleanup lifecycle, defeat attribution и один reward boundary. Точные HP, damage, speed, warning lead, duration, resistance, add budget, phase threshold и VFX cap — PENDING_BALANCE/PENDING_B1.
+Каждая встреча обязана иметь безопасное появление с края, собственное фазовое отличие, цикл «предупреждение → разрешение → очистка», читаемое поражение и одну границу награды. Точные здоровье, урон, скорость, время предупреждения, длительность, сопротивления, состав помощников, порог фазы и предел визуальных эффектов — PENDING_BALANCE/PENDING_B1.
 
-### Chest cadence and synergy boundary
+### Ритм сундуков и граница синергий
 
-C01–C10 дают десять отдельных non-final boss chest opportunities: main checkpoints 300/600/900/1200/1500 и mini checkpoints 450/750/1050/1350/1650. Общий лимит — максимум 5 synergy claims за забег. При отсутствии eligible pair или после cap применяется fallback; ELITE_CHEST и final boss не превращаются в synergy chest.
+C01–C10 дают десять отдельных возможностей получить нефинальный сундук босса: главные контрольные точки 300/600/900/1200/1500 и мини-боссы 450/750/1050/1350/1650. Общий предел — не более пяти получений синергии за забег. Если полной пары нет или предел достигнут, применяется описанная резервная награда; ELITE_CHEST и финальный босс не превращаются в сундук синергии.
 
-Final boss на 1800 s / 30:00 не создаёт boss chest. Artifact offer не выдаётся из BOSS_CHEST: артефакты идут через ELITE_PACK/FIRST_CLEAR_REWARD по C2.
+Финальный босс на 1800 с / 30:00 не создаёт сундук босса. Предложение артефакта не выдаётся из BOSS_CHEST: артефакты идут через ELITE_PACK/FIRST_CLEAR_REWARD по C2.
 
-### Visual Lab intake boundary
+### Граница приёма агентом визуального оформления
 
-- route: SPRITE + VFX + UI_ART;
-- stage_path: docs/mockups/05-bosses/;
+- маршрут: SPRITE + VFX + UI_ART;
+- папка этапа: docs/mockups/05-bosses/;
 - asset_id, family_id, candidate_id: null;
-- status: PROPOSAL;
-- technical_status: NOT_RUN;
-- artistic_status: PENDING;
-- manifest/consumer: NOT_PROMOTED; consumer proposal — BossDirector, TelegraphResolver, ChestResolver, SynergyInfo;
-- evidence: отсутствует до фактического mockup/review;
-- нельзя объявлять эту текстовую запись завершённой, утверждённой или готовой к игре.
+- состояние: PROPOSAL;
+- техническая проверка: NOT_RUN;
+- художественное утверждение: PENDING;
+- привязка и потребители: NOT_PROMOTED; предполагаемые потребители — BossDirector, TelegraphResolver, ChestResolver, SynergyInfo;
+- подтверждающие материалы: отсутствуют до фактического мокапа и проверки;
+- этот текст нельзя считать завершённым, утверждённым или готовым к игре.
