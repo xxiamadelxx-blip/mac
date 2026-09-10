@@ -1,0 +1,891 @@
+{
+  "schema": "moonveil.first_run.architecture_contract",
+  "version": 1,
+  "status": "VERIFIED_ARCHITECTURE",
+  "runtime_implemented": false,
+  "source_refs": [
+    "../../../GAME_MANIFEST.md",
+    "../../../AGENT_CONTEXT.md",
+    "../../../docs/BALANCE_ECONOMY_SPEC.md",
+    "./AGENT_TASK.md",
+    "./FIRST_RUN_STATE_MACHINE.md"
+  ],
+  "id_policy": {
+    "rule": "IDs are stable semantic slugs; display labels are localized and never used as keys.",
+    "scopes": [
+      "run_id",
+      "hero_id",
+      "weapon_id",
+      "passive_id",
+      "synergy_id",
+      "artifact_id",
+      "enemy_id",
+      "wave_band_id",
+      "boss_id",
+      "chest_offer_id",
+      "reward_ledger_entry_id",
+      "event_id",
+      "artifact_offer_id",
+      "artifact_instance_id",
+      "elite_pack_id",
+      "boss_encounter_id",
+      "ability_id"
+    ],
+    "content_version_required": true,
+    "unknown_ids": "Quarantine optional records; block authoritative run restore."
+  },
+  "canonical": {
+    "duration_seconds": 1200,
+    "boss_checkpoint_seconds": [
+      300,
+      600,
+      900,
+      1200
+    ],
+    "weapon_slot_limit": 6,
+    "passive_slot_limit": 6,
+    "weapon_max_level": 6,
+    "passive_max_rank": 5,
+    "contact_damage_cooldown_seconds": 0.8,
+    "source_for_numbers": "../../../docs/BALANCE_ECONOMY_SPEC.md",
+    "pending_values": [
+      {
+        "field": "enemy_absolute_base_hp_damage_speed",
+        "status": "PENDING_B1",
+        "reason": "B1 defines durability multipliers and targets but not complete absolute enemy base stats."
+      },
+      {
+        "field": "boss_absolute_stats_and_phase_thresholds",
+        "status": "PENDING_B1",
+        "reason": "The architecture exposes the fields without inventing boss tuning."
+      },
+      {
+        "field": "chest_fallback_reward_values",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "Sources require a fallback path but do not define its exact content/value."
+      },
+      {
+        "field": "defeat_gold_rounding",
+        "status": "PENDING_B1",
+        "reason": "B1 says 50% Gold after defeat but does not specify rounding for odd amounts."
+      },
+      {
+        "field": "bonus_series_formula",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "The existence of an extensible bonus state is required; its exact semantics are not canonical."
+      },
+      {
+        "field": "artifact_effect_definitions",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "Artifacts are run-modifier effects, not ordinary passive slot modifiers; exact definitions, triggers, targets and values require product approval."
+      },
+      {
+        "field": "artifact_refresh_policy",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "The three-card offer exposes Get and Refresh, but cost, currency and refresh limit are not canonical."
+      },
+      {
+        "field": "artifact_duplicate_and_stacking_policy",
+        "status": "PENDING_PRODUCT_DECISION",
+        "reason": "Duplicate and stacking behavior for active artifact effects is not canonical."
+      },
+      {
+        "field": "elite_pack_schedule_and_composition",
+        "status": "PENDING_B1",
+        "reason": "Elite-pack artifact sources are requested, but cadence, size and composition are not defined by B1."
+      }
+    ],
+    "checkpoint_outcome_policy": {
+      "non_final_boss": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
+      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST"
+    },
+    "clock_policy": {
+      "advances_in": [
+        "RUN_ACTIVE",
+        "BOSS_INTRO",
+        "BOSS_ACTIVE"
+      ],
+      "freezes_in": [
+        "UPGRADE_OFFER",
+        "CHEST_OFFER",
+        "ARTIFACT_OFFER",
+        "RUN_PAUSED",
+        "CHECKPOINT_SETTLEMENT",
+        "RUN_DEFEAT",
+        "RUN_VICTORY",
+        "RESULT_REVIEW",
+        "REWARD_COMMITTING"
+      ],
+      "boss_rule": "Elapsed time continues through BOSS_INTRO and BOSS_ACTIVE for every boss; final boss does not pause the run clock."
+    },
+    "artifact_offer_choice_count": 3,
+    "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
+    "artifact_effect_model": "RUN_MODIFIER_EFFECTS_SEPARATE_FROM_PASSIVE_SLOTS"
+  },
+  "content_registry": {
+    "characters": [
+      {
+        "id": "hero_lin_yue",
+        "display_name": "Линь Юэ",
+        "role": "ranged_control",
+        "starting_weapon_id": "weapon_jade_talismans",
+        "active_ability_id": "ability_moon_seal",
+        "source": "../../../GAME_MANIFEST.md"
+      },
+      {
+        "id": "hero_seoyeon_han",
+        "display_name": "Соён Хан",
+        "role": "melee_dash_crit",
+        "starting_weapon_id": "weapon_moon_blade",
+        "active_ability_id": "ability_crimson_dash",
+        "source": "../../../GAME_MANIFEST.md"
+      }
+    ],
+    "weapons": [
+      {
+        "id": "weapon_moon_blade",
+        "name": "Лунный клинок",
+        "passive_id": "passive_wind_of_travel",
+        "synergy_id": "synergy_moon_dance"
+      },
+      {
+        "id": "weapon_jade_talismans",
+        "name": "Нефритовые талисманы",
+        "passive_id": "passive_jade_focus",
+        "synergy_id": "synergy_heavenly_seals"
+      },
+      {
+        "id": "weapon_crimson_flame_fan",
+        "name": "Веер багрового пламени",
+        "passive_id": "passive_ember_heart",
+        "synergy_id": "synergy_phoenix_sky"
+      },
+      {
+        "id": "weapon_frost_pearl",
+        "name": "Ледяная жемчужина",
+        "passive_id": "passive_frost_thread",
+        "synergy_id": "synergy_winter_palace"
+      },
+      {
+        "id": "weapon_thunder_needles",
+        "name": "Иглы грома",
+        "passive_id": "passive_heavenly_seal",
+        "synergy_id": "synergy_heavenly_judgment"
+      },
+      {
+        "id": "weapon_spirit_bell",
+        "name": "Колокол духов",
+        "passive_id": "passive_iron_bell",
+        "synergy_id": "synergy_guardian_bell"
+      },
+      {
+        "id": "weapon_fox_mirage",
+        "name": "Лисий мираж",
+        "passive_id": "passive_mirror_shard",
+        "synergy_id": "synergy_nine_reflections"
+      },
+      {
+        "id": "weapon_lotus_mines",
+        "name": "Лотосовые мины",
+        "passive_id": "passive_lotus_heart",
+        "synergy_id": "synergy_lotus_sanctuary"
+      },
+      {
+        "id": "weapon_star_bow",
+        "name": "Звёздный лук",
+        "passive_id": "passive_star_compass",
+        "synergy_id": "synergy_constellation_rain"
+      },
+      {
+        "id": "weapon_black_eclipse_umbrella",
+        "name": "Чёрный зонт затмения",
+        "passive_id": "passive_spirit_lens",
+        "synergy_id": "synergy_eclipse_vortex"
+      }
+    ],
+    "passives": [
+      {
+        "id": "passive_wind_of_travel",
+        "name": "Ветер странствий"
+      },
+      {
+        "id": "passive_jade_focus",
+        "name": "Нефритовый фокус"
+      },
+      {
+        "id": "passive_ember_heart",
+        "name": "Сердце углей"
+      },
+      {
+        "id": "passive_frost_thread",
+        "name": "Морозная нить"
+      },
+      {
+        "id": "passive_heavenly_seal",
+        "name": "Небесная печать"
+      },
+      {
+        "id": "passive_iron_bell",
+        "name": "Железный колокол"
+      },
+      {
+        "id": "passive_mirror_shard",
+        "name": "Осколок зеркала"
+      },
+      {
+        "id": "passive_lotus_heart",
+        "name": "Сердце лотоса"
+      },
+      {
+        "id": "passive_star_compass",
+        "name": "Звёздный компас"
+      },
+      {
+        "id": "passive_spirit_lens",
+        "name": "Духовная линза"
+      }
+    ],
+    "synergies": [
+      {
+        "id": "synergy_moon_dance",
+        "weapon_id": "weapon_moon_blade",
+        "passive_id": "passive_wind_of_travel",
+        "evolution_name": "Танец Луны"
+      },
+      {
+        "id": "synergy_heavenly_seals",
+        "weapon_id": "weapon_jade_talismans",
+        "passive_id": "passive_jade_focus",
+        "evolution_name": "Небесные печати"
+      },
+      {
+        "id": "synergy_phoenix_sky",
+        "weapon_id": "weapon_crimson_flame_fan",
+        "passive_id": "passive_ember_heart",
+        "evolution_name": "Феникс алого неба"
+      },
+      {
+        "id": "synergy_winter_palace",
+        "weapon_id": "weapon_frost_pearl",
+        "passive_id": "passive_frost_thread",
+        "evolution_name": "Дворец вечной зимы"
+      },
+      {
+        "id": "synergy_heavenly_judgment",
+        "weapon_id": "weapon_thunder_needles",
+        "passive_id": "passive_heavenly_seal",
+        "evolution_name": "Приговор небес"
+      },
+      {
+        "id": "synergy_guardian_bell",
+        "weapon_id": "weapon_spirit_bell",
+        "passive_id": "passive_iron_bell",
+        "evolution_name": "Звон защитницы"
+      },
+      {
+        "id": "synergy_nine_reflections",
+        "weapon_id": "weapon_fox_mirage",
+        "passive_id": "passive_mirror_shard",
+        "evolution_name": "Девять отражений"
+      },
+      {
+        "id": "synergy_lotus_sanctuary",
+        "weapon_id": "weapon_lotus_mines",
+        "passive_id": "passive_lotus_heart",
+        "evolution_name": "Святилище лотоса"
+      },
+      {
+        "id": "synergy_constellation_rain",
+        "weapon_id": "weapon_star_bow",
+        "passive_id": "passive_star_compass",
+        "evolution_name": "Дождь созвездий"
+      },
+      {
+        "id": "synergy_eclipse_vortex",
+        "weapon_id": "weapon_black_eclipse_umbrella",
+        "passive_id": "passive_spirit_lens",
+        "evolution_name": "Воронка затмения"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "artifact_jade_compass",
+        "name": "Нефритовый компас"
+      },
+      {
+        "id": "artifact_mirror_shard",
+        "name": "Осколок зеркала"
+      },
+      {
+        "id": "artifact_phoenix_feather",
+        "name": "Перо феникса"
+      },
+      {
+        "id": "artifact_frost_bead",
+        "name": "Бусина мороза"
+      },
+      {
+        "id": "artifact_bell_fragment",
+        "name": "Фрагмент колокола"
+      },
+      {
+        "id": "artifact_lotus_seed",
+        "name": "Семя лотоса"
+      },
+      {
+        "id": "artifact_moon_crown",
+        "name": "Корона Луны"
+      },
+      {
+        "id": "artifact_black_bead",
+        "name": "Чёрная бусина"
+      }
+    ],
+    "enemies": [
+      {
+        "id": "enemy_ink_beetle",
+        "name": "Чернильный жук",
+        "role": "rusher"
+      },
+      {
+        "id": "enemy_lantern_moth",
+        "name": "Фонарь-мотылёк",
+        "role": "ranged"
+      },
+      {
+        "id": "enemy_bone_carp",
+        "name": "Костяной карп",
+        "role": "line_dash"
+      },
+      {
+        "id": "enemy_paper_ghost",
+        "name": "Бумажный призрак",
+        "role": "teleport"
+      },
+      {
+        "id": "enemy_jade_toad",
+        "name": "Нефритовая жаба",
+        "role": "jump_zone"
+      },
+      {
+        "id": "enemy_mirror_fox",
+        "name": "Зеркальный лисёнок",
+        "role": "decoy"
+      },
+      {
+        "id": "enemy_bell_crab",
+        "name": "Колокольный краб",
+        "role": "front_guard"
+      },
+      {
+        "id": "enemy_thread_doll",
+        "name": "Нитяная кукла",
+        "role": "slow_beam"
+      },
+      {
+        "id": "enemy_stone_oni",
+        "name": "Каменный они",
+        "role": "elite_ground_strike"
+      },
+      {
+        "id": "enemy_eclipse_serpent",
+        "name": "Змей затмения",
+        "role": "elite_trace_arcs"
+      }
+    ],
+    "wave_bands": [
+      {
+        "id": "wave_warmup_0_2",
+        "from_seconds": 0,
+        "to_seconds": 120,
+        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md"
+      },
+      {
+        "id": "wave_pressure_2_5",
+        "from_seconds": 120,
+        "to_seconds": 300,
+        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md"
+      },
+      {
+        "id": "wave_threat_5_10",
+        "from_seconds": 300,
+        "to_seconds": 600,
+        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md"
+      },
+      {
+        "id": "wave_elite_10_15",
+        "from_seconds": 600,
+        "to_seconds": 900,
+        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md"
+      },
+      {
+        "id": "wave_eclipse_15_20",
+        "from_seconds": 900,
+        "to_seconds": 1200,
+        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md"
+      }
+    ],
+    "bosses": [
+      {
+        "id": "boss_hua_lin",
+        "name": "Хуа Линь",
+        "checkpoint_seconds": 300,
+        "is_final": false
+      },
+      {
+        "id": "boss_miyeon",
+        "name": "Миён",
+        "checkpoint_seconds": 600,
+        "is_final": false
+      },
+      {
+        "id": "boss_seika",
+        "name": "Сэйка",
+        "checkpoint_seconds": 900,
+        "is_final": false
+      },
+      {
+        "id": "boss_black_moon_empress",
+        "name": "Императрица Чёрной Луны",
+        "checkpoint_seconds": 1200,
+        "is_final": true
+      }
+    ],
+    "xp_grades": [
+      {
+        "id": "xp_small_spark",
+        "value": 1
+      },
+      {
+        "id": "xp_shard",
+        "value": 5
+      },
+      {
+        "id": "xp_crystal",
+        "value": 15
+      },
+      {
+        "id": "xp_large_crystal",
+        "value": 40
+      },
+      {
+        "id": "xp_elite_core",
+        "value": 80
+      },
+      {
+        "id": "xp_boss_core",
+        "value": 250
+      }
+    ],
+    "reward_bundles": [
+      {
+        "id": "reward_checkpoint_5",
+        "gold": 50,
+        "lunar_seals": 15,
+        "boss_essence": 1
+      },
+      {
+        "id": "reward_checkpoint_10",
+        "gold": 75,
+        "lunar_seals": 20,
+        "boss_essence": 1
+      },
+      {
+        "id": "reward_checkpoint_15",
+        "gold": 100,
+        "lunar_seals": 25,
+        "boss_essence": 1
+      },
+      {
+        "id": "reward_checkpoint_20",
+        "gold": 200,
+        "lunar_seals": 60,
+        "boss_essence": 2
+      },
+      {
+        "id": "reward_first_clear_bonus",
+        "gold": 300,
+        "lunar_seals": 180,
+        "boss_essence": 1,
+        "artifact_offer": {
+          "required": true,
+          "source_kind": "FIRST_CLEAR_REWARD",
+          "presentation": "POST_RESULT_REWARD_BOUNDARY"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "id": "ability_moon_seal",
+        "name": "Лунная печать",
+        "source": "../../../GAME_MANIFEST.md"
+      },
+      {
+        "id": "ability_crimson_dash",
+        "name": "Багровый рывок",
+        "source": "../../../GAME_MANIFEST.md"
+      }
+    ],
+    "artifact_effects": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "effect_types": [
+        "AURA",
+        "DERIVED_STAT",
+        "TARGET_MODIFIER",
+        "WEAPON_MODIFIER",
+        "TRIGGERED_EFFECT",
+        "COOLDOWN_MODIFIER"
+      ],
+      "required_fields": [
+        "effect_type",
+        "trigger",
+        "scope",
+        "target",
+        "parameters_ref",
+        "stacking_policy"
+      ],
+      "definitions": [],
+      "source": "product decision; examples are documented in GAME_MANIFEST.md"
+    }
+  },
+  "run_session": {
+    "schema_version": 1,
+    "run_id": null,
+    "content_version": null,
+    "seed": null,
+    "state": "RUN_LOADING",
+    "resume_state": null,
+    "selected_hero_id": null,
+    "started_at": null,
+    "elapsed_seconds": 0,
+    "current_wave_band_id": "wave_warmup_0_2",
+    "current_stage_id": null,
+    "checkpoint_id": null,
+    "active_boss_id": null,
+    "state_revision": 0,
+    "build": {
+      "weapon_slots": 6,
+      "passive_slots": 6,
+      "weapons": [],
+      "passives": [],
+      "claimed_synergy_ids": []
+    },
+    "stats": {
+      "hp_current": null,
+      "hp_max": null,
+      "attack": null,
+      "critical_chance": null,
+      "critical_multiplier": null,
+      "movement_speed": null,
+      "cooldown": null,
+      "armor": null,
+      "xp_current": 0,
+      "level": 1,
+      "kills": 0,
+      "bonus_state": {
+        "status": "PENDING_PRODUCT_DECISION",
+        "streak_count": null,
+        "meter_value": null,
+        "multiplier": null,
+        "expires_at": null
+      }
+    },
+    "pending_offer": null,
+    "drops": {
+      "xp_items": [],
+      "aftermath_items": []
+    },
+    "reward_ledger_ref": {
+      "run_id": null,
+      "last_committed_revision": null,
+      "settled_checkpoint_ids": [],
+      "result_claimed": false,
+      "committed_idempotency_keys": []
+    },
+    "diagnostics": [],
+    "active_artifacts": [],
+    "pending_offers": {
+      "upgrade": null,
+      "boss_chest": null,
+      "artifact": null
+    }
+  },
+  "entity_shapes": {
+    "xp_drop": {
+      "xp_item_id": null,
+      "grade_id": null,
+      "value": null,
+      "source_enemy_id": null,
+      "world_position": null,
+      "collected": false,
+      "pool_state": "ACTIVE",
+      "aftermath_reference": null
+    },
+    "aftermath_item": {
+      "aftermath_item_id": null,
+      "source_enemy_id": null,
+      "kind": null,
+      "world_position": null,
+      "aggregation_tier": "INDIVIDUAL",
+      "collision": false,
+      "xp_reference": null,
+      "pool_state": "ACTIVE"
+    },
+    "build_entry": {
+      "content_id": null,
+      "level_or_rank": null,
+      "max_level_or_rank": null,
+      "evolved": false,
+      "modifiers_ref": null
+    },
+    "artifact_instance": {
+      "artifact_instance_id": null,
+      "artifact_id": null,
+      "run_id": null,
+      "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
+      "source_id": null,
+      "effect_type": null,
+      "effect_contract_ref": "content_registry.artifact_effects",
+      "trigger": null,
+      "scope": "RUN",
+      "target": null,
+      "parameters_ref": null,
+      "stacking_policy": null,
+      "acquired_at_elapsed_seconds": null,
+      "active": true
+    }
+  },
+  "boss_chest_offer": {
+    "chest_offer_id": null,
+    "run_id": null,
+    "boss_encounter_id": null,
+    "checkpoint_id": null,
+    "content_version": null,
+    "offer_seed": null,
+    "status": "OPEN",
+    "evaluator_outcome": "PENDING",
+    "eligible_synergy_id": null,
+    "fallback_policy": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "reward_type": null,
+      "reward_value": null
+    },
+    "claimed_outcome": null,
+    "idempotency_key": null,
+    "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
+    "final_boss_policy": "NO_CHEST",
+    "source_kind": "BOSS_CHEST",
+    "outcome_type": "SYNERGY_OR_FALLBACK",
+    "outcome_id": null
+  },
+  "synergy_evaluator": {
+    "inputs": [
+      "weapon_id",
+      "passive_id",
+      "weapon_max_level",
+      "passive_max_rank",
+      "weapon_not_evolved",
+      "boss_chest_context",
+      "claimed_synergy_ids",
+      "checkpoint_is_final"
+    ],
+    "outcomes": [
+      "ELIGIBLE",
+      "NOT_ELIGIBLE",
+      "ALREADY_CLAIMED",
+      "UNAVAILABLE_CONTEXT",
+      "FALLBACK_REQUIRED"
+    ],
+    "default_requirements": {
+      "weapon_max_level": 6,
+      "passive_max_rank": 5,
+      "matching_synergy_id": true,
+      "weapon_not_evolved": true,
+      "boss_chest_context": true,
+      "checkpoint_is_final": false
+    }
+  },
+  "reward_ledger": {
+    "entry_schema": {
+      "reward_ledger_entry_id": null,
+      "run_id": null,
+      "reward_scope": "CHECKPOINT_OR_RESULT",
+      "checkpoint_id": null,
+      "reward_type": null,
+      "amount": null,
+      "currency": null,
+      "idempotency_key": null,
+      "status": "PENDING",
+      "committed_at": null,
+      "source_bundle_id": null
+    },
+    "idempotency_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
+    "atomicity": "ledger entry and wallet/unlock revision commit together",
+    "duplicate_behavior": "return existing committed entry without applying currency again"
+  },
+  "save_snapshot": {
+    "schema_version": 1,
+    "snapshot_id": null,
+    "revision": null,
+    "saved_at": null,
+    "checksum": null,
+    "content_version": null,
+    "save_reason": "CHECKPOINT_OR_EXPLICIT_PAUSE_OR_TERMINAL",
+    "active_run": null,
+    "meta_progression": {
+      "wallets": {
+        "gold": null,
+        "lunar_seals": null,
+        "boss_essence": null
+      },
+      "unlocks": {
+        "characters": [],
+        "weapons": [],
+        "artifacts": []
+      },
+      "global_passive_ranks": {}
+    },
+    "reward_ledger_cursor": null,
+    "migration_status": "CURRENT",
+    "restore_policy": {
+      "arbitrary_mid_frame_resume": "NOT_PROMISED",
+      "invalid_snapshot": "RECOVERY_REVIEW",
+      "missing_snapshot": "ABANDON_WITHOUT_UNEARNED_REWARDS"
+    },
+    "pending_offers": {
+      "upgrade": null,
+      "boss_chest": null,
+      "artifact": null
+    },
+    "active_artifact_instances": []
+  },
+  "event_envelope": {
+    "event_id": null,
+    "event_name": null,
+    "event_version": 1,
+    "event_kind": "COMMAND_OR_DOMAIN_EVENT_OR_UI_PROJECTION",
+    "occurred_at": null,
+    "run_id": null,
+    "state_revision": null,
+    "correlation_id": null,
+    "idempotency_key": null,
+    "payload": {}
+  },
+  "invariants": [
+    "UI never owns authoritative run state.",
+    "RunSession is the source of truth for an active run.",
+    "Content Registry is immutable and versioned during a run.",
+    "XP drops and aftermath items are separate entity types.",
+    "Clock advances in RUN_ACTIVE, BOSS_INTRO and BOSS_ACTIVE for every boss; it freezes in offer, pause, settlement and terminal/transaction states.",
+    "Final victory requires authoritative final boss defeat.",
+    "Rewards are committed atomically with the corresponding wallet/unlock revision.",
+    "Unknown numeric values remain pending until confirmed by B1.",
+    "Unknown product rules remain pending until confirmed by the product owner.",
+    "Missing resource errors produce diagnostics, never a blank screen.",
+    "Final boss settlement creates no boss_chest_offer and transitions to victory after ledger commit.",
+    "Non-final boss-chest, artifact-offer and result effects are idempotent.",
+    "A boss chest is only a non-final checkpoint synergy/evolution/fallback offer; the final boss never creates one.",
+    "Every artifact offer contains exactly three candidates and one chosen candidate becomes one active run effect.",
+    "Active artifacts have no fixed run capacity and do not consume weapon or passive slots.",
+    "Artifact effects use typed contracts separate from ordinary passive modifiers.",
+    "The first-clear artifact offer is a separate post-result reward boundary, not a final boss chest."
+  ],
+  "open_questions": [
+    {
+      "id": "U-01",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "stats.bonus_state",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-04",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "boss_chest_offer.fallback_policy",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-05",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "current_stage_id",
+      "owner": "product/runtime owner"
+    },
+    {
+      "id": "U-06",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "save_snapshot.restore_policy",
+      "owner": "product/runtime owner"
+    },
+    {
+      "id": "U-07",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "exit/background-kill behavior",
+      "owner": "product/runtime owner"
+    },
+    {
+      "id": "U-08",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "HUD/result optional fields",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-11",
+      "status": "PENDING_B1",
+      "field": "defeat_gold_rounding",
+      "owner": "balance owner"
+    },
+    {
+      "id": "U-12",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.refresh_policy",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-13",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.duplicate_and_stacking_policy",
+      "owner": "product owner"
+    },
+    {
+      "id": "U-14",
+      "status": "PENDING_B1",
+      "field": "elite_pack_schedule_and_composition",
+      "owner": "balance/gameplay owner"
+    },
+    {
+      "id": "U-15",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "content_registry.artifact_effects.definitions",
+      "owner": "product owner"
+    }
+  ],
+  "artifact_offer": {
+    "artifact_offer_id": null,
+    "run_id": null,
+    "content_version": null,
+    "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
+    "source_id": null,
+    "offer_seed": null,
+    "status": "OPEN",
+    "choice_count": 3,
+    "choice_artifact_ids": [],
+    "selected_artifact_id": null,
+    "refresh_count": 0,
+    "refresh_policy": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "cost_type": null,
+      "cost_value": null,
+      "max_refreshes": null,
+      "reroll_behavior": null
+    },
+    "effect_contract_ref": "content_registry.artifact_effects",
+    "active_effect_preview_ref": null,
+    "claimed_outcome": null,
+    "idempotency_key": null,
+    "source_constraints": {
+      "elite_pack": "ALLOWED_PENDING_SCHEDULE",
+      "first_clear_reward": "REQUIRED_BY_B1",
+      "boss_chest": "SEPARATE_SYNERGY_OFFER",
+      "final_boss": "NO_BOSS_CHEST"
+    }
+  }
+}

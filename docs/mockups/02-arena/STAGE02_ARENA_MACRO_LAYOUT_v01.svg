@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="1266" viewBox="0 0 1560 2532" role="img" aria-labelledby="title desc">
+  <title id="title">Макро-карта арены 4 на 3 экрана</title>
+  <desc id="desc">Большой игровой мир Затопленного сада Лунного лотоса с открытым центром, четырьмя зонами, камерой и внешним кольцом появления врагов.</desc>
+  <defs>
+    <linearGradient id="world" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#172b38"/>
+      <stop offset="0.48" stop-color="#213e42"/>
+      <stop offset="1" stop-color="#132c32"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#557c68"/>
+      <stop offset="0.5" stop-color="#6e8c70"/>
+      <stop offset="1" stop-color="#3f685f"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#174f62"/>
+      <stop offset="1" stop-color="#0f3448"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#07151d" flood-opacity="0.45"/>
+    </filter>
+    <pattern id="grid" width="390" height="844" patternUnits="userSpaceOnUse">
+      <path d="M390 0H0V844" fill="none" stroke="#b2efe0" stroke-opacity="0.14" stroke-width="3"/>
+    </pattern>
+    <pattern id="grass" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M18 58l8-22M29 58l-2-25M48 60l9-28M60 58l-3-18" stroke="#a0d5a3" stroke-width="5" stroke-linecap="round" opacity="0.22"/>
+      <circle cx="41" cy="24" r="4" fill="#d9f3c4" opacity="0.2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1560" height="2532" rx="42" fill="url(#world)"/>
+
+  <!-- Perimeter water and pools. These are boundaries and landmarks, not walls around the player. -->
+  <path d="M0 120C210 40 370 150 520 96C720 25 840 128 1010 72C1230 0 1415 84 1560 32V0H0Z" fill="url(#water)" opacity="0.9"/>
+  <path d="M0 2360C260 2250 400 2390 590 2322C820 2242 1040 2360 1240 2288C1380 2238 1490 2308 1560 2258V2532H0Z" fill="url(#water)" opacity="0.92"/>
+  <path d="M0 360C120 300 190 360 236 470C282 578 214 690 0 744Z" fill="url(#water)"/>
+  <path d="M1560 420C1448 354 1380 430 1358 538C1335 650 1415 748 1560 782Z" fill="url(#water)"/>
+  <path d="M0 1730C168 1640 296 1732 306 1880C316 2042 198 2120 0 2082Z" fill="url(#water)"/>
+  <path d="M1560 1690C1424 1625 1328 1734 1344 1870C1360 2016 1468 2090 1560 2050Z" fill="url(#water)"/>
+
+  <!-- The broad connected field: no single central corridor. -->
+  <path d="M206 292C380 188 610 234 780 278C950 228 1188 194 1350 330C1428 470 1360 666 1382 844C1420 1060 1360 1260 1404 1432C1430 1630 1350 1836 1376 2050C1268 2200 1050 2222 900 2168C700 2240 478 2182 300 2078C218 1900 248 1690 192 1488C222 1260 182 1034 216 844C188 646 140 456 206 292Z" fill="url(#field)" stroke="#9ed8ae" stroke-opacity="0.28" stroke-width="10" filter="url(#shadow)"/>
+  <path d="M206 292C380 188 610 234 780 278C950 228 1188 194 1350 330C1428 470 1360 666 1382 844C1420 1060 1360 1260 1404 1432C1430 1630 1350 1836 1376 2050C1268 2200 1050 2222 900 2168C700 2240 478 2182 300 2078C218 1900 248 1690 192 1488C222 1260 182 1034 216 844C188 646 140 456 206 292Z" fill="url(#grass)" opacity="0.55"/>
+
+  <!-- Wide movement lanes and loops. -->
+  <path d="M480 360C650 520 674 690 612 876C540 1092 556 1270 710 1400C852 1520 930 1732 820 2070" fill="none" stroke="#b5d99f" stroke-opacity="0.42" stroke-width="108" stroke-linecap="round"/>
+  <path d="M1080 330C900 520 906 700 1000 858C1100 1026 1110 1192 982 1370C848 1558 760 1750 850 2110" fill="none" stroke="#b5d99f" stroke-opacity="0.34" stroke-width="118" stroke-linecap="round"/>
+  <path d="M300 1220C520 1120 750 1120 950 1200C1130 1270 1240 1220 1336 1110" fill="none" stroke="#c2e2a7" stroke-opacity="0.3" stroke-width="128" stroke-linecap="round"/>
+
+  <!-- Four large zones. -->
+  <ellipse cx="780" cy="430" rx="460" ry="230" fill="#7fa68a" fill-opacity="0.18" stroke="#b8e2b1" stroke-opacity="0.26" stroke-width="6"/>
+  <ellipse cx="730" cy="1150" rx="550" ry="430" fill="#91b18a" fill-opacity="0.14" stroke="#d0edbb" stroke-opacity="0.22" stroke-width="6"/>
+  <ellipse cx="1175" cy="1735" rx="280" ry="350" fill="#6d9c8b" fill-opacity="0.2" stroke="#9fddc1" stroke-opacity="0.24" stroke-width="6"/>
+  <ellipse cx="560" cy="1950" rx="360" ry="310" fill="#528477" fill-opacity="0.22" stroke="#8fd5bd" stroke-opacity="0.25" stroke-width="6"/>
+
+  <!-- Landmark islands and bridges, deliberately placed at the edges. -->
+  <g fill="#31464a" stroke="#b0d0ac" stroke-opacity="0.4" stroke-width="7">
+    <path d="M262 490l112-82 86 60-38 112-112 34z"/>
+    <path d="M1268 520l92-52 74 86-52 112-108-26z"/>
+    <path d="M1120 1824l130-98 110 72-45 134-128 35z"/>
+    <path d="M330 2120l112-88 120 48 20 122-150 46z"/>
+  </g>
+  <g fill="none" stroke="#c9d8bd" stroke-opacity="0.62" stroke-width="20" stroke-linecap="round">
+    <path d="M100 640L320 560"/>
+    <path d="M1240 760L1510 680"/>
+    <path d="M1010 2050L1340 2140"/>
+    <path d="M90 1940L350 1860"/>
+  </g>
+
+  <!-- Start zone and center-of-play marker. -->
+  <circle cx="780" cy="1266" r="66" fill="#d7fff0" fill-opacity="0.18" stroke="#efffe2" stroke-width="6"/>
+  <circle cx="780" cy="1266" r="18" fill="#efffe2"/>
+  <text x="810" y="1274" fill="#efffe2" font-family="sans-serif" font-size="30" font-weight="700">СТАРТ</text>
+
+  <!-- 390x844 camera frame at the world center. -->
+  <rect x="585" y="844" width="390" height="844" rx="16" fill="none" stroke="#ffe3a4" stroke-width="10" stroke-dasharray="26 18"/>
+  <rect x="585" y="844" width="390" height="844" rx="16" fill="none" stroke="#fff6d3" stroke-opacity="0.18" stroke-width="34"/>
+  <text x="1005" y="870" fill="#ffe3a4" font-family="sans-serif" font-size="28" font-weight="700">КАМЕРА 390×844</text>
+
+  <!-- Spawn ring is outside the visible frame, giving hordes room to enter. -->
+  <rect x="425" y="684" width="710" height="1164" rx="56" fill="none" stroke="#ff8e8e" stroke-width="8" stroke-dasharray="34 24" stroke-opacity="0.9"/>
+  <text x="1145" y="700" fill="#ffb2a8" font-family="sans-serif" font-size="28" font-weight="700">КОЛЬЦО СПАВНА</text>
+
+  <!-- 4x3 viewport grid confirms the macro scale. -->
+  <rect width="1560" height="2532" fill="url(#grid)"/>
+  <rect x="10" y="10" width="1540" height="2512" rx="34" fill="none" stroke="#d4f4e6" stroke-opacity="0.5" stroke-width="6"/>
+
+  <g fill="#e5f5dc" font-family="sans-serif" font-size="34" font-weight="700">
+    <text x="540" y="190">СЕВЕРНОЕ СВЯТИЛИЩЕ</text>
+    <text x="562" y="1120">ЛУННЫЙ ЛУГ — ОТКРЫТОЕ ПОЛЕ</text>
+    <text x="1040" y="1735">РАЗРУШЕННЫЙ МОСТ</text>
+    <text x="320" y="1955">НИЖНИЕ ПРУДЫ</text>
+  </g>
+  <g fill="#b9e7d7" font-family="sans-serif" font-size="25">
+    <text x="44" y="2488">МИНИМУМ M1: 4 экрана по ширине × 3 по высоте · 1560×2532 world units</text>
+  </g>
+</svg>

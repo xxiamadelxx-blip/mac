@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844">
+  <rect width="390" height="844" fill="#23343a"/>
+  <path d="M0 630C70 590 140 610 205 585C270 560 320 575 390 535V844H0Z" fill="#314448"/>
+  <g opacity="0.55" fill="#59716d"><ellipse cx="70" cy="660" rx="48" ry="16"/><ellipse cx="310" cy="580" rx="56" ry="18"/><ellipse cx="218" cy="735" rx="62" ry="20"/></g>
+  <g fill="#526a61" opacity="0.7"><circle cx="52" cy="170" r="6"/><circle cx="335" cy="190" r="5"/><circle cx="298" cy="348" r="4"/><circle cx="82" cy="395" r="5"/></g>
+  <g transform="translate(195 420)"><circle r="18" fill="#d8e8df" opacity="0.9"/><path d="M0 -22L-9 7L0 20L9 7Z" fill="#7fae9e"/></g>
+  <g stroke="#586b67" stroke-width="1.5" opacity="0.65">
+    <circle cx="145" cy="390" r="19" fill="none"/><circle cx="122" cy="438" r="19" fill="none"/><circle cx="250" cy="382" r="19" fill="none"/><circle cx="278" cy="445" r="19" fill="none"/>
+  </g>
+  <g fill="#11191d" stroke="#687876" stroke-width="1.4">
+    <g transform="translate(145 390)"><ellipse rx="11" ry="7"/><path d="M-8 -4L-14 -11M8 -4L14 -11M-8 3L-16 0M8 3L16 0M-7 6L-13 13M7 6L13 13"/></g>
+    <g transform="translate(122 438)"><ellipse rx="11" ry="7"/><path d="M-8 -4L-14 -11M8 -4L14 -11M-8 3L-16 0M8 3L16 0M-7 6L-13 13M7 6L13 13"/></g>
+    <g transform="translate(250 382)"><ellipse rx="11" ry="7"/><path d="M-8 -4L-14 -11M8 -4L14 -11M-8 3L-16 0M8 3L16 0M-7 6L-13 13M7 6L13 13"/></g>
+    <g transform="translate(278 445)"><ellipse rx="11" ry="7"/><path d="M-8 -4L-14 -11M8 -4L14 -11M-8 3L-16 0M8 3L16 0M-7 6L-13 13M7 6L13 13"/></g>
+  </g>
+  <g opacity="0.88"><path d="M145 390L178 414" stroke="#768d89" stroke-width="3" stroke-linecap="round"/><path d="M250 382L217 412" stroke="#768d89" stroke-width="3" stroke-linecap="round"/></g>
+  <circle cx="95" cy="515" r="4" fill="#e6e2cd"/><circle cx="315" cy="510" r="5" fill="#a9b8d8"/><circle cx="246" cy="520" r="6" fill="#ad91bd"/>
+  <text x="16" y="30" fill="#e8e0ce" font-family="sans-serif" font-size="16">STAGE04 · TRUE 1× REVIEW · 390×844</text>
+  <text x="16" y="52" fill="#9fb2af" font-family="sans-serif" font-size="11">Ink Beetle candidate · enemy body / telegraph / XP value separation</text>
+  <rect x="14" y="784" width="362" height="42" rx="8" fill="#1b272c" opacity="0.92"/>
+  <text x="26" y="803" fill="#d9d3c2" font-family="sans-serif" font-size="11">Goal: readable rusher silhouette in a crowd without neon body glow.</text>
+  <text x="26" y="819" fill="#9fb2af" font-family="sans-serif" font-size="10">CANDIDATE / NOT RUNTIME / telegraph shown as short directional streak</text>
+</svg>

@@ -1,0 +1,125 @@
+{
+  "schema": "visual_lab_candidate_provenance_v02",
+  "stage_path": "docs/mockups/02-arena",
+  "status": "USER REVIEW",
+  "asset_kind": "arena_state_family",
+  "family_id": "moonveil-arena-soft-tonal-v02",
+  "source_references": [
+    {
+      "id": "user-reference-lin-yue-1000046654",
+      "sha256": "d011b81de57f20ea6987240d6dd4f1e4f7d57a479a94091974e05da7131129c4",
+      "notes": "Lin Yue identity family reference"
+    },
+    {
+      "id": "user-reference-soyeon-han-1000046655",
+      "sha256": "150e80d1c7accbe7c9dfd5c48d3739f03b0a94526d21d58477377e53c693dab7",
+      "notes": "Seoyeon Han identity family reference"
+    }
+  ],
+  "generator_or_tool": {
+    "name": "built-in image_gen",
+    "version": "UNVERIFIED",
+    "model_or_checkpoint": "UNVERIFIED",
+    "workflow_path": null,
+    "workflow_sha256": null,
+    "seed": null,
+    "plugins_or_nodes": []
+  },
+  "prompt_set": "visual_lab/prompt_sets/STAGE01_02_SOFT_TONAL_PROMPT_SET_v02.md",
+  "post_processing": [
+    {
+      "step": "resize to exact target viewport",
+      "tool": "ImageMagick convert",
+      "version": "UNVERIFIED",
+      "notes": "390x844!; strip metadata; sRGB"
+    }
+  ],
+  "scale_contract": {
+    "viewport": "390x844",
+    "hero_apparent_height_px": "40-55",
+    "normal_enemy_apparent_height_px": "18-30",
+    "open_field_target": "65-75% ordinary frames; 50-60% central route at 20:00",
+    "world_context": "large connected Moon Lotus Garden; frame is not full map"
+  },
+  "candidates": [
+    {
+      "candidate_id": "vl-20260909-arena-0m-v02",
+      "asset_id": "arena.composite.0m.v02",
+      "asset_kind": "hero_master_arena_screen",
+      "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_COMPOSITE_0M_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target gameplay frame",
+      "sha256": "e5ed4c6a365f4e6881bda9d2a5a649abf87c24e3479e663acbe3abf931e19eb7",
+      "parent_approved_master_candidate_id": null
+    },
+    {
+      "candidate_id": "vl-20260909-arena-5m-v02",
+      "asset_id": "arena.composite.5m.v02",
+      "asset_kind": "state_variant",
+      "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_COMPOSITE_5M_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target gameplay frame",
+      "sha256": "802a6ccd1a33d4fb55778bc9df750b51846da053b6866700f33b088825c82e48",
+      "parent_approved_master_candidate_id": "vl-20260909-arena-0m-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-arena-10m-v02",
+      "asset_id": "arena.composite.10m.v02",
+      "asset_kind": "state_variant",
+      "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_COMPOSITE_10M_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target gameplay frame",
+      "sha256": "7ba892e49979adf3805effcf535068c2e5ae125024bfaa8eca98815b4857213c",
+      "parent_approved_master_candidate_id": "vl-20260909-arena-0m-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-arena-15m-v02",
+      "asset_id": "arena.composite.15m.v02",
+      "asset_kind": "state_variant",
+      "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_COMPOSITE_15M_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target gameplay frame",
+      "sha256": "b97190addfffcc9fbec61b5ca93131c9a01ee301b57abd1be941640d5d61efbb",
+      "parent_approved_master_candidate_id": "vl-20260909-arena-0m-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-arena-20m-v02",
+      "asset_id": "arena.composite.20m.v02",
+      "asset_kind": "state_variant",
+      "path": "docs/mockups/02-arena/layers/STAGE02_ARENA_COMPOSITE_20M_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target gameplay frame",
+      "sha256": "375b2b14386811cd8a3d3fc1c20ce1904d1e6d5bdf424c827e4113d30edb5427",
+      "parent_approved_master_candidate_id": "vl-20260909-arena-0m-v02"
+    }
+  ],
+  "review": {
+    "technical_status": "TECHNICAL PASS — dimensions, sRGB, camera scale and static map-context progression verified; Godot/runtime/Android pending",
+    "artistic_status": "PENDING",
+    "review_pack_path": "docs/mockups/02-arena/STAGE02_ARENA_REVIEW_PACK_v02.md",
+    "creative_director_decision": null,
+    "decision_record_path": null,
+    "approved_exact_output_sha256": null
+  },
+  "promotion": {
+    "runtime_manifest_path": null,
+    "producing_commit": "0b99c4d4e4e0afc664ba2736eb485363672d4aa2",
+    "consumer_scene_or_ui": "scenes/arena/arena.tscn — not promoted",
+    "fallback_status": "existing v01 remains fallback/history until user approval"
+  }
+}

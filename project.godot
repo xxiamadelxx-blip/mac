@@ -1,0 +1,24 @@
+; Engine configuration file.
+; Moonveil: Eclipse — first menu navigation prototype.
+; Godot 4.x
+
+config_version=5
+
+[application]
+
+config/name="Moonveil: Eclipse"
+run/main_scene="res://scenes/menu/menu.tscn"
+
+[display]
+
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/size/window_width_override=390
+window/size/window_height_override=844
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.02, 0.055, 0.065, 1)

@@ -1,0 +1,73 @@
+{
+  "schema": "moonveil.arena.layer-map",
+  "version": 3,
+  "status": "USER REVIEW",
+  "family_id": "moonveil-arena-soft-tonal-v02",
+  "viewport": { "width": 390, "height": 844, "orientation": "portrait" },
+  "world": {
+    "width": 1560,
+    "height": 2532,
+    "screen_columns": 4,
+    "screen_rows": 3,
+    "camera_mode": "follow_with_dead_zone",
+    "open_playfield_ratio_min": 0.65,
+    "open_playfield_ratio_target": [0.65, 0.75],
+    "central_route_ratio_at_20m": [0.50, 0.60],
+    "spawn_ring_min_distance_viewports": 1,
+    "frame_is_world_window": true
+  },
+  "map_id": "flooded_lotus_moon_garden",
+  "scale_law": {
+    "hero_apparent_height_px": [40, 55],
+    "normal_enemy_apparent_height_px": [18, 30],
+    "elite_max_multiplier": 1.6,
+    "no_full_body_combat_art": true
+  },
+  "tonal_law": {
+    "deep_blue_gray": "base",
+    "smoky_desaturated_teal": "environment",
+    "mist_jade": "soft_highlight_xp_lin_yue",
+    "warm_ivory": "moon_text_light_fabric",
+    "muted_brass": "ui_frame_selected_border",
+    "restrained_desaturated_garnet": "soyeon_identity_rare_combat_accent",
+    "late_game_changes_density_not_saturation": true,
+    "toxic_neon_palette_forbidden": true
+  },
+  "layers": [
+    { "id": "background", "asset": "layers/STAGE02_ARENA_OPEN_FIELD_ART_v02.png", "z": 0, "collision": false, "scope": "camera_sector" },
+    { "id": "gameplay_terrain", "asset": "runtime/procedural", "z": 10, "collision": true, "notes": "Open connected field; landmarks remain peripheral." },
+    { "id": "ambient_vfx", "asset": "layers/STAGE02_ARENA_AMBIENT_VFX_v01.png", "z": 20, "collision": false, "runtime": true, "pooling": true },
+    { "id": "remains", "asset": "layers/STAGE02_ARENA_REMAINS_20M_v01.png", "z": 30, "collision": false, "runtime": true, "pooling": true },
+    { "id": "xp", "asset": "stage-09", "z": 40, "collision": false, "runtime": true, "notes": "Separate pale-jade pickup layer above remains." },
+    { "id": "hero_and_enemies", "asset": "stage-03-and-stage-04", "z": 60, "collision": "data-driven", "notes": "Compact gameplay-scale sprites." },
+    { "id": "foreground", "asset": "runtime/procedural", "z": 70, "collision": false, "notes": "Only edge foliage; never cover hero, telegraphs or XP." },
+    { "id": "hud_safe_area", "asset": "stage-10", "z": 100, "collision": false, "notes": "Minimal overlay; not baked into world art." }
+  ],
+  "candidate_composites": {
+    "0m": "layers/STAGE02_ARENA_COMPOSITE_0M_v02.png",
+    "5m": "layers/STAGE02_ARENA_COMPOSITE_5M_v02.png",
+    "10m": "layers/STAGE02_ARENA_COMPOSITE_10M_v02.png",
+    "15m": "layers/STAGE02_ARENA_COMPOSITE_15M_v02.png",
+    "20m": "layers/STAGE02_ARENA_COMPOSITE_20M_v02.png"
+  },
+  "camera": {
+    "start_center_world": [780, 1266],
+    "dead_zone": { "width": 150, "height": 260 },
+    "follow_target": "hero",
+    "clamp_to_world": true
+  },
+  "spawn": {
+    "mode": "outside_camera_ring",
+    "min_distance_from_camera_edge": 390,
+    "never_spawn_inside_viewport": true
+  },
+  "readability_rules": [
+    "Hero remains small and readable at target scale.",
+    "The player can circle a wave through open field.",
+    "Enemy quantity may rise, but enemy size and palette remain stable.",
+    "Remains never participate in collision or pathfinding.",
+    "XP remains visible above aftermath.",
+    "Late phase never uses toxic neon grading.",
+    "Static composite is evidence only; runtime must use separate layers."
+  ]
+}

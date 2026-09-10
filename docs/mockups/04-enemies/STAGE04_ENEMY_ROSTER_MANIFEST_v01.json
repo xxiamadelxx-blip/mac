@@ -1,0 +1,40 @@
+{
+  "schema": "moonveil.enemy.visual_roster",
+  "version": 1,
+  "stage": 4,
+  "stage_status": "IN_PROGRESS",
+  "family_id": "family.enemy.moonveil-soft-tonal.v01",
+  "visual_status": "PROPOSAL",
+  "artistic_status": "PENDING",
+  "runtime_status": "NOT_PROMOTED",
+  "balance_source": "docs/BALANCE_ECONOMY_SPEC.md",
+  "absolute_base_stats_status": "PENDING_B1",
+  "rules": {
+    "contact_damage_cooldown_seconds": 0.8,
+    "danger_zone_precedes_damage": true,
+    "elite_no_instant_contact_spawn": true,
+    "xp_primary_reward": true,
+    "ordinary_gold_drop": false,
+    "true_gameplay_viewport": "390x844"
+  },
+  "enemies": [
+    {"enemy_id":"ink_beetle","name_ru":"Чернильный жук","role":"rusher","scale_class":"S","movement":"direct_chase","attack":"contact","telegraph":"body_lean_ink_wake","weakness":"low_durability","first_phase":"0-2","durability_multiplier":1.0,"xp_band":"1-5","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"lantern_moth","name_ru":"Фонарь-мотылёк","role":"ranged","scale_class":"S","movement":"keep_distance","attack":"slow_projectile","telegraph":"lantern_pulse","weakness":"close_pressure","first_phase":"2-5","durability_multiplier":1.2,"xp_band":"5","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"bone_carp","name_ru":"Костяной карп","role":"dash_line","scale_class":"M","movement":"line_lock_then_dash","attack":"dash_contact","telegraph":"locked_line","weakness":"committed_direction","first_phase":"2-5","durability_multiplier":1.4,"xp_band":"5-15","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"paper_ghost","name_ru":"Бумажный призрак","role":"teleporter","scale_class":"M","movement":"teleport_after_flicker","attack":"contact_reposition","telegraph":"paper_flicker","weakness":"visible_pre_teleport_window","first_phase":"5-10","durability_multiplier":1.3,"xp_band":"5-15","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"jade_toad","name_ru":"Нефритовая жаба","role":"leap_zone","scale_class":"M","movement":"leap","attack":"poison_landing_zone","telegraph":"landing_circle","weakness":"recovery_after_landing","first_phase":"5-10","durability_multiplier":1.6,"xp_band":"15","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"mirror_fox","name_ru":"Зеркальный лисёнок","role":"decoy","scale_class":"M","movement":"flank_and_decoy","attack":"contact_or_decoy_pressure","telegraph":"mirror_split","weakness":"decoy_lower_hp","first_phase":"5-10","durability_multiplier":1.5,"xp_band":"15","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"bell_crab","name_ru":"Колокольный краб","role":"front_guard","scale_class":"L","movement":"slow_front_facing","attack":"contact_guard_pressure","telegraph":"shell_guard_pose","weakness":"rear_arc","first_phase":"10-15","durability_multiplier":2.4,"xp_band":"15-40","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"thread_doll","name_ru":"Нитяная кукла","role":"slow_beam","scale_class":"M","movement":"maintain_beam_range","attack":"slow_beam","telegraph":"thread_line","weakness":"break_distance","first_phase":"10-15","durability_multiplier":1.8,"xp_band":"15-40","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"stone_oni","name_ru":"Каменный они","role":"elite_slam","scale_class":"XL_ELITE","movement":"slow_pursuit","attack":"ground_slam","telegraph":"large_ground_circle","weakness":"slow_windup","first_phase":"10-15","durability_multiplier":7.0,"xp_band":"40-80","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"},
+    {"enemy_id":"eclipse_serpent","name_ru":"Змей затмения","role":"elite_trail","scale_class":"XL_ELITE","movement":"fast_curve","attack":"dark_trail_and_arcs","telegraph":"arc_warning_edge","weakness":"committed_curves","first_phase":"15-20","durability_multiplier":8.0,"xp_band":"80","base_hp":"PENDING_B1","base_damage":"PENDING_B1","base_speed":"PENDING_B1"}
+  ],
+  "representative_master": {
+    "enemy_id": "ink_beetle",
+    "asset_id": "enemy.ink_beetle.master",
+    "candidate_id": "vl-20260909-enemy-ink-beetle-master-v01",
+    "status": "PROPOSAL",
+    "technical_status": "PENDING",
+    "artistic_status": "PENDING"
+  }
+}

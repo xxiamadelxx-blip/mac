@@ -1,0 +1,1099 @@
+{
+  "schema_version": "0.1",
+  "status": "TEMPLATE",
+  "model_id": "moonveil_first_run_balance",
+  "source_of_truth": {
+    "path": "docs/BALANCE_ECONOMY_SPEC.md",
+    "version": "0.1",
+    "status": "DESIGN_BASELINE_LIVE_READ_REQUIRED",
+    "source_revision": null
+  },
+  "repository_evidence": {
+    "repository": "xxiamadelxx-blip/mac",
+    "branch": null,
+    "head": null,
+    "captured_at": null
+  },
+  "units": {
+    "time": "seconds",
+    "distance": "world_units",
+    "damage": "hp",
+    "speed": "world_units_per_second",
+    "cooldown": "seconds",
+    "xp": "integer",
+    "currency": "integer"
+  },
+  "provenance_statuses": [
+    "CANON",
+    "DERIVED",
+    "PENDING_B1",
+    "PENDING_PRODUCT_DECISION",
+    "TEST_PLACEHOLDER",
+    "IMPLEMENTED",
+    "NOT_IMPLEMENTED",
+    "BLOCKED"
+  ],
+  "hero_stats": {
+    "base": {
+      "hp": {
+        "value": 100,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "move_speed_percent": {
+        "value": 100,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "damage_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "weapon_cooldown_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "armor": {
+        "value": 0,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "magnet_percent": {
+        "value": 100,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "crit_chance": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "crit_multiplier": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      }
+    },
+    "heroes": [
+      {
+        "hero_id": "hero_linyue",
+        "hp": {
+          "value": 90,
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "move_speed_percent": {
+          "value": 100,
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "special_rule": {
+          "value": "pickup_radius_120_percent; ranged_control",
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "tradeoff": {
+          "value": "weaker_in_melee",
+          "status": "CANON",
+          "source": "B1 section 3"
+        }
+      },
+      {
+        "hero_id": "hero_soyeon_han",
+        "hp": {
+          "value": 110,
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "move_speed_percent": {
+          "value": 112,
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "special_rule": {
+          "value": "dash; melee_damage; critical_windows",
+          "status": "CANON",
+          "source": "B1 section 3"
+        },
+        "tradeoff": {
+          "value": "must_play_near_horde",
+          "status": "CANON",
+          "source": "B1 section 3"
+        }
+      }
+    ]
+  },
+  "wave_bands": [
+    {
+      "wave_band_id": "wave_00_02",
+      "start_seconds": 0,
+      "end_seconds": 120,
+      "label": "warmup",
+      "spawn_budget_per_second": {
+        "value": 6,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "active_cap": {
+        "value": 40,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_hp_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_damage_multiplier": {
+        "value": 0.7,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_speed_multiplier": {
+        "value": 0.9,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "composition": {
+        "value": [
+          "enemy_ink_beetle"
+        ],
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "level_target": {
+        "value": 2,
+        "status": "CANON",
+        "source": "B1 section 4"
+      }
+    },
+    {
+      "wave_band_id": "wave_02_05",
+      "start_seconds": 120,
+      "end_seconds": 300,
+      "label": "first_pressure",
+      "spawn_budget_per_second": {
+        "value": 10,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "active_cap": {
+        "value": 80,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_hp_multiplier": {
+        "value": 1.1,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_damage_multiplier": {
+        "value": 0.85,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_speed_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "composition": {
+        "value": [
+          "enemy_ink_beetle",
+          "enemy_lantern_moth",
+          "enemy_bone_carp"
+        ],
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "level_target": {
+        "value": 5,
+        "status": "CANON",
+        "source": "B1 section 4"
+      }
+    },
+    {
+      "wave_band_id": "wave_05_10",
+      "start_seconds": 300,
+      "end_seconds": 600,
+      "label": "threat_expansion",
+      "spawn_budget_per_second": {
+        "value": 15,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "active_cap": {
+        "value": 130,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_hp_multiplier": {
+        "value": 1.35,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_damage_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_speed_multiplier": {
+        "value": 1.02,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "composition": {
+        "value": [
+          "enemy_ink_beetle",
+          "enemy_lantern_moth",
+          "enemy_bone_carp",
+          "enemy_paper_ghost",
+          "enemy_jade_toad",
+          "enemy_mirror_fox"
+        ],
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "level_target": {
+        "value": 9,
+        "status": "CANON",
+        "source": "B1 section 4"
+      }
+    },
+    {
+      "wave_band_id": "wave_10_15",
+      "start_seconds": 600,
+      "end_seconds": 900,
+      "label": "elite_band",
+      "spawn_budget_per_second": {
+        "value": 22,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "active_cap": {
+        "value": 200,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_hp_multiplier": {
+        "value": 1.7,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_damage_multiplier": {
+        "value": 1.25,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_speed_multiplier": {
+        "value": 1.05,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "composition": {
+        "value": [
+          "enemy_ink_beetle",
+          "enemy_lantern_moth",
+          "enemy_bone_carp",
+          "enemy_paper_ghost",
+          "enemy_jade_toad",
+          "enemy_mirror_fox",
+          "enemy_bell_crab",
+          "enemy_thread_doll",
+          "elite_stone_oni",
+          "elite_eclipse_serpent"
+        ],
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "level_target": {
+        "value": 13,
+        "status": "CANON",
+        "source": "B1 section 4"
+      }
+    },
+    {
+      "wave_band_id": "wave_15_20",
+      "start_seconds": 900,
+      "end_seconds": 1200,
+      "label": "eclipse",
+      "spawn_budget_per_second": {
+        "value": 30,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "active_cap": {
+        "value": 280,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_hp_multiplier": {
+        "value": 2.2,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_damage_multiplier": {
+        "value": 1.55,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "enemy_speed_multiplier": {
+        "value": 1.08,
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "composition": {
+        "value": "full_roster; empowered_elites",
+        "status": "CANON",
+        "source": "B1 section 4"
+      },
+      "level_target": {
+        "value": "17-18",
+        "status": "CANON",
+        "source": "B1 section 4"
+      }
+    }
+  ],
+  "boss_interruption": {
+    "ordinary_spawn_reduction_seconds": {
+      "value": 8,
+      "status": "CANON",
+      "source": "B1 section 4"
+    },
+    "spawn_budget_factor_at_start": {
+      "value": 0.7,
+      "status": "CANON",
+      "source": "B1 section 4"
+    },
+    "spawn_budget_factor_at_end": {
+      "value": 1,
+      "status": "CANON",
+      "source": "B1 section 4"
+    },
+    "recovery_duration_seconds": {
+      "value": 20,
+      "status": "CANON",
+      "source": "B1 section 4"
+    }
+  },
+  "enemy_archetypes": [
+    {
+      "enemy_id": "enemy_ink_beetle",
+      "role": "rusher",
+      "durability_multiplier": {
+        "value": 1,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 1,
+        "max": 5,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_lantern_moth",
+      "role": "ranged",
+      "durability_multiplier": {
+        "value": 1.2,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 5,
+        "max": 5,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_bone_carp",
+      "role": "telegraphed_dash",
+      "durability_multiplier": {
+        "value": 1.4,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 5,
+        "max": 15,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_paper_ghost",
+      "role": "teleport",
+      "durability_multiplier": {
+        "value": 1.3,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 5,
+        "max": 15,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_jade_toad",
+      "role": "jump_and_zone",
+      "durability_multiplier": {
+        "value": 1.6,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 15,
+        "max": 15,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_mirror_fox",
+      "role": "decoy_copy",
+      "durability_multiplier": {
+        "value": 1.5,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 15,
+        "max": 15,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_bell_crab",
+      "role": "front_block_rear_weakness",
+      "durability_multiplier": {
+        "value": 2.4,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 15,
+        "max": 40,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "enemy_thread_doll",
+      "role": "slow_beam",
+      "durability_multiplier": {
+        "value": 1.8,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 15,
+        "max": 40,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "elite_stone_oni",
+      "role": "slow_elite_telegraphed_aoe",
+      "durability_multiplier": {
+        "value": 7,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 40,
+        "max": 80,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    },
+    {
+      "enemy_id": "elite_eclipse_serpent",
+      "role": "fast_elite_trail_arcs",
+      "durability_multiplier": {
+        "value": 8,
+        "status": "CANON",
+        "source": "B1 section 5"
+      },
+      "base_hp": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_damage": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "base_speed": {
+        "value": null,
+        "status": "PENDING_B1",
+        "source": "B1/GAME_MANIFEST"
+      },
+      "xp": {
+        "min": 80,
+        "max": 80,
+        "status": "CANON",
+        "source": "B1 section 5"
+      }
+    }
+  ],
+  "combat_rules": {
+    "contact_damage_cooldown_seconds": {
+      "value": 0.8,
+      "status": "CANON",
+      "source": "B1 section 5"
+    },
+    "telegraph_required": {
+      "value": true,
+      "status": "CANON",
+      "source": "B1 section 5"
+    },
+    "elite_safe_spawn": {
+      "value": true,
+      "status": "CANON",
+      "source": "B1 section 5"
+    },
+    "same_frame_damage_stack": {
+      "value": "forbidden",
+      "status": "CANON",
+      "source": "B1 section 5"
+    },
+    "damage_pipeline_status": "PENDING_PRODUCT_DECISION",
+    "crit_pipeline_status": "PENDING_B1",
+    "boss_time_to_kill_seconds": {
+      "first_slice": {
+        "min": 45,
+        "max": 80,
+        "status": "CANON",
+        "source": "B1 section 3"
+      },
+      "final": {
+        "min": 90,
+        "max": 120,
+        "status": "CANON",
+        "source": "B1 section 3"
+      }
+    }
+  },
+  "progression": {
+    "xp_drop_values": {
+      "value": [
+        1,
+        5,
+        15,
+        40,
+        80,
+        250
+      ],
+      "status": "CANON",
+      "source": "B1 section 6"
+    },
+    "xp_to_next_formula": {
+      "value": "round(30 + 12 * (L - 1) + 3 * (L - 1)^1.35)",
+      "status": "CANON",
+      "source": "B1 section 6"
+    },
+    "level_timing_targets": {
+      "first_level_seconds": {
+        "min": 30,
+        "max": 45
+      },
+      "level_at_10_minutes": 9,
+      "first_evolution_minutes": {
+        "min": 8,
+        "max": 12
+      },
+      "status": "CANON",
+      "source": "B1 section 6"
+    },
+    "upgrade_offer_rules": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST/B1"
+    }
+  },
+  "synergy_and_chests": {
+    "weapon_ids": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST"
+    },
+    "passive_ids": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST"
+    },
+    "synergy_ids": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST/B1"
+    },
+    "eligibility_rules": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST/B1"
+    },
+    "fallback_outcome": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "B1/GAME_MANIFEST"
+    },
+    "boss_chest": {
+      "source_kind": "BOSS_CHEST",
+      "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
+      "outcome": "SYNERGY_OR_FALLBACK",
+      "final_boss_policy": "NO_CHEST"
+    },
+    "artifact_offer_separation": {
+      "sources": [
+        "ELITE_PACK",
+        "FIRST_CLEAR_REWARD"
+      ],
+      "choice_count": 3,
+      "selection": "ONE_OF_THREE",
+      "active_capacity": "UNBOUNDED_WITHIN_RUN",
+      "consumes_weapon_or_passive_slots": false,
+      "effect_types": [
+        "AURA",
+        "DERIVED_STAT",
+        "TARGET_MODIFIER",
+        "WEAPON_MODIFIER",
+        "TRIGGERED_EFFECT",
+        "COOLDOWN_MODIFIER"
+      ],
+      "exact_effects": "PENDING_PRODUCT_DECISION",
+      "refresh_policy": "PENDING_PRODUCT_DECISION",
+      "duplicate_stacking_policy": "PENDING_PRODUCT_DECISION",
+      "elite_pack_schedule": "PENDING_B1"
+    }
+  },
+  "boss_checkpoints": [
+    {
+      "checkpoint_id": "boss_01_05",
+      "time_seconds": 300,
+      "boss_id": null,
+      "boss_status": "PENDING_B1",
+      "source": "B1/GAME_MANIFEST"
+    },
+    {
+      "checkpoint_id": "boss_02_10",
+      "time_seconds": 600,
+      "boss_id": null,
+      "boss_status": "PENDING_B1",
+      "source": "B1/GAME_MANIFEST"
+    },
+    {
+      "checkpoint_id": "boss_03_15",
+      "time_seconds": 900,
+      "boss_id": null,
+      "boss_status": "PENDING_B1",
+      "source": "B1/GAME_MANIFEST"
+    },
+    {
+      "checkpoint_id": "boss_final_20",
+      "time_seconds": 1200,
+      "boss_id": null,
+      "boss_status": "PENDING_B1",
+      "source": "B1/GAME_MANIFEST"
+    }
+  ],
+  "rewards": {
+    "wallets": [
+      "gold",
+      "moon_seals",
+      "boss_essence"
+    ],
+    "checkpoint_rewards": [
+      {
+        "checkpoint_id": "boss_01_05",
+        "gold": 50,
+        "moon_seals": 15,
+        "boss_essence": 1,
+        "status": "CANON",
+        "source": "B1 section 7"
+      },
+      {
+        "checkpoint_id": "boss_02_10",
+        "gold": 75,
+        "moon_seals": 20,
+        "boss_essence": 1,
+        "status": "CANON",
+        "source": "B1 section 7"
+      },
+      {
+        "checkpoint_id": "boss_03_15",
+        "gold": 100,
+        "moon_seals": 25,
+        "boss_essence": 1,
+        "status": "CANON",
+        "source": "B1 section 7"
+      },
+      {
+        "checkpoint_id": "boss_final_20",
+        "gold": 200,
+        "moon_seals": 60,
+        "boss_essence": 2,
+        "status": "CANON",
+        "source": "B1 section 7"
+      }
+    ],
+    "first_clear_bonus": {
+      "gold": 300,
+      "moon_seals": 180,
+      "boss_essence": 1,
+      "status": "CANON",
+      "source": "B1 section 7",
+      "artifact_offer": {
+        "value": true,
+        "source": "B1 section 7 plus approved product decision",
+        "semantics": "separate post-result three-card FIRST_CLEAR_REWARD offer",
+        "status": "CANON_PRODUCT_RESOLUTION"
+      }
+    },
+    "full_first_clear_total": {
+      "gold": 725,
+      "moon_seals": 300,
+      "boss_essence": 6,
+      "status": "CANON",
+      "source": "B1 section 7"
+    },
+    "repeat_clear_total": {
+      "gold": 425,
+      "moon_seals": 120,
+      "boss_essence": 5,
+      "status": "CANON",
+      "source": "B1 section 7"
+    },
+    "defeat_after_checkpoint": {
+      "gold_factor": 0.5,
+      "earned_boss_essence_factor": 1,
+      "moon_seals_for_defeated_boss_only": true,
+      "status": "CANON",
+      "source": "B1 section 7"
+    },
+    "ledger_idempotency_key": {
+      "value": null,
+      "status": "PENDING_PRODUCT_DECISION",
+      "source": "GAME_MANIFEST/B1"
+    }
+  },
+  "meta_economy": {
+    "passive_branches": [
+      {
+        "branch_id": "vitality",
+        "effect_per_rank": "+2% max HP",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      },
+      {
+        "branch_id": "power",
+        "effect_per_rank": "+2% total damage",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      },
+      {
+        "branch_id": "agility",
+        "effect_per_rank": "+1.5% move speed",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      },
+      {
+        "branch_id": "focus",
+        "effect_per_rank": "-1.5% weapon cooldown",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      },
+      {
+        "branch_id": "magnet",
+        "effect_per_rank": "+4% pickup radius",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      },
+      {
+        "branch_id": "defense",
+        "effect_per_rank": "+1% damage reduction",
+        "max_ranks": 10,
+        "status": "CANON",
+        "source": "B1 section 8"
+      }
+    ],
+    "rank_cost_formula": {
+      "value": "round(100 * 1.45^rank)",
+      "status": "CANON",
+      "source": "B1 section 8"
+    },
+    "summon_rules": {
+      "value": "single_100; ten_900; ten_pull_guarantee; new_hero_guarantee_at_40_if_available",
+      "status": "CANON",
+      "source": "B1 section 9"
+    },
+    "paid_gacha_in_m1": {
+      "value": false,
+      "status": "CANON",
+      "source": "B1 section 9"
+    }
+  },
+  "run_stats_contract": {
+    "required_fields": [
+      "current_hp",
+      "max_hp",
+      "attack",
+      "crit_chance",
+      "crit_multiplier",
+      "move_speed",
+      "weapon_cooldown",
+      "weapon_levels",
+      "passive_levels",
+      "active_synergies",
+      "artifacts",
+      "level",
+      "xp",
+      "elapsed_time",
+      "current_wave_band",
+      "enemies_defeated",
+      "bonus_state",
+      "checkpoint_rewards",
+      "diagnostics"
+    ],
+    "status": "CANON",
+    "source": "user brief + first-run architecture contract"
+  },
+  "profiles": {
+    "fresh": {
+      "global_upgrade_level": 0,
+      "status": "PENDING_SIMULATION"
+    },
+    "moderate": {
+      "global_upgrade_definition": null,
+      "status": "PENDING_PRODUCT_DECISION"
+    },
+    "max_m1": {
+      "global_upgrade_definition": null,
+      "status": "PENDING_PRODUCT_DECISION"
+    }
+  },
+  "invariants": [
+    {
+      "id": "INV_NO_UNTELEGRAPHED_LETHAL_HIT",
+      "status": "CANON",
+      "source": "B1 section 10"
+    },
+    {
+      "id": "INV_LEVEL_GAP_BOUND",
+      "status": "CANON",
+      "source": "B1 section 10"
+    },
+    {
+      "id": "INV_SYNERGY_POWER_CEILING",
+      "status": "CANON",
+      "source": "B1 section 10"
+    },
+    {
+      "id": "INV_BOSS_REACTION_WINDOW",
+      "status": "CANON",
+      "source": "B1 section 10"
+    },
+    {
+      "id": "INV_ACTIVE_MASS_CAP",
+      "status": "CANON",
+      "source": "B1 section 10"
+    },
+    {
+      "id": "INV_REWARD_IDEMPOTENCY",
+      "status": "CANON",
+      "source": "B1/GAME_MANIFEST"
+    },
+    {
+      "id": "INV_SEPARATE_XP_AFTERMATH",
+      "status": "CANON",
+      "source": "B1/AGENT_CONTEXT"
+    }
+  ],
+  "acceptance": {
+    "source": "docs/BALANCE_ECONOMY_SPEC.md section 10",
+    "status": "PENDING_SIMULATION_AND_RUNTIME",
+    "evidence": []
+  },
+  "artifact_offer_model": {
+    "status": "PENDING_PRODUCT_DECISION",
+    "choice_count": 3,
+    "sources": [
+      "ELITE_PACK",
+      "FIRST_CLEAR_REWARD"
+    ],
+    "active_capacity": "UNBOUNDED_WITHIN_RUN",
+    "effect_types": [
+      "AURA",
+      "DERIVED_STAT",
+      "TARGET_MODIFIER",
+      "WEAPON_MODIFIER",
+      "TRIGGERED_EFFECT",
+      "COOLDOWN_MODIFIER"
+    ],
+    "refresh_policy": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "cost_type": null,
+      "cost_value": null,
+      "max_refreshes": null,
+      "reroll_behavior": null
+    },
+    "duplicate_stacking_policy": {
+      "status": "PENDING_PRODUCT_DECISION",
+      "policy": null
+    },
+    "elite_pack_schedule": {
+      "status": "PENDING_B1",
+      "cadence": null,
+      "size": null,
+      "composition": null
+    }
+  }
+}

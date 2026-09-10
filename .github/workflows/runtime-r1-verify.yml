@@ -1,0 +1,72 @@
+name: R1 Runtime Verification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/runtime/**"
+      - "scenes/arena/arena.tscn"
+      - "docs/agents/balance-economy/BALANCE_MODEL.json"
+      - "project.godot"
+      - ".github/workflows/runtime-r1-verify.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r1-runtime:
+    name: Godot R1 runtime acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: barichello/godot-ci:4.7.2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run R1 checks
+        shell: bash
+        run: |
+          set +e -u -o pipefail
+          mkdir -p build/verification
+          failed=0
+
+          # Bootstrap Godot's project and global-script cache before direct script execution.
+          godot --headless --path . --editor --quit \
+            2>&1 | tee build/verification/godot-import.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/godot-import.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+
+          godot --headless --path . --script scripts/runtime/r1_runtime_test.gd \
+            2>&1 | tee build/verification/r1-runtime-test.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/r1-runtime-test.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+          if ! grep -Eq 'R1_RUNTIME_TEST \{.*"ok":true' build/verification/r1-runtime-test.log; then
+            echo "Required R1_RUNTIME_TEST success marker was not found."
+            failed=1
+          fi
+
+          godot --headless --path . res://scenes/arena/arena.tscn --quit-after 1 \
+            2>&1 | tee build/verification/arena-smoke.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/arena-smoke.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+          if ! grep -Fq 'R1_RUNTIME_TRACE' build/verification/arena-smoke.log; then
+            echo "Required R1_RUNTIME_TRACE marker was not found."
+            failed=1
+          fi
+
+          if [ "${failed}" -ne 0 ]; then
+            exit 1
+          fi

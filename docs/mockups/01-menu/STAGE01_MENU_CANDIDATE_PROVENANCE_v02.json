@@ -1,0 +1,157 @@
+{
+  "schema": "visual_lab_candidate_provenance_v02",
+  "stage_path": "docs/mockups/01-menu",
+  "status": "USER REVIEW",
+  "asset_kind": "screen_family",
+  "family_id": "moonveil-menu-soft-tonal-v02",
+  "source_references": [
+    {
+      "id": "user-reference-lin-yue-1000046654",
+      "sha256": "d011b81de57f20ea6987240d6dd4f1e4f7d57a479a94091974e05da7131129c4",
+      "notes": "Lin Yue identity and costume reference"
+    },
+    {
+      "id": "user-reference-soyeon-han-1000046655",
+      "sha256": "150e80d1c7accbe7c9dfd5c48d3739f03b0a94526d21d58477377e53c693dab7",
+      "notes": "Seoyeon Han identity and costume reference"
+    }
+  ],
+  "generator_or_tool": {
+    "name": "built-in image_gen",
+    "version": "UNVERIFIED",
+    "model_or_checkpoint": "UNVERIFIED",
+    "workflow_path": null,
+    "workflow_sha256": null,
+    "seed": null,
+    "plugins_or_nodes": []
+  },
+  "prompt_set": "visual_lab/prompt_sets/STAGE01_02_SOFT_TONAL_PROMPT_SET_v02.md",
+  "post_processing": [
+    {
+      "step": "resize to exact target viewport",
+      "tool": "ImageMagick convert",
+      "version": "UNVERIFIED",
+      "notes": "390x844!; strip metadata; sRGB"
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "vl-20260909-menu-home-v02",
+      "asset_id": "menu.home.v02",
+      "asset_kind": "hero_master_screen",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_HOME_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "c200ee052b32e63c228c54a3145499f5b30e3457709741f3fba32d7759744244",
+      "parent_approved_master_candidate_id": null
+    },
+    {
+      "candidate_id": "vl-20260909-menu-characters-v02",
+      "asset_id": "menu.characters.v02",
+      "asset_kind": "screen",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_HEROES_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "6c69220da0b7da879762603103c62b661d388b0ef203393f355b211ae58f6339",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-run-setup-v02",
+      "asset_id": "menu.run_setup.v02",
+      "asset_kind": "screen",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_RUN_SETUP_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "05e3e2dad3cd0a39ec985f2b41f845c3099afce2b81e26e10cbe1f8f20709a6e",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-loading-v02",
+      "asset_id": "menu.loading.v02",
+      "asset_kind": "screen",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_LOADING_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "44f037ac108be16d16d70b090e8db4e8182106eeec4cfe369a65c105c435f9a0",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-victory-soyeon-v02",
+      "asset_id": "menu.result.victory.soyeon.v02",
+      "asset_kind": "screen_variant",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_RESULT_VICTORY_SOYEON_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "db690c380d350a4d2eefd9e2b20be30ea103c050090b91bdca79fa2c4ed13750",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-victory-lin-v02",
+      "asset_id": "menu.result.victory.lin.v02",
+      "asset_kind": "screen_variant",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_RESULT_VICTORY_LIN_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "60624a240d109af74449a47bf13b5550bf475deadbcf3be4c4d297c6250dc956",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-defeat-lin-v02",
+      "asset_id": "menu.result.defeat.lin.v02",
+      "asset_kind": "screen_variant",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_RESULT_DEFEAT_LIN_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "6b5bb9fd8b15aa408c835314d257399449c2296ea1bb03ae6320cea988acba2f",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    },
+    {
+      "candidate_id": "vl-20260909-menu-defeat-soyeon-v02",
+      "asset_id": "menu.result.defeat.soyeon.v02",
+      "asset_kind": "screen_variant",
+      "path": "docs/mockups/01-menu/STAGE01_MENU_RESULT_DEFEAT_SOYEON_v02.png",
+      "dimensions": [
+        390,
+        844
+      ],
+      "scale": "1x target viewport",
+      "sha256": "0e4cb049d1cc0ca84548111266f7f758c5cd08341332c5fd08a764d166a1216e",
+      "parent_approved_master_candidate_id": "vl-20260909-menu-home-v02"
+    }
+  ],
+  "review": {
+    "technical_status": "TECHNICAL PASS — dimensions, sRGB and target viewport verified; Godot import pending",
+    "artistic_status": "PENDING",
+    "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_REVIEW_PACK_v02.md",
+    "creative_director_decision": null,
+    "decision_record_path": null,
+    "approved_exact_output_sha256": null
+  },
+  "promotion": {
+    "runtime_manifest_path": null,
+    "producing_commit": "0b99c4d4e4e0afc664ba2736eb485363672d4aa2",
+    "consumer_scene_or_ui": "scenes/menu/menu.tscn — not promoted",
+    "fallback_status": "existing v01 remains fallback/history until user approval"
+  }
+}
