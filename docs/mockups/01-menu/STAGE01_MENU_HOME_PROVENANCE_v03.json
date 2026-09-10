@@ -4,10 +4,17 @@
   "secondary_route": "UI_ART",
   "stage_path": "docs/mockups/01-menu/",
   "candidate_id": "vl-20260910-moonveil-menu-home-v03",
-  "status": "USER REVIEW",
+  "status": "REJECTED NON-PROMOTABLE",
   "asset_id": "menu.home.soft_tonal.v03",
   "family_id": "moonveil-menu-soft-tonal-v02",
   "asset_kind": "hero_master",
+  "decision": {
+    "status": "REJECTED",
+    "decided_by": "Creative Director / user",
+    "decided_on": "2026-09-10",
+    "reason": "Главный экран не принят; нужен полный набор экранов, правильный поток главное меню -> выбор этапа -> выбор персонажа, экран магазина пассивных улучшений и отдельные PNG-ассеты всех активных кнопок.",
+    "replacement_candidate_id": "vl-20260910-moonveil-menu-system-v04"
+  },
   "source_references": [
     {
       "id": "docs/mockups/01-menu/README.md",
@@ -29,7 +36,7 @@
     "project_revision": "main@fa7a32828d17d79a1af9f204df43f2412bbcd4f1",
     "request_revision": "user-request-2026-09-10",
     "parent_approved_master_candidate_id": null,
-    "notes": "Uses existing soft-tonal v02 family language; no heroine identity changes."
+    "notes": "Candidate is preserved only as rejected evidence; never promoted."
   },
   "generator_or_tool": {
     "name": "OpenAI built-in image generation + ImageMagick raster composition",
@@ -39,22 +46,14 @@
     "workflow_sha256": "fa4c5fcb1d6d9ce4cbc650f1dadc32059f724978",
     "seed": null,
     "plugins_or_nodes": [],
-    "notes": "The final deliverable is a PNG image. No visual code source is retained."
+    "notes": "PNG candidate was not delivered to Supabase."
   },
   "editable_source": {
     "path": null,
     "sha256": null,
     "format": null,
-    "notes": "Raster candidate; no editable source retained in GitHub."
+    "notes": "No source retained for rejected candidate."
   },
-  "post_processing": [
-    {
-      "step": "Compose generated garden illustration and menu treatment, then rasterize the final viewport",
-      "tool": "ImageMagick / Inkscape rasterizer",
-      "version": "UNVERIFIED",
-      "notes": "Final output is a self-contained PNG; temporary composition source was discarded."
-    }
-  ],
   "runtime_export": {
     "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png",
     "bucket": "visual-assets",
@@ -70,7 +69,7 @@
     ],
     "sha256": "be328b1802aa2c5e46e8ddf2a126df852bc16d330879f99e6951171cb07181b0",
     "bytes": 387921,
-    "storage_status": "BLOCKED_UPLOAD",
+    "storage_status": "NOT_DELIVERED",
     "object_exists_at_last_check": false
   },
   "gameplay_preview": {
@@ -83,17 +82,17 @@
   },
   "review": {
     "technical_status": "PARTIAL / STATIC_IMAGE_PASS",
-    "artistic_status": "PENDING",
-    "storage_status": "BLOCKED_UPLOAD",
+    "artistic_status": "REJECTED",
+    "storage_status": "NOT_DELIVERED",
     "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
-    "creative_director_decision": null,
-    "decision_record_path": null,
+    "creative_director_decision": "REJECTED",
+    "decision_record_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
     "approved_exact_output_sha256": null
   },
   "promotion": {
     "runtime_manifest_path": null,
     "producing_commit": "fa7a32828d17d79a1af9f204df43f2412bbcd4f1",
-    "consumer_scene_or_ui": "menu home mockup only; not promoted",
-    "fallback_status": "not applicable"
+    "consumer_scene_or_ui": "not promoted",
+    "fallback_status": "rejected non-promotable"
   }
 }
