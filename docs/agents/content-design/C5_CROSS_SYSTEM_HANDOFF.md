@@ -30,10 +30,10 @@ Repository: `xxiamadelxx-blip/mac`
 | Weapons | 10 stable IDs, слоты 6, max level 6 | 10 records | `CONTENT_SPECIFIED` |
 | Run passives | 10 stable IDs, слоты 6, max rank 5; каждая passive даёт общую выгоду и лишь имеет weapon binding для eligibility синергии | 10 records | `CONTENT_SPECIFIED` |
 | Synergies / evolutions | 10 direct weapon + passive pairs, max 5 claims per run | 10 records; evaluator contract есть | `CONTENT_SPECIFIED`, numeric binding pending |
-| Run artifacts | 10 IDs, отдельный от passive slot поток, offer ровно 3 карты | 8 records; `artifact_tideglass` и `artifact_silent_lantern` не синхронизированы; `artifact_effects.definitions` пуст | `CONTENT_SPECIFIED`, `REGISTRY_SYNC_PENDING` |
+| Run artifacts | 10 IDs, отдельный от passive slot поток, offer ровно 3 карты; C2 теперь задаёт 10 semantic effect keys и content defaults для refresh/duplicate | 8 records; `artifact_tideglass` и `artifact_silent_lantern` не синхронизированы; runtime `artifact_effects.definitions` пуст | `CONTENT_SPECIFIED`, `REGISTRY_SYNC_PENDING` |
 | Future enemies | 4 proposals: `enemy_lotus_usher`, `enemy_moonroot_burrower`, `enemy_silver_reed_seer`, `enemy_moontrail_stalker` | 10 base enemies; extension slots присутствуют как null records | `CONTENT_SPECIFIED`, balance/registry pending |
-| Mini-bosses | C3 описывает 2: `miniboss_ink_jade_warden`, `miniboss_veil_harvester` | Architecture содержит 3 intermediate records, третий — `miniboss_extension_slot_03` без identity; live B1 Registry, по R3 handoff, пока содержит 0 mini-boss records | `CONTENT_SPECIFIED`, roster/registry conflict |
-| Main bosses | C3/старый content snapshot покрывает существующий набор; новые identity для extension slots не описаны | 6 records, из них `boss_extension_slot_04` и `boss_extension_slot_05` без names/mechanics | `REGISTRY_SYNC_PENDING` |
+| Mini-bosses | C3 теперь описывает 5: `miniboss_ink_jade_warden`, `miniboss_veil_harvester`, `miniboss_lotus_ritekeeper`, `miniboss_bell_rhythm_ascetic`, `miniboss_moonroot_ferryman` | Architecture содержит 3 intermediate records, третий — `miniboss_extension_slot_03` без identity; live B1 Registry, по R3 handoff, пока содержит 0 mini-boss records | `CONTENT_SPECIFIED`, registry sync conflict |
+| Main bosses | C3 добавляет content proposals `boss_tideglass_regent` и `boss_omen_paper_archivist` для slots 04/05 | 6 records, из них `boss_extension_slot_04` и `boss_extension_slot_05` пока без synchronized identity | `CONTENT_SPECIFIED`, registry sync pending |
 | Arena drops | C4 описывает 7 IDs и effect intent | `RunSession.drops` содержит только XP и aftermath; typed arena-drop registry/event contract отсутствует | `CONTENT_SPECIFIED`, runtime/architecture pending |
 | Meta passive tree | 6 branches, 17 stat nodes, branch cap 10, node cap 5, currency Gold, applies next run | отдельный C5 join с Shop/Meta persistence ещё не подтверждён | `CONTENT_SPECIFIED`, balance/runtime pending |
 
@@ -48,9 +48,9 @@ Repository: `xxiamadelxx-blip/mac`
 | Envelope | `FIRST_RUN_DATA_CONTRACT.json` задаёт 1800 секунд и main checkpoints 300/600/900/1200/1500/1800; `BALANCE_MODEL.json` содержит 30-minute model-only extension; `GAME_MANIFEST.md` и B1 wave table/acceptance сохраняют legacy 20 минут | Для новых consumer contracts использовать 1800-секундный target с пометкой `PENDING_B1/PRODUCT`; не переписывать legacy source в C5 | Product + Architecture + Balance |
 | Main-boss clock | Runtime acceptance/context фиксируют: MAIN_BOSS freeze run-clock и обычных wave/XP/spawn clocks от intro до settlement, отдельно идёт encounter clock. Data contract одновременно говорит, что clock advances в `BOSS_INTRO/BOSS_ACTIVE` для каждого boss | Runtime handoff следует принятому freeze/continuation поведению из runtime acceptance; data contract требует reconciliation до implementation | Architecture + Runtime |
 | Mini-boss clock | Runtime acceptance/context: MINI_BOSS не останавливает run clock, wave, XP и ordinary spawn | Сохранить continuation policy; chest claim не должен задним числом замораживать elapsed time | Runtime + Architecture |
-| Mini-boss count | C3 content описывает 2; data contract содержит 3 intermediate records; runtime acceptance требует 5 mini-bosses; R3 handoff reports 0 records in the live B1 Registry | Не создавать speculative identity. Свести решение 2 vs 3 vs 5, синхронизировать B1 Registry и добавить только утверждённые stable IDs | Product + Architecture + Content |
-| Main-boss roster | Architecture/runtime acceptance требуют 6 records; два extension slots не имеют identity; legacy manifest говорит о 4 bosses | Существующие 3 named records и final ID не менять; для slots 04/05 нужен отдельный content proposal после решения envelope | Content + Product |
-| Chest capacity | Data contract: максимум 15 windows = 8 configured non-final boss windows + 7 reserved additional windows; C3 content snapshot описывает только 5 synergy checkpoints | Развести `synergy_claims` и `chest_windows`; не считать reserved window автоматически synergy или artifact | Product + Architecture + Balance |
+| Mini-boss count | C3 content теперь описывает канонический content target 5; data contract содержит 3 intermediate records; runtime acceptance требует 5; R3 handoff reports 0 records in the live B1 Registry | Schedule, chest capacity, Visual Lab intake and Balance cadence still cannot join by ID | High: counts and named IDs are inspectable | Architecture/Runtime sync the five stable IDs; Content не добавляет шестой ID без нового решения |
+| Main-boss roster | Architecture/runtime acceptance требуют 6 records; два extension slots не имеют synchronized identity; legacy manifest говорит о 4 bosses | Content proposals для slots 04/05 готовы; Architecture/Runtime должны сопоставить их с versioned records после envelope reconciliation | Content → Architecture/Runtime |
+| Chest capacity | Data contract: максимум 15 windows = 8 configured non-final boss windows + 7 reserved additional windows; C3 content proposal теперь раскладывает 10 BOSS_CHEST windows + 5 ELITE_CHEST windows | Сопоставить content window groups C01–C15 с canonical source_kind; ELITE_CHEST не расходует synergy cap | Product + Architecture + Balance |
 | Final source | Non-final boss chest: synergy/evolution/fallback; final boss at 1800: victory без boss chest | `boss_black_moon_empress` остаётся `NO_CHEST`; first-clear artifact offer отдельна от final boss chest | Architecture + Runtime |
 | Elite variants | Runtime acceptance разрешает bounded elite-tagged ordinary enemy с отдельным `ELITE_CHEST`; data contract оставляет profiles pending | Вариант не становится permanent roster и не открывает artifact offer автоматически; cadence/budget/visual marker остаются pending | Balance + Runtime + Visual Lab |
 
@@ -65,10 +65,10 @@ Repository: `xxiamadelxx-blip/mac`
 | C1 weapon catalog | stable `weapon_id`, attack decision, lifecycle, trade-off, balance fields | `ContentRegistry`, `WeaponSystem`, `SynergyEvaluator`, HUD, Visual Lab | 10 entries + 10 direct synergy links | Balance binds numbers; Runtime resolves IDs; Visual Lab делает brief/asset intake |
 | C1 passive catalog | stable `passive_id`, global stat/behavior axis, trigger, stacking intent, weapon eligibility binding | `BuildInventory`, `StatsAggregator`, `SynergyEvaluator`, HUD | 10 entries; passive не является улучшением только одного weapon | Проверить duplicate/stacking и объединение статов без weapon-specific side effect |
 | C1 synergy catalog | `synergy_id`, required weapon/passive pair, evolution output, claim guard | `SynergyEvaluator`, `BossChestSystem`, `RunSession.build`, ResultProjection | 10 records, cap 5, final boss chest forbidden | Runtime trace: one claim per chest/outcome; Balance route simulation |
-| C2 artifact catalog | `artifact_id`, typed effect intent, trigger/target/scope, stacking/counterplay | `ArtifactOfferSystem`, `StatsAggregator`, HUD, ResultProjection | 10 content entries; offer contract exactly 3 cards; no passive slot usage | Sync 2 missing records and approve `artifact_effects.definitions` |
+| C2 artifact catalog | `artifact_id`, semantic effect key, typed effect intent, trigger/target/scope, stacking/counterplay | `ArtifactOfferSystem`, `StatsAggregator`, HUD, ResultProjection | 10 content entries, 10 semantic effect keys; offer contract exactly 3 cards; no passive slot usage | Architecture syncs 2 missing records and runtime definitions; Balance binds values |
 | META passive tree | branch/node IDs, rank loop, Gold wallet, next-run application | Shop UI, `MetaProgression`, persistence, wallet ledger | 6 branches/17 nodes in content doc/index | Balance binds costs/ranks; Runtime proves purchase, save and next-run application |
 | C3 future enemies | role, silhouette brief, telegraph, counter-decision, XP/drop boundary | `ContentRegistry`, `WaveDirector`, Combat, Visual Lab | 4 proposals, no runtime roster replacement | Balance supplies profiles; Runtime consumes versioned records only after approval |
-| C3 boss/miniboss flow | encounter kind, phases, telegraph, defeat, chest/fallback boundary | `BossDirector`, `SimulationClock`, `ChestWindowRegistry`, `RewardLedger` | 2 named mini-boss proposals; 6 architecture main-boss records; count conflict | Product resolves roster; Runtime adds schedule/settlement trace |
+| C3 boss/miniboss flow | 5 mini-boss IDs, 2 main-boss extension proposals, phases, telegraph, defeat, chest/fallback boundary | `BossDirector`, `SimulationClock`, `ChestWindowRegistry`, `RewardLedger` | 5 named mini-boss proposals and 2 main-boss content proposals; registry sync remains pending | Architecture/Runtime add versioned records and schedule/settlement trace |
 | C4 arena drops | drop ID, pickup, effect intent, limitation, feedback, pending numeric fields | `DropResolver`, `RunSession`, `WaveDirector`, Combat, HUD, RewardLedger only where typed | 7 content entries; XP/aftermath separation preserved | Architecture defines typed instance + spawn/collect events; Balance binds cadence/quantity |
 | First-run data contract | immutable versioned registry, session/build/offer/ledger shapes | all run systems, save/replay, diagnostics | schema v2 and stable ID policy exist; some registry arrays contain null placeholders | Reconcile clock/roster/artifact/drop fields before implementation |
 | Event catalog | command/event ownership, source IDs, idempotency | Runtime, persistence, telemetry, UI projection | generic chest/window and variant events are specified | Add/approve arena-drop event contract and replay cases |
@@ -90,10 +90,10 @@ Repository: `xxiamadelxx-blip/mac`
 | ID | Finding → evidence | Impact | Confidence | Next action |
 |---|---|---|---|---|
 | C5-P1-01 | Clock conflict: `FIRST_RUN_DATA_CONTRACT.json` says boss clock advances for every boss; `RUNTIME_CONTEXT.md` and `RUNTIME_ACCEPTANCE.md` say main freezes while mini continues | Replay, wave timing, XP and boss settlement will diverge between Architecture and Runtime | High: both statements are explicit live text | Architecture publishes one canonical `clock_policy`; Runtime updates trace contract; C5 index stays flagged until then |
-| C5-P1-02 | Mini roster mismatch: C3 has 2 named records, data contract 3 intermediate records, runtime acceptance 5, while R3 reports 0 mini-boss records in the live B1 Registry | Schedule, chest capacity, Visual Lab intake and Balance cadence cannot join by ID | High: counts and named IDs are inspectable | Product chooses count; Balance/Architecture sync the registry; Content supplies only approved records; Runtime removes null/placeholder dependency |
-| C5-P1-03 | Artifact gap: content/index = 10, architecture `content_registry.artifacts` = 8; `artifact_effects.definitions` is empty | Two cards cannot load from a single immutable registry; effect projection has no approved typed definition | High | Registry sync for `artifact_tideglass` and `artifact_silent_lantern`; Product/Balance fill typed definitions |
+| C5-P1-02 | Mini roster mismatch: C3 content now has 5 named records, data contract has 3 intermediate records, runtime acceptance has target 5, while R3 reports 0 records in the live B1 Registry | Schedule, chest capacity, Visual Lab intake and Balance cadence cannot join by ID until registry is synchronized | High: counts and named IDs are inspectable | Architecture/Runtime sync the five content IDs into approved slots; no sixth ID is introduced by Content |
+| C5-P1-03 | Artifact gap: content/index = 10 and C2 now provides 10 semantic effect keys, while architecture `content_registry.artifacts` = 8 and runtime `artifact_effects.definitions` is empty | Two cards cannot load from a single immutable registry; runtime effect projection still has no typed definitions | High | Architecture syncs the two IDs and runtime effect definitions; Balance binds numeric parameters; Content does not edit Architecture schema |
 | C5-P1-04 | Time-source drift: Architecture target = 30:00; `GAME_MANIFEST.md`, B1 wave table and Balance acceptance retain 20:00/old four-boss or five-band assumptions | Wave/reward values and final checkpoint are unsafe to bind; balance evidence cannot be called final | High | Product/Architecture/B1 publish source-of-truth update; keep old files marked legacy until changed by their owners |
-| C5-P1-05 | Chest taxonomy drift: 15 total windows and 8+7 source split in data contract vs C3's five synergy checkpoints | A reserved chest may be accidentally counted as synergy, artifact or extra claim | High | Product names all sources/outcomes; Architecture maps each window to `source_kind` and `outcome_policy_ref` |
+| C5-P1-05 | Chest taxonomy drift: data contract has 15 total windows with 8+7 source split; C3 content now maps C01–C10 to boss chests and C11–C15 to elite chests | A reserved chest may be accidentally counted as synergy, artifact or extra claim | High | Architecture maps C01–C15 to canonical `source_kind` and outcome policy; Product confirms whether content proposal replaces 8+7 split |
 
 ### P2 — must be resolved before implementation handoff
 
@@ -148,7 +148,7 @@ Balance получает семь IDs:
 ### 7.1 Registry and session
 
 1. `ContentRegistry` должен загрузить ровно одну versioned запись для каждого approved ID. Null extension record не считается playable content и должен быть rejected/quarantined.
-2. Синхронизировать два артефакта и typed `artifact_effects.definitions` до включения их в offer pool.
+2. Синхронизировать два артефакта и десять content semantic effect keys с typed `artifact_effects.definitions` до включения их в offer pool.
 3. После решения roster заменить placeholder slots только stable semantic IDs; display labels и visual asset paths не используются как keys.
 4. Для C4 нужен отдельный typed `ArenaDropInstance`/эквивалент в `RunSession.drops`; он не объединяется с `xp_items` или `aftermath_items`.
 5. Drop effect application принадлежит Runtime resolver. Content entry не мутирует `RewardLedger`, wallet или `RunSession` напрямую.
@@ -195,7 +195,7 @@ Content передаёт briefs, но не mockups и не production assets.
 |---|---|---|
 | 10 weapons + 10 passives + 10 synergies | `C1_WEAPONS_PASSIVES_SYNERGIES.md` | weapon/passive/synergy должны различаться формой, silhouette и role; pair readable в offer UI |
 | 10 artifacts | `C2_ARTIFACTS.md` | отдельный artifact language; не копировать passive-slot iconography; три-card offer readable |
-| 2 named mini-bosses + 4 future enemies | `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | silhouette, signature, telegraph, reaction window, counter-decision; corpse/XP boundary |
+| 5 named mini-bosses + 2 main-boss extension proposals + 4 future enemies | `C3_MINI_BOSSES_AND_CHEST_FLOW.md` | silhouette, signature, telegraph, reaction window, counter-decision; corpse/XP boundary | `candidate_id: null`, `PROPOSAL`, `NOT_PROMOTED` |
 | 7 arena drops | `C4_ARENA_DROP_CATALOGUE.md` | pickup silhouette + world feedback; heal/Gold/XP/control/defense/vacuum signals не должны сливаться |
 | Beetle variants | Architecture enemy variant policy | detail/marker beyond hue; variant не должен быть только recolor |
 | Main/miniboss extension slots | C5 reconciliation | не производить assets до решения roster и stable identity |
@@ -208,8 +208,8 @@ Visual Lab проверяет briefs по своему `visual_lab/README.md` и
 |---|---|---|---|
 | C5-D01 | Финальный envelope первого забега — 20 минут legacy или 30 минут current target? | checkpoint schedule, B1 bands, manifest, reward values | Product + Architecture + Balance |
 | C5-D02 | Какая единая clock policy для MAIN_BOSS: freeze или advance? | wave/XP/spawn replay, runtime acceptance | Architecture + Runtime |
-| C5-D03 | Сколько mini-bosses действительно входит в run: 2, 3 или 5 (при том, что live B1 Registry пока содержит 0 records)? | stable roster, cadence, chest windows, Visual Lab scope | Product + Content + Architecture |
-| C5-D04 | Какие identity/mechanics у `boss_extension_slot_04/05` и approved mini extensions? | registry, balance profile, telegraph, schedule | Content + Product |
+| C5-D03 | Как синхронизировать канонический content roster из 5 mini-bosses с data contract (3 records) и live B1 Registry (0 records)? | stable roster, cadence, chest windows, Visual Lab scope | Architecture + Runtime; Product только при изменении канонического решения |
+| C5-D04 | Как сопоставить готовые content proposals `boss_tideglass_regent`, `boss_omen_paper_archivist` и пять mini-boss IDs с versioned Registry records? | registry, balance profile, telegraph, schedule | Architecture + Runtime; Content поддерживает semantic fields |
 | C5-D05 | Как именно разложить 15 chest windows: 8 configured boss windows + 7 additional sources? | synergy eligibility, fallback, reward ledger | Product + Architecture + Balance |
 | C5-D06 | Какие дополнительные источники дают chest, а какие дают artifact offer? | UI state, offer source, idempotency | Product + Runtime |
 | C5-D07 | Синхронизировать ли сразу `artifact_tideglass`/`artifact_silent_lantern` и какие typed effects им разрешены? | ContentRegistry, offer pool, Balance | Product + Architecture + Balance |
@@ -227,7 +227,7 @@ Visual Lab проверяет briefs по своему `visual_lab/README.md` и
 
 - live `main` fetched at `17803bde8e38dbf07a72e4033beacf2de5e29281`;
 - `FIRST_RUN_DATA_CONTRACT.json` parseable, содержит schema v2, 10 weapons, 10 passives, 10 synergies, 6 main-boss records, 3 intermediate records, 15 chest-window records и 8 artifact records;
-- Content Catalog index содержит 10 weapons, 10 passives, 10 synergies, 10 artifacts, 2 named mini-bosses, 7 arena drops и 17 meta nodes;
+- Content Catalog index содержит 10 weapons, 10 passives, 10 synergies, 10 artifacts, 5 named mini-bosses, 2 main-boss extension proposals, 7 arena drops и 17 meta nodes;
 - `RUNTIME_ACCEPTANCE.md` остаётся `NOT_IMPLEMENTED` для полного R2/R3 acceptance, а `R3_RUNTIME_HANDOFF.md` имеет статус `RUNTIME_VERIFICATION_BLOCKED`: runner не выделил steps, поэтому C5 не объявляет run playable;
 - `R1_RUNTIME_HANDOFF.md` не используется как доказательство boss/chest/artifact implementation: сам документ оставляет их более поздними slices;
 - `BALANCE_ACCEPTANCE_MATRIX.md` маркирует модель как `SIMULATED_MODEL_ONLY / PARTIAL`, а 30-minute extension не считается numeric lock;
@@ -250,8 +250,8 @@ Visual Lab проверяет briefs по своему `visual_lab/README.md` и
 
 ## 11. Следующий модуль и граница scope
 
-1. Product/Architecture закрывают C5-P1-01…05 и публикуют единый source-of-truth.
+1. Product/Architecture закрывают C5-P1-01, C5-P1-04 и C5-P1-05; roster из пяти mini-bosses и два main-boss proposals уже зафиксированы Content Agent.
 2. Balance Agent делает numeric binding только после решения envelope/roster/chest taxonomy и добавляет 30-minute evidence.
-3. Runtime Agent синхронизирует registry, typed artifact/drop contracts, event idempotency и clock traces.
+3. Runtime Agent синхронизирует registry с пятью mini-boss IDs и двумя main-boss proposals, typed artifact/drop contracts, event idempotency и clock traces.
 4. Visual Lab принимает готовые briefs и работает в своих protected stages.
 5. Content Agent не расширяет C5 новыми предметами. Новая механика, weapon, passive, artifact, boss, enemy или drop оформляется отдельным proposal с новым scope.
