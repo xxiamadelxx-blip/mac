@@ -1,0 +1,92 @@
+{
+  "task_id": "MOCKUP-01-MENU-HOME-01",
+  "route": "MOCKUP",
+  "secondary_route": "UI_ART",
+  "stage_path": "docs/mockups/01-menu/",
+  "candidate_id": "vl-20260910-moonveil-menu-home-v03",
+  "status": "USER REVIEW",
+  "asset_id": "menu.home.soft_tonal.v03",
+  "family_id": "moonveil-menu-soft-tonal-v02",
+  "asset_kind": "hero_master",
+  "source_references": [
+    {
+      "id": "docs/mockups/01-menu/README.md",
+      "sha256": "7a866dba36f46fd0ccc44738d94b7ff79ba44455",
+      "notes": "Stage 01 contract and current family reference."
+    },
+    {
+      "id": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+      "sha256": "fa4c5fcb1d6d9ce4cbc650f1dadc32059f724978",
+      "notes": "Mockup route, one-master gate, UI viewport and review handoff."
+    },
+    {
+      "id": "visual_lab/VISUAL_LAB_PRODUCTION_LAW.md",
+      "sha256": "3f9be8c84c229a05003d8cf59a3978bde37bc39f",
+      "notes": "Technical and artistic status separation."
+    }
+  ],
+  "art_direction": {
+    "project_revision": "main@259d7ab2ae299c9d6db00ff102f9334a37aaef80",
+    "request_revision": "user-request-2026-09-10",
+    "parent_approved_master_candidate_id": null,
+    "notes": "Uses existing soft-tonal v02 family language; no heroine identity changes."
+  },
+  "generator_or_tool": {
+    "name": "authored SVG",
+    "version": "1.0",
+    "model_or_checkpoint": null,
+    "workflow_path": "visual_lab/UI_ART_SPRITE_MOCKUP_WORKFLOW.md",
+    "workflow_sha256": "fa4c5fcb1d6d9ce4cbc650f1dadc32059f724978",
+    "seed": null,
+    "plugins_or_nodes": []
+  },
+  "editable_source": {
+    "path": "docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.svg",
+    "sha256": null,
+    "format": "SVG"
+  },
+  "post_processing": [
+    {
+      "step": "Author exact 390x844 UI composition",
+      "tool": "manual SVG authoring",
+      "version": "1.0",
+      "notes": "No Base64, data URLs, runtime drawing or external dependencies."
+    }
+  ],
+  "runtime_export": {
+    "path": null,
+    "format": "SVG candidate only",
+    "dimensions": "390x844",
+    "scale": 1,
+    "pivot": null,
+    "anchors": [
+      "safe-area-x:30",
+      "safe-area-top:24",
+      "touch-target-primary:274x58",
+      "touch-target-secondary:130x52"
+    ],
+    "sha256": null
+  },
+  "gameplay_preview": {
+    "path": null,
+    "viewport": "390x844",
+    "dpr": null,
+    "scene_or_fixture": "static Stage 01 menu-home review frame",
+    "animation_frame": null,
+    "sha256": null
+  },
+  "review": {
+    "technical_status": "PARTIAL / STATIC_CONTRACT_CHECKED",
+    "artistic_status": "PENDING",
+    "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
+    "creative_director_decision": null,
+    "decision_record_path": null,
+    "approved_exact_output_sha256": null
+  },
+  "promotion": {
+    "runtime_manifest_path": null,
+    "producing_commit": null,
+    "consumer_scene_or_ui": "menu home mockup only; not promoted",
+    "fallback_status": "not applicable"
+  }
+}
