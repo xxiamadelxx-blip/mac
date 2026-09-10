@@ -85,8 +85,9 @@
   },
   "promotion": {
     "runtime_manifest_path": null,
-    "producing_commit": null,
+    "producing_commit": "06ce46b8eb6348e51663ca7d1df359e784ca1193",
     "consumer_scene_or_ui": "menu home mockup only; not promoted",
-    "fallback_status": "not applicable"
+    "fallback_status": "not applicable",
+    "record_commit": "PENDING"
   }
 }
