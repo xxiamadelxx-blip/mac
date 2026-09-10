@@ -10,7 +10,7 @@ Android acceptance: NOT_PERFORMED
 
 Цель — дать runtime-агенту последовательный контракт первого 20-минутного забега:
 
-включение → загрузка → меню → ПЕРСОНАЖИ → подготовка → арена → волны → XP/уровни → улучшения → боссы → checkpoint/сундук → следующая полоса → победа или поражение → результат → rewards → меню.
+включение → загрузка → меню → ПЕРСОНАЖИ → подготовка → арена → волны → XP/уровни → улучшения → промежуточные боссы → checkpoint/сундук → следующая полоса; финальный босс → финальная награда → победа или поражение → результат → rewards → меню.
 
 Канонические источники:
 
@@ -53,16 +53,16 @@ Android acceptance: NOT_PERFORMED
 | 15. Weapon/passive slot | Chosen offer adds content | Slot available or upgrade target exists | RUN_ACTIVE, BuildInventory | Weapon/passive level и доступные слоты | Полный слот исключает illegal new-item offer; если pool исчерпан, fallback outcome помечен в offer contract |
 | 16. Boss checkpoint | Clock достигает B1 checkpoint | Нужная boss record и wave band loaded | BOSS_INTRO → BOSS_ACTIVE, BossDirector | Босс, health bar, telegraph и временно сниженный обычный spawn | Босс не может появиться внутри персонажа; invalid spawn → deterministic safe spawn retry и diagnostic |
 | 17. Boss combat | Boss pattern event | Boss active | BOSS_ACTIVE, Combat/BossDirector | Wind-up, telegraph, reaction window, damage | Повторный boss spawn с тем же checkpoint_id ignored; отсутствие telegraph — contract failure |
-| 18. Boss defeated | Authoritative defeat | Boss active и HP <= zero | CHECKPOINT_SETTLEMENT, RunCoordinator | Death beat, checkpoint result | Повторный defeat event не повторяет rewards; повреждённое result → recoverable checkpoint state |
-| 19. Checkpoint reward | Settlement command | checkpoint_id not settled | CHECKPOINT_SETTLEMENT, RewardLedger | Gold, Lunar Seals, Boss Essence и ledger status | Idempotency key возвращает существующую запись; кошелёк не увеличивается повторно |
-| 20. Chest | Reward settlement completed | Boss chest available by contract | CHEST_OFFER, Chest/Evolution system | Сундук, eligible/fallback explanation | Закрытие без claim не теряет pending offer; повторное открытие показывает тот же offer |
-| 21. Synergy or fallback | Claim chest offer | Offer valid, evaluator result known | RUN_ACTIVE or next settlement state | Evolution, artifact или fallback reward согласно offer | Eligible synergy нельзя применить дважды; exact fallback values остаются PENDING_PRODUCT_DECISION |
-| 22. Next stage | Chest claim / non-final checkpoint complete | Reward and chest claim committed | RUN_ACTIVE, RunCoordinator | Следующая wave band и updated HUD | Если переход уже committed, повторный command — no-op |
+| 18. Boss defeated | Authoritative defeat | Boss active и HP <= zero | CHECKPOINT_SETTLEMENT, RunCoordinator | Death beat; settlement промежуточного или финального босса | Повторный defeat event не повторяет rewards; повреждённое result → recoverable checkpoint state |
+| 19. Checkpoint reward | Settlement command | checkpoint_id not settled | CHECKPOINT_SETTLEMENT, RewardLedger | Gold, Lunar Seals, Boss Essence и ledger status | Для финального босса это последняя награда перед victory; idempotency key не допускает повтор |
+| 20. Chest (non-final checkpoints) | Reward settlement completed | Нефинальный boss checkpoint разрешает chest | CHEST_OFFER, Chest/Evolution system | Сундук, eligible/fallback explanation | Финальный босс сундук не создаёт; закрытие без claim не теряет pending offer |
+| 21. Synergy or fallback | Claim non-final chest offer | Offer valid, evaluator result known | RUN_ACTIVE | Evolution, artifact или fallback reward согласно offer | Применяется только к нефинальному сундуку; exact fallback values остаются PENDING_PRODUCT_DECISION |
+| 22. Next stage | Non-final chest claim complete | Reward and chest claim committed | RUN_ACTIVE, RunCoordinator | Следующая wave band и updated HUD | Финальный checkpoint не открывает следующую стадию; повторный command — no-op |
 | 23. Pause | User taps pause or Android background | RunSession is resumable | RUN_PAUSED, RunSession | Pause overlay, Continue, Settings, Exit | SimulationClock = paused; save snapshot создаётся только по defined policy |
 | 24. Resume | Continue / Android foreground | Snapshot and content version valid | Previous resumable state | Simulation continues without time jump | Invalid snapshot → RECOVERY_REVIEW/diagnostic; rewards не начисляются автоматически |
 | 25. Exit attempt | User chooses menu from pause | Confirmation required for active run | Exit confirmation overlay | Ясно указано: abandon или recoverable save policy | Cancel returns to pause; confirm follows abandon policy and не выдаёт незаработанные rewards |
 | 26. Death | HP reaches zero | Run active; death not already settled | RUN_DEFEAT → RESULT_REVIEW | Причина смерти, stats, partial rewards | Repeated death event ignored; partial rewards считаются один раз |
-| 27. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid | RUN_VICTORY → RESULT_REVIEW | Victory state, final boss result, full-run summary | Timer alone не объявляет победу; нужен authoritative final boss defeat |
+| 27. Final boss defeat | Final boss defeated at 20-minute checkpoint | Final boss result valid and final settlement committed | CHECKPOINT_SETTLEMENT → RUN_VICTORY → RESULT_REVIEW | Финальная награда, victory state, full-run summary | Timer alone не объявляет победу; финальный босс не создаёт сундук |
 | 28. Result finalization | User opens/claims result | RUN_DEFEAT or RUN_VICTORY | RESULT_FINALIZED / REWARD_COMMITTING | Stats, build, kills, XP, checkpoints, rewards | Повторное открытие read-only; claim использует ledger idempotency |
 | 29. Return to menu | Result claim or explicit menu action | Result settlement committed or abandon confirmed | MAIN_MENU, MenuFlow | Updated wallets/unlocks and start options | Неудача save → result остаётся recoverable; возврат не теряет committed ledger |
 | 30. New run | User starts another run | Previous result committed/abandoned | New RUN_LOADING | New run_id и fresh session | Старый RunSession не переиспользуется |
@@ -107,9 +107,9 @@ Game clock движется только в RUN_ACTIVE и BOSS_ACTIVE. Он ос
 4. BOSS_ACTIVE принимает только boss-owned combat transitions;
 5. после defeat создаётся один settlement command;
 6. RewardLedger применяет checkpoint bundle по idempotency key;
-7. ChestSystem создаёт persistent chest_offer;
+7. Только для нефинального checkpoint ChestSystem создаёт persistent chest_offer; финальный checkpoint сундук не создаёт;
 8. SynergyEvaluator возвращает eligible, already_claimed или fallback_required;
-9. после claim открывается следующий wave band, либо начинается result flow для финального босса.
+9. после claim нефинального сундука открывается следующий wave band; после финального settlement начинается result flow без сундука.
 
 Точное содержимое fallback-награды и правила округления 50% Gold при defeat после checkpoint отсутствуют в B1 и не заполняются агентом.
 
@@ -140,8 +140,8 @@ Death:
 Victory:
 
 - 20 минут сами по себе не дают victory.
-- Нужен defeat final boss для authoritative victory.
-- Final checkpoint bundle и first-clear/repeat-clear outcome проходят одну ledger transaction.
+- Нужен defeat final boss и commit final settlement для authoritative victory; final boss chest не создаётся.
+- Final checkpoint bundle и first-clear/repeat-clear outcome проходят одну ledger transaction; final boss chest не создаётся.
 - После commit доступен result screen и возврат в меню.
 - Разблокировки читаются из committed meta save; UI не создаёт unlock сам.
 
