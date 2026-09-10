@@ -21,7 +21,7 @@ C5 закрывает content-design handoff между C1–C4, META passive tr
 |---|---|---|---|
 | C1 weapons/passives/synergies | 10 weapons, 10 global run passives, 10 direct evolutions; passive binding используется для synergy eligibility | CONTENT_SPECIFIED | Balance + Runtime + Visual Lab |
 | C2 artifacts | 10 run artifacts, three-card offer boundary, no weapon/passive slot usage | CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING | Product + Architecture + Balance |
-| C3 bosses/chests | 4 future enemy proposals, 2 named mini-boss proposals, synergy/fallback flow | CONTENT_SPECIFIED / ROSTER_RECONCILIATION | Product + Architecture + Runtime |
+| C3 bosses/chests | 4 future enemy proposals, 5 named mini-boss proposals, 2 main-boss extension proposals, synergy/fallback flow | CONTENT_SPECIFIED / ROSTER_RECONCILIATION | Product + Architecture + Runtime |
 | C4 arena drops | 7 typed content intents: heal, Gold, XP magnet, destruction, wave freeze, ward, vacuum | CONTENT_SPECIFIED / RUNTIME_PENDING | Architecture + Runtime + Balance |
 | META passive tree | 6 branches, 17 stat nodes, Gold, next-run application | CONTENT_SPECIFIED / BALANCE_PENDING | Balance + Runtime/UI |
 
@@ -42,7 +42,7 @@ Detailed dependency matrix, conflict review, open decisions and acceptance evide
 | ID | Blocker | Evidence | Owner |
 |---|---|---|---|
 | C5-P1-01 | Main-boss freeze in Runtime conflicts with all-boss advancing clock in data contract | `RUNTIME_CONTEXT.md`/`RUNTIME_ACCEPTANCE.md` vs `FIRST_RUN_DATA_CONTRACT.json` | Architecture + Runtime |
-| C5-P1-02 | Mini roster is 2 in C3, 3 in data contract, 5 in runtime acceptance and 0 in live B1 Registry | Named content and live contract counts; R3 runtime handoff | Product + Content + Architecture |
+| C5-P1-02 | Mini roster is 5 in C3, 3 in data contract, 5 in runtime acceptance and 0 in live B1 Registry | Named content and live contract counts; R3 runtime handoff | Product + Content + Architecture |
 | C5-P1-03 | Content/index has 10 artifacts, registry has 8 and typed effect definitions are empty | `artifact_tideglass`, `artifact_silent_lantern`, `artifact_effects.definitions` | Product + Architecture + Balance |
 | C5-P1-04 | Architecture target is 30:00 while manifest/B1 evidence is legacy 20:00; Balance model extension remains proposed | `FIRST_RUN_DATA_CONTRACT.json`, `GAME_MANIFEST.md`, `BALANCE_MODEL.json` | Product + Architecture + Balance |
 | C5-P1-05 | 15 chest windows are not mapped to the 5 content synergy checkpoints | 8 configured + 7 reserved vs C3 content snapshot | Product + Architecture + Balance |
