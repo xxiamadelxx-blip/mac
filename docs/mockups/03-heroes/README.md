@@ -1,42 +1,38 @@
 # Этап 03 — героини
 
-Статус: **DONE** — пакет Visual Lab mockup/evidence заменён на художественную ревизию **v02**.
+Статус: **CANDIDATE** — добавлен прозрачный runtime-oriented пакет v02 поверх исторических Visual Lab boards v02.
 
-## Что заменено
+## Новый runtime-пакет
 
-Старые визуальные PNG/JPG из layers удалены. Вместо них добавлены десять предоставленных пользователем PNG из ChatGPT Images:
+Для обеих героинь добавлены отдельные папки с одинаковым контрактом:
 
-- full-body и portrait для меню;
-- combat-state boards для боевой анимационной разметки;
-- четыре направления движения;
-- экран выбора героинь;
-- два отдельных gameplay mockup среди массовой волны.
+```
+docs/mockups/03-heroes/{hero_id}/{direction}/{state}.png
+```
 
-Документы этапа сохранены и синхронизированы с новым набором. VFX bindings не менялись: их ID остаются контрактом для арены.
+Каждая папка содержит 8 направлений:
 
-## Карта героинь
+`front`, `back`, `left`, `right`, `north_west`, `north_east`, `south_east`, `south_west`.
 
-| Героиня | Menu anchors | Combat board | Direction kit | Gameplay |
-|---|---|---|---|---|
-| Линь Юэ — Нефритовая ведьма | fullbody v02, portrait v02 | combat states v02 | direction kit v02 | gameplay review v02 |
-| Соён Хан — Алый клинок | portrait v02; fullbody reference отсутствует в новом наборе | combat states v02 | direction kit v02 | gameplay review v02 |
+И 12 состояний:
 
-Полные пути и размеры зафиксированы в STAGE03_HEROES_MANIFEST_v01.json и STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md.
+`idle`, `move_01`, `move_02`, `move_03`, `attack_01`, `attack_02`, `attack_03`, `hit_01`, `hit_02`, `death_01`, `death_02`, `shadow`.
 
-## Важная техническая граница
+## Технический стандарт
 
-Новые изображения сохранены без преобразований. Все PNG имеют opaque canvas без alpha-канала; combat/direction boards используют чёрный фон. Поэтому они являются Visual Lab candidates/references. До использования в игре нужны background removal, frame extraction, pivot, VFX separation и Godot/Android-проверка.
+- PNG RGBA с настоящей прозрачностью;
+- 1024×1024 px;
+- pivot bottom-center;
+- одинаковая схема имён и папок для обеих героинь;
+- `shadow.png` — отдельный силуэтный слой.
 
-Gameplay и selection images имеют размер 711×1536. Это портретный source canvas с пропорцией целевого viewport 390×844, но не точный runtime screenshot 390×844.
-
-## Состояния
-
-Для обеих героинь зафиксирован порядок: idle, move, basic_attack, ability, hit, death.
+Фронтальные базовые состояния и direction masters вырезаны из чистых листов. Недостающие кадры закрыты контролируемыми производными; художественная покадровая approval и импорт в движок остаются следующими gate.
 
 ## Документы
 
-- STAGE03_HEROES_MANIFEST_v01.json — карта ассетов и статусы.
-- STAGE03_HEROES_COMBAT_CONTRACT_v01.md — identity, состояния, направления и VFX contract.
-- STAGE03_HEROES_COMBAT_SPRITE_SPEC_v01.md — размеры, фон и runtime handoff.
-- STAGE03_HEROES_VFX_BINDINGS_v01.json — отдельные VFX bindings.
-- STAGE03_HEROES_PROVENANCE_v01.json — источник, SHA-256 и Git blob SHA новых файлов.
+- `STAGE03_HEROES_RUNTIME_ASSET_MANIFEST_v02.json` — новый общий runtime manifest.
+- `TRANSPARENT_ASSET_CONTRACT_v02.md` — контракт каталогов, состояний и alpha.
+- `lin_yue/hero_manifest.json` — manifest Линь Юэ.
+- `soyeon_han/hero_manifest.json` — manifest Соён Хан.
+- `STAGE03_HEROES_MANIFEST_v01.json` — историческая карта исходных boards.
+- `STAGE03_HEROES_VFX_BINDINGS_v01.json` — существующие VFX bindings.
