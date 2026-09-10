@@ -38,16 +38,20 @@ jobs:
 
       - name: Resolve release asset
         id: asset
+        env:
+          EVENT_RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_RELEASE_TAG: ${{ inputs.release_tag }}
+          INPUT_ASSET_NAME: ${{ inputs.asset_name }}
         shell: bash
         run: |
           set -euo pipefail
 
           if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            release_tag="${{ github.event.release.tag_name }}"
+            release_tag="${EVENT_RELEASE_TAG}"
             asset_name=""
           else
-            release_tag="${{ inputs.release_tag }}"
-            asset_name="${{ inputs.asset_name }}"
+            release_tag="${INPUT_RELEASE_TAG}"
+            asset_name="${INPUT_ASSET_NAME}"
           fi
 
           if [[ -z "${release_tag}" ]]; then
