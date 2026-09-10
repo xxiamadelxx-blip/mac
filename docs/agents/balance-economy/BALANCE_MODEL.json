@@ -11,8 +11,8 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "b8b4ad022af80217652c1f38a3d341d47af18e2b",
-    "captured_at": "2026-09-10T10:00:34Z"
+    "head": "9dc0c5a4fc8bee7a690213abc8b0e2c62b39989c",
+    "captured_at": "2026-09-10T10:14:11Z"
   },
   "units": {
     "time": "seconds",
@@ -793,7 +793,7 @@
       "boss_id": "boss_hua_lin",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
     },
     {
       "checkpoint_id": "boss_02_10",
@@ -801,7 +801,7 @@
       "boss_id": "boss_miyeon",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
     },
     {
       "checkpoint_id": "boss_03_15",
@@ -809,7 +809,7 @@
       "boss_id": "boss_seika",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
     },
     {
       "checkpoint_id": "boss_final_20",
@@ -817,7 +817,7 @@
       "boss_id": "boss_black_moon_empress",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
     }
   ],
   "rewards": {
@@ -1155,7 +1155,7 @@
   },
   "architecture_contract": {
     "path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "source_revision": "__NEW_DATA_CONTRACT_SHA__",
+    "source_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
     "status": "DRAFT_READ_ONLY",
     "canonical_ids": [
       "hero_lin_yue",
@@ -1201,7 +1201,7 @@
     "model_version": "0.3",
     "status": "PROPOSED_MODEL_ONLY",
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
-    "architecture_revision": "__NEW_DATA_CONTRACT_SHA__",
+    "architecture_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
     "runtime_status": "NOT_IMPLEMENTED",
     "scope": "deterministic 20-minute wave/economy model plus post-20-minute final-boss resolution window",
     "main_run_duration_seconds": {
@@ -1988,7 +1988,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
       },
       "boss_02_10": {
         "boss_id": "boss_miyeon",
@@ -2036,7 +2036,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
       },
       "boss_03_15": {
         "boss_id": "boss_seika",
@@ -2084,7 +2084,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
       },
       "boss_final_20": {
         "boss_id": "boss_black_moon_empress",
@@ -2132,7 +2132,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
       }
     },
     "combat_math": {
@@ -2645,7 +2645,7 @@
     "owner": "Runtime/Architecture",
     "balance_model_path": "docs/agents/balance-economy/BALANCE_MODEL.json",
     "architecture_contract_path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "architecture_contract_revision": "__NEW_DATA_CONTRACT_SHA__",
+    "architecture_contract_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
     "join_policy": {
       "stable_id_key": "semantic IDs",
       "checkpoint_boss_mapping": [
@@ -2653,25 +2653,25 @@
           "checkpoint_id": "boss_01_05",
           "boss_id": "boss_hua_lin",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "checkpoint_id": "boss_02_10",
           "boss_id": "boss_miyeon",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "checkpoint_id": "boss_03_15",
           "boss_id": "boss_seika",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "checkpoint_id": "boss_final_20",
           "boss_id": "boss_black_moon_empress",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         }
       ],
       "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
@@ -2681,27 +2681,27 @@
         {
           "wave_band_id": "wave_warmup_0_2",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "wave_band_id": "wave_pressure_2_5",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "wave_band_id": "wave_threat_5_10",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "wave_band_id": "wave_elite_10_15",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         },
         {
           "wave_band_id": "wave_eclipse_15_20",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision __NEW_DATA_CONTRACT_SHA__"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 2f889f876f2b8aa286523d234786addf0b9b245e"
         }
       ],
       "enemy_id_policy": {
