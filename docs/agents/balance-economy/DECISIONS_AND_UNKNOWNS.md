@@ -1,6 +1,6 @@
 # Решения и открытые вопросы Balance & Economy
 
-Статусы: CONFIRMED, CANON, DERIVED, PENDING_B1, PENDING_PRODUCT_DECISION, BLOCKED, RESOLVED_BY_AGENT.
+Статусы: CONFIRMED, CANON, DERIVED, PROPOSED, PENDING_B1, PENDING_PRODUCT_DECISION, BLOCKED, RESOLVED_BY_AGENT.
 
 Агент не закрывает вопрос молча. Для каждого пункта нужны source, impact, temporary handling, owner и next action.
 
@@ -19,6 +19,7 @@
 | C-09 | Артефакты — run offers из трёх карт, без pre-run loadout и фиксированных слотов; активный эффект отделён от обычных passive modifiers | Product decision; architecture contract |
 | C-10 | Boss chest и artifact offer — разные потоки: boss chest даёт synergy/evolution/fallback, elite pack/first-clear могут дать artifact offer, final boss не создаёт boss chest | Product decision; B1 reward boundary |
 | C-11 | На каждом боссе в 5/10/15/20 минут основной таймер забега замирает; волны, XP и spawn clock не продвигаются, бой идёт на отдельном encounter-clock, после чего нефинальный таймер возобновляется с той же отметки | Product decision captured 2026-09-10; model boss_clock_policy |
+| C-12 | После каждого босса новые волны не стартуют на следующем пике: сначала идёт recovery, затем монотонный разгон плотности, затем осада на пике до следующего босса | User product rule captured 2026-09-10 |
 
 ## Обязательные вопросы
 
@@ -38,6 +39,7 @@
 | U-12 | Разрешены ли дубликаты артефактов и как они stack? | Меняет power curve and active-effect attribution | Keep stacking_policy pending per artifact effect | Product/gameplay owner | Approve duplicate/stacking matrix |
 | U-13 | Какова cadence/size/composition special elite packs between bosses? | Меняет artifact-offer frequency and wave budget | Model source as allowed pending elite event; do not inject spawn count | B1/balance owner | Add elite-pack schedule to B1 |
 | U-14 | Какие exact artifact effects, triggers, targets and values входят в first slice? | Меняет DPS/survivability/weapon interactions and test fixtures | Use typed effect contract and examples only; numbers remain pending | Product/balance owner | Approve effect catalog |
+| U-15 | Каковы точные reset-фактор после босса и длительность siege-окна? | Меняет active cap, incoming risk, XP/kills и boss approach | В модели временно PROPOSED: reset 0.80; recovery 28 s; linear ramp 212 s; siege 60 s; не переводить в CANON | Product/B1/balance owner | Утвердить post-boss density curve и повторить runtime traces |
 
 ## Правило обновления
 
