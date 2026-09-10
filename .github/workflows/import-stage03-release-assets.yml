@@ -1,0 +1,170 @@
+name: Import Stage 03 binary hero assets
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Release tag that contains the ZIP
+        required: true
+        type: string
+      asset_name:
+        description: Exact asset name, for example stage03-assets-lin-yue-v01.zip
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stage03-binary-asset-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    name: Import Stage 03 release asset
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve release asset
+        id: asset
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
+            release_tag="${{ github.event.release.tag_name }}"
+            asset_name=""
+          else
+            release_tag="${{ inputs.release_tag }}"
+            asset_name="${{ inputs.asset_name }}"
+          fi
+
+          if [[ -z "${release_tag}" ]]; then
+            echo "A release tag is required." >&2
+            exit 1
+          fi
+
+          if [[ -z "${asset_name}" ]]; then
+            mapfile -t matches < <(
+              gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${release_tag}" \
+                --jq '.assets[] | select(.name | test("^stage03-assets-[A-Za-z0-9._-]+\\.zip$")) | .name'
+            )
+            if (( ${#matches[@]} == 0 )); then
+              echo "No Stage 03 ZIP is attached to this release; nothing to import."
+              echo "should_import=false" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            if (( ${#matches[@]} != 1 )); then
+              echo "Expected exactly one stage03-assets-*.zip; found ${#matches[@]}." >&2
+              printf 'Candidates: %s\n' "${matches[@]}" >&2
+              exit 1
+            fi
+            asset_name="${matches[0]}"
+          fi
+
+          if [[ ! "${asset_name}" =~ ^stage03-assets-[A-Za-z0-9._-]+\.zip$ ]]; then
+            echo "Asset name must match stage03-assets-<id>.zip." >&2
+            exit 1
+          fi
+
+          {
+            echo "should_import=true"
+            echo "release_tag=${release_tag}"
+            echo "asset_name=${asset_name}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Download release ZIP
+        if: steps.asset.outputs.should_import == 'true'
+        env:
+          RELEASE_TAG: ${{ steps.asset.outputs.release_tag }}
+          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="${RUNNER_TEMP}/${ASSET_NAME}"
+          gh release download "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern "${ASSET_NAME}" \
+            --output "${archive}" \
+            --clobber
+          test -s "${archive}"
+          sha256sum "${archive}" | tee "${RUNNER_TEMP}/archive.sha256"
+          {
+            echo "Stage 03 binary intake"
+            echo "Release: ${RELEASE_TAG}"
+            echo "Asset: ${ASSET_NAME}"
+            echo "SHA-256:"
+            cat "${RUNNER_TEMP}/archive.sha256"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Refresh main before import
+        if: steps.asset.outputs.should_import == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git pull --ff-only origin main
+
+      - name: Validate and import PNG files
+        if: steps.asset.outputs.should_import == 'true'
+        env:
+          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/import_stage03_assets.py \
+            "${RUNNER_TEMP}/${ASSET_NAME}" \
+            "docs/mockups/03-heroes" \
+            2>&1 | tee "${RUNNER_TEMP}/import.log"
+
+      - name: Commit imported PNG files
+        if: steps.asset.outputs.should_import == 'true'
+        env:
+          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t imported_files < <(
+            sed -n 's/^IMPORTED //p' "${RUNNER_TEMP}/import.log"
+          )
+          if (( ${#imported_files[@]} == 0 )); then
+            echo "Importer produced no file list." >&2
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${imported_files[@]}"
+          if git diff --cached --quiet; then
+            echo "No new files to commit." >&2
+            exit 1
+          fi
+          git commit -m "Import Stage 03 binary hero assets (${ASSET_NAME})"
+          git push origin HEAD:main
+
+          {
+            echo
+            echo "Imported files were committed to main."
+            git log -1 --format='Commit: %H'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload import evidence
+        if: always() && steps.asset.outputs.should_import == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage03-binary-import-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/import.log
+            ${{ runner.temp }}/archive.sha256
+          if-no-files-found: ignore
