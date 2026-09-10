@@ -46,9 +46,16 @@ def load_model(path: Path) -> Dict[str, Any]:
     simulation = model["simulation_model"]
     if simulation["status"] != "PROPOSED_MODEL_ONLY":
         raise ValueError("simulation_model must explicitly be PROPOSED_MODEL_ONLY")
-    for key in ("main_run_duration_seconds", "simulation_step_seconds", "default_seed_set"):
+    for key in ("main_run_duration_seconds", "simulation_step_seconds", "final_boss_clock_policy", "default_seed_set"):
         if key not in simulation:
             raise ValueError(f"simulation_model missing {key}")
+    clock_policy = simulation["final_boss_clock_policy"]
+    if clock_policy.get("checkpoint_seconds") != 1200:
+        raise ValueError("final boss clock policy must bind to the 20-minute checkpoint")
+    if clock_policy.get("run_clock_stops_at_final_checkpoint") is not True:
+        raise ValueError("final boss clock policy must stop the main run clock")
+    if clock_policy.get("wave_xp_spawn_clock_advances_during_encounter") is not False:
+        raise ValueError("wave/XP/spawn clock must remain frozen during final boss encounter")
     if model["architecture_contract"]["final_boss_policy"] != "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST":
         raise ValueError("final-boss chest policy drifted from the live architecture contract")
     return model
@@ -340,6 +347,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     profile = simulation["heroes_and_profiles"]["profiles"][profile_name]
     dt = number(simulation["simulation_step_seconds"])
     main_duration = number(simulation["main_run_duration_seconds"])
+    clock_policy = simulation["final_boss_clock_policy"]
     thresholds = xp_thresholds(model)
     rng = random.Random(seed)
     enemy_catalog = simulation["enemy_stats"]
@@ -686,6 +694,12 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "collision_and_telegraph_evidence": "NOT_IMPLEMENTED",
             "android_fps_evidence": "BLOCKED",
             "model_status": "SIMULATED_MODEL_ONLY",
+        },
+        "clock_policy": {
+            "checkpoint_seconds": clock_policy["checkpoint_seconds"],
+            "run_clock_stops_at_final_checkpoint": clock_policy["run_clock_stops_at_final_checkpoint"],
+            "wave_xp_spawn_clock_advances_during_encounter": clock_policy["wave_xp_spawn_clock_advances_during_encounter"],
+            "resolution_clock": clock_policy["resolution_clock"],
         },
     }
 
