@@ -39,3 +39,13 @@ docs/mockups/03-heroes/{hero_id}/{direction}/{state}.png
 - `soyeon_han/hero_manifest.json` — manifest Соён Хан.
 - `STAGE03_HEROES_MANIFEST_v01.json` — историческая карта исходных boards.
 - `STAGE03_HEROES_VFX_BINDINGS_v01.json` — существующие VFX bindings.
+
+
+## Binary transport
+
+Точный ZIP-пакет доставляется через private Supabase Storage по
+docs/ci/SUPABASE_ASSET_STORAGE.md.
+GitHub хранит только request/manifest/инструкции, а CI импортирует PNG после
+проверки размера и SHA-256. Это build-time transport, не runtime network
+dependency и не художественное approval. Пока request имеет
+PENDING_SUPABASE_UPLOAD, папки runtime остаются без доказанного binary intake.

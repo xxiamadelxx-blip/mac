@@ -9,7 +9,7 @@
 
 ## 0. Anti-context-loss rule
 
-One task has one observable result, one owned write set, and one evidence bundle. Do not paste PNG/Base64 into chat. Hero binaries arrive as a real ZIP attached to a GitHub Release and are imported by the existing `import-stage03-release-assets.yml` workflow.
+One task has one observable result, one owned write set, and one evidence bundle. Do not paste PNG/Base64 into chat. Hero binaries arrive as a real ZIP in the private Supabase Storage bucket game-assets; the Stage 03 workflow downloads and verifies the exact object before importing it.
 
 Before work: read this file; claim one task ID; record the parent SHA; edit only the assigned paths; report exact evidence and one next action.
 
@@ -76,7 +76,7 @@ Tree entries at snapshot: 338.
 |---|---|---|---|
 | `VIS-02` | Visual Lab / Arena | `docs/mockups/02-arena/` | Review v03 and preserve v02 fallback; no scene promotion or production claim without approval/import/collision proof. |
 | `VIS-04` | Visual Lab / Enemies | `docs/mockups/04-enemies/` | Inventory actual partial files first; correct manifest; approve representative master before deriving nine candidates; no full-pack claim. |
-| `ASSET-03` | Binary producer | Release asset + Stage 03 workflow inputs | Real `stage03-assets-lin-yue-v01.zip` (96 PNGs) or both heroes (192); workflow reports actual count/dimensions/RGBA. No chat encoding. |
+| `ASSET-03` | Binary transport | Supabase Storage object + Stage 03 workflow request | Exact 96/192-PNG ZIP in Storage; request has bucket/object/size/SHA-256; CI reports actual count/dimensions/RGBA. No chat encoding. |
 | `PROJECT-INTEGRATOR` | Single docs integrator | root docs after accepted handoffs | Update legacy markers/indexes from accepted Phase A/B results in one small commit; no parallel root rewrites. |
 
 Dependency order:
@@ -121,5 +121,12 @@ Report: parent HEAD, resulting HEAD, changed paths, status, evidence, blockers, 
 - Do not call model output Godot/Android proof.
 - Do not promote Arena v03 or enemy candidates without Visual Lab gates.
 - If `main` moved, stop, re-read this file, and rebase the task mentally before writing.
+
+## 8. Binary transport migration
+
+- GitHub Release is retained only as a historical source reference for the old ZIP; it is not the canonical binary store and does not trigger intake.
+- The canonical route is agent filesystem -> Supabase Storage -> READY request -> CI download/hash check -> importer -> commit of actual PNG.
+- The live request remains PENDING_SUPABASE_UPLOAD until the exact ZIP is uploaded to the selected private Storage project.
+- This migration changes transport only. It does not approve, mutate, regenerate or promote Lin Yue, Soyeon Han, Arena v03 or any other visual asset.
 
 Current conclusion: **coordination baseline is published by this file; the project is not release-ready.**

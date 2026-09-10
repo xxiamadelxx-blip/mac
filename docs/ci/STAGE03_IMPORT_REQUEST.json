@@ -1,6 +1,22 @@
 {
-  "release_tag": "stage03-assets-lin-yue-v01",
+  "schema": "moonveil.stage03.storage_import_request",
+  "version": 1,
+  "status": "PENDING_SUPABASE_UPLOAD",
+  "provider": "supabase_storage",
   "asset_name": "stage03-assets-lin-yue-v01.zip",
-  "expected_sha256": "028d5b4dd3f914a37ddd10b5ac519ec83d70ed2e389cec90a68dd43ba84a8bff",
-  "request_attempt": 2
+  "storage": null,
+  "integrity": {
+    "sha256": "028d5b4dd3f914a37ddd10b5ac519ec83d70ed2e389cec90a68dd43ba84a8bff",
+    "size_bytes": 82744571
+  },
+  "legacy_source": {
+    "provider": "github_release",
+    "release_tag": "stage03-assets-lin-yue-v01",
+    "asset_name": "stage03-assets-lin-yue-v01.zip",
+    "asset_id": 555293572,
+    "note": "Historical source reference only; not the canonical binary store."
+  },
+  "manifest_object": null,
+  "checksum_object": null,
+  "next_action": "Upload the exact ZIP bytes to the selected private Supabase Storage project, then replace storage/integrity metadata with a READY request."
 }

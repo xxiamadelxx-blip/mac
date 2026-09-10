@@ -181,6 +181,21 @@ Animation и VFX представляют уже определённые игр
 
 Manifest не может помечать candidate как production только по факту существования файла.
 
+
+## 10A. Binary delivery boundary
+
+Visual Lab governs provenance, technical status, artistic review and promotion. It
+does not require GitHub to store binary payloads. Runtime exports are transported
+as exact ZIP objects through private Supabase Storage; GitHub keeps the text
+manifest, checksum, request and CI code.
+
+The Storage manifest records bucket/object, byte size, SHA-256, archive member
+count and producing evidence. CI verifies those fields before importing. Upload
+success is not artistic approval, and import success is not APPROVED GOLDEN or
+PRODUCTION. If the binary channel is unavailable, the status is
+BLOCKED_BINARY_ARTIFACT; no PNG or ZIP is pasted into chat or reconstructed
+from text.
+
 ## 11. Stage integration
 
 Stage-папка отвечает за композицию и конкретный пользовательский сценарий. Visual Lab отвечает за производственную дисциплину. Для каждого stage:

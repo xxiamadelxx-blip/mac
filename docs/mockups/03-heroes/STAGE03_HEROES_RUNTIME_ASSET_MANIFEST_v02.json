@@ -54,6 +54,6 @@
     }
   ],
   "reference_target": "User-attached transparent Lantern Moth cutout 1000046678.png",
-  "implementation_note": "Reference boards/manifests exist, but the live repository contains no runtime PNG pack for this hero. Import a real ZIP through the Stage 03 release-assets workflow before claiming technical pass.",
-  "next_gate": "real_zip_release_asset_and_workflow_import"
+  "implementation_note": "Reference boards/manifests exist, but the live repository contains no runtime PNG pack for this hero. Import a real ZIP from Supabase Storage through the Stage 03 workflow before claiming technical pass.",
+  "next_gate": "supabase_storage_upload_and_ci_import"
 }

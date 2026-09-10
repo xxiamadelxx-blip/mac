@@ -65,6 +65,14 @@ Technical PASS и artistic approval — разные состояния. Про�
 - Все кандидатные изображения, исходники, экспорты и review captures должны быть воспроизводимыми настолько, насколько это поддерживает используемый инструмент.
 - Не удаляй и не заменяй пользовательскую работу без явного основания. Не смешивай этот репозиторий с браузером, VPN, оркестратором, dice roller или Out of the Abyss runtime.
 
+## 5A. Binary asset transport (mandatory)
+
+- GitHub is the source for code, scenes, JSON, manifests and instructions. It is not the canonical store for PNG/ZIP binaries.
+- Real PNG/ZIP packages go through the private Supabase Storage bucket game-assets using raw streaming or resumable upload. Never paste binary bytes, Base64 or data URLs into chat, issues, comments or repository text.
+- CI may import an asset only after it downloads the exact Storage object and verifies size_bytes and SHA-256. The APK receives imported files at build time and does not need Storage at runtime.
+- A manifest, expected file list, old GitHub Release asset or agent message is not binary evidence. Without a real channel, report BLOCKED_BINARY_ARTIFACT; do not simulate upload/import.
+- The Binary Asset Transport Agent owns upload, manifest/checksum, request metadata and CI intake. It does not generate, mutate or approve art.
+
 ## 6. Definition of Done для визуальной работы
 
 Работа считается завершённой только если:
