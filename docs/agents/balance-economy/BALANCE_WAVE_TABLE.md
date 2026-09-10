@@ -10,11 +10,11 @@ Live main HEAD verified before this documentation refresh: 0536f182c1ae8876b9213
 
 | Band | Time window | Spawn budget | Active cap | HP multiplier | Damage multiplier | Speed multiplier | B1 composition target |
 |---|---:|---:|---:|---:|---:|---:|---|
-| wave_00_02 | 0:00–2:00 | 6/s | 40 | 1.00 | 0.70 | 0.90 | Ink beetle; level 2 |
-| wave_02_05 | 2:00–5:00 | 10/s | 80 | 1.10 | 0.85 | 1.00 | Beetle, moth, carp; level 5 |
-| wave_05_10 | 5:00–10:00 | 15/s | 130 | 1.35 | 1.00 | 1.02 | Extended roster; level 9 |
-| wave_10_15 | 10:00–15:00 | 22/s | 200 | 1.70 | 1.25 | 1.05 | Elites enter; level 13 |
-| wave_15_20 | 15:00–20:00 | 30/s | 280 | 2.20 | 1.55 | 1.08 | Full roster; level 17–18 |
+| wave_warmup_0_2 | 0:00–2:00 | 6/s | 40 | 1.00 | 0.70 | 0.90 | Ink beetle; level 2 |
+| wave_pressure_2_5 | 2:00–5:00 | 10/s | 80 | 1.10 | 0.85 | 1.00 | Beetle, moth, carp; level 5 |
+| wave_threat_5_10 | 5:00–10:00 | 15/s | 130 | 1.35 | 1.00 | 1.02 | Extended roster; level 9 |
+| wave_elite_10_15 | 10:00–15:00 | 22/s | 200 | 1.70 | 1.25 | 1.05 | Elites enter; level 13 |
+| wave_eclipse_15_20 | 15:00–20:00 | 30/s | 280 | 2.20 | 1.55 | 1.08 | Full roster; level 17–18 |
 
 The first five rows are CANON from B1 section 4. Their nominal spawn opportunities are DERIVED as 720, 1,800, 4,500, 6,600, and 9,000 attempts respectively, for 22,620 before cap suppression and boss interruption.
 
