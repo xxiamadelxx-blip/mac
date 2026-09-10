@@ -790,30 +790,34 @@
     {
       "checkpoint_id": "boss_01_05",
       "time_seconds": 300,
-      "boss_id": null,
-      "boss_status": "PENDING_B1",
-      "source": "B1/GAME_MANIFEST"
+      "boss_id": "boss_hua_lin",
+      "boss_status": "CANON",
+      "source": "B1/GAME_MANIFEST",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
     },
     {
       "checkpoint_id": "boss_02_10",
       "time_seconds": 600,
-      "boss_id": null,
-      "boss_status": "PENDING_B1",
-      "source": "B1/GAME_MANIFEST"
+      "boss_id": "boss_miyeon",
+      "boss_status": "CANON",
+      "source": "B1/GAME_MANIFEST",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
     },
     {
       "checkpoint_id": "boss_03_15",
       "time_seconds": 900,
-      "boss_id": null,
-      "boss_status": "PENDING_B1",
-      "source": "B1/GAME_MANIFEST"
+      "boss_id": "boss_seika",
+      "boss_status": "CANON",
+      "source": "B1/GAME_MANIFEST",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
     },
     {
       "checkpoint_id": "boss_final_20",
       "time_seconds": 1200,
-      "boss_id": null,
-      "boss_status": "PENDING_B1",
-      "source": "B1/GAME_MANIFEST"
+      "boss_id": "boss_black_moon_empress",
+      "boss_status": "CANON",
+      "source": "B1/GAME_MANIFEST",
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
     }
   ],
   "rewards": {
@@ -1264,7 +1268,7 @@
       "status": "PROPOSED",
       "source": "B1 section 6 defines XP drops and timing targets but not pickup latency/capacity",
       "drop_delay_seconds": {
-        "value": 1.0,
+        "value": 1,
         "source": "PENDING_B1",
         "derived_formula": "drop becomes collectible at defeat_time + drop_delay_seconds",
         "rationale": "Separates combat defeat from visible aftermath and prevents same-frame XP teleportation.",
@@ -1642,8 +1646,8 @@
         "attack_type": "teleport"
       },
       "enemy_jade_toad": {
-      "base_hp": {
-        "value": 36,
+        "base_hp": {
+          "value": 36,
           "source": "PENDING_B1; B1 supplies durability 1.6 and ordinary TTK target",
           "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
           "rationale": "Zone unit is more durable and should be killed before its zone persists.",
@@ -1732,8 +1736,8 @@
         "attack_type": "decoy"
       },
       "enemy_bell_crab": {
-      "base_hp": {
-        "value": 35,
+        "base_hp": {
+          "value": 35,
           "source": "PENDING_B1; B1 supplies durability 2.4 and elite-band TTK target",
           "derived_formula": "reference_single_target_dps × target_ttk ÷ durability, with rear_weakness_multiplier",
           "rationale": "Front block is compensated by a rear weakness rather than a larger HP pool.",
@@ -1791,8 +1795,8 @@
         "attack_type": "blocker"
       },
       "enemy_thread_doll": {
-      "base_hp": {
-        "value": 20,
+        "base_hp": {
+          "value": 20,
           "source": "PENDING_B1; B1 supplies durability 1.8 and elite-band TTK target",
           "derived_formula": "reference_single_target_dps × target_ttk ÷ durability",
           "rationale": "Slow beam unit is durable but not an elite.",
@@ -1836,8 +1840,8 @@
         "attack_type": "slow_beam"
       },
       "elite_stone_oni": {
-      "base_hp": {
-        "value": 70,
+        "base_hp": {
+          "value": 70,
           "source": "PENDING_B1; B1 supplies durability 7.0 and elite TTK target",
           "derived_formula": "reference_elite_dps × target_elite_ttk ÷ durability",
           "rationale": "Produces approximately 10–25 seconds under the reference builds.",
@@ -1881,8 +1885,8 @@
         "attack_type": "telegraphed_aoe"
       },
       "elite_eclipse_serpent": {
-      "base_hp": {
-        "value": 75,
+        "base_hp": {
+          "value": 75,
           "source": "PENDING_B1; B1 supplies durability 8.0 and elite TTK target",
           "derived_formula": "reference_elite_dps × target_elite_ttk ÷ durability",
           "rationale": "Fast elite remains in the 10–25-second target with focused damage.",
@@ -1928,7 +1932,7 @@
     },
     "boss_stats": {
       "boss_01_05": {
-        "boss_id": "boss_ink_warden",
+        "boss_id": "boss_hua_lin",
         "checkpoint_id": "boss_01_05",
         "base_hp": {
           "value": 3600,
@@ -1971,13 +1975,15 @@
           "derived_formula": "use the top special drop for a checkpoint boss",
           "rationale": "Creates a meaningful level-up without adding a new XP value.",
           "status": "PROPOSED"
-        }
+        },
+        "boss_id_status": "CANON",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
       },
       "boss_02_10": {
-        "boss_id": "boss_lantern_matriarch",
+        "boss_id": "boss_miyeon",
         "checkpoint_id": "boss_02_10",
-      "base_hp": {
-        "value": 4500,
+        "base_hp": {
+          "value": 4500,
           "source": "PENDING_B1; B1 supplies first-slice boss TTK 45–80 seconds",
           "derived_formula": "target_ttk_midpoint × reference_boss_dps × pressure_growth",
           "rationale": "Escalates ranged control after the first boss.",
@@ -2017,13 +2023,15 @@
           "derived_formula": "use the top special drop for a checkpoint boss",
           "rationale": "Keeps boss XP consistent.",
           "status": "PROPOSED"
-        }
+        },
+        "boss_id_status": "CANON",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
       },
       "boss_03_15": {
-        "boss_id": "boss_bone_colossus",
+        "boss_id": "boss_seika",
         "checkpoint_id": "boss_03_15",
-      "base_hp": {
-        "value": 5200,
+        "base_hp": {
+          "value": 5200,
           "source": "PENDING_B1; B1 supplies first-slice boss TTK 45–80 seconds",
           "derived_formula": "target_ttk_midpoint × reference_boss_dps × pressure_growth",
           "rationale": "Third boss tests elite-band build maturity.",
@@ -2063,13 +2071,15 @@
           "derived_formula": "use the top special drop for a checkpoint boss",
           "rationale": "Keeps reward class stable.",
           "status": "PROPOSED"
-        }
+        },
+        "boss_id_status": "CANON",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
       },
       "boss_final_20": {
-        "boss_id": "boss_eclipse_serpent_final",
+        "boss_id": "boss_black_moon_empress",
         "checkpoint_id": "boss_final_20",
-      "base_hp": {
-        "value": 9600,
+        "base_hp": {
+          "value": 9600,
           "source": "PENDING_B1; B1 supplies final boss TTK 90–120 seconds",
           "derived_formula": "target_final_ttk_midpoint × reference_final_boss_dps",
           "rationale": "Final boss is resolved after the 20-minute wave clock in the explicit post-run window.",
@@ -2109,7 +2119,9 @@
           "derived_formula": "use the top special drop for the final encounter",
           "rationale": "Uses existing XP vocabulary only.",
           "status": "PROPOSED"
-        }
+        },
+        "boss_id_status": "CANON",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
       }
     },
     "combat_math": {
@@ -2260,8 +2272,8 @@
             "rationale": "No cooldown advantage.",
             "status": "DERIVED"
           },
-        "hit_probability": {
-          "value": 0.002,
+          "hit_probability": {
+            "value": 0.002,
             "source": "PENDING_PRODUCT_DECISION",
             "derived_formula": "landed-hit chance under moving/telegraphing",
             "rationale": "Conservative beginner stress case; tune after gameplay trace.",
@@ -2295,8 +2307,8 @@
             "rationale": "Small mid-progression cadence advantage.",
             "status": "DERIVED"
           },
-        "hit_probability": {
-          "value": 0.0015,
+          "hit_probability": {
+            "value": 0.0015,
             "source": "PENDING_PRODUCT_DECISION",
             "derived_formula": "landed-hit chance under moving/telegraphing",
             "rationale": "Moderate profile has more survivability but still receives avoidable hits.",
@@ -2330,8 +2342,8 @@
             "rationale": "Uses the canonical M1 branch cap.",
             "status": "DERIVED"
           },
-        "hit_probability": {
-          "value": 0.001,
+          "hit_probability": {
+            "value": 0.001,
             "source": "PENDING_PRODUCT_DECISION",
             "derived_formula": "landed-hit chance under moving/telegraphing",
             "rationale": "Max profile is a stress test for kill speed and overpowered synergy.",
@@ -2346,9 +2358,9 @@
       "status": "PROPOSED",
       "source": "architecture content registry supplies IDs; numeric combat values absent",
       "weapons": {
-      "weapon_jade_talismans": {
-        "owner_hero_id": "hero_lin_yue",
-        "synergy_id": "synergy_heavenly_seals",
+        "weapon_jade_talismans": {
+          "owner_hero_id": "hero_lin_yue",
+          "synergy_id": "synergy_heavenly_seals",
           "base_damage": {
             "value": 12,
             "source": "PENDING_B1; architecture supplies ID only",
@@ -2371,9 +2383,9 @@
             "status": "PROPOSED"
           }
         },
-      "weapon_moon_blade": {
-        "owner_hero_id": "hero_seoyeon_han",
-        "synergy_id": "synergy_moon_dance",
+        "weapon_moon_blade": {
+          "owner_hero_id": "hero_seoyeon_han",
+          "synergy_id": "synergy_moon_dance",
           "base_damage": {
             "value": 18,
             "source": "PENDING_B1; architecture supplies ID only",
@@ -2534,5 +2546,53 @@
       "duplicate_behavior": "return existing committed entry without applying currency again",
       "defeat_policy": "read from canonical rewards.defeat_after_checkpoint"
     }
+  },
+  "runtime_integration": {
+    "status": "NOT_IMPLEMENTED",
+    "owner": "Runtime/Architecture",
+    "balance_model_path": "docs/agents/balance-economy/BALANCE_MODEL.json",
+    "architecture_contract_path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
+    "architecture_contract_revision": "5a9697ef9d28a825726f42b2e63b6ffce8f66ba0",
+    "join_policy": {
+      "stable_id_key": "semantic IDs",
+      "checkpoint_boss_mapping": [
+        {
+          "checkpoint_id": "boss_01_05",
+          "boss_id": "boss_hua_lin",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "checkpoint_id": "boss_02_10",
+          "boss_id": "boss_miyeon",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "checkpoint_id": "boss_03_15",
+          "boss_id": "boss_seika",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "checkpoint_id": "boss_final_20",
+          "boss_id": "boss_black_moon_empress",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        }
+      ],
+      "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
+      "no_duplicate_tuning_values": true,
+      "simulator_authority": "simulation_model in BALANCE_MODEL.json"
+    },
+    "required_runtime_consumers": [
+      "Content Registry",
+      "RunSession",
+      "WaveDirector/BossDirector",
+      "CombatSystem",
+      "ProgressionSystem",
+      "RewardLedger"
+    ],
+    "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
   }
 }
