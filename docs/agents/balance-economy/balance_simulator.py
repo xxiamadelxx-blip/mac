@@ -95,8 +95,11 @@ def load_model(path: Path) -> Dict[str, Any]:
         raise ValueError("main and mini-boss checkpoints may not overlap")
     if number(simulation["main_run_duration_seconds"]) != number(schedule["duration_seconds"]):
         raise ValueError("schedule duration must match main run duration")
-    if model["architecture_contract"]["final_boss_policy"] != "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST":
+    if model["architecture_contract"]["final_boss_policy"] != "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST":
         raise ValueError("final-boss chest policy drifted from the live architecture contract")
+    variant_ids = unwrap(simulation["elite_variation_policy"].get("variant_ids", []))
+    if not variant_ids or len(set(variant_ids)) != len(variant_ids):
+        raise ValueError("elite variation policy must expose unique stable variant IDs")
     return model
 
 
@@ -361,6 +364,7 @@ def make_entity(
     run_elapsed: Optional[float] = None,
     encounter_kind: str = "MAIN_BOSS",
     elite_variant: bool = False,
+    variant_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     if run_elapsed is None:
         run_elapsed = wall_elapsed
@@ -404,6 +408,7 @@ def make_entity(
         "boss_key": boss_key,
         "encounter_kind": encounter_kind if boss else "ORDINARY_WAVE",
         "elite_variant": elite_variant,
+        "variant_id": variant_id,
         "spawn_time": run_elapsed,
         "spawn_wall_time": wall_elapsed,
         "hp": hp,
@@ -506,7 +511,7 @@ def resolve_chest(
             "encounter_kind": encounter_kind,
             "outcome": "NO_CHEST",
             "time": elapsed,
-            "status": "PENDING_ARCHITECTURE_30M_FINAL_POLICY",
+            "status": "CANON_ARCHITECTURE_NO_BOSS_CHEST",
         }
     hero = model["simulation_model"]["heroes_and_profiles"]["heroes"][state["hero_id"]]
     synergy_id = catalog["weapons"][hero["starting_weapon_id"]]["synergy_id"] if "synergy_id" in catalog["weapons"][hero["starting_weapon_id"]] else None
@@ -707,7 +712,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
 
     def resolve_boss(boss_entity: Dict[str, Any], wall_clock: float, run_clock: float) -> None:
         checkpoint_id = boss_entity["checkpoint_id"]
-        final = checkpoint_id == "boss_final_20"
+        final = checkpoint_id == "boss_final_30"
         ttk = wall_clock - boss_entity["boss_start_wall_time"]
         target_range = target_policy["final_boss_ttk_seconds"] if final else target_policy["first_slice_boss_ttk_seconds"]
         target_pass = number(target_range[0]) <= ttk <= number(target_range[1])
@@ -909,7 +914,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
             "defeat_time_wall_seconds": None,
             "defeat_time_run_clock_seconds": None,
             "ttk_seconds": None,
-            "target_range": list(target_policy["final_boss_ttk_seconds"] if boss["checkpoint_id"] == "boss_final_20" else target_policy["first_slice_boss_ttk_seconds"]),
+            "target_range": list(target_policy["final_boss_ttk_seconds"] if boss["checkpoint_id"] == "boss_final_30" else target_policy["first_slice_boss_ttk_seconds"]),
             "target_pass": False,
             "within_post_run_window": False,
         })
@@ -1161,11 +1166,14 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             return
         policy = simulation["elite_variation_policy"]
         pack_size = integer(policy["pack_size"])
+        variant_ids = list(unwrap(policy["variant_ids"]))
+        variant_id = variant_ids[rng.randrange(len(variant_ids))]
         anchor_enemy = weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
         elite_pack_states[event_id] = {
             "event_id": event_id,
             "source_checkpoint_id": mini_row["checkpoint_id"],
             "anchor_enemy_id": anchor_enemy,
+            "variant_id": variant_id,
             "remaining": pack_size,
             "defeated": 0,
             "offer_ledger": {},
@@ -1180,6 +1188,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
                 next_entity_id,
                 run_elapsed=run_clock,
                 elite_variant=member_index == 0,
+                variant_id=variant_id if member_index == 0 else None,
             )
             entity["elite_pack_event_id"] = event_id
             next_entity_id += 1
@@ -1199,6 +1208,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "enemy_id": enemy_id,
             "kind": kind,
             "elite_pack_event_id": entity.get("elite_pack_event_id"),
+            "variant_id": entity.get("variant_id"),
             "spawn_time": round(entity["spawn_time"], 3),
             "spawn_wall_time": round(entity["spawn_wall_time"], 3),
             "defeat_time_wall": round(wall_clock, 3),
@@ -1523,6 +1533,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     ordinary_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "ordinary"]
     elite_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] in ("elite", "elite_variant")]
     elite_variant_ttks = [row["focused_ttk_seconds"] for row in kills if row["kind"] == "elite_variant"]
+    elite_variant_ids_used = sorted({row.get("variant_id") for row in kills if row["kind"] == "elite_variant" and row.get("variant_id")})
     ttk_by_enemy: Dict[str, List[float]] = {}
     for row in kills:
         ttk_by_enemy.setdefault(row["enemy_id"], []).append(row["focused_ttk_seconds"])
@@ -1570,6 +1581,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "ordinary_kills": len(ordinary_ttks),
             "elite_kills": len(elite_ttks),
             "elite_variant_kills": len(elite_variant_ttks),
+            "elite_variant_ids_used": elite_variant_ids_used,
             "ordinary_ttk_seconds": {"mean": percentile(ordinary_ttks, 0.5), "p95": percentile(ordinary_ttks, 0.95), "target": list(target_policy["ordinary_ttk_seconds"])},
             "elite_ttk_seconds": {"mean": percentile(elite_ttks, 0.5), "p95": percentile(elite_ttks, 0.95), "target": list(target_policy["elite_ttk_seconds"])},
             "elite_variant_ttk_seconds": {"mean": percentile(elite_variant_ttks, 0.5), "p95": percentile(elite_variant_ttks, 0.95), "target": list(target_policy["elite_variant_ttk_seconds"])},
@@ -1680,6 +1692,7 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
     expected_duration = number(model["simulation_model"]["main_run_duration_seconds"])
     expected_bosses = len(main_checkpoints(model))
     expected_minibosses = len(mini_checkpoints(model))
+    allowed_variant_ids = set(unwrap(model["simulation_model"]["elite_variation_policy"]["variant_ids"]))
     for run in result["runs"]:
         if run["runtime_boundary"]["godot_runtime_executed"]:
             raise AssertionError("model simulator must not claim Godot runtime execution")
@@ -1692,6 +1705,8 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
                 raise AssertionError("invalid boss spawn time")
         if not run["rewards"]["idempotency_pass"]:
             raise AssertionError("duplicate reward grant accepted")
+        if not set(run["combat"].get("elite_variant_ids_used", [])).issubset(allowed_variant_ids):
+            raise AssertionError("simulator emitted an unregistered elite variant ID")
         if run["clock_policy"]["main_bosses_freeze_visible_clock"] is not True:
             raise AssertionError("main-boss freeze policy drifted")
         if run["clock_policy"]["mini_bosses_advance_visible_clock"] is not True:
@@ -1751,3 +1766,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
