@@ -7,15 +7,15 @@ Status: SIMULATED_MODEL_ONLY / PARTIAL
 - Model source: docs/BALANCE_ECONOMY_SPEC.md revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
 - Architecture source: docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0.
 - Live main HEAD observed at the start of this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d.
-- Balance model commit used: 094a544d09635e855f84bf46ae53bf225d37cfe4.
-- Simulator commit used: 57ae67766ef7f5b5e25779ecd210d4127de4da8c.
-- Main HEAD observed immediately before this report update: 110a91300c33d59394b00e2750edd20bf561e571.
+- Balance model commit used: af3ba789b10768e711bc6b6267e4a206dbd4e7a5.
+- Simulator commit used: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
+- Main HEAD observed immediately before this report update: 3dbe3f375b7d9cbd201d11943e79fa1c9582e86c.
 - Seeds: 101, 202, 303, 404, 505.
 - Runs: 30 (6 profile/hero slices × 5 seeds).
-- Runtime executed: false.
-- Repeated full-run SHA-256: 13e7c864d08be7c8b35d023482e122c9c26457374fad0fb43d3eac23b5f8f92f.
+- Runtime executed: false.\n- Balance↔architecture contract validator: PASS (boss, wave, build and policy IDs).\n- Contract validator commit: bff8dae32d049a1d135c6491d62d18dc0be093ce.
+- Repeated full-run SHA-256: f456c8a3469ae51e4e41db2f97df69969d245815459c660e52ff40b2045a7f33.
 
-The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so.
+The simulator reads one BALANCE_MODEL.json. Tuning values absent from B1 are explicit PROPOSED/PENDING fields in that model. No balance number below should be read as CANON unless the source column says so. Stable IDs are joined against the architecture registry; the model does not copy architecture tuning values.
 
 ## Concrete profile inputs
 
