@@ -11,8 +11,8 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "9dc0c5a4fc8bee7a690213abc8b0e2c62b39989c",
-    "captured_at": "2026-09-10T10:14:11Z"
+    "head": "01c08c49334f9a8bf6a0472e678e319f3f1b4c90",
+    "captured_at": "2026-09-10T10:36:29Z"
   },
   "units": {
     "time": "seconds",
@@ -1203,7 +1203,7 @@
     "source_revision": "6aa4ec96afc8a8c9e6a35c164c99e7d62910a687",
     "architecture_revision": "2f889f876f2b8aa286523d234786addf0b9b245e",
     "runtime_status": "NOT_IMPLEMENTED",
-    "scope": "deterministic 20-minute wave/economy model plus post-20-minute final-boss resolution window",
+    "scope": "deterministic 20-minute wave/economy model with a separate encounter clock for every boss checkpoint",
     "main_run_duration_seconds": {
       "value": 1200,
       "source": "architecture contract canonical duration; B1 section 4",
@@ -1222,7 +1222,7 @@
       "value": 120,
       "source": "B1 section 3 final-boss TTK target",
       "derived_formula": "upper end of final-boss target window",
-      "rationale": "Allows the final boss spawned at 20:00 to resolve without extending wave/XP clock.",
+      "rationale": "Bounds the final boss encounter after the visible run clock reaches 20:00 without extending the wave/XP clock.",
       "status": "PROPOSED"
     },
     "default_seed_set": {
@@ -2630,14 +2630,20 @@
         "separate_from_boss_chest": true
       }
     },
-    "final_boss_clock_policy": {
+    "boss_clock_policy": {
       "status": "CANON",
       "source": "User product decision captured 2026-09-10",
-      "checkpoint_seconds": 1200,
-      "run_clock_stops_at_final_checkpoint": true,
+      "applies_to": "ALL_BOSS_CHECKPOINTS",
+      "checkpoint_seconds": [
+        300,
+        600,
+        900,
+        1200
+      ],
+      "run_clock_stops_at_boss_checkpoint": true,
       "wave_xp_spawn_clock_advances_during_encounter": false,
       "resolution_clock": "SEPARATE_ENCOUNTER_CLOCK",
-      "rationale": "The visible 20-minute run clock freezes at the final boss checkpoint; only the boss encounter resolves after the run clock stops."
+      "rationale": "The visible run clock freezes at every boss checkpoint; only the boss encounter clock advances until that boss is defeated or the run fails."
     }
   },
   "runtime_integration": {
