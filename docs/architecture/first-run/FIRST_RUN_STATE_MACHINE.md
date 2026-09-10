@@ -68,14 +68,18 @@ stateDiagram-v2
     BOSS_ACTIVE --> CHECKPOINT_SETTLEMENT
     CHECKPOINT_SETTLEMENT --> CHEST_OFFER
     CHEST_OFFER --> RUN_ACTIVE
+    CHEST_OFFER --> RUN_VICTORY
     RUN_ACTIVE --> RUN_PAUSED
     BOSS_ACTIVE --> RUN_PAUSED
     RUN_PAUSED --> RUN_ACTIVE
+    RUN_PAUSED --> BOSS_ACTIVE
+    RUN_PAUSED --> SETTINGS
+    RUN_PAUSED --> MAIN_MENU_RETURN
     RUN_PAUSED --> RECOVERY_REVIEW
     RECOVERY_REVIEW --> RUN_ACTIVE
+    RECOVERY_REVIEW --> MAIN_MENU_RETURN
     RUN_ACTIVE --> RUN_DEFEAT
     BOSS_ACTIVE --> RUN_DEFEAT
-    BOSS_ACTIVE --> RUN_VICTORY
     RUN_DEFEAT --> RESULT_REVIEW
     RUN_VICTORY --> RESULT_REVIEW
     RESULT_REVIEW --> REWARD_COMMITTING
@@ -83,7 +87,7 @@ stateDiagram-v2
     MAIN_MENU_RETURN --> MAIN_MENU
 ~~~
 
-Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. RUN_VICTORY is allowed only after the final boss defeat; timer expiry alone is not victory.
+Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second boundary. Its defeat goes through CHECKPOINT_SETTLEMENT and the final CHEST_OFFER/ledger path; only after the final settlement/claim reaches the terminal branch may the state become RUN_VICTORY. Timer expiry alone is not victory.
 
 ## 4. Transition contract
 
@@ -105,17 +109,18 @@ Final boss checkpoint enters BOSS_INTRO/BOSS_ACTIVE at the canonical 1200-second
 | T-12 | BOSS_INTRO → BOSS_ACTIVE | intro_complete | Boss record and safe spawn available | Start boss pattern/telegraph contract | Safe spawn retry; failure → paused diagnostic |
 | T-13 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | boss_defeated | Encounter active; defeat not settled | Freeze; create settlement command | Duplicate defeat ignored by encounter id |
 | T-14 | CHECKPOINT_SETTLEMENT → CHEST_OFFER | checkpoint_settled | Ledger commit succeeded | Record checkpoint; create chest offer | Persistence failure keeps transaction retryable |
-| T-15 | CHEST_OFFER → RUN_ACTIVE | chest_claimed | offer valid; evaluator outcome not already claimed | Apply synergy/artifact/fallback; mark offer claimed | Duplicate claim returns existing outcome |
-| T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | death not settled | Freeze and create defeat result | Duplicate death ignored |
-| T-17 | BOSS_ACTIVE → RUN_VICTORY | final_boss_defeated | checkpoint is final; final boss defeated | Create victory result; no timer-only shortcut | Invalid final result returns to checkpoint recovery |
+| T-15 | CHEST_OFFER → RUN_ACTIVE or RUN_VICTORY | chest_claimed | Offer valid; evaluator outcome not already claimed; final checkpoint selects terminal branch | Apply synergy/artifact/fallback; mark offer claimed; final branch creates victory candidate | Duplicate claim returns existing outcome |
+| T-16 | BOSS_ACTIVE → RUN_DEFEAT | player_death | Death not settled | Freeze and create defeat result | Duplicate death ignored |
+| T-17 | BOSS_ACTIVE → CHECKPOINT_SETTLEMENT | final_boss_defeated | Final checkpoint; final boss defeated | Create final settlement command; victory is not terminal until ledger/chest path completes | Invalid final result returns to checkpoint recovery |
 | T-18 | RUN_ACTIVE/BOSS_ACTIVE → RUN_PAUSED | pause_requested/background | Current state resumable | Freeze clock; write allowed snapshot | Snapshot failure leaves in-memory paused state with diagnostic |
-| T-19 | RUN_PAUSED → RUN_ACTIVE/BOSS_ACTIVE | resume_requested | snapshot/content/checksum valid | Restore resume_state and continue clock | Invalid snapshot → RECOVERY_REVIEW |
-| T-20 | RUN_PAUSED → RECOVERY_REVIEW | restore_needed | Background kill or invalid live state | Show last coherent revision and choices | No valid revision → abandon without rewards |
-| T-21 | RUN_PAUSED → MAIN_MENU_RETURN | exit_confirmed | User confirms abandon or recover policy | Mark session abandoned; do not settle unearned rewards | Cancel returns to RUN_PAUSED |
-| T-22 | RUN_DEFEAT/RUN_VICTORY → RESULT_REVIEW | result_opened | terminal result exists | Build immutable result projection | Missing result → retry from snapshot |
-| T-23 | RESULT_REVIEW → REWARD_COMMITTING | claim_result | result not committed or ledger has pending entries | Start one atomic reward transaction | Retry same idempotency keys |
-| T-24 | REWARD_COMMITTING → MAIN_MENU_RETURN | reward_commit_succeeded | Ledger and meta save committed | Mark result claimed | Save failure retains retryable transaction |
-| T-25 | MAIN_MENU_RETURN → MAIN_MENU | return_complete | No pending commit | Refresh wallets/unlocks | If refresh fails, keep committed values and show diagnostic |
+| T-19 | RUN_PAUSED → RUN_ACTIVE/BOSS_ACTIVE | resume_requested | Snapshot/content/checksum valid | Restore resume_state and continue clock | Invalid snapshot → RECOVERY_REVIEW |
+| T-20 | RUN_PAUSED → SETTINGS | settings_requested | Pause context is valid | Open settings while preserving paused_from_state | Settings failure returns to pause with diagnostic |
+| T-21 | RUN_PAUSED → RECOVERY_REVIEW | restore_needed | Background kill or invalid live state | Show last coherent revision and choices | No valid revision → abandon without rewards |
+| T-22 | RUN_PAUSED/RECOVERY_REVIEW → MAIN_MENU_RETURN | exit_confirmed/abandon_confirmed | User confirms abandon or recovery policy | Mark session abandoned; do not settle unearned rewards | Cancel returns to originating state |
+| T-23 | RUN_DEFEAT/RUN_VICTORY → RESULT_REVIEW | result_opened | Terminal result exists | Build immutable result projection | Missing result → retry from snapshot |
+| T-24 | RESULT_REVIEW → REWARD_COMMITTING | claim_result | Result not committed or ledger has pending entries | Start one atomic reward transaction | Retry same idempotency keys |
+| T-25 | REWARD_COMMITTING → MAIN_MENU_RETURN | reward_commit_succeeded | Ledger and meta save committed | Mark result claimed | Save failure retains retryable transaction |
+| T-26 | MAIN_MENU_RETURN → MAIN_MENU | return_complete | No pending commit | Refresh wallets/unlocks | If refresh fails, keep committed values and show diagnostic |
 
 ## 5. Pause/background model
 
@@ -127,7 +132,7 @@ RUN_PAUSED содержит:
 - whether a pending offer/chest exists;
 - diagnostic code, если snapshot/content mismatch.
 
-UPGRADE_OFFER и CHEST_OFFER сами замораживают simulation; вход в Settings из них возвращается в тот же blocking state. Android background не считается победой, поражением или выходом из забега.
+UPGRADE_OFFER и CHEST_OFFER сами замораживают simulation; вход в Settings из них возвращается в тот же blocking state. В RUN_PAUSED Settings открывается отдельным transition без возобновления clock; выход ведёт в подтверждение/MAIN_MENU_RETURN. Android background не считается победой, поражением или выходом из забега.
 
 Working assumption: snapshot делается на checkpoint, при явной паузе и в terminal/reward boundary. Полный произвольный mid-frame resume не обещается до отдельного product decision.
 
@@ -142,12 +147,13 @@ Working assumption: snapshot делается на checkpoint, при явной
 
 ## 7. Invariants
 
-1. UI не меняет authoritative state напрямую.
-2. Clock не идёт в paused/blocking states.
-3. XPDrop не превращается в AftermathItem и наоборот.
-4. Checkpoint reward не применяется без ledger idempotency key.
-5. Final victory невозможна без final boss defeat.
-6. Unknown/stale content не превращается в silent default.
-7. Ошибка persistence не подтверждает reward commit.
-8. Повторная доставка одного effect command не меняет итог.
-9. Все неизвестные числовые/продуктовые решения отмечены в data contract и decisions file.
+1. Final boss defeat cannot bypass CHECKPOINT_SETTLEMENT, RewardLedger and final chest branch.
+2. UI не меняет authoritative state напрямую.
+3. Clock не идёт в paused/blocking states.
+4. XPDrop не превращается в AftermathItem и наоборот.
+5. Checkpoint reward не применяется без ledger idempotency key.
+6. Final victory невозможна без final boss defeat и финального settlement.
+7. Unknown/stale content не превращается в silent default.
+8. Ошибка persistence не подтверждает reward commit.
+9. Повторная доставка одного effect command не меняет итог.
+10. Все неизвестные числовые/продуктовые решения отмечены в data contract и decisions file.
