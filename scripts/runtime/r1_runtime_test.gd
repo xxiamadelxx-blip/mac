@@ -4,13 +4,21 @@ const ContentRegistryType = preload("res://scripts/runtime/content_registry.gd")
 const RunCoordinatorType = preload("res://scripts/runtime/run_coordinator.gd")
 const RunSessionType = preload("res://scripts/runtime/run_session.gd")
 const SimulationClockType = preload("res://scripts/runtime/simulation_clock.gd")
+const WaveDirectorType = preload("res://scripts/runtime/wave_director.gd")
 
 var failures: Array[String] = []
 
 
 func _init() -> void:
     _run_acceptance_fixture()
-    var result := {"ok": failures.is_empty(), "failures": failures}
+    var r_ref_01_report := _run_ref_r01()
+    for failure in r_ref_01_report.get("failures", []):
+        failures.append("R-REF-01: %s" % str(failure))
+    var result := {
+        "ok": failures.is_empty(),
+        "failures": failures,
+        "r_ref_01": r_ref_01_report
+    }
     print("R1_RUNTIME_TEST " + JSON.stringify(result))
     quit(0 if failures.is_empty() else 1)
 
@@ -127,3 +135,174 @@ func _run_deterministic_trace(seed: int) -> String:
 func _check(condition: bool, label: String) -> void:
     if not condition:
         failures.append(label)
+
+
+func _run_ref_r01() -> Dictionary:
+    var ref_failures: Array[String] = []
+    var report := {
+        "task_id": "REF-RUNTIME-01",
+        "slice": "R-REF-01",
+        "registry_source": "res://docs/agents/balance-economy/BALANCE_MODEL.json",
+        "failures": ref_failures
+    }
+    var registry: Variant = ContentRegistryType.new()
+    var boot: Dictionary = registry.load_and_validate()
+    _ref_check(ref_failures, bool(boot.get("ok", false)), "Content Registry loads for R-REF-01")
+    if not bool(boot.get("ok", false)):
+        report["ok"] = false
+        return report
+
+    var wave_bands: Variant = registry.get_model_field(["wave_bands"], [])
+    var main_bosses: Array[Dictionary] = registry.get_main_bosses()
+    report["registry"] = {
+        "wave_band_count": wave_bands.size() if wave_bands is Array else 0,
+        "main_boss_count": main_bosses.size(),
+        "r2_content_status": registry.get_r2_content_status()
+    }
+    _ref_check(ref_failures, wave_bands is Array and wave_bands.size() > 0, "Current registry exposes wave bands")
+    _ref_check(ref_failures, main_bosses.size() >= 2, "Current registry exposes two ordered main checkpoints")
+    if main_bosses.size() < 2:
+        report["ok"] = false
+        return report
+
+    var from_checkpoint_id := str(main_bosses[0].get("checkpoint_id", ""))
+    var to_checkpoint_id := str(main_bosses[1].get("checkpoint_id", ""))
+    var wave: Variant = WaveDirectorType.new(registry)
+    var cycle: Dictionary = wave.begin_post_boss_cycle(from_checkpoint_id, to_checkpoint_id)
+    _ref_check(ref_failures, bool(cycle.get("ok", false)), "WaveDirector binds the registry cycle mapping")
+    if not bool(cycle.get("ok", false)):
+        report["ok"] = false
+        return report
+
+    var cycle_start := float(cycle.get("cycle", {}).get("start_seconds", -1.0))
+    var current_band: Dictionary = registry.get_wave_band_for_time(cycle_start)
+    var spawn_rate := _ref_number(current_band.get("spawn_budget_per_second", 0), 0.0)
+    var active_cap := int(_ref_number(current_band.get("active_cap", 0), 0.0))
+    _ref_check(ref_failures, not current_band.is_empty(), "Cycle start resolves a current registry band")
+    _ref_check(ref_failures, spawn_rate > 0.0, "Spawn interval comes from the current registry budget")
+    _ref_check(ref_failures, active_cap > 0, "Active cap comes from the current registry band")
+    if current_band.is_empty() or spawn_rate <= 0.0 or active_cap <= 0:
+        report["ok"] = false
+        return report
+
+    var interval := 1.0 / spawn_rate
+    var half_interval := interval / 2.0
+    var first_tick: Dictionary = wave.advance(cycle_start, half_interval, "", 0, 1)
+    var second_tick: Dictionary = wave.advance(cycle_start + half_interval, half_interval, "", 0, 1)
+    _ref_check(ref_failures, str(first_tick.get("code", "")) == "SPAWN_TIMER_NOT_READY", "Enemy timer has its own not-ready boundary")
+    _ref_check(ref_failures, bool(second_tick.get("admitted", false)), "Enemy timer admits after its registry-derived interval")
+    _ref_check(
+        ref_failures,
+        float(first_tick.get("timers_after", {}).get("enemy_seconds", -1.0)) > 0.0
+            and is_equal_approx(float(first_tick.get("timers_after", {}).get("wave_seconds", -1.0)), 0.0)
+            and float(first_tick.get("timers_after", {}).get("ramp_seconds", -1.0)) > 0.0,
+        "Enemy, wave and ramp timers remain independent"
+    )
+    _ref_check(
+        ref_failures,
+        float(second_tick.get("timer_consumed_seconds", 0.0)) > 0.0
+            and float(second_tick.get("timers_after", {}).get("wave_seconds", -1.0)) > 0.0
+            and float(second_tick.get("timers_after", {}).get("ramp_seconds", -1.0)) > 0.0,
+        "Spawn admission consumes only the enemy timer"
+    )
+
+    var timers_before_main: Dictionary = wave.get_timer_snapshot().get("timers", {}).duplicate(true)
+    var main_tick: Dictionary = wave.advance(cycle_start + half_interval, 2.0, "MAIN_BOSS", 0, 1)
+    var timers_after_main: Dictionary = wave.get_timer_snapshot().get("timers", {}).duplicate(true)
+    _ref_check(ref_failures, str(main_tick.get("phase", "")) == "MAIN_BOSS_FREEZE", "MAIN_BOSS selects the freeze phase")
+    _ref_check(ref_failures, str(main_tick.get("code", "")) == "WAVE_PROGRESSION_BLOCKED", "MAIN_BOSS blocks ordinary admission")
+    _ref_check(ref_failures, _ref_timers_equal(timers_before_main, timers_after_main), "MAIN_BOSS does not consume ordinary timers")
+
+    var cap_tick: Dictionary = wave.advance(cycle_start + half_interval, interval, "", active_cap, 1)
+    _ref_check(ref_failures, str(cap_tick.get("code", "")) == "ACTIVE_CAP_REACHED", "Active cap rejects a due ordinary spawn")
+    _ref_check(ref_failures, is_equal_approx(float(cap_tick.get("timer_consumed_seconds", 0.0)), 0.0), "Cap rejection does not consume the enemy timer")
+
+    var mini_before: Dictionary = wave.get_timer_snapshot().get("timers", {}).duplicate(true)
+    var mini_tick: Dictionary = wave.advance(cycle_start + interval, half_interval, "MINI_BOSS", 0, 1)
+    var mini_after: Dictionary = wave.get_timer_snapshot().get("timers", {}).duplicate(true)
+    _ref_check(ref_failures, str(mini_tick.get("phase", "")) == "MINI_BOSS_PRESSURE", "MINI_BOSS selects the pressure phase")
+    _ref_check(ref_failures, not bool(mini_tick.get("paused", true)), "MINI_BOSS leaves ordinary pressure unpaused")
+    _ref_check(
+        ref_failures,
+        float(mini_after.get("wave_seconds", -1.0)) > float(mini_before.get("wave_seconds", -1.0))
+            and float(mini_after.get("ramp_seconds", -1.0)) > float(mini_before.get("ramp_seconds", -1.0)),
+        "MINI_BOSS advances wave and ramp timers"
+    )
+
+    var main_policy := wave.resolve(cycle_start, "MAIN_BOSS")
+    var mini_policy := wave.resolve(cycle_start, "MINI_BOSS")
+    _ref_check(ref_failures, bool(main_policy.get("paused", false)), "Wave policy freezes under MAIN_BOSS")
+    _ref_check(ref_failures, not bool(mini_policy.get("paused", true)), "Wave policy continues under MINI_BOSS")
+
+    var clock := SimulationClockType.new()
+    clock.start_run()
+    clock.advance(1.0)
+    var run_before_main := clock.run_seconds
+    clock.start_encounter()
+    clock.advance(2.0)
+    _ref_check(ref_failures, is_equal_approx(clock.run_seconds, run_before_main), "SimulationClock freezes run time for MAIN_BOSS")
+    _ref_check(ref_failures, is_equal_approx(clock.encounter_seconds, 2.0), "SimulationClock advances the encounter clock")
+
+    clock.start_run()
+    clock.advance(1.0)
+    var run_before_mini := clock.run_seconds
+    clock.start_mini_boss()
+    clock.advance(2.0)
+    _ref_check(ref_failures, clock.run_seconds > run_before_mini, "SimulationClock continues run time for MINI_BOSS")
+    _ref_check(ref_failures, clock.encounter_seconds > 0.0, "SimulationClock advances MINI_BOSS encounter time")
+
+    var arena_scene_path := "res://scenes/arena/arena.tscn"
+    var arena_scene: Variant = ResourceLoader.load(arena_scene_path)
+    _ref_check(ref_failures, ResourceLoader.exists(arena_scene_path), "Arena scene path resolves")
+    _ref_check(ref_failures, arena_scene is PackedScene, "Arena scene loads as PackedScene")
+    if arena_scene is PackedScene:
+        var instance: Node = arena_scene.instantiate()
+        _ref_check(ref_failures, instance != null, "Arena scene instantiates")
+        if instance != null:
+            instance.free()
+
+    var asset_paths: Array[String] = [
+        "res://docs/mockups/02-arena/layers/STAGE02_ARENA_OPEN_FIELD_ART_v02.png",
+        "res://docs/mockups/02-arena/layers/STAGE02_ARENA_AMBIENT_VFX_v01.png"
+    ]
+    for path in asset_paths:
+        _ref_check(ref_failures, ResourceLoader.exists(path), "Asset path resolves: %s" % path)
+        var resource: Variant = ResourceLoader.load(path)
+        _ref_check(ref_failures, resource != null, "Asset resource loads: %s" % path)
+
+    report["evidence"] = {
+        "cycle": cycle.get("cycle", {}),
+        "first_tick": first_tick,
+        "second_tick": second_tick,
+        "main_tick": main_tick,
+        "cap_tick": cap_tick,
+        "mini_tick": mini_tick,
+        "main_policy": main_policy,
+        "mini_policy": mini_policy,
+        "asset_paths": asset_paths
+    }
+    report["ok"] = ref_failures.is_empty()
+    return report
+
+
+func _ref_check(ref_failures: Array[String], condition: bool, label: String) -> void:
+    if not condition:
+        ref_failures.append(label)
+
+
+func _ref_number(record: Variant, fallback: float) -> float:
+    if record is Dictionary:
+        var value: Variant = record.get("value", null)
+        if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
+            return float(value)
+        return fallback
+    if typeof(record) == TYPE_INT or typeof(record) == TYPE_FLOAT:
+        return float(record)
+    return fallback
+
+
+func _ref_timers_equal(left: Dictionary, right: Dictionary) -> bool:
+    for key in ["enemy_seconds", "wave_seconds", "ramp_seconds"]:
+        if not is_equal_approx(float(left.get(key, -1.0)), float(right.get(key, -1.0))):
+            return false
+    return true
