@@ -131,7 +131,7 @@
   },
   "wave_bands": [
     {
-      "wave_band_id": "wave_00_02",
+      "wave_band_id": "wave_warmup_0_2",
       "start_seconds": 0,
       "end_seconds": 120,
       "label": "warmup",
@@ -174,7 +174,7 @@
       }
     },
     {
-      "wave_band_id": "wave_02_05",
+      "wave_band_id": "wave_pressure_2_5",
       "start_seconds": 120,
       "end_seconds": 300,
       "label": "first_pressure",
@@ -219,7 +219,7 @@
       }
     },
     {
-      "wave_band_id": "wave_05_10",
+      "wave_band_id": "wave_threat_5_10",
       "start_seconds": 300,
       "end_seconds": 600,
       "label": "threat_expansion",
@@ -267,7 +267,7 @@
       }
     },
     {
-      "wave_band_id": "wave_10_15",
+      "wave_band_id": "wave_elite_10_15",
       "start_seconds": 600,
       "end_seconds": 900,
       "label": "elite_band",
@@ -319,7 +319,7 @@
       }
     },
     {
-      "wave_band_id": "wave_15_20",
+      "wave_band_id": "wave_eclipse_15_20",
       "start_seconds": 900,
       "end_seconds": 1200,
       "label": "eclipse",
@@ -1289,35 +1289,35 @@
         "status": "PROPOSED"
       },
       "capacity_per_second_by_wave": {
-        "wave_00_02": {
+        "wave_warmup_0_2": {
           "value": 0.35,
           "source": "PENDING_B1; pickup cadence absent",
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
           "rationale": "Keeps the first level in the 30–45 second target while the warmup wave remains readable.",
           "status": "PROPOSED"
         },
-        "wave_02_05": {
+        "wave_pressure_2_5": {
           "value": 1.35,
           "source": "PENDING_B1; pickup cadence absent",
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
           "rationale": "Raises progression with the first-pressure wave toward the level-5 target.",
           "status": "PROPOSED"
         },
-        "wave_05_10": {
+        "wave_threat_5_10": {
           "value": 1.9,
           "source": "PENDING_B1; pickup cadence absent",
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
           "rationale": "Supports level 9 around 10 minutes without assuming every spawned enemy is immediately collected.",
           "status": "PROPOSED"
         },
-        "wave_10_15": {
+        "wave_elite_10_15": {
           "value": 2.5,
           "source": "PENDING_B1; pickup cadence absent",
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
           "rationale": "Supports the level-13 target as elite pressure and pickup density increase.",
           "status": "PROPOSED"
         },
-        "wave_15_20": {
+        "wave_eclipse_15_20": {
           "value": 3.8,
           "source": "PENDING_B1; pickup cadence absent",
           "derived_formula": "collected_xp_budget = capacity_per_second × dt",
@@ -1345,15 +1345,15 @@
       "source": "B1 section 4 defines eligible composition but not ratios",
       "selection_algorithm": "seeded_weighted_choice_per_spawn",
       "composition_weights": {
-        "wave_00_02": {
+        "wave_warmup_0_2": {
           "enemy_ink_beetle": 1
         },
-        "wave_02_05": {
+        "wave_pressure_2_5": {
           "enemy_ink_beetle": 0.55,
           "enemy_lantern_moth": 0.25,
           "enemy_bone_carp": 0.2
         },
-        "wave_05_10": {
+        "wave_threat_5_10": {
           "enemy_ink_beetle": 0.35,
           "enemy_lantern_moth": 0.2,
           "enemy_bone_carp": 0.15,
@@ -1361,7 +1361,7 @@
           "enemy_jade_toad": 0.1,
           "enemy_mirror_fox": 0.1
         },
-        "wave_10_15": {
+        "wave_elite_10_15": {
           "enemy_ink_beetle": 0.24,
           "enemy_lantern_moth": 0.15,
           "enemy_bone_carp": 0.12,
@@ -1373,7 +1373,7 @@
           "elite_stone_oni": 0.04,
           "elite_eclipse_serpent": 0.03
         },
-        "wave_15_20": {
+        "wave_eclipse_15_20": {
           "enemy_ink_beetle": 0.18,
           "enemy_lantern_moth": 0.12,
           "enemy_bone_carp": 0.1,
@@ -2583,7 +2583,39 @@
       ],
       "numeric_authority": "BALANCE_MODEL.json owns balance values; FIRST_RUN_DATA_CONTRACT.json owns runtime shapes, stable IDs and final-boss policy.",
       "no_duplicate_tuning_values": true,
-      "simulator_authority": "simulation_model in BALANCE_MODEL.json"
+      "simulator_authority": "simulation_model in BALANCE_MODEL.json",
+      "wave_band_mapping": [
+        {
+          "model_legacy_id": "wave_00_02",
+          "wave_band_id": "wave_warmup_0_2",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "model_legacy_id": "wave_02_05",
+          "wave_band_id": "wave_pressure_2_5",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "model_legacy_id": "wave_05_10",
+          "wave_band_id": "wave_threat_5_10",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "model_legacy_id": "wave_10_15",
+          "wave_band_id": "wave_elite_10_15",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        },
+        {
+          "model_legacy_id": "wave_15_20",
+          "wave_band_id": "wave_eclipse_15_20",
+          "status": "CANON",
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision 5a9697ef9d28a825726f42b2e63b6ffce8f66ba0"
+        }
+      ]
     },
     "required_runtime_consumers": [
       "Content Registry",
