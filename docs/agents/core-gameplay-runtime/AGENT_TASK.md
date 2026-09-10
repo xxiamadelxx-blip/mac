@@ -15,7 +15,7 @@
 - запустить run-clock и encounter-clock;
 - провести детерминированную волну;
 - обработать combat, HP, XP и level-up offer;
-- пережить boss interruption по общей freeze policy;
+пережить разделённую main-boss/mini-boss clock policy;
 - провести checkpoint/chest/fallback или final victory;
 - записать результат через RewardLedger;
 - доказать повторное воспроизведение и idempotency.
@@ -52,26 +52,29 @@
 
 R1 считается проверенным только если фактический test/trace показывает работающий state progression. Создание классов без вызова из реального entry point не считается реализацией.
 
-### R2 — Boss, checkpoint и settlement
+### R2 — Основные/мини-боссы, 30-минутные волны и settlement
 
 После зелёного R1 добавь:
 
-- WaveDirector с B1 bands, spawn budget и active cap;
-- BossDirector с безопасным spawn, telegraph, encounter ID и defeat event;
-- единое правило остановки времени забега и обычных wave/XP/spawn clocks на каждом боссе;
+- WaveDirector с data-driven bands на 30-минутном envelope, spawn budget и active cap;
+- BossDirector с безопасным spawn, telegraph, encounter ID и defeat event для основных и мини-боссов;
+- 6 основных боссов (текущие 4 плюс 2 новых) и 5 мини-боссов; имена, состав и cadence приходят из синхронизированных architecture/content/B1-источников;
+- единое состояние времени для MAIN_BOSS: с MAIN_BOSS_INTRO останавливаются run clock и обычные wave/XP/spawn clocks, а encounter clock идёт только в MAIN_BOSS_ACTIVE;
+- отдельное состояние давления для MINI_BOSS: run clock, волны, XP и обычные spawn продолжаются в MINI_BOSS_INTRO/MINI_BOSS_ACTIVE; mini-boss encounter clock идёт во время активного боя;
 - checkpoint settlement через RewardCalculator/RewardLedger;
-- нефинальный boss chest с eligibility evaluator и fallback outcome contract;
-- final boss settlement → RUN_VICTORY без boss chest;
+- нефинальный main-boss chest с eligibility/fallback outcome contract; defeat мини-босса может создать отдельный MINI_BOSS_CHEST, но он не смешивается с BOSS_CHEST или artifact offer;
+- final main boss at 30:00 → RUN_VICTORY без boss chest;
+- elite-варианты обычных противников как условный bounded слой, а не постоянный roster: ограниченные spawn budget/active cap/eligibility/expiry; defeat/eligibility может дать отдельный ELITE_CHEST для дополнительного сундука и давления орды;
 - повторную доставку defeat/checkpoint/chest claim без повторной выдачи.
 
-Для текущего slice можно использовать минимальный registry fixture, но boundary semantics должны быть совместимы со всеми четырьмя контрольными точками: 5, 10, 15 и 20 минутами.
+Если B1 сохраняет пятиминутный baseline, ожидаемые main-boss boundaries — 5, 10, 15, 20, 25 и 30 минут. Пока architecture/B1 не синхронизированы, runtime хранит это как contract boundary, а не как локально выдуманные числовые настройки.
 
 ### R3 — Artifact offer и traces
 
 После зелёного R2 добавь:
 
 - ARTIFACT_OFFER как отдельное blocking state;
-- source ELITE_PACK между боссами и source FIRST_CLEAR_REWARD после result;
+- source ELITE_PACK для artifact offer между боссами и source FIRST_CLEAR_REWARD после result; отдельный ELITE_CHEST от условных elite-вариантов не считается artifact offer без явного product/B1 mapping;
 - ровно три candidate cards и выбор ровно одной;
 - typed artifact effect, отдельный от BuildInventory и обычных passive slots;
 - artifact refresh как отдельную idempotent command с pending policy, если cost/limit не заданы;
@@ -99,7 +102,7 @@ R4 не смешивается с R1. Если Godot или Android runner не�
 - Не давать UI, scene node или telemetry право менять RunSession напрямую.
 - Не использовать preview arena как доказательство полноценного run loop.
 - Не смешивать XP, chest, artifact, corpse/aftermath и wallet entries.
-- Не создавать artifact slots, pre-run artifact loadout или boss chest для final boss.
+- Не создавать artifact slots, pre-run artifact loadout или boss chest для final main boss. Не превращать bounded elite-варианты в постоянный roster.
 - Не менять архитектурные и балансовые исходники для устранения runtime-проблемы.
 - При недостающем контракте создать диагностируемый pending/blocker, а не придумать значение.
 - Один slice — один ограниченный commit. Не менять существующие коммиты и не выполнять force-push.

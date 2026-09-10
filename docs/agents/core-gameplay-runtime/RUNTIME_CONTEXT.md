@@ -39,23 +39,21 @@
 
 Минимальный поток:
 
-boot → content loading → menu → character select → run setup → run loading → run active → waves/combat/XP → upgrade offer → run active → boss intro → boss active → checkpoint settlement → non-final chest или final victory → next stage либо result → result review → rewards/unlocks → menu.
+boot → content loading → menu → character select → run setup → run loading → run active → waves/combat/XP → upgrade offer → run active → main-boss intro/active или mini-boss intro/active → checkpoint settlement либо mini-boss outcome → non-final chest или final victory → next stage либо result → result review → rewards/unlocks → menu.
 
 Все переходы проходят через RunCoordinator и должны иметь guard, owner, side effects, failure/recovery и duplicate policy согласно FIRST_RUN_STATE_MACHINE.md.
 
-## 4. Часы и боссы
+## 4. Часы, основные боссы и мини-боссы
 
-Принятое правило владельца проекта:
+Каноническое решение владельца проекта для нового 30-минутного забега:
 
-- на каждом боссе, без исключений, отображаемое время забега останавливается;
-- на BOSS_INTRO, BOSS_ACTIVE и CHECKPOINT_SETTLEMENT обычные wave, XP и spawn clocks не продвигаются;
-- внутренний encounter clock босса может продвигаться только пока фактически идёт BOSS_ACTIVE;
-- ручная пауза и Android background/resume замораживают все игровые часы;
-- после claim сундука промежуточного босса обычный run продолжается с того же времени;
-- после финального босса забег переходит в settlement/victory и не создаёт boss chest;
-- таймер сам по себе не является победой: победа требует defeat финального босса и успешного final settlement.
-
-Freeze policy должна быть видна в коде, тестах и trace. Нельзя заморозить только HUD, оставив waves или rewards продвигаться в фоне.
+- Run clock имеет лимит 30:00 (1800 секунд). Точные timestamps, checkpoint-границы и числовые параметры берутся из синхронизированных архитектурных/B1-источников; runtime не изобретает их локально.
+- Основной босс (MAIN_BOSS) останавливает отображаемое время забега и обычные wave/XP/spawn clocks с момента появления (MAIN_BOSS_INTRO) через MAIN_BOSS_ACTIVE и блокирующий checkpoint settlement/chest claim. Продвигается только boss encounter clock во время фактического MAIN_BOSS_ACTIVE. После валидного settlement забег продолжается с того же run time.
+- Мини-босс (MINI_BOSS) не останавливает run clock: во время MINI_BOSS_INTRO и MINI_BOSS_ACTIVE волны, XP и обычные spawn продолжаются. Отдельный mini-boss encounter clock продвигается во время активного боя. Его defeat может открыть отдельный MINI_BOSS_CHEST, но разрешение блокирующего offer/settlement не должно задним числом останавливать elapsed run time или обычную wave progression.
+- В забеге предусмотрены 6 основных боссов (текущие 4 плюс 2 новых) и 5 мини-боссов. Имена, состав и точная cadence — не runtime-догадка: они должны прийти из синхронизированных architecture/content/B1-источников.
+- Если B1 сохраняет пятиминутный baseline, контрольные границы основного босса расширяются до 5, 10, 15, 20, 25 и 30 минут; это pending sync, пока числовая модель не обновлена владельцем баланса.
+- Финальный основной босс на границе 30:00 переводит забег в final settlement/victory после defeat и не создаёт boss chest.
+- Ручная пауза и background recovery замораживают все часы. Таймер сам по себе не является победой: нужна defeat-фаза финального основного босса и успешный final settlement.
 
 ## 5. Волны, XP и drops
 
@@ -72,7 +70,7 @@ Freeze policy должна быть видна в коде, тестах и trac
 
 XP не начисляется дважды при повторной доставке pickup event. Persistent aftermath не считается XP, не блокирует путь и не входит в active enemy cap.
 
-WaveDirector должен поддерживать полосы 0–2, 2–5, 5–10, 10–15 и 15–20 минут, active cap и spawn budget. Скрытое непрерывное увеличение HP вместо объяснимой смены состава запрещено.
+- WaveDirector должен поддерживать data-driven wave bands на всём 30-минутном envelope, active cap и spawn budget. При сохранении текущего пятиминутного baseline это 0–2, 2–5, 5–10, 10–15, 15–20, 20–25 и 25–30 минут; окончательный список и значения принадлежат B1. Main-boss freeze — пауза поверх расписания, mini-boss не останавливает расписание. Скрытое непрерывное увеличение HP вместо объяснимой смены состава запрещено.
 
 ## 6. Артефакты и сундуки
 
@@ -88,13 +86,13 @@ WaveDirector должен поддерживать полосы 0–2, 2–5, 5�
 - выбранная карта создаёт один artifact instance и активный typed run effect;
 - эффект может быть AURA, DERIVED_STAT, TARGET_MODIFIER, WEAPON_MODIFIER, TRIGGERED_EFFECT или COOLDOWN_MODIFIER;
 - количество активных артефактов ограничивается не количеством сунчков, а явной политикой производительности, stacking и duplicate, если такая политика будет принята;
-- elite pack между боссами может открыть отдельный ARTIFACT_OFFER;
+- Условные elite-варианты обычных противников могут открывать отдельный ELITE_CHEST для дополнительного сундука и одновременно служить ограниченным инструментом давления орды; они не становятся постоянным roster. Их spawn budget, active cap, eligibility и expiry задаются отдельно.
 - first-clear reward открывает отдельный post-result ARTIFACT_OFFER;
 - boss chest никогда не превращается в artifact offer;
 - нефинальный boss chest даёт synergy/evolution или fallback;
 - финальный босс не создаёт boss chest.
 
-Точные effect values, refresh cost/limit, duplicate/stacking policy и elite-pack cadence остаются pending, если их нет в живом каноне. Runtime обязан хранить typed contract и не подменять неизвестное число догадкой.
+Точные effect values, refresh cost/limit, duplicate/stacking policy, elite cadence и параметры ELITE_CHEST остаются pending, если их нет в живом каноне. Runtime обязан хранить typed contract и не подменять неизвестное число догадкой. ELITE_CHEST и artifact offer — разные outcomes; elite-вариант не открывает artifact offer автоматически.
 
 ## 7. Идемпотентность
 
