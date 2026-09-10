@@ -5,7 +5,7 @@ Status: PARTIAL / SIMULATED_MODEL_ONLY
 ## Audit snapshot
 
 - Repository: xxiamadelxx-blip/mac
-- Live main HEAD verified immediately before this audit refresh: cb0283f7cf9214a87c1a7dfbc73db10683c5e097
+- Live main HEAD verified immediately before this final audit refresh: 6fe9d4428f3484a9b9e7d5fded346d41f852c4da
 - Historical audit baseline before this implementation slice: ffc2e8d2f02d7a4d5c169151b2d59e5307ae5f2d
 - B1 source: docs/BALANCE_ECONOMY_SPEC.md
 - B1 source revision: 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
