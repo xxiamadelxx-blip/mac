@@ -617,19 +617,32 @@
     "task_id": "REF-CONTENT-01",
     "scope": "CONTENT_ONLY",
     "status": "PARTIAL",
-    "source_head": "4b081f677d0ffdfc7037146cd3160457162a2186",
+    "source_head": "a83dfc7886bc32ae55b87bc96136c992a41c0bd3",
     "document": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
-    "new_ids_introduced": [],
+    "new_ids_introduced": [
+      "elite_variant_ink_beetle_ironcarapace",
+      "elite_variant_lantern_moth_prismwing",
+      "elite_variant_bone_carp_tidepiercer",
+      "elite_variant_paper_ghost_sealbreaker",
+      "elite_variant_jade_toad_mudcrown",
+      "elite_variant_mirror_fox_falsepath",
+      "elite_variant_bell_crab_resonant_shell",
+      "elite_variant_thread_doll_cutline",
+      "elite_variant_stone_oni_faultline",
+      "elite_variant_eclipse_serpent_moonwake"
+    ],
     "reused_content": {
       "weapon_count": 10,
       "passive_count": 10,
       "synergy_count": 10,
       "artifact_count": 10,
-      "enemy_record_count": 10,
+      "enemy_record_count": 20,
       "requested_core_boss_count": 4,
       "proposed_main_extension_count": 2,
       "proposed_mini_boss_count": 5,
-      "meta_passive_node_count": 17
+      "meta_passive_node_count": 17,
+      "base_enemy_count": 10,
+      "elite_variant_count": 10
     },
     "reference_repositories": [
       "murparreira/vampire-survivors-clone-godot-4",
@@ -688,9 +701,30 @@
     "blockers": [
       "30-minute four-core versus six-main/five-mini reconciliation",
       "artifact registry 8 versus content 10 and missing typed definitions",
-      "enemy 8 ordinary plus 2 elite-family interpretation",
+      "10 base enemy records plus 10 proposed elite variants conflict with the active maximum 5 registered elite variants",
       "per-ID balance and late-wave values pending"
     ],
-    "promotion_guard": "DOCUMENTATION_ONLY; NO_RUNTIME_OR_ARTISTIC_APPROVAL"
+    "promotion_guard": "DOCUMENTATION_ONLY; NO_RUNTIME_OR_ARTISTIC_APPROVAL",
+    "revision": "ELITE_VARIANT_EXPANSION_10",
+    "new_id_status": "PROPOSED_ONLY",
+    "proposed_elite_variant_ids": [
+      "elite_variant_ink_beetle_ironcarapace",
+      "elite_variant_lantern_moth_prismwing",
+      "elite_variant_bone_carp_tidepiercer",
+      "elite_variant_paper_ghost_sealbreaker",
+      "elite_variant_jade_toad_mudcrown",
+      "elite_variant_mirror_fox_falsepath",
+      "elite_variant_bell_crab_resonant_shell",
+      "elite_variant_thread_doll_cutline",
+      "elite_variant_stone_oni_faultline",
+      "elite_variant_eclipse_serpent_moonwake"
+    ],
+    "elite_variant_contract": {
+      "base_enemy_count": 10,
+      "proposed_variant_count": 10,
+      "selection_policy": "BOUNDED_FINITE_SELECTION; NO_PERMANENT_ROSTER_MUTATION; NO_AUTOMATIC_ARTIFACT_OFFER",
+      "registered_variant_limit_from_live_sync": 5,
+      "status": "PROPOSED / ARCHITECTURE_RECONCILIATION_PENDING"
+    }
   }
 }
