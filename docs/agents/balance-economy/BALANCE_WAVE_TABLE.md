@@ -3,8 +3,8 @@
 Status: SIMULATED_MODEL_ONLY / PARTIAL
 
 Source baseline: docs/BALANCE_ECONOMY_SPEC.md, revision 6aa4ec96afc8a8c9e6a35c164c99e7d62910a687.
-Current model: BALANCE_MODEL.json, simulation_model version 0.2.
-Live main HEAD verified before this documentation refresh: 0536f182c1ae8876b9213e0c2fb761793e503a66.
+Current model: BALANCE_MODEL.json, simulation_model version 0.3.
+Publication HEAD for this slice is recorded in BALANCE_AUDIT.md after the synchronized updates.
 
 ## Canonical wave bands
 
@@ -31,7 +31,21 @@ The model uses:
 - occupancy is sampled every 0.25 seconds;
 - safe-mode/runtime behavior remains NOT_IMPLEMENTED.
 
-The five-seed model run reached the cap of 280 in every profile/hero slice. Mean cap occupancy time was approximately 1,118–1,150 seconds of the 1,200-second wave clock, with approximately 19,600–20,500 suppressed spawn attempts. This is a material MODEL finding: the proposed spawn/damage/cap combination is a sustained-cap stress case and is not runtime proof of acceptable feel or performance.
+The latest five-seed matrix reached the cap of 280 in every profile/hero slice. Mean cap occupancy time was 1,117.45–1,157.20 seconds of the 1,200-second visible wave clock across the six profile/hero aggregates. One fresh Lin Yue seed died before the final boss; this is a risk result, not a hidden pass. This remains a model-only sustained-cap stress case and is not runtime proof of acceptable feel or performance.
+
+## Post-boss recovery → ramp → siege
+
+The user-facing pressure rule is now explicit in `simulation_model.boss_wave_ramp`:
+
+| Post-boss cycle | Quiet entry after boss | Linear ramp | Peak/siege before next boss | Phase lengths |
+|---|---:|---:|---:|---|
+| 5:00 → 10:00 | 8/s, cap 64 (80% of the preceding 10/s, cap 80 peak) | 8/s → 15/s, cap 64 → 130 | 15/s, cap 130 | 28 s recovery + 212 s ramp + 60 s siege |
+| 10:00 → 15:00 | 12/s, cap 104 (80% of the preceding 15/s, cap 130 peak) | 12/s → 22/s, cap 104 → 200 | 22/s, cap 200 | 28 s recovery + 212 s ramp + 60 s siege |
+| 15:00 → 20:00 | 17.6/s, cap 160 (80% of the preceding 22/s, cap 200 peak) | 17.6/s → 30/s, cap 160 → 280 | 30/s, cap 280 | 28 s recovery + 212 s ramp + 60 s siege |
+
+Formula: `entry = preceding_peak × 0.80`; the 8-second zero-spawn suppression and 20-second 0.70→1.00 recovery complete first; the remaining 212 seconds use linear interpolation; the final 60 seconds hold the next canonical peak. Composition weights are blended from the entry band to the peak band. The first 0:00→5:00 segment keeps the canonical warmup→pressure bands.
+
+The reset factor 0.80 and siege duration 60 seconds are PROPOSED because B1 specifies the bands and boss checkpoints but not this post-boss curve. The cycle mapping, interpolation and phase boundaries are DERIVED from the canonical band anchors, 300-second checkpoint spacing, the existing 8+20-second interruption window and the user’s low-to-peak/siege rule. The simulator emits samples for post-boss start, suppression end, recovery end, ramp peak and siege-before-boss.
 
 ## Boss interruption
 
