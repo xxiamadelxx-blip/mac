@@ -27,6 +27,16 @@ C5 закрывает content-design handoff между C1–C4, META passive tr
 
 Detailed dependency matrix, conflict review, open decisions and acceptance evidence are in `C5_CROSS_SYSTEM_HANDOFF.md`.
 
+
+## SYNC-01 — Proposed encounter registry handoff
+
+- Canonical payload: `CONTENT_CATALOG_INDEX.json` → `sync_01`.
+- Recipient owners: Architecture and Balance.
+- Status: `PROPOSED`; registry status remains `PENDING_ARCHITECTURE`.
+- Records: `boss_tideglass_regent` (MAIN_BOSS, 20:00 / 1200s), `boss_omen_paper_archivist` (MAIN_BOSS, 25:00 / 1500s), `miniboss_lotus_ritekeeper` (MINI_BOSS, 17:30 / 1050s), `miniboss_bell_rhythm_ascetic` (MINI_BOSS, 22:30 / 1350s), `miniboss_moonroot_ferryman` (MINI_BOSS, 27:30 / 1650s).
+- Dependencies are listed per record in `sync_01.pending_records[].dependencies`.
+- Promotion guard: IDs remain proposals; no runtime registration, artistic approval, balance lock or architecture approval is claimed.
+
 ## 3. Integration blockers
 
 | ID | Blocker | Evidence | Owner |
