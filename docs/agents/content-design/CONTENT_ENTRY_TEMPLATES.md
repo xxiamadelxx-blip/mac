@@ -29,6 +29,8 @@ content_id: weapon_example
 name_ru: Название
 fantasy: Одно предложение о том, что игрок чувствует
 player_promise: Почему это оружие хочется выбрать
+progression:
+  max_level: 10
 role: control | burst | sustain | defense | mobility | area | utility
 targeting:
   acquisition: nearest | cone | line | random | area | self | marked_target
@@ -79,6 +81,9 @@ content_id: passive_example
 name_ru: Название
 fantasy:
 player_promise:
+progression:
+  max_rank: 10
+  synergy_gate: paired_weapon_level_10_and_passive_rank_10
 axis: offense | defense | mobility | economy | pickup | crit | status | summon | hybrid
 activation: always_on | on_hit | on_kill | on_pickup | threshold | timed_window
 affected_systems: []

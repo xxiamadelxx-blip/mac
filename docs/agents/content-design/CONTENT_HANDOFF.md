@@ -7,7 +7,7 @@
 
 - Repository: xxiamadelxx-blip/mac
 - Branch: main
-- HEAD baseline: 17803bde8e38dbf07a72e4033beacf2de5e29281 (проверен перед записью C5)
+- HEAD baseline: 6d7c2a361944ada398622e77c2436a79a47baf46 (проверен перед записью этой ревизии)
 - Slice: C5
 - Status: HANDOFF_READY_WITH_OPEN_RECONCILIATIONS
 - Catalog version: 1
@@ -19,7 +19,7 @@ C5 закрывает content-design handoff между C1–C4, META passive tr
 
 | Package | Stable content | Status | Next owner |
 |---|---|---|---|
-| C1 weapons/passives/synergies | 10 weapons, 10 global run passives, 10 direct evolutions; passive binding используется для synergy eligibility | CONTENT_SPECIFIED | Balance + Runtime + Visual Lab |
+| C1 weapons/passives/synergies | 10 weapons, 10 global run passives, 10 direct evolutions; passive binding используется для synergy eligibility; gate — weapon level 10 + passive rank 10 | CONTENT_SPECIFIED / PROGRESSION_RECONCILIATION | Balance + Runtime + Visual Lab |
 | C2 artifacts | 10 run artifacts, three-card offer boundary, no weapon/passive slot usage | CONTENT_SPECIFIED / REGISTRY_SYNC_PENDING | Product + Architecture + Balance |
 | C3 bosses/chests | 4 future enemy proposals, 5 named mini-boss proposals, 2 main-boss extension proposals, synergy/fallback flow | CONTENT_SPECIFIED / ROSTER_RECONCILIATION | Product + Architecture + Runtime |
 | C4 arena drops | 7 typed content intents: heal, Gold, XP magnet, destruction, wave freeze, ward, vacuum | CONTENT_SPECIFIED / RUNTIME_PENDING | Architecture + Runtime + Balance |
@@ -59,7 +59,7 @@ Detailed dependency matrix, conflict review, open decisions and acceptance evide
 
 ## 5. Evidence and scope
 
-- Baseline was read from live main at `17803bde8e38dbf07a72e4033beacf2de5e29281`.
+- Baseline was read from live main at `6d7c2a361944ada398622e77c2436a79a47baf46`.
 - C5 updates only content-design documentation and catalog metadata.
 - No architecture, balance, runtime source, Visual Lab policy or mockup files are changed.
 - Existing R1 runtime verification does not prove R2/R3 boss, chest, artifact or full-wave implementation; current runtime acceptance remains NOT_IMPLEMENTED for those slices.

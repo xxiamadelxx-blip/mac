@@ -35,7 +35,7 @@
 ### Архитектурный контракт первого забега
 
 - весь `docs/architecture/first-run/`, включая `FIRST_RUN_ARCHITECTURE.md`, `FIRST_RUN_DATA_CONTRACT.json`, `FIRST_RUN_EVENT_CATALOG.md`, state machine, flow, acceptance и decisions;
-- зафиксированные границы: шесть weapon slots, шесть passive slots, weapon max level 6, passive max rank 5, отдельные boss chest и artifact offer, отсутствие pre-run artifact loadout.
+- зафиксированные границы текущей архитектуры: шесть weapon slots, шесть passive slots, weapon max level 6, passive max rank 5, отдельные boss chest и artifact offer, отсутствие pre-run artifact loadout. Новый content target синергии 10/10 отмечен ниже как открытый конфликт, а не как уже синхронизированная архитектура.
 
 ### Владельцы баланса и runtime
 
@@ -108,11 +108,12 @@
 ## 6. Продуктовые решения этого среза
 
 1. Каталог первого забега содержит 10 weapons, 10 run passives, 10 direct synergy/evolution pairs и 10 artifacts.
-2. За один run можно claim не более пяти synergy/evolution. Рекомендуемые окна — три main boss chest на 5/10/15 минутах и два mini-boss chest на 7:30/12:30; финальный босс chest не создаёт.
-3. Шесть weapon slots и шесть passive slots сохраняются; наличие десяти записей означает пул контента, а не расширение слотов.
-4. Run passive и persistent shop node — разные сущности: первые сбрасываются между забегами, вторые живут в `MetaProgression`.
-5. Artifact effect — run modifier, не slot item и не pre-run loadout. Каждый offer имеет ровно три cards и один выбор.
-6. Shop tree проектируется сейчас как долгосрочный content contract, хотя текущий M1 canonical text откладывает полноценный магазин за пределы runtime vertical slice. Его дизайн не означает, что магазин уже реализован.
+2. Первый забег рассчитан на 30 минут / 1800 секунд и 10 нефинальных BOSS_CHEST windows: main bosses на 5/10/15/20/25 минутах и mini-bosses на 7:30/12:30/17:30/22:30/27:30; final boss chest не создаёт.
+3. Для каждой synergy/evolution weapon должен быть на 10-м уровне, а связанная run passive — на 10-м ранге. Это content target, который требует сверки с текущей архитектурой 6/5.
+4. Шесть weapon slots и шесть passive slots сохраняются; наличие десяти записей означает пул контента, а не расширение слотов.
+5. Run passive и persistent shop node — разные сущности: первые сбрасываются между забегами, вторые живут в `MetaProgression`.
+6. Artifact effect — run modifier, не slot item и не pre-run loadout. Каждый offer имеет ровно три cards и один выбор.
+7. Shop tree проектируется сейчас как долгосрочный content contract, хотя текущий M1 canonical text откладывает полноценный магазин за пределы runtime vertical slice. Его дизайн не означает, что магазин уже реализован.
 
 ## 7. Зафиксированные конфликты и gaps
 
@@ -125,7 +126,8 @@
 | C0-05 | Artifact effect values, refresh, duplicate/stacking и elite cadence pending | нельзя доказать power budget | entries fully describe behavior, all numbers pending | Product + Balance + Runtime |
 | C0-06 | Полноценный shop исключён из M1 runtime scope, но нужен как persistent design | нельзя объявлять shop playable | design now, runtime integration later | Product + Runtime |
 | C0-07 | Product review отклонил passives, привязанные механикой к одному weapon | старый passive contract давал узкий билд | passive effect общий для eligible build; weapon остаётся только hidden synergy anchor | Product + Balance |
-| C0-08 | Product review увеличил cap с 3 до 5 и добавил 2 mini-boss encounters | меняется chest cadence, reward fallback и snapshot contract | сохранить пять нефинальных chest windows; final boss без chest | Architecture + Balance |
+| C0-08 | Product review увеличил cap с 3 до 5 и добавил 2 mini-boss encounters | меняется chest cadence, reward fallback и snapshot contract | сохранить десять нефинальных chest windows в 30-минутном забеге; final boss без chest | Architecture + Balance |
+| C0-09 | Новый content gate требует weapon level 10 и passive rank 10, а текущая architecture boundary остаётся 6/5 | без сверки нельзя корректно объявить eligibility для synergy | C1/C3 фиксируют 10/10 как content target; runtime/architecture values не переписываются в C0 | Product + Architecture + Balance |
 
 ## 8. C0 verdict
 

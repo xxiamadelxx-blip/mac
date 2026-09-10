@@ -3,7 +3,7 @@
 Статус: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 
 Repository: `xxiamadelxx-blip/mac`  
-Проверенный baseline перед записью: `17803bde8e38dbf07a72e4033beacf2de5e29281`  
+Проверенный baseline перед записью: `6d7c2a361944ada398622e77c2436a79a47baf46`  
 Срез: C5  
 Дата: 2026-09-10
 
@@ -27,8 +27,8 @@ Repository: `xxiamadelxx-blip/mac`
 
 | Поток | Content design сейчас | Live Architecture registry сейчас | Статус handoff |
 |---|---|---|---|
-| Weapons | 10 stable IDs, слоты 6, max level 6 | 10 records | `CONTENT_SPECIFIED` |
-| Run passives | 10 stable IDs, слоты 6, max rank 5; каждая passive даёт общую выгоду и лишь имеет weapon binding для eligibility синергии | 10 records | `CONTENT_SPECIFIED` |
+| Weapons | 10 stable IDs, слоты 6, max level 10 для synergy gate | 10 records; architecture progression cap требует сверки | `CONTENT_SPECIFIED / PROGRESSION_RECONCILIATION_PENDING` |
+| Run passives | 10 stable IDs, слоты 6, max rank 10 для synergy gate; каждая passive даёт общую выгоду и лишь имеет weapon binding для eligibility синергии | 10 records; architecture progression cap требует сверки | `CONTENT_SPECIFIED / PROGRESSION_RECONCILIATION_PENDING` |
 | Synergies / evolutions | 10 direct weapon + passive pairs, max 5 claims per run | 10 records; evaluator contract есть | `CONTENT_SPECIFIED`, numeric binding pending |
 | Run artifacts | 10 IDs, отдельный от passive slot поток, offer ровно 3 карты; C2 теперь задаёт 10 semantic effect keys и content defaults для refresh/duplicate | 8 records; `artifact_tideglass` и `artifact_silent_lantern` не синхронизированы; runtime `artifact_effects.definitions` пуст | `CONTENT_SPECIFIED`, `REGISTRY_SYNC_PENDING` |
 | Future enemies | 4 proposals: `enemy_lotus_usher`, `enemy_moonroot_burrower`, `enemy_silver_reed_seer`, `enemy_moontrail_stalker` | 10 base enemies; extension slots присутствуют как null records | `CONTENT_SPECIFIED`, balance/registry pending |
@@ -53,6 +53,7 @@ Repository: `xxiamadelxx-blip/mac`
 | Chest capacity | Data contract: максимум 15 windows = 8 configured non-final boss windows + 7 reserved additional windows; C3 content proposal теперь раскладывает 10 BOSS_CHEST windows + 5 ELITE_CHEST windows | Сопоставить content window groups C01–C15 с canonical source_kind; ELITE_CHEST не расходует synergy cap | Product + Architecture + Balance |
 | Final source | Non-final boss chest: synergy/evolution/fallback; final boss at 1800: victory без boss chest | `boss_black_moon_empress` остаётся `NO_CHEST`; first-clear artifact offer отдельна от final boss chest | Architecture + Runtime |
 | Elite variants | Runtime acceptance разрешает bounded elite-tagged ordinary enemy с отдельным `ELITE_CHEST`; data contract оставляет profiles pending | Вариант не становится permanent roster и не открывает artifact offer автоматически; cadence/budget/visual marker остаются pending | Balance + Runtime + Visual Lab |
+| Progression gate | C1 content требует weapon level 10 + passive rank 10; текущая architecture/legacy manifest всё ещё содержит 6/5 | Сохранить 10/10 как content target и вынести сверку cap в отдельный consumer contract; не менять root/architecture в content-задаче | Product + Architecture + Balance |
 
 ### 3.1 Иерархия решений
 
@@ -94,6 +95,7 @@ Repository: `xxiamadelxx-blip/mac`
 | C5-P1-03 | Artifact gap: content/index = 10 and C2 now provides 10 semantic effect keys, while architecture `content_registry.artifacts` = 8 and runtime `artifact_effects.definitions` is empty | Two cards cannot load from a single immutable registry; runtime effect projection still has no typed definitions | High | Architecture syncs the two IDs and runtime effect definitions; Balance binds numeric parameters; Content does not edit Architecture schema |
 | C5-P1-04 | Time-source drift: Architecture target = 30:00; `GAME_MANIFEST.md`, B1 wave table and Balance acceptance retain 20:00/old four-boss or five-band assumptions | Wave/reward values and final checkpoint are unsafe to bind; balance evidence cannot be called final | High | Product/Architecture/B1 publish source-of-truth update; keep old files marked legacy until changed by their owners |
 | C5-P1-05 | Chest taxonomy drift: data contract has 15 total windows with 8+7 source split; C3 content now maps C01–C10 to boss chests and C11–C15 to elite chests | A reserved chest may be accidentally counted as synergy, artifact or extra claim | High | Architecture maps C01–C15 to canonical `source_kind` and outcome policy; Product confirms whether content proposal replaces 8+7 split |
+| C5-P1-06 | Content synergy gate is 10/10 while current architecture/legacy sources still expose 6/5 | Eligibility and upgrade cards cannot be joined without one canonical progression cap | High | Architecture/Runtime/Balance publish the 10/10 consumer contract; Content keeps the gate PROPOSED until reconciliation |
 
 ### P2 — must be resolved before implementation handoff
 
@@ -117,7 +119,7 @@ Balance получает 10 weapon profiles, 10 общих run-passives и 10 di
 
 1. baseline passive без соответствующего weapon;
 2. passive + weapon как обычный build;
-3. weapon max level + passive rank threshold как synergy eligibility;
+3. weapon level 10 + passive rank 10 как synergy eligibility;
 4. пять claims в одном run без forced fifth claim;
 5. duplicate offer и уже claimed synergy.
 

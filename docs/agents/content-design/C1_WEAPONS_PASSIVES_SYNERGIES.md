@@ -10,15 +10,17 @@
 |---|---|
 | Пул | 10 weapons + 10 run passives |
 | Одновременно в билде | максимум 6 weapon slots и 6 passive slots |
-| Weapon progression | максимум уровня 6 по архитектурному контракту |
-| Passive progression | максимум ранга 5 по архитектурному контракту |
+| Weapon progression | максимум уровня 10; для synergy нужен уровень 10 (content target) |
+| Passive progression | максимум ранга 10; для synergy нужен ранг 10 (content target) |
 | Upgrade offer | три карточки; New/Upgrade/Evolution — разные outcome types |
 | Evolution gate | weapon max level + paired passive max rank + non-final boss/mini-boss chest + weapon not evolved |
 | Synergy catalogue | 10 стабильных direct pairs |
 | Synergy claims per run | **не более 5**; это пользовательское product decision для Run 1 |
-| Synergy windows | пять нефинальных chest windows: main bosses на 5/10/15 минутах и mini-bosses на 7:30/12:30 |
+| Synergy windows | десять нефинальных окон сундука: main bosses на 5/10/15/20/25 минутах и mini-bosses на 7:30/12:30/17:30/22:30/27:30 |
 | Final boss | не создаёт boss chest и не выдаёт шестую synergy |
 | Если подходящей пары нет | существующий fallback contract, значение назначает Balance/Product |
+
+> Важно: число 10 относится к максимальному уровню оружия и рангу пассивки, а не к количеству слотов. В билде остаётся максимум 6 оружий и 6 пассивок; архитектурная сверка нового уровня 10/10 ещё не закрыта.
 
 ### Разделение сущностей
 
@@ -361,7 +363,7 @@
 
 ## 5. Synergy/evolution entries
 
-Все десять entries используют один gate: `weapon_level = 6`, `passive_rank = 5`, matching `synergy_id`, weapon not evolved, non-final `BOSS_CHEST`, `encounter_kind ∈ {MAIN_BOSS, MINI_BOSS}`, `claimed_synergy_count < 5`. Связь passive с weapon здесь проверяется только как pair gate; сам passive продолжает работать на общий eligible build. Точные значения и priority при нескольких eligible pairs — `PENDING_BALANCE/PRODUCT`.
+Все десять entries используют один gate: `weapon_level = 10`, `passive_rank = 10`, matching `synergy_id`, weapon not evolved, non-final `BOSS_CHEST`, `encounter_kind ∈ {MAIN_BOSS, MINI_BOSS}`, `claimed_synergy_count < 5`. Число 10 — обязательный максимум развития для этой пары; оно не меняет вместимость билда 6/6. Связь passive с weapon здесь проверяется только как pair gate; сам passive продолжает работать на общий eligible build. Точные значения и priority при нескольких eligible pairs — `PENDING_BALANCE/PRODUCT`.
 
 ### 5.1 `synergy_moon_dance` — Танец Луны
 
@@ -465,16 +467,20 @@
 synergy_run_policy:
   catalog_size: 10
   max_claimed_per_run: 5
+  weapon_level_required: 10
+  passive_rank_required: 10
   eligible_sources: [BOSS_CHEST]
   eligible_encounter_kinds: [MAIN_BOSS, MINI_BOSS]
-  eligible_checkpoints_seconds: [300, 450, 600, 750, 900]
-  mini_boss_checkpoints_seconds: [450, 750]
+  eligible_checkpoints_seconds: [300, 450, 600, 750, 900, 1050, 1200, 1350, 1500, 1650]
+  main_boss_non_final_checkpoints_seconds: [300, 600, 900, 1200, 1500]
+  mini_boss_checkpoints_seconds: [450, 750, 1050, 1350, 1650]
+  final_boss_checkpoint_seconds: 1800
   final_boss_chest: forbidden
   after_cap: FALLBACK_REQUIRED
   duplicate_claim: idempotent_noop
 ```
 
-Рекомендуемая cadence: main boss chest на 300/600/900 секундах, mini-boss chest на 450/750 секундах, финальный boss на 1200 секундах без chest. Числа и encounter ownership требуют Architecture/Balance sync; этот документ фиксирует content target: пять возможностей получить synergy chest до финала.
+Рекомендуемый ритм: main boss chest на 300/600/900/1200/1500 секундах, mini-boss chest на 450/750/1050/1350/1650 секундах, финальный boss на 1800 секундах без chest. Числа и encounter ownership требуют Architecture/Balance sync; этот документ фиксирует content target: десять возможностей получить synergy chest до финала при общем cap 5.
 
 Если у игрока одновременно несколько eligible pairs, порядок выбора должен быть deterministic и видимым в projection; конкретная priority policy остаётся `PENDING_PRODUCT_DECISION`. Шестой claim запрещён даже после финального босса. Если gate не выполнен, chest выдаёт fallback reward по `C3_MINI_BOSSES_AND_CHEST_FLOW.md`.
 

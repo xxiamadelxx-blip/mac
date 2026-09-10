@@ -389,8 +389,8 @@ if encounter already rewarded:
     return idempotent_noop
 
 eligible_pairs = pairs where
-    weapon_level == 6
-    passive_rank == 5
+    weapon_level == 10
+    passive_rank == 10
     weapon_not_evolved
     matching weapon/passive pair
     claimed_synergy_count < 5
@@ -433,6 +433,8 @@ Content фиксирует только безопасность выбора:
 ```yaml
 synergy_run_policy:
   max_claimed_per_run: 5
+  weapon_level_required: 10
+  passive_rank_required: 10
   eligible_encounter_kinds: [MAIN_BOSS, MINI_BOSS]
   eligible_checkpoint_seconds: [300, 450, 600, 750, 900, 1050, 1200, 1350, 1500, 1650]
   mini_boss_checkpoints_seconds: [450, 750, 1050, 1350, 1650]

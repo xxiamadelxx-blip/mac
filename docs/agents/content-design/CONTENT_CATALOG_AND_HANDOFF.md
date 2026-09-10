@@ -26,7 +26,7 @@ C5 status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`
 - В одном Run 1 разрешено **максимум 5 synergy claims**. Шестая synergy не появляется даже после финального босса.
 - Content target первого забега — 30 минут / 1800 секунд: пять main-boss non-final windows на 300/600/900/1200/1500 и пять mini-boss windows на 450/750/1050/1350/1650 секунд. Все десять BOSS_CHEST windows могут проверить synergy eligibility, но общий cap — 5; при отсутствии eligible content используется fallback.
 - C3 добавляет четыре future enemy proposals, пять mini-boss content IDs и два main-boss extension proposals; future enemies остаются вне Run 1 до отдельного stage/Registry decision, а существующие 10 enemy IDs не заменяются.
-- Build ограничен 6 weapon slots и 6 passive slots; weapon max level 6, passive max rank 5 согласно first-run architecture.
+- Build ограничен 6 weapon slots и 6 passive slots. Для синергии weapon должен достичь 10-го уровня, а связанная passive — 10-го ранга; это content target, пока не синхронизированный с текущей architecture/legacy manifest.
 - Артефактов 10; offer содержит ровно 3 candidate IDs, игрок выбирает 1. Content defaults: UNIQUE duplicate, refresh только до выбора, один выбранный ID, отдельный run layer без slot capacity.
 - Дерево магазина содержит 6 macro branches и 17 stat nodes, покрывающих характеристики из пользовательского stat-screen reference.
 - Покупки meta tree выполняются только в hub/shop за Gold и применяются со следующего забега.
@@ -41,6 +41,8 @@ Balance Agent должен привязать значения к одному �
 ### Weapons, passives, synergies
 
 Нужно закрепить для каждого ID: base damage, cadence, cooldown, target/geometry limits, duration, radius, scaling tags, level/rank curve, damage category, boss/elite behavior, VFX-safe telegraph budget и evolution coefficients. В C1 намеренно оставлены `PENDING_BALANCE` поля.
+
+Отдельный gate синергии: weapon level 10 + passive rank 10 + matching `synergy_id` + weapon не evolved + нефинальный `BOSS_CHEST`; числовые эффекты и стоимость прокачки остаются `PENDING_BALANCE`.
 
 Отдельно подтвердить:
 
@@ -151,7 +153,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 | artifact refresh and duplicate policy | влияет на offer economy и save schema |
 | elite pack cadence | определяет реальную частоту десяти artifact effects |
 | simultaneous eligible synergies | нужен deterministic priority/offer rule |
-| mini-boss schedule and chest source | нужно подтвердить 7:30/12:30, encounter kind и fallback outcome |
+| mini-boss schedule and chest source | нужно подтвердить 7:30/12:30/17:30/22:30/27:30, encounter kind и fallback outcome |
 | arena-drop source cadence and target semantics | нужно определить risk/reward economy, Gold/XP label и target whitelist |
 | future enemy stage insertion | нужно определить будущую wave/stage band, safe-spawn и не добавлять proposals в Run 1 молча |
 | meta purchase event and reset/refund | нужен authoritative persistence boundary |
@@ -163,7 +165,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 - [x] Сохранены все существующие weapon/passive/synergy IDs.
 - [x] Roster содержит ровно 10 оружий, 10 run-пассивок, 10 synergy/evolutions и 10 artifacts.
 - [x] Все run-passives описаны как общие эффекты; weapon связи оставлены только как synergy anchors.
-- [x] Synergy rule «не более 5 за забег», пять mini-boss encounters и десять content BOSS_CHEST windows явно повторены в C1, C3 и index.
+- [x] Synergy rule «не более 5 за забег», обязательный максимум weapon level 10 + passive rank 10 для пары, пять mini-boss encounters и десять content BOSS_CHEST windows явно повторены в C1, C3 и index.
 - [x] Каждый mini-boss имеет distinct skill-check, telegraph contract и fallback path.
 - [x] Четыре future enemy proposals имеют silhouette, role/signature, telegraph, arena interaction, counter-decision, spawn behavior, hooks, reward boundary и balance questions.
 - [x] Полное дерево содержит 6 ветвей и 17 stat nodes из stat-screen reference.
@@ -195,7 +197,7 @@ Visual code: deep blue-grey, smoky teal, warm ivory, muted brass, soft jade; mut
 
 ## 10. C5 cross-system reconciliation
 
-C5 сверяет каталог с live Architecture, Runtime и Balance contracts на baseline `17803bde8e38dbf07a72e4033beacf2de5e29281`. Полная dependency matrix, P1/P2 findings, Balance/Runtime/Visual Lab handoff и acceptance evidence находятся в `C5_CROSS_SYSTEM_HANDOFF.md`.
+C5 сверяет каталог с live Architecture, Runtime и Balance contracts на baseline `6d7c2a361944ada398622e77c2436a79a47baf46`. Полная dependency matrix, P1/P2 findings, Balance/Runtime/Visual Lab handoff и acceptance evidence находятся в `C5_CROSS_SYSTEM_HANDOFF.md`.
 
 Ключевые открытые reconciliation items:
 
@@ -204,6 +206,7 @@ C5 сверяет каталог с live Architecture, Runtime и Balance contra
 - Architecture: синхронизация 2 недостающих артефактов и typed effect definitions;
 - Product/Balance: 20-minute legacy vs 30-minute architecture envelope; `BALANCE_MODEL.json` содержит только proposed/model-only extension;
 - Product/Architecture: content map C01–C15 разделяет десять boss chest windows, пять elite chest windows и synergy claims от artifact offers;
+- Product/Architecture: content gate weapon level 10 + passive rank 10 не совпадает с legacy architecture cap 6/5 и требует отдельной синхронизации;
 - Runtime: typed arena-drop instance/events поверх существующих XP/aftermath records;
 - Visual Lab: briefs переданы, mockups и production assets C5 не создаёт.
 

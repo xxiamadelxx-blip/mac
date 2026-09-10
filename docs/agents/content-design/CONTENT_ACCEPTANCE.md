@@ -29,6 +29,7 @@
 10. Каждый content entry имеет stable ID, source/status и next owner.
 11. Shop upgrades не смешиваются с temporary run artifacts.
 12. Drop effect не мутирует wallet или RunSession напрямую из content description.
+13. Для синергии weapon достигает 10-го уровня и связанная passive достигает 10-го ранга; это не меняет вместимость билда (6 weapon slots и 6 passive slots).
 
 ## 3. Статусы
 

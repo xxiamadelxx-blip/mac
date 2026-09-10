@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "9a025c2186ba30280f1e68e122a554fa262bd0f8",
+  "source_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -168,12 +168,15 @@
     "limits": {
       "weapon_slots": 6,
       "passive_slots": 6,
-      "weapon_max_level": 6,
-      "passive_max_rank": 5,
+      "weapon_max_level": 10,
+      "passive_max_rank": 10,
       "max_synergy_claims_per_run": 5,
       "artifact_offer_cards": 3,
       "artifact_selected_cards": 1,
-      "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
+      "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
+      "synergy_weapon_level_required": 10,
+      "synergy_passive_rank_required": 10,
+      "synergy_requires_maxed_pair": true
     },
     "synergy_sources": [
       "BOSS_CHEST"
@@ -356,7 +359,8 @@
         "synergy_capable": false
       },
       "final_boss_chest": "FORBIDDEN"
-    }
+    },
+    "run_duration_seconds": 1800
   },
   "arena_drops": {
     "ids": [
@@ -509,7 +513,7 @@
   "c5_cross_system_handoff": {
     "stage": "C5",
     "status": "HANDOFF_READY_WITH_OPEN_RECONCILIATIONS",
-    "baseline_head": "17803bde8e38dbf07a72e4033beacf2de5e29281",
+    "baseline_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
     "document": "docs/agents/content-design/C5_CROSS_SYSTEM_HANDOFF.md",
     "scope": [
       "catalog_index",
@@ -564,7 +568,8 @@
       "C5-P2-02",
       "C5-P2-03",
       "C5-P2-04",
-      "C5-P2-05"
+      "C5-P2-05",
+      "C5-P1-06"
     ],
     "acceptance": {
       "json_parse_required": true,
@@ -593,7 +598,14 @@
         "boss_omen_paper_archivist"
       ],
       "content_reward_windows": 15,
-      "status": "CONTENT_SPECIFIED_REGISTRY_SYNC_PENDING"
+      "status": "CONTENT_SPECIFIED_REGISTRY_SYNC_PENDING",
+      "progression_gate": {
+        "weapon_level_required": 10,
+        "passive_rank_required": 10,
+        "weapon_slots_unchanged": 6,
+        "passive_slots_unchanged": 6,
+        "status": "CONTENT_TARGET_ARCHITECTURE_RUNTIME_RECONCILIATION_PENDING"
+      }
     }
   },
   "artifact_effect_catalog": {
@@ -617,7 +629,7 @@
     "task_id": "REF-CONTENT-01",
     "scope": "CONTENT_ONLY",
     "status": "PARTIAL",
-    "source_head": "8e697a4980376342db750e6127923be3cae749bc",
+    "source_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
     "document": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
     "new_ids_introduced": [
       "elite_variant_ink_beetle_ironcarapace",
@@ -706,7 +718,8 @@
       "artifact registry 8 versus content 10 and missing typed definitions",
       "10 ordinary records plus 10 proposed elite variants require registry mapping; active maximum is 5 registered elite variants",
       "two legacy Stage 04 ELITE_FAMILY records are excluded from the ordinary count and need compatibility mapping",
-      "per-ID balance and late-wave values pending"
+      "per-ID balance and late-wave values pending",
+      "content synergy gate 10/10 conflicts with architecture/legacy progression cap 6/5"
     ],
     "promotion_guard": "DOCUMENTATION_ONLY; NO_RUNTIME_OR_ARTISTIC_APPROVAL",
     "revision": "ELITE_VARIANT_EXPANSION_10_ORDINARY_10",
@@ -747,6 +760,15 @@
     "legacy_elite_family_ids": [
       "enemy_stone_oni",
       "enemy_eclipse_serpent"
-    ]
+    ],
+    "progression_gate": {
+      "weapon_level_required": 10,
+      "passive_rank_required": 10,
+      "build_weapon_slots": 6,
+      "build_passive_slots": 6,
+      "run_duration_seconds": 1800,
+      "max_synergy_claims_per_run": 5,
+      "status": "CONTENT_SPECIFIED_ARCHITECTURE_RUNTIME_RECONCILIATION_PENDING"
+    }
   }
 }
