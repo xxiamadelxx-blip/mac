@@ -30,7 +30,7 @@ jobs:
         run: |
           set +e
           mkdir -p build/verification
-          godot --headless --path . --script scripts/runtime/r2_runtime_test.gd 2>&1 | tee build/verification/r2-runtime-test.log
+          timeout --signal=TERM --kill-after=10s 90s godot --headless --path . --script scripts/runtime/r2_runtime_test.gd 2>&1 | tee build/verification/r2-runtime-test.log
           status=${PIPESTATUS[0]}
           printf '%s\n' "${status}" > build/verification/r2-runtime-test.exit
           printf 'R2_EXIT_CODE=%s\n' "${status}"
