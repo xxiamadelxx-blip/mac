@@ -8,7 +8,7 @@ import hashlib
 import json
 import struct
 from pathlib import Path, PurePosixPath
-from typing import Any
+from typing import Any, NoReturn
 
 MAX_BATCH_FILES = 40
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
@@ -18,7 +18,7 @@ class ValidationError(RuntimeError):
     pass
 
 
-def fail(message: str) -> "NoReturn":
+def fail(message: str) -> NoReturn:
     raise ValidationError(message)
 
 
@@ -87,6 +87,8 @@ def validate(manifest_path: Path, repository_root: Path, expected_repository: st
         fail(f"batch contains {len(records)} files; maximum is {MAX_BATCH_FILES}")
     if payload.get("batch_asset_count") != len(records):
         fail("batch_asset_count does not match assets length")
+    if batch_index < total_batches and len(records) != MAX_BATCH_FILES:
+        fail(f"non-final batch contains {len(records)} files; exactly {MAX_BATCH_FILES} are required")
     seen: set[str] = set()
     for index, record in enumerate(records):
         if not isinstance(record, dict):
