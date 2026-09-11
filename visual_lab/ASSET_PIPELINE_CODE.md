@@ -1,14 +1,6 @@
 # Moonveil: Eclipse — Asset Pipeline Code
 
 
-### Mockup-specific storage override — 2026-09-11
-
-For `docs/mockups/**`, the Project Owner decision is GitHub-first binary storage. This overrides the generic Supabase transport rule above for mockup candidates and mockup packages only.
-
-- Upload each PNG as a real GitHub blob; Base64 is transport encoding only.
-- Review previews may be uploaded as `USER REVIEW` candidates before the asset batch is opened.
-- Batch size is adaptive: if a manifest has few files, upload the whole set; if it is large (for example, heroine movement frames), split it into sequential batches sized to the remaining chat/transport budget. Finish and verify one batch before starting the next. Every batch is verified by exact GitHub paths/blobs before `PLACED`.
-- Runtime assets outside `docs/mockups/**` remain under their existing contract until separately changed.
 
 Статус: CANONICAL PROJECT ASSET-PRODUCTION LAW.
 
@@ -194,12 +186,13 @@ Manifest не может помечать candidate как production тольк
 
 ## 10A. Binary delivery boundary
 
-Visual Lab governs provenance, technical status, artistic review and promotion. It does not require GitHub to store binary payloads. Each runtime visual file is transported as an individual object through private Supabase Storage; GitHub keeps the text manifest, request and CI code.
+Visual Lab governs provenance, technical status, artistic review and promotion. GitHub stores the actual PNG payloads as individual repository files; manifests and batch evidence store metadata only.
 
-The Storage manifest records one bucket/object, byte size and SHA-256 per file, plus the producing evidence. CI verifies those fields before staging the files. Upload success is not artistic approval, and import success is not `APPROVED GOLDEN` or `PRODUCTION`. If the binary channel is unavailable, the status is `BLOCKED_BINARY_ARTIFACT`; no binary file is pasted into chat or reconstructed from text.
+The canonical path is `xxiamadelxx-blip/mac@main/docs/mockups/<stage>/<asset>.png`. GitHub Release assets are not used. A separate `USER REVIEW` preview may be committed before a package; one agent run then commits exactly 40 PNG files when 40 or more remain, or the entire remainder when fewer than 40 remain, and stops.
 
+Each batch records exact paths, byte sizes, SHA-256 values, Git blob SHAs, asset commit SHA and verification result in `docs/asset_batches/<stage>/batch-<NNN>.json`. `PLACED` is allowed only after the actual GitHub blobs are checked.
 
-
+Any Base64 needed internally by the GitHub API is never pasted into chat or written into manifests. ZIP, archives, SVG/HTML/data URLs and procedural final visuals are forbidden. Upload success is not artistic approval, and import success is not `APPROVED GOLDEN` or `PRODUCTION`.
 ## 11. Stage integration
 
 Stage-папка отвечает за композицию и конкретный пользовательский сценарий. Visual Lab отвечает за производственную дисциплину. Для каждого stage:

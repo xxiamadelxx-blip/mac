@@ -7,7 +7,7 @@
   "status": "USER REVIEW",
   "technical_status": "PARTIAL / STATIC_IMAGE_PASS",
   "artistic_status": "PENDING",
-  "binary_delivery_status": "DELIVERED_TO_SUPABASE",
+  "binary_delivery_status": "PENDING_GITHUB_UPLOAD",
   "asset_id": "menu.system.soft_tonal.v04",
   "family_id": "moonveil-menu-soft-tonal-v02",
   "asset_kind": "screen-system",
@@ -139,528 +139,531 @@
   ],
   "existing_character_sources": [
     {
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
-      "bucket": "visual-assets",
+      "path": "docs/docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png",
       "role": "existing canonical hero portrait",
-      "sha256": null
+      "sha256": null,
+      "repository": "xxiamadelxx-blip/mac",
+      "branch": "main"
     },
     {
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
-      "bucket": "visual-assets",
+      "path": "docs/docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png",
       "role": "existing canonical hero portrait",
-      "sha256": null
+      "sha256": null,
+      "repository": "xxiamadelxx-blip/mac",
+      "branch": "main"
     }
   ],
   "asset_inventory": [
     {
       "name": "BTN_ARSENAL_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_ARSENAL_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_ARSENAL_NORMAL_v04.png",
       "bytes": 4697,
       "sha256": "30a73f0d877c32eb3949b927a1a2cbaa910d2f7e22be75a54a1225f600191911",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_ARSENAL_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_ARSENAL_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_ARSENAL_PRESSED_v04.png",
       "bytes": 4496,
       "sha256": "094a6ede233a3a1a8e7acd34d5308b58d2aad82f873212292617654632e951e5",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_ARTIFACTS_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_ARTIFACTS_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_ARTIFACTS_NORMAL_v04.png",
       "bytes": 5035,
       "sha256": "f71c15a33cc7915ab8ad59d7b7f32a4f99163fb13dbe46cffd753cd5c07b53d4",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_ARTIFACTS_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_ARTIFACTS_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_ARTIFACTS_PRESSED_v04.png",
       "bytes": 4860,
       "sha256": "5173cb56a6202851116fd6fd1d6057e379566c6b21e6f01d3a8c9f91b53869be",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_BACK_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_BACK_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_BACK_NORMAL_v04.png",
       "bytes": 3921,
       "sha256": "9d0be58111f2a881cf8c6733caa3f27bf2e00790f01d6838cdd00eef930ea3c7",
       "dimensions": "96x44",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_BACK_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_BACK_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_BACK_PRESSED_v04.png",
       "bytes": 3764,
       "sha256": "eecf5bc3c814037265d21efd332657b0c634da0db8f88c43568152b8cadc4acf",
       "dimensions": "96x44",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_CHARACTERS_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_CHARACTERS_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_CHARACTERS_NORMAL_v04.png",
       "bytes": 5680,
       "sha256": "93d93211faebde39e210ad07dee36ab8d99840aebdc0d0e1cefc3fc4b62cd8df",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_CHARACTERS_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_CHARACTERS_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_CHARACTERS_PRESSED_v04.png",
       "bytes": 5405,
       "sha256": "4d481607e22bfb312c2c313fc51a9383c1cb18ebd495bc8aa4d3b5124a16ab2e",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_CONTINUE_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_CONTINUE_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_CONTINUE_NORMAL_v04.png",
       "bytes": 4404,
       "sha256": "512fb343a655ed52618e391c264acac7a620d7b608916290aef597cd841a0939",
       "dimensions": "160x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_CONTINUE_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_CONTINUE_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_CONTINUE_PRESSED_v04.png",
       "bytes": 4358,
       "sha256": "ec611837636f2a6871e11e365e89b7515ed51e56dab173cbc3d102e6640d3603",
       "dimensions": "160x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_LIN_SELECT_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_LIN_SELECT_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_LIN_SELECT_NORMAL_v04.png",
       "bytes": 4940,
       "sha256": "7aa885fcf081081584eef25d0da5240cd35ec3d28f192d6498f470e32c134e3c",
       "dimensions": "142x48",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_LIN_SELECT_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_LIN_SELECT_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_LIN_SELECT_PRESSED_v04.png",
       "bytes": 4712,
       "sha256": "18b6870b22cb549c7708d9362a2e8f5c925733ce5094f783562d77f51c3bcef0",
       "dimensions": "142x48",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_PASSIVE_PURCHASE_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_PASSIVE_PURCHASE_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_PASSIVE_PURCHASE_NORMAL_v04.png",
       "bytes": 3928,
       "sha256": "b4190810af7620aa4fd7ec2d48d5746e85b49585d856bf40b0356d22bbdceaff",
       "dimensions": "118x42",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_PASSIVE_PURCHASE_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_PASSIVE_PURCHASE_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_PASSIVE_PURCHASE_PRESSED_v04.png",
       "bytes": 3831,
       "sha256": "be67f3594ec6f13e67172613250a1ac7a5029e0738801ef207f1e534da836b8b",
       "dimensions": "118x42",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_PASSIVE_UPGRADE_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_PASSIVE_UPGRADE_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_PASSIVE_UPGRADE_NORMAL_v04.png",
       "bytes": 3800,
       "sha256": "ee87def39cbdce36fe1c2e53f779dd8be809704364eb42fea43f7e908e376ee7",
       "dimensions": "118x42",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_PASSIVE_UPGRADE_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_PASSIVE_UPGRADE_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_PASSIVE_UPGRADE_PRESSED_v04.png",
       "bytes": 3683,
       "sha256": "95489c16461b35b1c1e6a5f063b4c9a256317f4b014c1325ab45e98d1c78dcc1",
       "dimensions": "118x42",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_SETTINGS_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_SETTINGS_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_SETTINGS_NORMAL_v04.png",
       "bytes": 5679,
       "sha256": "f4727738a0740b06e584669062a6312f93495db5abb82f338ceee872b7e0dc65",
       "dimensions": "286x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_SETTINGS_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_SETTINGS_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_SETTINGS_PRESSED_v04.png",
       "bytes": 5423,
       "sha256": "c6f14d68d1c109b28c2273689aa3186b1481e5aadb60898e5a32a42e73b90c1a",
       "dimensions": "286x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_SOYEON_SELECT_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_SOYEON_SELECT_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_SOYEON_SELECT_NORMAL_v04.png",
       "bytes": 5094,
       "sha256": "6b7e6caa5eedf0c9c094c81a88c1d49010561895a027bf80f56b0378cd0e733a",
       "dimensions": "142x48",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_SOYEON_SELECT_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_SOYEON_SELECT_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_SOYEON_SELECT_PRESSED_v04.png",
       "bytes": 4918,
       "sha256": "371cea2ff58d2ac80e9f508023c03f3ef781beedffc40abd64124c495024660c",
       "dimensions": "142x48",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STAGE_CHOOSE_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STAGE_CHOOSE_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STAGE_CHOOSE_NORMAL_v04.png",
       "bytes": 4723,
       "sha256": "8d9a56075e1da47d8f30286b27c2dd7c8030e71781ac4ad9748e6cb817298450",
       "dimensions": "160x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STAGE_CHOOSE_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STAGE_CHOOSE_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STAGE_CHOOSE_PRESSED_v04.png",
       "bytes": 4687,
       "sha256": "265e24a061ecf6cdfe4d079e5beabd4673f73c87224283e3f996a2763c7e2bf1",
       "dimensions": "160x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STAGE_SELECT_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STAGE_SELECT_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STAGE_SELECT_NORMAL_v04.png",
       "bytes": 6499,
       "sha256": "e3117d72388657a0f276224187b9e55e13ecf95bb54a02e04eb918260b794f09",
       "dimensions": "286x58",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STAGE_SELECT_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STAGE_SELECT_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STAGE_SELECT_PRESSED_v04.png",
       "bytes": 6245,
       "sha256": "2c10d97626d5a56e2d9df85f35b7efb3d6bea9e21c210124cac1234c760888da",
       "dimensions": "286x58",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_START_RUN_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_START_RUN_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_START_RUN_NORMAL_v04.png",
       "bytes": 5271,
       "sha256": "ce336ae9af2be128ec582bffd041bdb0f971115905e84364ba5e665e042fd6ca",
       "dimensions": "286x56",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_START_RUN_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_START_RUN_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_START_RUN_PRESSED_v04.png",
       "bytes": 5233,
       "sha256": "50f4e0205877946b50277eb86cce87ad708d4075dc59dcd7cab62edae20b03df",
       "dimensions": "286x56",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STORE_NORMAL_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STORE_NORMAL_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STORE_NORMAL_v04.png",
       "bytes": 4616,
       "sha256": "de0100cc2634b65d081b053a44b4d6ba24e9e59dd68f58469c5b9fdc0391b3e8",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "BTN_STORE_PRESSED_v04.png",
       "kind": "button",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/BTN_STORE_PRESSED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/BTN_STORE_PRESSED_v04.png",
       "bytes": 4520,
       "sha256": "44bfada33e12b413d555e72a848b286621edbc60bdf82a93e83022570014ff51",
       "dimensions": "138x50",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_CHARACTER_LIN_v04.png",
       "kind": "character_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_CHARACTER_LIN_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_CHARACTER_LIN_v04.png",
       "bytes": 63122,
       "sha256": "c3842e58adab472764793c879e8d9b3e048689da1179ca7fc4eea98e8b62b699",
       "dimensions": "176x176",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_CHARACTER_SOYEON_v04.png",
       "kind": "character_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_CHARACTER_SOYEON_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_CHARACTER_SOYEON_v04.png",
       "bytes": 46165,
       "sha256": "137f42026e56fd688f552986f7614554d40b97fd656d31a5e7aec0e93e8fc8db",
       "dimensions": "176x176",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_AGILITY_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_AGILITY_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_AGILITY_v04.png",
       "bytes": 9331,
       "sha256": "5943c2297a5d09d47f47a87c9a2b704053d9c94e30c80b9cdcb908b197a77a6d",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_DEFENSE_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_DEFENSE_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_DEFENSE_v04.png",
       "bytes": 9652,
       "sha256": "e83b3bac66789717d48a9da974d6fbdebe5a692fe2cae4f45df6c7cc32beaa64",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_FOCUS_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_FOCUS_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_FOCUS_v04.png",
       "bytes": 10113,
       "sha256": "90375006b53fdf1657740d3c5ea851c539c281a4890b4d68b5ef97a16557c0e9",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_FORCE_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_FORCE_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_FORCE_v04.png",
       "bytes": 9144,
       "sha256": "d2d2e4c8d9470cc6b73d36114a762a1ede729273d37872385efb0b1543dcc290",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_MAGNET_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_MAGNET_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_MAGNET_v04.png",
       "bytes": 9605,
       "sha256": "3b9421f526eb1386dcd0633af7a75a936c84e7574dafc431d955429a28c50221",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_PASSIVE_VITALITY_v04.png",
       "kind": "passive_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_PASSIVE_VITALITY_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_PASSIVE_VITALITY_v04.png",
       "bytes": 10010,
       "sha256": "5486cf23c7c7fe34dd5881fa48b046e33398544433362fa85cbb1cb1fc77f6d6",
       "dimensions": "168x132",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "CARD_STAGE_01_ACTIVE_v04.png",
       "kind": "stage_card",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/CARD_STAGE_01_ACTIVE_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/CARD_STAGE_01_ACTIVE_v04.png",
       "bytes": 15672,
       "sha256": "12cc9bbcb19727ad1f81dc2a5097c18a54d56ae60e2843fe45e5231e7bc54f1b",
       "dimensions": "330x198",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_BG_CHARACTER_SELECT_v04.png",
       "kind": "background",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_BG_CHARACTER_SELECT_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_BG_CHARACTER_SELECT_v04.png",
       "bytes": 2336524,
       "sha256": "b98994baa92a51d2cf48ebe9c11043977e2082d302a4c86a236afe81a04121b1",
       "dimensions": "853x1844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_BG_MAIN_v04.png",
       "kind": "background",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_BG_MAIN_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_BG_MAIN_v04.png",
       "bytes": 2054425,
       "sha256": "0782ee47d9cc29b7bf84ab95194c2950a8dce31e9247cf3d58bac2b038dfa9ac",
       "dimensions": "853x1844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_BG_PASSIVE_SHOP_v04.png",
       "kind": "background",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_BG_PASSIVE_SHOP_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_BG_PASSIVE_SHOP_v04.png",
       "bytes": 2309449,
       "sha256": "807a13314099d10a6a4ffadd96a1dc0ded693d3897bf6a1f5810563c877b0027",
       "dimensions": "853x1844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_BG_STAGE_SELECT_v04.png",
       "kind": "background",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_BG_STAGE_SELECT_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_BG_STAGE_SELECT_v04.png",
       "bytes": 2603287,
       "sha256": "b30232ebe99c4bc0a10ab4315c1b93fb71c798a91d49f5ca76dc09b94b0cf6eb",
       "dimensions": "941x1672",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_CHARACTER_PORTRAIT_LIN_v04.png",
       "kind": "derived_character_portrait",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_PORTRAIT_LIN_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_PORTRAIT_LIN_v04.png",
       "bytes": 109499,
       "sha256": "258031680dee2455a3dcc0b842cfb704972a82b04b58acfdd5a036a2284cdfb4",
       "dimensions": "260x260",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_CHARACTER_PORTRAIT_SOYEON_v04.png",
       "kind": "derived_character_portrait",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_PORTRAIT_SOYEON_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_PORTRAIT_SOYEON_v04.png",
       "bytes": 77887,
       "sha256": "6f8b4c61b9f9122846cd1a05dbffc9c044e6fa419312c6348f73a8fa8f4fe941",
       "dimensions": "240x260",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_CHARACTER_SELECT_v04.png",
       "kind": "screen",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_SELECT_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_CHARACTER_SELECT_v04.png",
       "bytes": 457093,
       "sha256": "dca15d6d8015daf63aa983df75fdaa8536ee0299ce3933b483533558d0b5e0d2",
       "dimensions": "390x844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_HOME_v04.png",
       "kind": "screen",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_v04.png",
       "bytes": 408415,
       "sha256": "e9950c1f440f50884997dc2c46c605e7b3aeab9b99241d4be536fc02067d4565",
       "dimensions": "390x844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_PASSIVE_SHOP_v04.png",
       "kind": "screen",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_PASSIVE_SHOP_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_PASSIVE_SHOP_v04.png",
       "bytes": 322285,
       "sha256": "80fd272072a5866580a2a4644b16b6c68c0e455870b03990bb71bdca7f900006",
       "dimensions": "390x844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_STAGE_SELECT_v04.png",
       "kind": "screen",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_STAGE_SELECT_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_STAGE_SELECT_v04.png",
       "bytes": 379077,
       "sha256": "f75f496591fc2054af04d3e16141ed9ba733a29f0a7d3b3d0b9b0266b6e9cf81",
       "dimensions": "390x844",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE01_MENU_SYSTEM_REVIEW_GRID_v04.png",
       "kind": "review_grid",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_SYSTEM_REVIEW_GRID_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE01_MENU_SYSTEM_REVIEW_GRID_v04.png",
       "bytes": 1440107,
       "sha256": "d305ef681a655cd6514c7be351b1a15306462e546b44a5a23d7358da8dcba02c",
       "dimensions": "828x1736",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE_NODE_ACTIVE_v04.png",
       "kind": "stage_node",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE_NODE_ACTIVE_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE_NODE_ACTIVE_v04.png",
       "bytes": 5828,
       "sha256": "e499199acf2e218a80a0fa10d3d9ae808b2bf630a6267d43cbc79aa4fbf27f78",
       "dimensions": "64x64",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     },
     {
       "name": "STAGE_NODE_LOCKED_v04.png",
       "kind": "stage_node",
-      "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE_NODE_LOCKED_v04.png",
+      "path": "docs/docs/mockups/01-menu/layers/STAGE_NODE_LOCKED_v04.png",
       "bytes": 6085,
       "sha256": "d96ccb5d7fda36156ba95808a2c847b0363c86fbe9d04eb7c53fef034df44732",
       "dimensions": "64x64",
       "colorspace": "sRGB",
-      "storage_status": "UPLOADED_VERIFIED"
+      "storage_status": "NOT_DELIVERED_TO_GITHUB"
     }
   ],
   "delivery": {
-    "bucket": "visual-assets",
-    "object_prefix": "moonevil-eclipse/docs/mockups/01-menu/layers/",
+    "repository": "xxiamadelxx-blip/mac",
+    "branch": "main",
+    "asset_root": "docs/mockups/01-menu/layers",
     "object_count": 50,
-    "uploaded_object_count": 50,
-    "status": "DELIVERED_TO_SUPABASE",
-    "object_existence_verified": true,
-    "upload_note": "50 individual PNG objects uploaded and verified in Supabase Storage on 2026-09-11. Verified count: 50 distinct _v04.png objects; total bytes: 12827197. Temporary anon INSERT policy was removed after upload. Persistent authenticated INSERT policy remains scoped to visual-assets/moonevil-eclipse/docs/mockups/*.png. No ZIP or Base64 asset payload."
+    "uploaded_file_count": 0,
+    "status": "PENDING_GITHUB_UPLOAD",
+    "object_existence_verified": false,
+    "upload_note": "No current GitHub tree evidence for these 50 PNG files. Upload batch 001 with 40 files, verify it, then run batch 002 with the remaining 10."
   },
   "review": {
     "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md",
@@ -670,7 +673,7 @@
     "open_decisions": [
       "Approve, revise or reject the v04 screen system",
       "Confirm passive-upgrade shop scope",
-      "Complete binary delivery to Supabase"
+      "Complete GitHub PNG batch delivery in two separate runs"
     ]
   },
   "promotion": {
@@ -679,15 +682,24 @@
     "consumer_scene_or_ui": "menu navigation candidate only; not promoted",
     "fallback_status": "not applicable"
   },
-  "supabase_verification": {
-    "verified_at": "2026-09-11",
-    "bucket": "visual-assets",
-    "object_prefix": "moonevil-eclipse/docs/mockups/01-menu/layers/",
-    "v04_object_count": 50,
-    "v04_distinct_names": 50,
-    "v04_total_bytes": 12827197,
-    "persistent_insert_policy": "moonevil_eclipse_mockups_authenticated_insert",
-    "temporary_upload_policy": "moonevil_eclipse_menu_v04_anon_insert",
-    "temporary_upload_policy_status": "REMOVED_AFTER_UPLOAD"
+  "batch_policy": {
+    "repository": "xxiamadelxx-blip/mac",
+    "branch": "main",
+    "asset_root": "docs/mockups/01-menu/layers",
+    "total_assets": 50,
+    "max_files_per_batch": 40,
+    "one_batch_per_agent_run": true,
+    "expected_batch_sizes": [
+      40,
+      10
+    ],
+    "next_batch_index": 1
+  },
+  "github_batch_verification": {
+    "repository": "xxiamadelxx-blip/mac",
+    "branch": "main",
+    "evidence_root": "docs/asset_batches/01-menu",
+    "status": "PENDING_GITHUB_UPLOAD",
+    "verified_file_count": 0
   }
 }

@@ -7,10 +7,10 @@
 - `.agents/skills/repo-state/SKILL.md` — live HEAD, канон и drift;
 - `.agents/skills/bounded-task/SKILL.md` — границы задачи и write set;
 - `.agents/skills/godot-release-gate/SKILL.md` — реальный Android release evidence;
-- `.agents/skills/supabase-asset-contract/SKILL.md` — asset paths, manifest и Storage;
+- `.agents/skills/github-png-batch-contract/SKILL.md` — пути PNG, batch manifest и GitHub evidence;
 - `.agents/skills/evidence-first-report/SKILL.md` — доказательство каждого статуса.
 
-Сначала применяй `repo-state` и `bounded-task`. Для визуальных файлов дополнительно применяй `supabase-asset-contract`; для APK/AAB — `godot-release-gate`; каждый handoff оформляй по `evidence-first-report`.
+Сначала применяй `repo-state` и `bounded-task`. Для визуальных файлов дополнительно применяй `github-png-batch-contract`; для APK/AAB — `godot-release-gate`; каждый handoff оформляй по `evidence-first-report`.
 
 Если repo-local skill противоречит живому контракту проекта, остановись и зафиксируй противоречие в handoff; не выбирай удобную версию молча.
 
@@ -81,23 +81,15 @@ Technical PASS и artistic approval — разные состояния. Про�
 
 ## 5A. Binary asset transport (mandatory)
 
-- GitHub is the source for code, scenes, JSON, manifests and instructions. It is not the canonical store for PNG/SVG binaries.
-- Each real PNG/SVG is uploaded as its own object to the private Supabase Storage bucket `visual-assets` using a streaming Storage API path. Never paste binary bytes, Base64 or data URLs into chat, issues, comments or repository text.
-- CI may import an asset only after it downloads that exact object and verifies `size_bytes` and SHA-256. The APK receives imported files at build time and does not need Storage at runtime.
-- A manifest, expected file list, old GitHub Release asset or agent message is not binary evidence. Without an authorized Storage write channel, report `BLOCKED_BINARY_ARTIFACT`; do not simulate upload.
-- The Binary Asset Transport Agent owns per-file upload, manifest/checksum metadata, request metadata and CI intake. It does not generate, mutate or approve art.
-
-
-
-
-### Mockup-specific storage override — 2026-09-11
-
-For `docs/mockups/**`, the Project Owner decision is GitHub-first binary storage. This overrides the generic Supabase transport rule above for mockup candidates and mockup packages only.
-
-- Upload each PNG as a real GitHub blob; Base64 is transport encoding only.
-- Review previews may be uploaded as `USER REVIEW` candidates before the asset batch is opened.
-- Batch size is adaptive: if a manifest has few files, upload the whole set; if it is large (for example, heroine movement frames), split it into sequential batches sized to the remaining chat/transport budget. Finish and verify one batch before starting the next. Every batch is verified by exact GitHub paths/blobs before `PLACED`.
-- Runtime assets outside `docs/mockups/**` remain under their existing contract until separately changed.
+- GitHub repository `xxiamadelxx-blip/mac`, branch `main`, is the canonical store for real PNG binaries as well as code and manifests.
+- Every PNG is committed as its own repository file under the correct `docs/mockups/<stage>/...` path. GitHub Release assets are not used.
+- A single `USER REVIEW` preview may be committed before a package is opened so the Creative Director can approve the exact appearance. It is not a package and does not become `PLACED` automatically.
+- One agent run handles one package only: exactly 40 PNG files when 40 or more remain; if fewer than 40 remain, upload exactly the remainder. Never start the next package in the same run.
+- Record batch index, all paths, per-file size/SHA-256, asset commit SHA and evidence in `docs/asset_batches/<stage>/batch-<NNN>.json`.
+- `PLACED` is allowed only after actual GitHub paths/blobs and every file's size/SHA-256 are verified. A manifest, screenshot, release page or agent message is not binary evidence.
+- Use the GitHub batch uploader or equivalent Git-Data operation. Any API-internal Base64 is never pasted into chat, issue, comment or repository text.
+- ZIP, archives, SVG/HTML/data URLs and procedural visual substitutes are forbidden. Runtime code may reference real local asset paths but must not draw final visual art.
+- The Binary Asset Transport Agent only delivers existing files; it does not generate, mutate, regenerate or approve art.
 
 ## 6. Definition of Done для визуальной работы
 

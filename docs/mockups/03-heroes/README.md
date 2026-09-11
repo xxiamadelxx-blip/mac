@@ -43,8 +43,12 @@ docs/mockups/03-heroes/{hero_id}/{direction}/{state}.png
 
 ## Binary transport
 
-Каждый PNG доставляется отдельным объектом private Supabase Storage по
-docs/ci/SUPABASE_ASSET_STORAGE.md. GitHub хранит только request/manifest/инструкции,
-а CI скачивает и проверяет файлы в build workspace. Это build-time transport,
-не runtime network dependency и не художественное approval. Пока request имеет
-PENDING_SUPABASE_UPLOAD, папки runtime остаются без доказанного binary intake.
+Каждый PNG размещается отдельным файлом в GitHub repository `xxiamadelxx-blip/mac` по пути `docs/mockups/03-heroes/<hero>/<direction>/<state>.png`.
+
+Stage 03 содержит 192 ожидаемых PNG: 96 для Линь Юэ и 96 для Соён Хан. Порядок размещения — пять отдельных запусков: `40`, `40`, `40`, `40`, `32`.
+
+После каждой партии создаётся `docs/asset_batches/03-heroes/batch-<NNN>.json` с фактическими GitHub paths/blobs, размером и SHA-256. Следующая партия не начинается в том же запуске.
+
+Пока evidence не подтверждает каждый конкретный PNG в GitHub, статус остаётся `PENDING_GITHUB_UPLOAD`; наличие manifest или папки не является binary evidence.
+
+GitHub Release assets, ZIP, архивы, PNG/Base64 в чат и кодовая отрисовка вместо реальных файлов запрещены. Линь Юэ и Соён Хан не перегенерируются и не мутируются.

@@ -10,7 +10,7 @@ Family ID: moonveil-menu-soft-tonal-v02
 Status: REJECTED NON-PROMOTABLE
 Technical status: PARTIAL / STATIC_IMAGE_PASS
 Artistic status: REJECTED
-Storage status: NOT_DELIVERED
+Binary delivery status: NOT_DELIVERED_TO_GITHUB
 
 ## Creative Director decision
 
@@ -24,5 +24,5 @@ REJECTED by user on 2026-09-10.
 ## Current state
 
 - Старый визуальный кандидат удалён из GitHub.
-- PNG v03 не был доставлен в Supabase.
+- PNG v03 не был доставлен в GitHub repository.
 - Никакой runtime-интеграции или manifest promotion для v03 нет.

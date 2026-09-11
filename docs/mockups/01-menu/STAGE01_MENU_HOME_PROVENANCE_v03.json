@@ -46,7 +46,7 @@
     "workflow_sha256": "fa4c5fcb1d6d9ce4cbc650f1dadc32059f724978",
     "seed": null,
     "plugins_or_nodes": [],
-    "notes": "PNG candidate was not delivered to Supabase."
+    "notes": "PNG candidate was not delivered to GitHub."
   },
   "editable_source": {
     "path": null,
@@ -55,8 +55,7 @@
     "notes": "No source retained for rejected candidate."
   },
   "runtime_export": {
-    "path": "visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png",
-    "bucket": "visual-assets",
+    "path": "docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png",
     "format": "PNG",
     "dimensions": "390x844",
     "scale": 1,
@@ -69,8 +68,9 @@
     ],
     "sha256": "be328b1802aa2c5e46e8ddf2a126df852bc16d330879f99e6951171cb07181b0",
     "bytes": 387921,
-    "storage_status": "NOT_DELIVERED",
-    "object_exists_at_last_check": false
+    "storage_status": "NOT_DELIVERED_TO_GITHUB",
+    "object_exists_at_last_check": false,
+    "repository": "xxiamadelxx-blip/mac"
   },
   "gameplay_preview": {
     "path": null,
@@ -83,7 +83,7 @@
   "review": {
     "technical_status": "PARTIAL / STATIC_IMAGE_PASS",
     "artistic_status": "REJECTED",
-    "storage_status": "NOT_DELIVERED",
+    "storage_status": "NOT_DELIVERED_TO_GITHUB",
     "review_pack_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
     "creative_director_decision": "REJECTED",
     "decision_record_path": "docs/mockups/01-menu/STAGE01_MENU_HOME_REVIEW_PACK_v03.md",
@@ -94,5 +94,11 @@
     "producing_commit": "fa7a32828d17d79a1af9f204df43f2412bbcd4f1",
     "consumer_scene_or_ui": "not promoted",
     "fallback_status": "rejected non-promotable"
+  },
+  "transport_contract": {
+    "repository": "xxiamadelxx-blip/mac",
+    "branch": "main",
+    "binary_path": "docs/mockups/01-menu/layers/STAGE01_MENU_HOME_CANDIDATE_v03.png",
+    "status": "NOT_DELIVERED_TO_GITHUB"
   }
 }
