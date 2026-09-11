@@ -472,7 +472,8 @@ func get_live_registry_join_status() -> Dictionary:
                 elite_chest_count += 1
     for boss in contract_registry.get("bosses", []):
         if boss is Dictionary and bool(boss.get("is_final", false)):
-            final_boss_has_chest = not str(boss.get("chest_window_id", "")).is_empty()
+            var final_chest_id: Variant = boss.get("chest_window_id", null)
+            final_boss_has_chest = final_chest_id != null and not str(final_chest_id).is_empty()
     if not (chest_windows is Array) or chest_windows.size() != TARGET_CHEST_WINDOW_COUNT:
         blockers.append("CHEST_WINDOW_COUNT")
     if boss_chest_count != 10:
