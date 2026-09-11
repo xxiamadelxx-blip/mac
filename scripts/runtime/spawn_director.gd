@@ -195,7 +195,7 @@ func phase_for(simulation_seconds: float, boss_kind: String = "") -> String:
         return PHASE_CANONICAL
 
     var cycle_duration := end_seconds - start_seconds
-    var elapsed := clamp(simulation_seconds - start_seconds, 0.0, cycle_duration)
+    var elapsed: float = clampf(simulation_seconds - start_seconds, 0.0, cycle_duration)
     var suppression_seconds := _model_seconds([
         "simulation_model",
         "boss_interruption",
@@ -214,8 +214,8 @@ func phase_for(simulation_seconds: float, boss_kind: String = "") -> String:
     if suppression_seconds < 0.0 or recovery_seconds < 0.0 or siege_seconds < 0.0:
         return PHASE_CANONICAL
 
-    var recovery_end := min(cycle_duration, suppression_seconds + recovery_seconds)
-    var siege_start := max(0.0, cycle_duration - siege_seconds)
+    var recovery_end: float = minf(cycle_duration, suppression_seconds + recovery_seconds)
+    var siege_start: float = maxf(0.0, cycle_duration - siege_seconds)
     if elapsed < recovery_end:
         return PHASE_POST_BOSS_RECOVERY
     if elapsed >= siege_start:
