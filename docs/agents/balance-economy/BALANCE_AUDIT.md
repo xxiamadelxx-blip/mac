@@ -10,10 +10,10 @@ claim Godot, Android, playable, collision or runtime verification.
 | Field | Evidence |
 |---|---|
 | Repository / branch | `xxiamadelxx-blip/mac` / `main` |
-| Parent HEAD read immediately before this slice | `68ac3cc141f889381a458e08f9042d18e2fd3a7a` |
+| Parent HEAD read immediately before this slice | `2fc240722b671edce1fb62e424cd8bbb7beb6cc3` |
 | Live B1 | `docs/BALANCE_ECONOMY_SPEC.md`, `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687` |
 | Live sync router | `docs/AGENT_SYNC_STATE.md`, `c12706b86521c74fa731f2bf9faaf5be4dd63aa8` |
-| Balance model | `BALANCE_MODEL.json`, `0.6-content-binding`, status `PARTIAL` |
+| Balance model | `BALANCE_MODEL.json`, `0.7-xp-40-three-synergies`, status `PARTIAL` |
 | Runtime status | `NOT_IMPLEMENTED`; no Godot/Android invocation |
 | Numeric authority | `BALANCE_MODEL.json`; simulator reads this same data |
 
@@ -35,6 +35,14 @@ Content, Architecture, Runtime, visual assets or root docs.
   reward/chest/fallback and idempotency.
 - The model includes the requested low-to-peak post-boss shape: relief, low
   entry, monotonic ramp, peak-density siege, then the next boss.
+- Late-run XP throughput is now proposed at 22.0 XP/s for 20:00–25:00 and
+  27.0 XP/s for 25:00–30:00; the B1 threshold formula remains unchanged.
+- The model target is level 40 and three distinct synergies. Level 38 is an
+  accepted lower variance floor; the simulator does not force every seed to
+  land on the exact target.
+- Three 10/10 weapon-passive pairs are represented through an explicit proposed
+  paired-offer progression, so synergy claims are distinct IDs rather than a
+  repeated claim of one starter synergy.
 
 ## Fresh evidence
 
@@ -56,9 +64,9 @@ ARCHITECTURE_JOIN=BLOCKED
 single-seed shape_check=PASS, run_count=6
 INDEPENDENT_30M_CHECK=PASS
 run_count=30
-repeat_hash=071ecb2bc1eb23ea389fab4d1ff331c6beb3711284f2e6abeb08d7d3921dbbde
-survived=29
-completed=29
+repeat_hash=c741b3d238fd8df29bc20caf36e89a9522204796e92d00efd0f0fe834ae4174c
+survived=30
+completed=30
 runtime_claim=NOT_IMPLEMENTED
 ```
 

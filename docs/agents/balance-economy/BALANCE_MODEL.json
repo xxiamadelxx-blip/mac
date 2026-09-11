@@ -11,9 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "68ac3cc141f889381a458e08f9042d18e2fd3a7a",
-    "captured_at": "2026-09-10T23:32:42Z",
-    "note": "Live main HEAD read immediately before the content-balance binding slice. The parent contains the latest published mockup handoff; no runtime code is changed by this slice."
+    "head": "2fc240722b671edce1fb62e424cd8bbb7beb6cc3",
+    "captured_at": "2026-09-11T06:57:35Z",
+    "note": "Live main HEAD read immediately before the XP/progression slice. The parent contains the published balance model; no runtime code is changed by this slice."
   },
   "units": {
     "time": "seconds",
@@ -415,12 +415,12 @@
         "status_reason": "Elite variant registry and pack cadence are pending."
       },
       "level_target": {
-        "value": "21-22",
+        "value": "29-31",
         "status": "PROPOSED",
-        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; canonical level targets through 20:00",
-        "derived_formula": "continue the 10-minute target slope with a two-level five-minute extension",
-        "rationale": "Keeps the build progressing before the final two bosses.",
-        "status_reason": "B1 contains no 30-minute progression target."
+        "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11; B1 has no late target",
+        "derived_formula": "target_policy.xp_level_targets[1500] after the proposed late pickup budget",
+        "rationale": "Leaves enough late-run progression for three paired synergy paths without forcing an exact per-seed level.",
+        "status_reason": "Late target is a balance proposal, not a B1 canon value."
       }
     },
     {
@@ -477,12 +477,12 @@
         "status_reason": "Elite content IDs and composition are not in the architecture registry."
       },
       "level_target": {
-        "value": "25-26",
+        "value": 40,
         "status": "PROPOSED",
-        "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; canonical level targets through 20:00",
-        "derived_formula": "continue the extension progression by four levels over the final ten minutes",
-        "rationale": "Leaves the final boss as a build check rather than an unannounced level wall.",
-        "status_reason": "30-minute XP curve is pending B1."
+        "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11; B1 has no 30-minute target",
+        "derived_formula": "target_policy.target_final_level",
+        "rationale": "Sets level 40 as the 30-minute progression target while accepting normal seed/profile variance down to level 38.",
+        "status_reason": "Final target is proposed; runtime and product lock are pending."
       }
     }
   ],
@@ -1667,9 +1667,9 @@
     "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
   },
   "simulation_model": {
-    "model_version": "0.6-content-binding",
+    "model_version": "0.7-xp-40-three-synergies",
     "status": "PROPOSED_MODEL_ONLY",
-    "source_revision": "68ac3cc141f889381a458e08f9042d18e2fd3a7a",
+    "source_revision": "2fc240722b671edce1fb62e424cd8bbb7beb6cc3",
     "architecture_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
     "runtime_status": "NOT_IMPLEMENTED",
     "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; ten ordinary content records and bounded elite variants are selected from this model",
@@ -1944,20 +1944,20 @@
           "status": "PROPOSED"
         },
         "wave_cataclysm_20_25": {
-          "value": 4.6,
-          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 pickup cadence absent",
-          "derived_formula": "3.8 + (3.8 - 2.5) × 0.615",
-          "rationale": "Continues pickup throughput with the 20:00–25:00 pressure ramp without granting a hidden boss XP spike.",
+          "value": 22.0,
+          "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11; B1 pickup cadence absent",
+          "derived_formula": "late_run_xp_budget = ceil((minimum_level_40_xp - collected_xp_through_20m) / remaining_late_run_seconds); bounded to the 20:00–25:00 band",
+          "rationale": "The previous 4.6 budget left fresh runs at level 24. This proposed late-run budget is the minimum practical pickup throughput that makes level 40 reachable without changing the canonical XP threshold formula or boss XP policy.",
           "status": "PROPOSED",
-          "status_reason": "30-minute XP target and pickup economy are not in B1."
+          "status_reason": "30-minute XP target and pickup economy are not in B1; explicit user request supersedes the old 25–26 target as a proposed balance slice."
         },
         "wave_apocalypse_25_30": {
-          "value": 5.5,
-          "source": "USER_PRODUCT_DECISION_30_MINUTE_EXTENSION; B1 pickup cadence absent",
-          "derived_formula": "4.6 + (4.6 - 3.8) × 1.125",
-          "rationale": "Supports the final ten-minute build curve while keeping XP acquisition data-driven.",
+          "value": 27.0,
+          "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11; B1 pickup cadence absent",
+          "derived_formula": "late_run_xp_budget = ceil((minimum_level_40_xp - collected_xp_through_25m) / final_run_seconds); bounded to the 25:00–30:00 band",
+          "rationale": "Keeps the late curve rising toward the final siege and supplies the remaining XP needed for level 40 after the 20:00–25:00 ramp.",
           "status": "PROPOSED",
-          "status_reason": "30-minute XP target and pickup economy are not in B1."
+          "status_reason": "30-minute XP target and pickup economy are not in B1; explicit user request supersedes the old 25–26 target as a proposed balance slice."
         }
       },
       "magnet_capacity_per_rank": {
@@ -1973,6 +1973,43 @@
         "derived_formula": "main_run_xp = collected ordinary and elite drops; boss XP remains a pending reward/content decision",
         "rationale": "Prevents an unconfirmed 250-XP boss grant from invalidating the level-2/5/9/13/17–18 targets.",
         "status": "PROPOSED"
+      },
+      "thirty_minute_target": {
+        "target_final_level": {
+          "value": 40,
+          "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11",
+          "derived_formula": "level 40 requires the cumulative canonical XP threshold through level 40: 16,852 XP",
+          "rationale": "Makes the requested 30-minute progression target directly testable while allowing normal seed/profile variance.",
+          "status": "PROPOSED"
+        },
+        "acceptable_final_level_floor": {
+          "value": 38,
+          "source": "USER_BALANCE_DIRECTION_2026-09-11; deterministic seed variance is accepted",
+          "derived_formula": "target_final_level − 2 levels of normal late-run pickup variance",
+          "rationale": "A fresh run landing at level 38 is not treated as a failure when the target is 40; the model must expose the variance rather than erase it.",
+          "status": "PROPOSED"
+        },
+        "minimum_synergy_claims": {
+          "value": 3,
+          "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11",
+          "derived_formula": "three distinct 10/10 weapon-passive pairs, one claim per eligible non-final chest",
+          "rationale": "Ensures the XP increase is evaluated by actual build outcomes rather than XP total alone.",
+          "status": "PROPOSED"
+        },
+        "minimum_xp_to_level_40": {
+          "value": 16852,
+          "source": "simulation_model.xp_formula_parameters + USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11",
+          "derived_formula": "sum(round_half_up(30 + 12 × (L − 1) + 3 × (L − 1)^1.35), L=1..39)",
+          "rationale": "Publishes the exact threshold used by the acceptance check; no hidden XP multiplier is used.",
+          "status": "DERIVED"
+        },
+        "progression_shape": {
+          "value": "keep_B1_early_targets_then_late_acceleration",
+          "source": "B1 section 4/6 + explicit user request",
+          "derived_formula": "retain 2/5/9/13/17 early checkpoints; increase proposed pickup throughput only after 20:00",
+          "rationale": "Preserves the readable opening while making the requested late-run three-synergy build possible.",
+          "status": "PROPOSED"
+        }
       }
     },
     "wave_selection": {
@@ -6270,6 +6307,62 @@
         "rationale": "Allows the five mini/main chest windows to be meaningful without allowing unbounded evolution grants.",
         "status": "PROPOSED"
       },
+      "synergy_progression": {
+        "status": "PROPOSED_MODEL_ONLY",
+        "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11 + C1 weapon/passive level-10 gate",
+        "offer_unit": "one_player_level_advances_one_selected_weapon_and_its_linked_passive_by_one_rank",
+        "derived_formula": "one 10/10 pair consumes 10 paired level offers from weapon=1/passive=0; three pairs consume 30 offers and fit inside a level-40 run",
+        "rationale": "The existing one-track simulator could only represent one synergy. This explicit paired-offer rule makes three distinct 10/10 synergies mathematically possible without silently lowering the level-10 gate.",
+        "weapon_level_start": {
+          "value": 1,
+          "source": "C1 weapon progression contract",
+          "derived_formula": "starting weapon is level 1",
+          "rationale": "Preserves the current starting weapon state.",
+          "status": "CANON"
+        },
+        "passive_rank_start": {
+          "value": 0,
+          "source": "current balance simulator state; C1 does not specify initial rank",
+          "derived_formula": "rank starts before the first passive offer",
+          "rationale": "Requires exactly ten paired offers to reach rank 10, matching the requested 10/10 gate.",
+          "status": "PROPOSED"
+        },
+        "pair_order_by_hero": {
+          "hero_lin_yue": {
+            "value": [
+              "synergy_heavenly_seals",
+              "synergy_winter_palace",
+              "synergy_nine_reflections",
+              "synergy_lotus_sanctuary",
+              "synergy_eclipse_vortex"
+            ],
+            "source": "C1 weapon→passive→synergy matrix; hero starter pair first",
+            "derived_formula": "starter synergy first, then deterministic content-catalog order",
+            "rationale": "Gives Lin Yue a ranged/control path while retaining three further eligible pairs.",
+            "status": "PROPOSED"
+          },
+          "hero_seoyeon_han": {
+            "value": [
+              "synergy_moon_dance",
+              "synergy_phoenix_sky",
+              "synergy_guardian_bell",
+              "synergy_constellation_rain",
+              "synergy_heavenly_judgment"
+            ],
+            "source": "C1 weapon→passive→synergy matrix; hero starter pair first",
+            "derived_formula": "starter synergy first, then deterministic content-catalog order",
+            "rationale": "Gives Soyeon Han a mobility/close-area path while retaining three further eligible pairs.",
+            "status": "PROPOSED"
+          }
+        },
+        "minimum_pairs_for_target": {
+          "value": 3,
+          "source": "USER_REQUEST_XP_40_LEVELS_3_SYNERGIES_2026-09-11",
+          "derived_formula": "three distinct completed 10/10 pairs",
+          "rationale": "Prevents counting repeated claims of one synergy as three synergies.",
+          "status": "PROPOSED"
+        }
+      },
       "weapons": {
         "weapon_moon_blade": {
           "owner_hero_id": "hero_seoyeon_han",
@@ -9386,9 +9479,12 @@
         "600": 9,
         "900": 13,
         "1200": "17-18",
-        "1500": "21-22",
-        "1800": "25-26"
+        "1500": "29-31",
+        "1800": 40
       },
+      "target_final_level": 40,
+      "acceptable_final_level_floor": 38,
+      "minimum_synergy_claims": 3,
       "ordinary_ttk_seconds": [
         0.5,
         2.5
@@ -9705,7 +9801,7 @@
     ],
     "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
   },
-  "model_version": "0.6-content-binding",
+  "model_version": "0.7-xp-40-three-synergies",
   "content_balance_binding": {
     "status": "PROPOSED_MODEL_ONLY",
     "source_policy": "B1 remains canonical for explicit values; mockups/content docs supply role/behavior semantics; absent absolute values are proposed with formula and rationale, never CANON.",

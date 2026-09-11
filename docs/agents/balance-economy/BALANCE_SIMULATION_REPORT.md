@@ -15,9 +15,10 @@ python3 balance_contract_validator.py --model BALANCE_MODEL.json
 python3 verify_balance_30m.py --model BALANCE_MODEL.json --simulator balance_simulator.py
 ```
 
-Local candidate evidence used the same files under the temporary names
-`current_balance_model.json`, `current_balance_simulator.py` and
-`current_balance_validator.py` before publication.
+The model keeps the B1 XP threshold formula and drop denominations. The late
+pickup budgets are proposed at `22.0 XP/s` for 20:00–25:00 and `27.0 XP/s` for
+25:00–30:00. Level 40 requires `16,852 XP`; level 38 is the accepted lower
+variance floor, not a forced failure.
 
 ## Independent replay
 
@@ -27,9 +28,9 @@ waves=7 main_bosses=6 mini_bosses=5 elite_variants=10
 single-seed shape_check=PASS, run_count=6
 INDEPENDENT_30M_CHECK=PASS
 run_count=30
-repeat_hash=071ecb2bc1eb23ea389fab4d1ff331c6beb3711284f2e6abeb08d7d3921dbbde
-survived=29
-completed=29
+repeat_hash=c741b3d238fd8df29bc20caf36e89a9522204796e92d00efd0f0fe834ae4174c
+survived=30
+completed=30
 runtime_claim=NOT_IMPLEMENTED
 ```
 
@@ -60,12 +61,12 @@ Heroes: `hero_lin_yue`, `hero_seoyeon_han`.
 
 | Profile / hero | Survived | Completed | Min HP mean | Incoming mean | Peak mean | Cap max / p95 |
 |---|---:|---:|---:|---:|---:|---:|
-| fresh / Lin Yue | 4/5 | 4/5 | 37.080 | 52.920 | 51.800 | 400 / 373.600 |
-| fresh / Soyeon Han | 5/5 | 5/5 | 79.970 | 30.030 | 45.360 | 400 / 382.000 |
-| moderate / Lin Yue | 5/5 | 5/5 | 65.010 | 30.390 | 45.276 | 400 / 382.000 |
-| moderate / Soyeon Han | 5/5 | 5/5 | 94.099 | 22.501 | 37.593 | 400 / 382.000 |
-| max M1 / Lin Yue | 5/5 | 5/5 | 79.524 | 28.476 | 42.840 | 400 / 382.000 |
-| max M1 / Soyeon Han | 5/5 | 5/5 | 105.288 | 26.712 | 43.344 | 400 / 382.000 |
+| fresh / Lin Yue | 5/5 | 5/5 | 39.880 | 50.120 | 45.080 | 400 / 382.000 |
+| fresh / Soyeon Han | 5/5 | 5/5 | 61.770 | 48.230 | 49.280 | 400 / 382.000 |
+| moderate / Lin Yue | 5/5 | 5/5 | 57.739 | 37.661 | 46.099 | 400 / 382.000 |
+| moderate / Soyeon Han | 5/5 | 5/5 | 77.292 | 39.308 | 46.648 | 400 / 382.000 |
+| max M1 / Lin Yue | 5/5 | 5/5 | 86.265 | 21.735 | 34.272 | 400 / 382.000 |
+| max M1 / Soyeon Han | 5/5 | 5/5 | 113.730 | 18.270 | 41.328 | 400 / 382.000 |
 
 ## Boss and reward results
 
@@ -73,8 +74,10 @@ Across the completed seed-101 fresh Lin Yue model run:
 
 - six main bosses and five mini-bosses resolved;
 - visible run clock `1800.0s`, wall clock `2261.5s`;
-- main TTK sequence `70.00 / 64.00 / 60.75 / 95.75 / 88.75 / 82.25s`;
-- mini TTK sequence `46.25 / 41.00 / 38.50 / 36.00 / 32.00s`;
+- main TTK sequence `62.25 / 54.75 / 48.50 / 89.25 / 81.50 / 81.75s`;
+- mini TTK sequence `39.00 / 36.00 / 33.25 / 36.00 / 35.25s`;
+- level sequence `2 / 5 / 9 / 13 / 17 / 30 / 40` at 02:00/05:00/10:00/15:00/20:00/25:00/30:00;
+- distinct synergies `3`: `synergy_heavenly_seals`, `synergy_winter_palace`, `synergy_nine_reflections`;
 - first-clear ledger `1575 Gold / 520 Lunar Seals / 16 Boss Essence`;
 - final boss chest `false`, artifact choice count `3`;
 - wallet, chest, elite offer and first-clear idempotency `PASS`.

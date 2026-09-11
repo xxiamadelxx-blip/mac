@@ -11,15 +11,21 @@ in Python.
 
 | Field | Value |
 |---|---|
-| Parent main read before this slice | `68ac3cc141f889381a458e08f9042d18e2fd3a7a` |
+| Parent main read before this slice | `2fc240722b671edce1fb62e424cd8bbb7beb6cc3` |
 | B1 | `docs/BALANCE_ECONOMY_SPEC.md`, `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687` |
-| Model | `BALANCE_MODEL.json`, version `0.6-content-binding` |
+| Model | `BALANCE_MODEL.json`, version `0.7-xp-40-three-synergies` |
 | Numeric status rule | B1 exact values are `CANON`; formulas from explicit records are `DERIVED`; absent B1 absolute values are `PROPOSED` and never silently promoted |
 | Late-run rule | 20:00–30:00 effective stats are derived from the proposed base records and proposed wave multipliers |
 
 Every numeric record in the JSON has `value`, `source`, `derived_formula`,
 `rationale` and `status`. The tables below are the resolved values for review;
 the JSON remains authoritative for the full provenance text.
+
+## XP target and synergy progression
+
+The B1 XP threshold formula remains canonical. The proposed late pickup budgets are 22.0 XP/s for 20:00–25:00 and 27.0 XP/s for 25:00–30:00. Level 40 requires 16,852 XP; level 38 is an accepted lower variance floor.
+
+To make three distinct 10/10 synergies testable in a 40-level run, the model uses a proposed paired offer: one player level advances one selected weapon and its linked passive. Three pairs consume 30 paired offers; remaining levels continue the build. This is a balance-model rule, not runtime approval.
 
 ## Weapons — 10
 

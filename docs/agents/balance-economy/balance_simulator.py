@@ -149,6 +149,23 @@ def load_model(path: Path) -> Dict[str, Any]:
         raise ValueError("content roster must expose numeric records for all ten elite variants")
     if len(variant_ids) > integer(roster.get("registered_variant_cap", 5)):
         raise ValueError("model variant selection exceeds the registered variant cap")
+    progression = simulation["build_catalog"].get("synergy_progression")
+    if not progression:
+        raise ValueError("build_catalog must expose the data-driven synergy progression contract")
+    target_policy = simulation["target_policy"]
+    if integer(target_policy.get("target_final_level", 0)) < 40:
+        raise ValueError("30-minute XP target must be at least level 40")
+    if integer(target_policy.get("minimum_synergy_claims", 0)) < 3:
+        raise ValueError("30-minute target must require at least three synergy claims")
+    hero_ids = simulation["heroes_and_profiles"]["heroes"].keys()
+    pair_orders = progression.get("pair_order_by_hero", {})
+    for hero_id in hero_ids:
+        path = unwrap(pair_orders.get(hero_id, []))
+        if len(path) < integer(progression["minimum_pairs_for_target"]):
+            raise ValueError(f"{hero_id} synergy path is too short for the target")
+        missing_pairs = [synergy_id for synergy_id in path if synergy_id not in simulation["build_catalog"]["synergies"]]
+        if missing_pairs:
+            raise ValueError(f"{hero_id} synergy path references unknown pairs: {missing_pairs}")
     return model
 
 
@@ -183,6 +200,16 @@ def level_from_xp(total_xp: float, thresholds: List[int]) -> int:
 
 def profile_value(profile: Dict[str, Any], key: str) -> Any:
     return unwrap(profile[key])
+
+
+def synergy_path_for_hero(model: Dict[str, Any], hero_id: str) -> List[str]:
+    progression = model["simulation_model"]["build_catalog"]["synergy_progression"]
+    path = unwrap(progression["pair_order_by_hero"][hero_id])
+    if not isinstance(path, list) or len(path) < 3:
+        raise ValueError(f"synergy path for {hero_id} must expose at least three distinct pairs")
+    if len(path) != len(set(path)):
+        raise ValueError(f"synergy path for {hero_id} contains duplicate pairs")
+    return [str(synergy_id) for synergy_id in path]
 
 
 def run_schedule(model: Dict[str, Any]) -> Dict[str, Any]:
@@ -513,32 +540,63 @@ def calculate_profile_stats(model: Dict[str, Any], profile: Dict[str, Any], hero
 
 
 def apply_level_upgrade(model: Dict[str, Any], state: Dict[str, Any]) -> Dict[str, Any]:
-    # Runtime architecture still carries the legacy 6/5 contract.  Balance
-    # simulation must consume the current C1 10/10 run-progression proposal
-    # from the single numeric model instead of silently reusing that legacy
-    # shape.
     catalog = model["simulation_model"]["build_catalog"]
+    progression = catalog["synergy_progression"]
     weapon_max = integer(catalog["weapon_max_level"])
     passive_max = integer(catalog["passive_max_rank"])
-    if state["weapon_level"] < weapon_max:
-        state["weapon_level"] += 1
-        return {"type": "weapon_level", "level": state["weapon_level"]}
-    if state["passive_rank"] < passive_max:
-        state["passive_rank"] += 1
-        return {"type": "passive_rank", "rank": state["passive_rank"]}
-    return {"type": "no_slot_available", "level": state["level"]}
+    path = state["synergy_path"]
+    pair_index = integer(state["active_pair_index"])
+    pair_id = path[pair_index]
+    pair = state["pair_progress"][pair_id]
+    if pair["weapon_level"] < weapon_max:
+        pair["weapon_level"] += 1
+    if pair["passive_rank"] < passive_max:
+        pair["passive_rank"] += 1
+    pair_complete = pair["weapon_level"] >= weapon_max and pair["passive_rank"] >= passive_max
+    state["weapon_level"] = pair["weapon_level"]
+    state["passive_rank"] = pair["passive_rank"]
+    state["active_pair_id"] = pair_id
+    event = {
+        "type": "paired_weapon_passive_level",
+        "pair_id": pair_id,
+        "weapon_level": pair["weapon_level"],
+        "passive_rank": pair["passive_rank"],
+        "pair_complete": pair_complete,
+        "level": state["level"],
+    }
+    if pair_complete and pair_index + 1 < len(path):
+        state["active_pair_index"] = pair_index + 1
+        state["active_pair_id"] = path[pair_index + 1]
+        next_pair = state["pair_progress"][state["active_pair_id"]]
+        state["weapon_level"] = next_pair["weapon_level"]
+        state["passive_rank"] = next_pair["passive_rank"]
+        event["next_pair_id"] = state["active_pair_id"]
+    return event
 
 
 def damage_components(model: Dict[str, Any], profile: Dict[str, Any], hero_id: str, state: Dict[str, Any]) -> Dict[str, float]:
     catalog = model["simulation_model"]["build_catalog"]
     hero = model["simulation_model"]["heroes_and_profiles"]["heroes"][hero_id]
+    # The paired progression tracks three independent 10/10 eligibility paths;
+    # damage remains anchored to the hero's equipped starter weapon/passive so
+    # moving to the next path does not accidentally reset the build's combat
+    # power to level 1.
     weapon = catalog["weapons"][hero["starting_weapon_id"]]
     passive = catalog["passives"][hero["starting_passive_id"]]
     combat = model["simulation_model"]["combat_math"]
     weapon_level_bonus = number(combat["weapon_level_damage_per_level"])
-    weapon_level_multiplier = 1.0 + weapon_level_bonus * (state["weapon_level"] - 1)
+    pair_progress = state.get("pair_progress", {})
+    completed_weapon_levels = max(
+        [integer(pair["weapon_level"]) for pair in pair_progress.values()]
+        or [integer(state.get("weapon_level", 1))]
+    )
+    completed_passive_ranks = max(
+        [integer(pair["passive_rank"]) for pair in pair_progress.values()]
+        or [integer(state.get("passive_rank", 0))]
+    )
+    weapon_level_multiplier = 1.0 + weapon_level_bonus * (completed_weapon_levels - 1)
     passive_multiplier = 1.0
-    passive_multiplier += number(passive["damage_per_rank"]) * state["passive_rank"]
+    passive_multiplier += number(passive["damage_per_rank"]) * completed_passive_ranks
     crit_expected = 1.0 + number(hero["crit_chance"]) * (number(hero["crit_multiplier"]) - 1.0)
     base_per_target = (
         number(weapon["base_damage"])
@@ -551,10 +609,12 @@ def damage_components(model: Dict[str, Any], profile: Dict[str, Any], hero_id: s
     targets = integer(weapon["targets_per_attack"])
     base_attack_damage = base_per_target * targets
     synergy_damage = 0.0
-    synergy_id = state.get("synergy_id")
-    if synergy_id is not None:
-        synergy = catalog["synergies"][synergy_id]
-        proposed_synergy = base_attack_damage * number(synergy["damage_multiplier"])
+    claimed_synergy_ids = state.get("claimed_synergy_ids", [])
+    if claimed_synergy_ids:
+        proposed_synergy = sum(
+            base_attack_damage * number(catalog["synergies"][synergy_id]["damage_multiplier"])
+            for synergy_id in claimed_synergy_ids
+        )
         share_cap = number(model["simulation_model"]["target_policy"]["synergy_damage_share_max"])
         synergy_damage = min(proposed_synergy, base_attack_damage * share_cap / (1.0 - share_cap))
     return {
@@ -583,22 +643,25 @@ def resolve_chest(
             "time": elapsed,
             "status": "CANON_ARCHITECTURE_NO_BOSS_CHEST",
         }
-    hero = model["simulation_model"]["heroes_and_profiles"]["heroes"][state["hero_id"]]
-    synergy_id = catalog["weapons"][hero["starting_weapon_id"]]["synergy_id"] if "synergy_id" in catalog["weapons"][hero["starting_weapon_id"]] else None
-    if synergy_id is None:
+    path = state.get("synergy_path", [])
+    eligible_synergy_id = None
+    for synergy_id in path:
+        pair = state.get("pair_progress", {}).get(synergy_id, {})
+        synergy = catalog["synergies"].get(synergy_id)
+        if (
+            synergy is not None
+            and integer(pair.get("weapon_level", 0)) >= integer(synergy["requires_weapon_level"])
+            and integer(pair.get("passive_rank", 0)) >= integer(synergy["requires_passive_rank"])
+            and synergy_id not in state.get("claimed_synergy_ids", [])
+        ):
+            eligible_synergy_id = synergy_id
+            break
+    if eligible_synergy_id is None:
         return {"checkpoint_id": checkpoint_id, "outcome": "FALLBACK_REQUIRED", "time": elapsed, "status": "PROPOSED"}
-    synergy = catalog["synergies"].get(synergy_id)
     max_claims = integer(model["simulation_model"]["build_catalog"]["max_synergy_claims_per_run"])
-    eligible = (
-        synergy is not None
-        and state["weapon_level"] >= integer(synergy["requires_weapon_level"])
-        and state["passive_rank"] >= integer(synergy["requires_passive_rank"])
-        and state.get("claimed_synergy_count", 0) < max_claims
-        and synergy_id not in state.get("claimed_synergy_ids", [])
-    )
-    if eligible:
-        state["synergy_id"] = synergy_id
-        state.setdefault("claimed_synergy_ids", []).append(synergy_id)
+    if state.get("claimed_synergy_count", 0) < max_claims:
+        state["synergy_id"] = eligible_synergy_id
+        state.setdefault("claimed_synergy_ids", []).append(eligible_synergy_id)
         state["claimed_synergy_count"] = state.get("claimed_synergy_count", 0) + 1
         outcome = "SYNERGY_GRANTED"
     else:
@@ -610,8 +673,9 @@ def resolve_chest(
         "encounter_kind": encounter_kind,
         "outcome": outcome,
         "time": elapsed,
-        "synergy_id": synergy_id,
+        "synergy_id": eligible_synergy_id,
         "claimed_synergy_count": state.get("claimed_synergy_count", 0),
+        "claimed_synergy_ids": list(state.get("claimed_synergy_ids", [])),
     }
 
 
@@ -875,6 +939,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
     target_policy = simulation["target_policy"]
     combat = simulation["combat_math"]
     profile_stats = calculate_profile_stats(model, profile, hero_id)
+    synergy_path = synergy_path_for_hero(model, hero_id)
     state = {
         "hero_id": hero_id,
         "profile": profile_name,
@@ -883,6 +948,15 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
         "weapon_level": 1,
         "passive_rank": 0,
         "synergy_id": None,
+        "claimed_synergy_ids": [],
+        "claimed_synergy_count": 0,
+        "synergy_path": synergy_path,
+        "active_pair_index": 0,
+        "active_pair_id": synergy_path[0],
+        "pair_progress": {
+            synergy_id: {"weapon_level": 1, "passive_rank": 0}
+            for synergy_id in synergy_path
+        },
         "fallback_damage_bonus": 0.0,
         "pending_xp_drops": [],
         "xp_pickup_budget": 0.0,
@@ -1354,6 +1428,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     combat = simulation["combat_math"]
     profile_stats = calculate_profile_stats(model, profile, hero_id)
     schedule = simulation["run_schedule"]
+    synergy_path = synergy_path_for_hero(model, hero_id)
     main_schedule = sorted(main_checkpoints(model), key=lambda row: number(row["time_seconds"]))
     mini_schedule = sorted(mini_checkpoints(model), key=lambda row: number(row["time_seconds"]))
     state = {
@@ -1366,6 +1441,13 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         "synergy_id": None,
         "claimed_synergy_ids": [],
         "claimed_synergy_count": 0,
+        "synergy_path": synergy_path,
+        "active_pair_index": 0,
+        "active_pair_id": synergy_path[0],
+        "pair_progress": {
+            synergy_id: {"weapon_level": 1, "passive_rank": 0}
+            for synergy_id in synergy_path
+        },
         "fallback_damage_bonus": 0.0,
         "pending_xp_drops": [],
         "xp_pickup_budget": 0.0,
@@ -1467,6 +1549,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         anchor_enemy = weighted_choice(rng, pair_weights)
         matching_variants = [variant_id for variant_id, enemy_id in allowed_pairs if enemy_id == anchor_enemy]
         variant_id = matching_variants[rng.randrange(len(matching_variants))]
+        pack_size = min(pack_size, max(0, integer(band["active_cap"]) - len(active)))
         elite_pack_states[event_id] = {
             "event_id": event_id,
             "source_checkpoint_id": mini_row["checkpoint_id"],
@@ -1476,6 +1559,9 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "defeated": 0,
             "offer_ledger": {},
         }
+        if pack_size == 0:
+            resolve_elite_pack_offer(event_id, run_clock)
+            return
         for member_index in range(pack_size):
             enemy_id = anchor_enemy if member_index == 0 else weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
             entity = make_entity(
@@ -1886,6 +1972,11 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "xp_pending_at_end": sum(drop["value"] for drop in state["pending_xp_drops"]),
             "level_up_times": level_times,
             "upgrade_events": upgrade_events,
+            "synergy_path": list(state["synergy_path"]),
+            "pair_progress_at_30_minutes": {
+                pair_id: dict(pair)
+                for pair_id, pair in state["pair_progress"].items()
+            },
             "xp_formula_status": "CANON_FORMULA_SIMULATED_WITH_PROPOSED_30M_PICKUP_CAPACITY",
         },
         "combat": {
@@ -1899,6 +1990,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "ttk_by_enemy_seconds": {enemy_id: {"median": percentile(values, 0.5), "p95": percentile(values, 0.95), "samples": len(values)} for enemy_id, values in sorted(ttk_by_enemy.items())},
             "boss_results": boss_results,
             "synergy_id": state["synergy_id"],
+            "synergy_ids": list(state["claimed_synergy_ids"]),
             "claimed_synergy_count": state["claimed_synergy_count"],
             "fallback_damage_bonus": round(state["fallback_damage_bonus"], 6),
             "chest_results": chest_results,
@@ -2024,12 +2116,26 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
     expected_duration = number(model["simulation_model"]["main_run_duration_seconds"])
     expected_bosses = len(main_checkpoints(model))
     expected_minibosses = len(mini_checkpoints(model))
+    target_policy = model["simulation_model"]["target_policy"]
+    target_final_level = integer(target_policy["target_final_level"])
+    acceptable_final_level_floor = integer(target_policy["acceptable_final_level_floor"])
+    minimum_synergy_claims = integer(target_policy["minimum_synergy_claims"])
     allowed_variant_ids = set(unwrap(model["simulation_model"]["elite_variation_policy"]["variant_ids"]))
     for run in result["runs"]:
         if run["runtime_boundary"]["godot_runtime_executed"]:
             raise AssertionError("model simulator must not claim Godot runtime execution")
         if run["waves"]["active_cap"]["max_occupancy"] < 0:
             raise AssertionError("negative occupancy")
+        if run["progression"]["final_level_at_30_minutes"] < acceptable_final_level_floor:
+            raise AssertionError(
+                f"30-minute acceptable level floor missed: {run['progression']['final_level_at_30_minutes']} < {acceptable_final_level_floor}"
+            )
+        if run["combat"]["claimed_synergy_count"] < minimum_synergy_claims:
+            raise AssertionError(
+                f"synergy target missed: {run['combat']['claimed_synergy_count']} < {minimum_synergy_claims}"
+            )
+        if len(set(run["combat"].get("synergy_ids", []))) < minimum_synergy_claims:
+            raise AssertionError("synergy target counted duplicate IDs")
         if run["progression"]["levels_at_checkpoints"]["120"] is None and run["risk"]["survived_main_run"]:
             raise AssertionError("surviving run must report the two-minute level")
         for boss in run["combat"]["boss_results"]:
@@ -2074,6 +2180,11 @@ def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
                 raise AssertionError(f"wave ramp has no siege phase for {cycle_id}")
             if abs(samples[-1]["density_factor_of_peak"] - 1.0) > 1e-6:
                 raise AssertionError(f"siege is not at peak density for {cycle_id}")
+    final_levels = [run["progression"]["final_level_at_30_minutes"] for run in result["runs"]]
+    if max(final_levels) < target_final_level:
+        raise AssertionError(f"no model run reached target level {target_final_level}")
+    if statistics.mean(final_levels) < target_final_level:
+        raise AssertionError(f"mean model level is below target {target_final_level}: {statistics.mean(final_levels):.3f}")
 
 
 def main() -> None:

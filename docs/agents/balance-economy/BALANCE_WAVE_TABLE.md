@@ -21,6 +21,14 @@ Each JSON field has source, formula, rationale and status. Overflow attempts are
 discarded rather than queued as spawn debt; ordinary and elite entities count
 toward the selected cap.
 
+XP progression is intentionally a target envelope, not an exact per-run
+contract. The B1 threshold formula and early pickup denominations remain
+unchanged; the proposed late pickup capacities are `22.0 XP/s` for 20:00–25:00
+and `27.0 XP/s` for 25:00–30:00. This produces a 25:00 target of levels 29–31
+and a 30:00 target of level 40, with level 38 accepted as normal variance. The
+paired-offer model makes three distinct 10/10 synergy paths reachable within
+the 40-level target; it does not force every seed to land on exactly level 40.
+
 ## Boss cadence and clock
 
 - Main bosses: 300/600/900/1200/1500/1800 seconds.

@@ -14,6 +14,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import statistics
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -41,8 +42,8 @@ def fail(errors: List[str], condition: bool, message: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     here = Path(__file__).resolve().parent
-    parser.add_argument("--model", type=Path, default=here / "current_balance_model.json")
-    parser.add_argument("--simulator", type=Path, default=here / "current_balance_simulator.py")
+    parser.add_argument("--model", type=Path, default=here / "BALANCE_MODEL.json")
+    parser.add_argument("--simulator", type=Path, default=here / "balance_simulator.py")
     args = parser.parse_args()
 
     first = run_once(args.simulator, args.model)
@@ -52,6 +53,9 @@ def main() -> int:
     schedule = model["simulation_model"]["run_schedule"]
     duration = model["simulation_model"]["main_run_duration_seconds"]["value"]
     max_cap = max(int(row["active_cap"]["value"]) for row in model["wave_bands"])
+    target_final_level = int(model["simulation_model"]["target_policy"]["target_final_level"])
+    acceptable_final_level_floor = int(model["simulation_model"]["target_policy"]["acceptable_final_level_floor"])
+    minimum_synergy_claims = int(model["simulation_model"]["target_policy"]["minimum_synergy_claims"])
     allowed_variant_ids = set(model["simulation_model"]["elite_variation_policy"]["variant_ids"]["value"])
     fail(errors, canonical_hash(first) == canonical_hash(second), "repeat simulation hash differs")
     fail(errors, first.get("run_count") == 30, "expected 30 profile/hero/seed runs")
@@ -71,12 +75,18 @@ def main() -> int:
         fail(errors, run["rewards"]["idempotency_pass"], "wallet reward idempotency failed")
         fail(errors, run["rewards"]["chest_idempotency_pass"], "chest idempotency failed")
         fail(errors, run["rewards"]["elite_pack_offer_idempotency_pass"], "elite offer idempotency failed")
+        fail(errors, run["progression"]["final_level_at_30_minutes"] >= acceptable_final_level_floor, f"{run['profile']}/{run['hero_id']}/{run['seed']} fell below acceptable level floor {acceptable_final_level_floor}")
+        fail(errors, run["combat"]["claimed_synergy_count"] >= minimum_synergy_claims, f"{run['profile']}/{run['hero_id']}/{run['seed']} missed synergy target")
+        fail(errors, len(set(run["combat"].get("synergy_ids", []))) >= minimum_synergy_claims, f"{run['profile']}/{run['hero_id']}/{run['seed']} counted duplicate synergies")
         fail(errors, set(run["combat"].get("elite_variant_ids_used", [])).issubset(allowed_variant_ids), "unregistered elite variant emitted")
         for cycle_id in {sample["cycle_id"] for sample in run["waves"]["boss_wave_ramp"]["samples"]}:
             samples = [sample for sample in run["waves"]["boss_wave_ramp"]["samples"] if sample["cycle_id"] == cycle_id]
             density = [sample["density_factor_of_peak"] for sample in samples]
             fail(errors, all(a <= b for a, b in zip(density, density[1:])), f"non-monotonic density in {cycle_id}")
             fail(errors, samples[-1]["phase"] == "SIEGE" and samples[-1]["density_factor_of_peak"] == 1.0, f"{cycle_id} lacks peak siege")
+    final_levels = [run["progression"]["final_level_at_30_minutes"] for run in first["runs"]]
+    fail(errors, max(final_levels) >= target_final_level, f"no run reached target level {target_final_level}")
+    fail(errors, statistics.mean(final_levels) >= target_final_level, f"mean final level {statistics.mean(final_levels):.3f} is below target {target_final_level}")
     if errors:
         print("INDEPENDENT_30M_CHECK=FAIL")
         for error in errors:

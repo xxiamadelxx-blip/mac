@@ -13,6 +13,15 @@ XP_to_next(L) = round(30 + 12 × (L − 1) + 3 × (L − 1)^1.35)
 Canonical drop vocabulary is `1 / 5 / 15 / 40 / 80 / 250` XP. The mapping of
 new IDs to those drops, late-run pickup capacity and all proposed mini-boss
 values are explicit in the model and remain non-canonical where B1 is silent.
+The 20:00–25:00 and 25:00–30:00 pickup budgets are now `22.0` and `27.0`
+XP/s. This is the requested late-run increase; the canonical XP threshold
+formula and canonical drop denominations were not changed.
+
+Level 40 requires `16,852 XP` under the unchanged B1 formula. Level 40 is the
+target, not a mandatory result for every seed; level 38 is the accepted lower
+model variance floor. Three synergies require three distinct 10/10 pairs, so
+the model uses a proposed paired offer: one player level advances one weapon
+and its linked passive together.
 
 ## Levels at checkpoints
 
@@ -21,12 +30,27 @@ profile row is stable for both heroes in the deterministic seed set.
 
 | Profile | Levels |
 |---|---|
-| fresh | 2 / 5 / 9 / 13 / 17 / 20 / 24 |
-| moderate | 2 / 6 / 10 / 13 / 17 / 21 / 24 |
-| max M1 | 2 / 6 / 10 / 14 / 18 / 22 / 26 |
+| fresh | 2 / 5 / 9 / 13 / 17 / 30 / 40 |
+| moderate | 2 / 6 / 10 / 13 / 17 / 30 / 41 |
+| max M1 | 2 / 6 / 10 / 14 / 18 / 33 / 44 |
 
-The first five-minute anchors come from B1 targets; 25:00/30:00 progression is
-the proposed extension and needs B1/Product promotion.
+The first five-minute anchors come from B1 targets; the 20:00–30:00 values are
+the proposed extension. These are seed-101 model values, not runtime results.
+
+## Synergy results
+
+| Profile | Seed-101 claims | Distinct IDs | Status |
+|---|---:|---:|---|
+| fresh / Lin Yue | 3 | 3 | PASS / MODEL |
+| fresh / Soyeon Han | 3 | 3 | PASS / MODEL |
+| moderate / Lin Yue | 3 | 3 | PASS / MODEL |
+| moderate / Soyeon Han | 3 | 3 | PASS / MODEL |
+| max M1 / Lin Yue | 3 | 3 | PASS / MODEL |
+| max M1 / Soyeon Han | 3 | 3 | PASS / MODEL |
+
+Across the independent five-seed set, every profile/hero run reaches at least
+three distinct synergies; the level target remains a target with an accepted
+variance floor rather than a forced per-run value.
 
 ## Checkpoint reward rows
 
