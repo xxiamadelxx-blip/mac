@@ -1,0 +1,49 @@
+name: R2 Runtime Evidence
+
+on:
+  push:
+    branches:
+      - agent/runtime-r2-registry-7af
+    paths:
+      - "scripts/runtime/**"
+      - "docs/agents/balance-economy/BALANCE_MODEL.json"
+      - ".github/workflows/runtime-r2-evidence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r2-runtime:
+    name: Godot R2 registry trace
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: barichello/godot-ci:4.7.2
+
+    steps:
+      - name: Checkout exact staging branch
+        uses: actions/checkout@v4
+
+      - name: Run R2 trace and preserve exit code
+        shell: bash
+        run: |
+          set +e
+          mkdir -p build/verification
+          godot --headless --path . --script scripts/runtime/r2_runtime_test.gd 2>&1 | tee build/verification/r2-runtime-test.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/r2-runtime-test.exit
+          printf 'R2_EXIT_CODE=%s\n' "${status}"
+          if grep -Eq 'R2_RUNTIME_TEST \\{.*"ok":true' build/verification/r2-runtime-test.log; then
+            printf '%s\n' 'R2 marker: ok=true'
+          else
+            printf '%s\n' 'R2 marker: ok=false-or-missing'
+          fi
+          exit 0
+
+      - name: Upload R2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2-runtime-evidence
+          path: build/verification
