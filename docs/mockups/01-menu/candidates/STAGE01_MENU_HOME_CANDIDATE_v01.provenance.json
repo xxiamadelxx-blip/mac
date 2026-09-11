@@ -36,7 +36,8 @@
   "manifest_consumer": "not promoted; no runtime manifest",
   "open_decisions": [
     "Approve, revise or reject the exact home-menu visual direction",
-    "After approval, open the first 40-PNG Stage 01 batch"
+    "After approval, open the first Stage 01 asset batch; its size is determined by the manifest and available chat/transport budget"
   ],
-  "next_action": "Creative Director reviews the exact GitHub candidate"
+  "next_action": "Creative Director reviews the exact GitHub candidate",
+  "batch_size_policy": "adaptive"
 }

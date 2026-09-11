@@ -73,4 +73,4 @@ Preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./candidates/STAGE01_MENU_HOME_CA
 
 Размер файла проверен как 390×844, PNG, sRGB; GitHub blob SHA: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`. Бинарный commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`. Это единственный текущий GitHub preview-кандидат для approval.
 
-Исторические v02/v04-объекты, ранее заявленные в Supabase, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первый пакет из 40 PNG; до этого batch не запускается.
+Исторические v02/v04-объекты, ранее заявленные в Supabase, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первая партия Stage 01; её размер определяется manifest и доступным лимитом чата/транспорта. До approval batch не запускается.

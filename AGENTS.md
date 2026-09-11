@@ -95,8 +95,8 @@ Technical PASS и artistic approval — разные состояния. Про�
 For `docs/mockups/**`, the Project Owner decision is GitHub-first binary storage. This overrides the generic Supabase transport rule above for mockup candidates and mockup packages only.
 
 - Upload each PNG as a real GitHub blob; Base64 is transport encoding only.
-- Review previews may be uploaded as `USER REVIEW` candidates before a 40-file package is opened.
-- Every subsequent mockup package must contain exactly 40 PNG files and must be verified by exact GitHub paths/blobs before `PLACED`.
+- Review previews may be uploaded as `USER REVIEW` candidates before the asset batch is opened.
+- Batch size is adaptive: if a manifest has few files, upload the whole set; if it is large (for example, heroine movement frames), split it into sequential batches sized to the remaining chat/transport budget. Finish and verify one batch before starting the next. Every batch is verified by exact GitHub paths/blobs before `PLACED`.
 - Runtime assets outside `docs/mockups/**` remain under their existing contract until separately changed.
 
 ## 6. Definition of Done для визуальной работы

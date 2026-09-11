@@ -30,4 +30,4 @@ This candidate proposes the Stage 01 home-screen visual identity: moonlit lotus 
 
 ## Next gate
 
-Explicit Creative Director decision on this exact candidate. If approved, generate and upload the first separate 40-PNG package, then record exact placed and queued/workspace file lists in `docs/mockups/README.md`.
+Explicit Creative Director decision on this exact candidate. If approved, generate and upload the first Stage 01 asset batch. Its size is determined by the manifest and available chat/transport budget; then record exact placed and queued/workspace file lists in `docs/mockups/README.md`.
