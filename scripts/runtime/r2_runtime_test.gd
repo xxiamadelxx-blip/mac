@@ -7,13 +7,16 @@ var blockers: Array[String] = []
 var policy_trace: Array[Dictionary] = []
 var seed_traces: Array[Dictionary] = []
 var content_status: Dictionary = {}
+var boot_diagnostics: Array = []
 
 
 func _init() -> void:
     var registry_coordinator: Variant = RunCoordinatorType.new()
     var boot: Dictionary = registry_coordinator.boot()
+    boot_diagnostics = boot.get("diagnostics", [])
     _check(bool(boot.get("ok", false)), "R2 registry boots from BALANCE_MODEL.json")
     if not bool(boot.get("ok", false)):
+        content_status = registry_coordinator.registry.get_r2_content_status()
         _finish("BLOCKED")
         return
 
@@ -248,6 +251,7 @@ func _finish(status: String) -> void:
         "failures": failures,
         "blockers": blockers,
         "content_status": content_status,
+        "boot_diagnostics": boot_diagnostics,
         "policy_trace": policy_trace,
         "seed_traces": seed_traces
     }
@@ -256,6 +260,7 @@ func _finish(status: String) -> void:
         "ok": result["ok"],
         "status": status,
         "content_version": content_status.get("content_version", ""),
+        "boot_diagnostics": boot_diagnostics,
         "live_registry_join": content_status.get("live_registry_join", {}),
         "policy_trace": policy_trace,
         "seed_traces": seed_traces
