@@ -1,245 +1,71 @@
 # Задание агенту: логическая архитектура первого забега
 
-Статус задания: READY_FOR_AGENT
-Целевой репозиторий: xxiamadelxx-blip/mac
-Рабочая папка: docs/architecture/first-run/
-
 ## 1. Цель
 
-Построить проверяемую логическую архитектуру одного полного 30-минутного забега Moonveil: Eclipse — от запуска игры до экрана итогов и возврата в меню.
-
-Результат должен быть пригоден как контракт для следующего runtime-агента: он должен понимать, какие состояния существуют, кто ими владеет, какие данные переходят между состояниями, какие события происходят, как работает пауза/возврат/смерть/победа, когда начисляются награды и как не допустить их повторного начисления.
-
-Это архитектурная спецификация, а не реализация игровой механики.
+Финализировать архитектурный контракт 30-минутного забега MAC и передать его Runtime, Balance и Content без изменения чужих зон. Этот пакет описывает target architecture; он не объявляет runtime, APK, баланс или visual approval готовыми.
 
 ## 1.1. Актуальная revision brief
 
-Эта revision supersedes старую 20-минутную target-модель только для архитектурного пакета; root-документы и B1 в этой задаче не редактируются.
+| Решение | Канон |
+|---|---|
+| Duration | 1800 секунд |
+| Main bosses | 6 на 300, 600, 900, 1200, 1500, 1800 |
+| Mini bosses | 5 на 450, 750, 1050, 1350, 1650 |
+| Chest windows | 15 typed windows: 10 BOSS_CHEST и 5 ELITE_CHEST |
+| Terminal encounter | boss_black_moon_empress; после settlement победа; chest не создаётся |
+| Clock | MAIN_BOSS freezes visible run/wave/XP/spawn; MINI_BOSS continues; encounter clock advances for both |
+| Registry | 10 ordinary, 10 elite catalog, max 5 active elite, 2 legacy compatibility |
+| Artifact offer | ровно 3 cards, выбрать 1; не pre-run loadout и не weapon/passive slot |
+| Beetle variants | 3 ordinary visual variants; palette плюс читаемая деталь; отдельная reward boundary запрещена |
 
-- Забег имеет target duration 30 минут; финальный босс завершается в конечной точке schedule.
-- Сохраняются четыре существующих main-boss identity; добавляются два main-boss slots. Существующий финальный boss identity остаётся финальным, но переносится на 30:00; новые slot IDs и имена требуют Content Registry sync.
-- Два mini-boss из C3 сохраняются; добавляется третий промежуточный slot. Его target placement — после 20:00 и до 25:00; exact cadence отмечена PENDING_B1/PENDING_PRODUCT_DECISION.
-- Chest architecture допускает до 15 логических chest windows. В target registry 8 окон принадлежат нефинальным main/mini encounters; ещё 7 — резервные non-boss source windows с pending trigger/outcome. Это не создаёт финальный boss chest и не увеличивает max_synergy_claims_per_run.
-- WaveDirector работает циклом post-boss relief → gradual ramp → pre-boss peak; после босса нельзя сразу возвращать максимальную плотность. Exact budgets, caps, multipliers и phase boundaries принадлежат B1 extension.
-- Один enemy_id может иметь несколько data-driven variants. Для enemy_ink_beetle резервируются три варианта; различие должно включать не только цвет, но и читаемую дополнительную деталь/маркер. Варианты не становятся новыми reward sources сами по себе.
-- Добавляются три новые enemy slots без выдумывания имён, чисел и поведения до Content/B1 registry sync.
-
-| Target shape | Count |
-|---|---:|
-| Main bosses | 6 |
-| Intermediate bosses | 3 |
-| Chest windows (cap) | 15 |
-| Existing base enemies | 10 |
-| New enemy slots | 3 |
-| Beetle variants | 3 |
-
+Schedule и IDs берутся из FIRST_RUN_DATA_CONTRACT.json и registry map. Numeric phase budgets остаются PENDING_B1.
 
 ## 2. Обязательная пользовательская цепочка
 
-Опиши целиком следующие участки:
+Опиши boot, menu, character selection, run setup, arena loading, active waves, XP pickup, level-up, upgrade offer, six main and five mini encounters, ten typed boss-chest windows, five reserved elite windows, pause, Android background, restore, death, victory, result, rewards and return to menu.
 
-### Запуск и меню
+## 3. Обязательные архитектурные требования
 
-- включение игры;
-- splash/loading и обработка ошибки загрузки ресурса;
-- главное меню;
-- переходы в настройки и обратно;
-- экран ПЕРСОНАЖИ;
-- выбор персонажа и отображение его стартовых свойств;
-- переход из меню в новый забег;
-- возврат в главное меню с подтверждением, если есть незавершённый забег.
+1. R-01: зафиксировать 1800-second run и terminal schedule.
+2. R-02: зарегистрировать шесть main boss records с exact IDs и checkpoints.
+3. R-03: зарегистрировать пять MINI_BOSS records с exact IDs и checkpoints.
+4. R-04: дать единый ordered encounter schedule без UI branching.
+5. R-05: описать пятнадцать typed chest windows: десять BOSS_CHEST и пять ELITE_CHEST.
+6. R-06: запретить chest у terminal encounter и отделить first-clear artifact offer от result.
+7. R-07: зафиксировать conditional clock policy для MAIN_BOSS и MINI_BOSS.
+8. R-08: описать post-boss relief → ramp → pre-boss peak и pending B1 profiles.
+9. R-09: связать 10 ordinary, 10 elite, max-five active и 2 legacy с registry map.
+10. R-10: описать три beetle visual variants без второй XP/aftermath boundary.
+11. R-11: зафиксировать artifact offer из ровно трёх карт без slot consumption.
+12. R-12: провести сквозной путь от boot до menu.
+13. R-13: описать pause, Android background, resume и recovery.
+14. R-14: описать save/restore, schema version и unknown-content quarantine.
+15. R-15: описать XP, aftermath, reward ledger и duplicate/idempotency rules.
+16. R-16: согласовать state transitions, event catalog и JSON data contract.
+17. R-17: разделить designed, target, implemented и verified; не заявлять Godot/APK evidence.
+18. R-18: закрыть архитектурные проверки и явно передать внешние Balance/Runtime/Visual blockers.
 
-Не закрепляй слово «героини» как системную категорию: канонический нейтральный label — ПЕРСОНАЖИ.
+## 4. Источники истины
 
-### Жизненный цикл забега
+1. Поставленная задача и AGENT_SYNC_STATE.md.
+2. Registry map: docs/agents/architecture/REGISTRY_VARIANT_MAP.json.
+3. B1 и Balance handoff для чисел; B1 read-only.
+4. Content catalog и handoff для IDs; proposals не превращаются в artistic approval.
+5. Runtime handoff и существующий Godot код read-only для seam alignment.
+6. Этот каталог — authoritative architecture contract.
 
-- создание RunSession;
-- выбранный персонаж, seed, elapsed time, текущая стадия и checkpoint;
-- загрузка арены;
-- движение, бой, волны и лимиты активных объектов;
-- накопление бонуса или серии, если это подтверждено каноном; если правило не найдено, зафиксируй это как открытое решение, но предусмотрите для него расширяемое состояние;
-- подбор XP и отдельное накопление останков/следа боя;
-- счётчик убитых противников;
-- смена временных диапазонов, шести основных боссов на 5, 10, 15, 20, 25 и 30 минутах и трёх промежуточных encounter;
-- переход на следующую стадию после победы над боссом;
-- финальная проверка победы после defeat финального босса на 30-й минуте.
+## 5. Жёсткие границы
 
-### Развитие билда
-
-- уровень и XP;
-- остановка/заморозка симуляции на выборе;
-- выбор из трёх предложений, если это следует из GAME_MANIFEST;
-- получение и улучшение оружия;
-- получение и улучшение пассивного умения;
-- заполнение и ограничения слотов;
-- условия максимизации оружия и пассивного умения;
-- проверка доступности синергии;
-- применение синергии/эволюции;
-- защита от повторного применения или повторной выдачи;
-- отображение текущего билда и его эффектов.
-
-### Босс и сундук
-
-- вход в битву с боссом;
-- telegraph и окно реакции как часть контракта, даже если визуальная реализация появится позже;
-- победа над боссом;
-- checkpoint;
-- начисление checkpoint-награды через идемпотентный ledger;
-- появление сундука;
-- проверка условий синергии;
-- выбор синергии, если условия соблюдены;
-- альтернативная награда, если условия не соблюдены;
-- обработка закрытия/повторного открытия/повторного события без дубля награды;
-- переход на следующий этап.
-
-### Информация, пауза и возврат
-
-В архитектуре должна быть определена единая модель состояния, из которой UI может получить:
-
-- HP и состояние персонажа;
-- атаку;
-- критический шанс;
-- критический множитель;
-- скорость;
-- cooldown и прочие активные пассивные характеристики;
-- оружие и уровни оружия;
-- пассивные умения и уровни пассивок;
-- доступные и уже активированные синергии;
-- артефакты;
-- уровень и XP;
-- время и текущую стадию;
-- количество убитых противников;
-- состояние бонуса/серии;
-- текущие награды и уже начисленные checkpoint;
-- диагностическую информацию, если ресурс или сохранение не загрузились.
-
-Опиши:
-
-- pause overlay;
-- продолжение забега;
-- вход в настройки из паузы;
-- возврат к игре после настроек;
-- выход в главное меню с подтверждением и понятным правилом, что происходит с незавершённым забегом;
-- восстановление после background/resume Android;
-- сохранение только там, где это согласуется с каноном, без выдуманного обещания полного mid-run save.
-
-### Смерть, победа и meta
-
-- смерть персонажа;
-- экран окончания забега;
-- частичные награды после поражения;
-- отдельное начисление опыта/эссенции/печати согласно B1;
-- победа после defeat финального босса на 30-й минуте;
-- экран итогов;
-- статистика забега;
-- начисление наград;
-- разблокирование новых возможностей;
-- идемпотентность результата при повторном открытии результата или повторном событии;
-- возврат в меню;
-- повторный запуск нового забега;
-- продолжение игры из меню, если продуктовый контракт это допускает.
-
-## 3. Архитектурные требования
-
-Определи и обоснуй:
-
-1. Source of truth для run state, content data, UI projection, persistence и reward ledger.
-2. Границы модулей и направление зависимостей.
-3. Контракт между меню и забегом.
-4. Контракт между симуляцией, прогрессией, UI и сохранением.
-5. Контракт времени: game clock, pause, background, boss checkpoint и победа.
-6. Контракт волн: временные диапазоны, spawn budget, active cap, boss interruption и восстановление.
-7. Контракт drops: XP, chest, artifact, corpse/aftermath — это разные типы состояния и не должны смешиваться.
-8. Контракт выбора: upgrade offer, weapon/passive, synergy eligibility, fallback reward.
-9. Контракт статистики: какие поля считаются во время забега и какие попадают в результат.
-10. Контракт rewards: deterministic calculation, checkpoint ledger, idempotency key и повторная доставка события.
-11. Контракт локального сохранения, версии snapshot и безопасного восстановления при ошибке.
-12. Диагностируемое поведение при отсутствующем или устаревшем контенте.
-13. Какие части должны быть data-driven и какие invariants нельзя задавать в UI.
-14. Как архитектура позволяет сначала реализовать тонкий вертикальный срез, а потом расширить его до полного M1.
-15. Как schedule registry отделяет main boss, intermediate boss, final boss и chest-window source, не зашивая их в UI.
-16. Как WaveDirector выполняет post-boss relief и повторный ramp к следующему peak без резкого скачка давления.
-17. Как EnemyVariantResolver выбирает варианты детерминированно и сохраняет читаемость, telemetry и reward invariants.
-18. Как расширение до 30 минут мигрирует/блокирует старые 20-минутные snapshots без silent reinterpretation.
-
-Не превращай один controller в владельца всей игры. Если предлагается coordinator, явно раздели его оркестрацию и доменную ответственность.
-
-## 4. Источники истины и порядок доверия
-
-Используй такой порядок:
-
-1. Явные требования этого задания и пользовательский brief.
-2. GAME_MANIFEST.md и AGENT_CONTEXT.md.
-3. docs/BALANCE_ECONOMY_SPEC.md для чисел, формул, XP, волн и rewards.
-4. README.md и ROADMAP.md для заявленного объёма и порядка этапов.
-5. Реальный код и сцены как evidence фактически существующего поведения.
-6. Остальные документы как уточняющий контекст.
-
-Если документы противоречат друг другу:
-
-- не выбирай молча;
-- запиши конфликт в DECISIONS_AND_UNKNOWNS.md;
-- укажи, какой вариант временно принят для архитектуры и почему;
-- не называй временное решение каноном.
-
-Числа, списки, имена синергий, стоимости, длительности, лимиты и условия нельзя выдумывать. Если значения отсутствуют, используй PENDING_B1 или PENDING_PRODUCT_DECISION и укажи, где они должны быть подтверждены.
-
-## 5. Жёсткие границы работы
-
-Разрешено изменять только файлы внутри docs/architecture/first-run/.
-
-Запрещено в рамках этого задания:
-
-- изменять scripts/, scenes/, project.godot или export_presets.cfg;
-- изменять GAME_MANIFEST.md, AGENT_CONTEXT.md, ROADMAP.md, README.md и docs/BALANCE_ECONOMY_SPEC.md;
-- изменять или добавлять visual assets, mockups, sprites, audio или runtime manifests;
-- объявлять игру, APK, M1, Visual Lab или production готовыми;
-- выдавать архитектурный документ за работающую реализацию;
-- скрывать открытые решения за общими словами;
-- создавать технические placeholders без явной пометки.
-
-Если обнаружен блокер за пределами рабочей папки, зафиксируй его и остановись на границе, не исправляя соседний файл.
+Только docs/architecture/first-run/. Не менять runtime, scenes, assets, Balance, Content, Visual Lab или корневые документы. Не делать force-push, rebase, reset, удаление чужой работы. Все внешние статусы отражать честно.
 
 ## 6. Обязательные файлы результата
 
-Создай именно следующие файлы:
-
-- FIRST_RUN_FLOW.md
-- FIRST_RUN_STATE_MACHINE.md
-- FIRST_RUN_ARCHITECTURE.md
-- FIRST_RUN_DATA_CONTRACT.json
-- FIRST_RUN_EVENT_CATALOG.md
-- FIRST_RUN_ACCEPTANCE_MATRIX.md
-
-Содержание каждого файла задано в DELIVERABLES.md.
+FIRST_RUN_FLOW.md, FIRST_RUN_STATE_MACHINE.md, FIRST_RUN_ARCHITECTURE.md, FIRST_RUN_DATA_CONTRACT.json, FIRST_RUN_DATA_CONTRACT.template.json, FIRST_RUN_EVENT_CATALOG.md, FIRST_RUN_ACCEPTANCE_MATRIX.md, DECISIONS_AND_UNKNOWNS.md и ARCHITECTURE_AUDIT.md.
 
 ## 7. Критерии приёмки
 
-Работа считается архитектурно завершённой только если:
-
-- весь путь boot → menu → персонаж → run → waves → upgrades → boss → chest → next stage → victory/defeat → rewards → menu описан без разрыва;
-- состояния и переходы имеют trigger, precondition, owner, result и failure/edge path;
-- данные и события имеют стабильные имена, payload, producer/consumer и правила повторной доставки;
-- XP, chest, artifact и aftermath разделены;
-- reward ledger и idempotency не оставлены на уровне «сделать позже»;
-- пауза, Android background/resume, выход в меню и продолжение разобраны;
-- все значения, которых нет в каноне, помечены как pending;
-- архитектура показывает минимальный первый vertical slice и последующие срезы;
-- acceptance matrix связывает требования с доказательством;
-- FIRST_RUN_DATA_CONTRACT.json валиден как JSON;
-- документы ссылаются на реальные пути и не создают несуществующие зависимости;
-- финальный отчёт использует REPORT_TEMPLATE.md и содержит фактическую проверку.
+Все R-01…R-18 имеют строку в acceptance matrix. Каждая transition row содержит trigger, guard, owner, side effects, failure path, recovery path и duplicate/idempotency. JSON actual/template парсятся. Внутренние ссылки существуют. Scope и whitespace проходят проверку. Pending values имеют owner и next action.
 
 ## 8. Формат финального отчёта агента
 
-В финале укажи:
-
-- статус: VERIFIED / PARTIAL / BLOCKED, не используй DONE без доказательств;
-- точный список изменённых файлов;
-- branch и HEAD;
-- что было прочитано;
-- какие решения приняты;
-- какие решения остались pending;
-- какие проверки выполнены, команда, exit status и результат;
-- что намеренно не сделано;
-- следующий рекомендуемый агентский срез.
+Status, parent HEAD, resulting HEAD, changed files, evidence, blockers и ровно одно следующее действие.

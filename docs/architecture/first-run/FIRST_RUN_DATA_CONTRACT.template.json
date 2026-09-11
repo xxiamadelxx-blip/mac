@@ -1,17 +1,39 @@
 {
-  "schema": "moonveil.first_run.architecture_contract",
-  "version": 2,
-  "status": "TEMPLATE",
-  "runtime_implemented": false,
-  "source_refs": [
-    "../../../GAME_MANIFEST.md",
-    "../../../AGENT_CONTEXT.md",
-    "../../../docs/BALANCE_ECONOMY_SPEC.md",
-    "./AGENT_TASK.md",
-    "../../../docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md"
-  ],
+  "active_artifacts": [],
+  "artifact_offer": {
+    "artifact_offer_id": null,
+    "choice_artifact_ids": [],
+    "choice_count": 3,
+    "refresh_count": 0,
+    "refresh_policy": {
+      "cost_type": null,
+      "cost_value": null,
+      "max_refreshes": null,
+      "reroll_behavior": null,
+      "status": "PENDING_PRODUCT_DECISION"
+    },
+    "selected_artifact_id": null,
+    "source_constraints": {
+      "boss_chest": "SEPARATE_CHEST_OFFER",
+      "elite_pack": "ALLOWED_PENDING_SCHEDULE",
+      "final_boss": "NO_CHEST",
+      "first_clear_reward": "REQUIRED_POST_RESULT"
+    },
+    "source_id": null,
+    "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
+    "status": "OPEN"
+  },
+  "build": {
+    "claimed_synergy_ids": [],
+    "passive_slots": 6,
+    "passives": [],
+    "weapon_slots": 6,
+    "weapons": []
+  },
   "canonical": {
-    "duration_seconds": 1800,
+    "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
+    "artifact_effect_model": "RUN_MODIFIER_EFFECTS_SEPARATE_FROM_PASSIVE_SLOTS",
+    "artifact_offer_choice_count": 3,
     "boss_checkpoint_seconds": [
       300,
       600,
@@ -20,31 +42,39 @@
       1500,
       1800
     ],
-    "weapon_slot_limit": 6,
-    "passive_slot_limit": 6,
-    "artifact_offer_choice_count": 3,
-    "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
-    "artifact_effect_model": "RUN_MODIFIER_EFFECTS_SEPARATE_FROM_PASSIVE_SLOTS",
-    "pending_values": {
-      "duration_extension_wave_and_reward_values": "PENDING_B1",
-      "new_boss_and_enemy_registry_records": "PENDING_CONTENT_REGISTRY",
-      "intermediate_boss_03_cadence": "PENDING_PRODUCT_DECISION",
-      "additional_chest_window_sources_and_outcomes": "PENDING_PRODUCT_DECISION",
-      "enemy_variant_balance_profiles": "PENDING_B1",
-      "enemy_variant_visual_records": "PENDING_VISUAL",
-      "legacy_v1_save_migration": "BLOCKED_EXTERNAL_SYNC"
-    },
     "checkpoint_outcome_policy": {
       "non_final_boss": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
-      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST"
+      "final_boss": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_CHEST"
+    },
+    "chest_window_policy": {
+      "max_openable_windows_per_run": 15,
+      "configured_boss_chest_windows": 10,
+      "reserved_elite_chest_windows": 5,
+      "one_offer_per_window": true,
+      "final_encounter_creates_chest": false,
+      "boss_chest_sources": [
+        "MAIN_BOSS_NON_FINAL",
+        "MINI_BOSS"
+      ],
+      "reserved_source_kind": "ELITE_CHEST",
+      "one_claim_boundary_per_window": true,
+      "synergy_claims_are_separate": true,
+      "artifact_offers_are_not_chest_windows": true,
+      "resolver_refs": [
+        "boss_chest_resolver",
+        "elite_chest_resolver"
+      ],
+      "exact_elite_trigger_cadence": "PENDING_B1"
     },
     "clock_policy": {
       "advances_in": [
         "RUN_ACTIVE",
-        "BOSS_INTRO",
-        "BOSS_ACTIVE"
+        "BOSS_INTRO[encounter_kind=MINI_BOSS]",
+        "BOSS_ACTIVE[encounter_kind=MINI_BOSS]"
       ],
       "freezes_in": [
+        "BOSS_INTRO[encounter_kind=MAIN_BOSS]",
+        "BOSS_ACTIVE[encounter_kind=MAIN_BOSS]",
         "UPGRADE_OFFER",
         "CHEST_OFFER",
         "ARTIFACT_OFFER",
@@ -55,17 +85,60 @@
         "RESULT_REVIEW",
         "REWARD_COMMITTING"
       ],
-      "boss_rule": "Elapsed time continues through BOSS_INTRO and BOSS_ACTIVE for every boss; final boss does not pause the run clock."
+      "encounter_clock_advances_in": [
+        "BOSS_INTRO[encounter_kind=MAIN_BOSS]",
+        "BOSS_ACTIVE[encounter_kind=MAIN_BOSS]",
+        "BOSS_INTRO[encounter_kind=MINI_BOSS]",
+        "BOSS_ACTIVE[encounter_kind=MINI_BOSS]"
+      ],
+      "boss_rule": "MAIN_BOSS freezes visible run clock, wave clock, XP progression and ordinary spawning from intro through settlement; MINI_BOSS keeps those clocks and ordinary spawning advancing. A separate encounter clock advances for both kinds."
+    },
+    "contact_damage_cooldown_seconds": 0.8,
+    "duration_seconds": 1800,
+    "enemy_variant_policy": {
+      "resolver": "EnemyVariantResolver",
+      "registry_map_ref": "../../../docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+      "deterministic_inputs": [
+        "content_version",
+        "run_seed",
+        "wave_cycle_id",
+        "base_enemy_id",
+        "state_revision"
+      ],
+      "ordinary_roster_count": 10,
+      "elite_catalog_count": 10,
+      "runtime_active_elite_limit": 5,
+      "legacy_compatibility_count": 2,
+      "beetle_visual_variant_ids": [
+        "enemy_ink_beetle_variant_01",
+        "enemy_ink_beetle_variant_02",
+        "enemy_ink_beetle_variant_03"
+      ],
+      "visual_rule": "Each ordinary visual variant has a readable detail plus palette marker; color alone is invalid.",
+      "reward_rule": "Variants inherit base XP, drop and aftermath boundary unless B1 explicitly overrides it.",
+      "numeric_overrides": "PENDING_B1",
+      "visual_assets": "PENDING_VISUAL"
     },
     "main_boss_count": 6,
-    "intermediate_boss_count": 3,
-    "total_scheduled_encounters": 9,
     "max_chest_windows_per_run": 15,
-    "configured_non_final_boss_chest_windows": 8,
-    "reserved_additional_chest_windows": 7,
     "max_synergy_claims_per_run": 5,
+    "passive_max_rank": 5,
+    "passive_slot_limit": 6,
+    "pending_values": {
+      "extension_wave_spawn_active_cap_and_reward_values": "PENDING_B1",
+      "elite_variant_balance_profiles_and_cadence": "PENDING_B1",
+      "elite_variant_visual_records": "PENDING_VISUAL",
+      "chest_fallback_reward_values": "PENDING_PRODUCT_DECISION",
+      "defeat_gold_rounding": "PENDING_B1",
+      "artifact_effect_definitions": "PENDING_PRODUCT_DECISION",
+      "artifact_refresh_policy": "PENDING_PRODUCT_DECISION",
+      "artifact_duplicate_and_stacking_policy": "PENDING_PRODUCT_DECISION",
+      "android_recovery_window_and_exit_policy": "PENDING_PRODUCT_DECISION",
+      "legacy_v1_v2_save_migration": "BLOCKED_EXTERNAL_SYNC"
+    },
+    "reserved_additional_chest_windows": 5,
     "schedule_policy": {
-      "status": "TARGET_ARCHITECTURE_WORKING_ASSUMPTION",
+      "status": "VERIFIED_ARCHITECTURE_REGISTRY_RECONCILED",
       "main_boss_target_seconds": [
         300,
         600,
@@ -74,35 +147,36 @@
         1500,
         1800
       ],
-      "intermediate_boss_target_seconds": [
+      "mini_boss_target_seconds": [
         450,
         750,
-        1350
+        1050,
+        1350,
+        1650
       ],
       "final_boss_id": "boss_black_moon_empress",
       "final_boss_target_seconds": 1800,
-      "new_main_boss_slots": [
-        "boss_extension_slot_04",
-        "boss_extension_slot_05"
+      "schedule_ref": "content_registry.encounter_schedule",
+      "main_boss_ids": [
+        "boss_hua_lin",
+        "boss_miyeon",
+        "boss_seika",
+        "boss_tideglass_regent",
+        "boss_omen_paper_archivist",
+        "boss_black_moon_empress"
       ],
-      "new_intermediate_slot": "miniboss_extension_slot_03",
-      "exact_new_content_and_cadence": "PENDING_CONTENT_REGISTRY/PENDING_B1/PENDING_PRODUCT_DECISION"
-    },
-    "chest_window_policy": {
-      "max_openable_windows_per_run": 15,
-      "configured_non_final_boss_windows": 8,
-      "reserved_non_boss_windows": 7,
-      "one_offer_per_window": true,
-      "final_boss_creates_chest": false,
-      "boss_chest_sources": [
-        "MAIN_BOSS_NON_FINAL",
-        "INTERMEDIATE_BOSS"
+      "mini_boss_ids": [
+        "miniboss_ink_jade_warden",
+        "miniboss_veil_harvester",
+        "miniboss_lotus_ritekeeper",
+        "miniboss_bell_rhythm_ascetic",
+        "miniboss_moonroot_ferryman"
       ],
-      "reserved_source_kind": "ADDITIONAL_CHEST_SOURCE",
-      "synergy_claims_are_separate": true,
-      "artifact_offers_are_not_chest_windows": true,
-      "exact_reserved_sources": "PENDING_PRODUCT_DECISION"
+      "cadence_source": "CONTENT_CATALOG_INDEX.json sync_01",
+      "numeric_profiles": "PENDING_B1"
     },
+    "source_for_numbers": "../../../docs/BALANCE_ECONOMY_SPEC.md",
+    "total_scheduled_encounters": 11,
     "wave_policy": {
       "cycle_owner": "WaveCycleDirector",
       "phases": [
@@ -112,34 +186,709 @@
         "PRE_BOSS_PEAK",
         "BOSS_ACTIVE"
       ],
-      "post_boss_rule": "Every non-final main/intermediate encounter enters relief before gradual ramp; no direct jump to peak.",
-      "clock_during_boss": "ADVANCES",
+      "post_boss_rule": "Every non-final encounter enters relief before gradual ramp; no direct jump to peak.",
+      "clock_during_boss": "BY_ENCOUNTER_KIND",
+      "main_boss_wave_behavior": "FREEZE_VISIBLE_WAVE_CLOCK_AND_ORDINARY_SPAWN",
+      "mini_boss_wave_behavior": "CONTINUE_VISIBLE_WAVE_CLOCK_AND_ORDINARY_SPAWN",
       "exact_phase_boundaries": "PENDING_B1",
       "exact_spawn_budget_profiles": "PENDING_B1",
       "exact_active_cap_profiles": "PENDING_B1"
     },
-    "enemy_variant_policy": {
-      "resolver": "EnemyVariantResolver",
-      "deterministic_inputs": [
-        "content_version",
-        "run_seed",
-        "wave_cycle_id",
-        "base_enemy_id",
-        "state_revision"
-      ],
-      "base_enemy_id": "enemy_ink_beetle",
-      "variant_ids": [
-        "enemy_ink_beetle_variant_01",
-        "enemy_ink_beetle_variant_02",
-        "enemy_ink_beetle_variant_03"
-      ],
-      "visual_rule": "Each variant has a readable detail/marker beyond hue; color is not the only signal.",
-      "reward_rule": "Variants inherit base XP/drop/aftermath boundary unless B1 explicitly overrides it.",
-      "numeric_overrides": "PENDING_B1",
-      "visual_assets": "PENDING_VISUAL"
-    }
+    "weapon_max_level": 6,
+    "weapon_slot_limit": 6,
+    "mini_boss_count": 5,
+    "configured_boss_chest_windows": 10,
+    "reserved_elite_chest_windows": 5
+  },
+  "chest_offer": {
+    "checkpoint_id": null,
+    "chest_offer_id": null,
+    "chest_window_id": null,
+    "claimed_outcome": null,
+    "content_version": null,
+    "eligible_synergy_id": null,
+    "evaluator_outcome": "PENDING",
+    "fallback_policy": {
+      "reward_type": null,
+      "reward_value": null,
+      "status": "PENDING_PRODUCT_DECISION"
+    },
+    "final_boss_policy": "NO_CHEST",
+    "idempotency_key": null,
+    "is_final_source": false,
+    "offer_seed": null,
+    "outcome_id": null,
+    "outcome_type": "SYNERGY_OR_EVOLUTION_OR_FALLBACK_OR_PENDING",
+    "run_id": null,
+    "source_id": null,
+    "source_kind": "BOSS_CHEST_OR_ELITE_CHEST",
+    "status": "OPEN"
+  },
+  "content": {
+    "main_bosses": [
+      {
+        "checkpoint_seconds": 300,
+        "chest_window_id": "chest_window_main_01",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_hua_lin",
+        "is_final": false,
+        "name": "Хуа Линь",
+        "status": "EXISTING"
+      },
+      {
+        "checkpoint_seconds": 600,
+        "chest_window_id": "chest_window_main_02",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_miyeon",
+        "is_final": false,
+        "name": "Миён",
+        "status": "EXISTING"
+      },
+      {
+        "checkpoint_seconds": 900,
+        "chest_window_id": "chest_window_main_03",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_seika",
+        "is_final": false,
+        "name": "Сэйка",
+        "status": "EXISTING"
+      },
+      {
+        "checkpoint_seconds": 1200,
+        "chest_window_id": "chest_window_main_04",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_tideglass_regent",
+        "is_final": false,
+        "name": "Регент Чёрного Прилива",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 1500,
+        "chest_window_id": "chest_window_main_05",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_omen_paper_archivist",
+        "is_final": false,
+        "name": "Архивариус Лунных Знаков",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 1800,
+        "chest_window_id": null,
+        "encounter_kind": "MAIN_BOSS",
+        "id": "boss_black_moon_empress",
+        "is_final": true,
+        "name": "Императрица Чёрной Луны",
+        "status": "EXISTING_ID_RETIMED_BY_EXTENSION"
+      }
+    ],
+    "intermediate_bosses": [
+      {
+        "checkpoint_seconds": 450,
+        "chest_window_id": "chest_window_mini_01",
+        "encounter_kind": "MINI_BOSS",
+        "id": "miniboss_ink_jade_warden",
+        "is_final": false,
+        "name": "Чернильный Нефритовый Страж",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 750,
+        "chest_window_id": "chest_window_mini_02",
+        "encounter_kind": "MINI_BOSS",
+        "id": "miniboss_veil_harvester",
+        "is_final": false,
+        "name": "Жнец Завесы",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 1050,
+        "chest_window_id": "chest_window_mini_03",
+        "encounter_kind": "MINI_BOSS",
+        "id": "miniboss_lotus_ritekeeper",
+        "is_final": false,
+        "name": "Хранительница Лотосового Обряда",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 1350,
+        "chest_window_id": "chest_window_mini_04",
+        "encounter_kind": "MINI_BOSS",
+        "id": "miniboss_bell_rhythm_ascetic",
+        "is_final": false,
+        "name": "Колокольный аскет",
+        "status": "CONTENT_PROPOSED"
+      },
+      {
+        "checkpoint_seconds": 1650,
+        "chest_window_id": "chest_window_mini_05",
+        "encounter_kind": "MINI_BOSS",
+        "id": "miniboss_moonroot_ferryman",
+        "is_final": false,
+        "name": "Луннокорневой перевозчик",
+        "status": "CONTENT_PROPOSED"
+      }
+    ],
+    "encounter_schedule": [
+      {
+        "checkpoint_id": "main_boss_checkpoint_01",
+        "checkpoint_seconds": 300,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_hua_lin",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": false,
+        "schedule_index": 1
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_01",
+        "checkpoint_seconds": 450,
+        "clock_policy": "MINI_BOSS_CLOCK_CONTINUES",
+        "encounter_id": "miniboss_ink_jade_warden",
+        "encounter_kind": "MINI_BOSS",
+        "is_final": false,
+        "schedule_index": 2
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_02",
+        "checkpoint_seconds": 600,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_miyeon",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": false,
+        "schedule_index": 3
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_02",
+        "checkpoint_seconds": 750,
+        "clock_policy": "MINI_BOSS_CLOCK_CONTINUES",
+        "encounter_id": "miniboss_veil_harvester",
+        "encounter_kind": "MINI_BOSS",
+        "is_final": false,
+        "schedule_index": 4
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_03",
+        "checkpoint_seconds": 900,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_seika",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": false,
+        "schedule_index": 5
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_03",
+        "checkpoint_seconds": 1050,
+        "clock_policy": "MINI_BOSS_CLOCK_CONTINUES",
+        "encounter_id": "miniboss_lotus_ritekeeper",
+        "encounter_kind": "MINI_BOSS",
+        "is_final": false,
+        "schedule_index": 6
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_04",
+        "checkpoint_seconds": 1200,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_tideglass_regent",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": false,
+        "schedule_index": 7
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_04",
+        "checkpoint_seconds": 1350,
+        "clock_policy": "MINI_BOSS_CLOCK_CONTINUES",
+        "encounter_id": "miniboss_bell_rhythm_ascetic",
+        "encounter_kind": "MINI_BOSS",
+        "is_final": false,
+        "schedule_index": 8
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_05",
+        "checkpoint_seconds": 1500,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_omen_paper_archivist",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": false,
+        "schedule_index": 9
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_05",
+        "checkpoint_seconds": 1650,
+        "clock_policy": "MINI_BOSS_CLOCK_CONTINUES",
+        "encounter_id": "miniboss_moonroot_ferryman",
+        "encounter_kind": "MINI_BOSS",
+        "is_final": false,
+        "schedule_index": 10
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_06",
+        "checkpoint_seconds": 1800,
+        "clock_policy": "MAIN_BOSS_FREEZES_VISIBLE_CLOCK",
+        "encounter_id": "boss_black_moon_empress",
+        "encounter_kind": "MAIN_BOSS",
+        "is_final": true,
+        "schedule_index": 11
+      }
+    ],
+    "ordinary_enemies": [
+      {
+        "id": "enemy_ink_beetle",
+        "name": "Чернильный жук",
+        "paired_elite_variant_id": "elite_variant_ink_beetle_ironcarapace",
+        "registry_class": "ORDINARY_BASE",
+        "role": "rusher",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_lantern_moth",
+        "name": "Фонарная моль",
+        "paired_elite_variant_id": "elite_variant_lantern_moth_prismwing",
+        "registry_class": "ORDINARY_BASE",
+        "role": "ranged_projectile",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_bone_carp",
+        "name": "Костяной карп",
+        "paired_elite_variant_id": "elite_variant_bone_carp_tidepiercer",
+        "registry_class": "ORDINARY_BASE",
+        "role": "line_dash",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_paper_ghost",
+        "name": "Бумажный призрак",
+        "paired_elite_variant_id": "elite_variant_paper_ghost_sealbreaker",
+        "registry_class": "ORDINARY_BASE",
+        "role": "teleport_contact",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_jade_toad",
+        "name": "Нефритовая жаба",
+        "paired_elite_variant_id": "elite_variant_jade_toad_mudcrown",
+        "registry_class": "ORDINARY_BASE",
+        "role": "jump_zone",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_mirror_fox",
+        "name": "Зеркальная лиса",
+        "paired_elite_variant_id": "elite_variant_mirror_fox_falsepath",
+        "registry_class": "ORDINARY_BASE",
+        "role": "decoy_flank",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_bell_crab",
+        "name": "Колокольный краб",
+        "paired_elite_variant_id": "elite_variant_bell_crab_resonant_shell",
+        "registry_class": "ORDINARY_BASE",
+        "role": "front_guard",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_thread_doll",
+        "name": "Нитяная кукла",
+        "paired_elite_variant_id": "elite_variant_thread_doll_cutline",
+        "registry_class": "ORDINARY_BASE",
+        "role": "slow_beam",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_SPECIFIED"
+      },
+      {
+        "id": "enemy_lotus_usher",
+        "name": "Лотосовый зазыватель",
+        "paired_elite_variant_id": "elite_variant_lotus_usher_bloomguard",
+        "registry_class": "ORDINARY_BASE",
+        "role": "support_tether",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_PROPOSED"
+      },
+      {
+        "id": "enemy_moonroot_burrower",
+        "name": "Луннокорневой землерой",
+        "paired_elite_variant_id": "elite_variant_moonroot_burrower_gravewake",
+        "registry_class": "ORDINARY_BASE",
+        "role": "ambush_route_shaper",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "EXISTING_CONTENT_PROPOSED"
+      }
+    ],
+    "legacy_enemy_records": [
+      {
+        "id": "enemy_stone_oni",
+        "name": "Каменный они",
+        "registry_class": "LEGACY_COMPATIBILITY_ONLY",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "COMPATIBILITY_ONLY"
+      },
+      {
+        "id": "enemy_eclipse_serpent",
+        "name": "Змей затмения",
+        "registry_class": "LEGACY_COMPATIBILITY_ONLY",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "COMPATIBILITY_ONLY"
+      }
+    ],
+    "elite_variants": [
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_ink_beetle",
+        "name": "Железнопанцирный чернильный жук",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_ink_beetle_ironcarapace",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_lantern_moth",
+        "name": "Призмокрылая фонарная моль",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_lantern_moth_prismwing",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_bone_carp",
+        "name": "Приливный костяной карп",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_bone_carp_tidepiercer",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_paper_ghost",
+        "name": "Призрак-разрушитель печатей",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_paper_ghost_sealbreaker",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_jade_toad",
+        "name": "Жабий грязевой венец",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_jade_toad_mudcrown",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_mirror_fox",
+        "name": "Лиса ложного пути",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_mirror_fox_falsepath",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_bell_crab",
+        "name": "Краб резонансного панциря",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_bell_crab_resonant_shell",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_thread_doll",
+        "name": "Кукла режущей нити",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_thread_doll_cutline",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_lotus_usher",
+        "name": "Цветковый страж лотосового зазывателя",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_lotus_usher_bloomguard",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_moonroot_burrower",
+        "name": "Землерой могильного следа",
+        "registry_class": "ELITE_VARIANT_CATALOG",
+        "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+        "source_registry_ref": "docs/agents/architecture/REGISTRY_VARIANT_MAP.json",
+        "status": "PROPOSED",
+        "variant_id": "elite_variant_moonroot_burrower_gravewake",
+        "visual_record_ref": "PENDING_VISUAL"
+      }
+    ],
+    "enemy_variants": [
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_ink_beetle",
+        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
+        "status": "TARGET_ARCHITECTURE",
+        "variant_class": "ORDINARY_VISUAL_VARIANT",
+        "variant_id": "enemy_ink_beetle_variant_01",
+        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_ink_beetle",
+        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
+        "status": "TARGET_ARCHITECTURE",
+        "variant_class": "ORDINARY_VISUAL_VARIANT",
+        "variant_id": "enemy_ink_beetle_variant_02",
+        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
+        "visual_record_ref": "PENDING_VISUAL"
+      },
+      {
+        "balance_profile_ref": "PENDING_B1",
+        "base_enemy_id": "enemy_ink_beetle",
+        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
+        "status": "TARGET_ARCHITECTURE",
+        "variant_class": "ORDINARY_VISUAL_VARIANT",
+        "variant_id": "enemy_ink_beetle_variant_03",
+        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
+        "visual_record_ref": "PENDING_VISUAL"
+      }
+    ],
+    "wave_bands": "FROM_B1_OR_PENDING_B1_EXTENSION",
+    "chest_windows": [
+      {
+        "checkpoint_id": "main_boss_checkpoint_01",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "chest_window_main_01",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 1,
+        "source_id": "boss_hua_lin",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_02",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "chest_window_main_02",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 2,
+        "source_id": "boss_miyeon",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_03",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "chest_window_main_03",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 3,
+        "source_id": "boss_seika",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_04",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "chest_window_main_04",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 4,
+        "source_id": "boss_tideglass_regent",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "main_boss_checkpoint_05",
+        "encounter_kind": "MAIN_BOSS",
+        "id": "chest_window_main_05",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 5,
+        "source_id": "boss_omen_paper_archivist",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_01",
+        "encounter_kind": "MINI_BOSS",
+        "id": "chest_window_mini_01",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 6,
+        "source_id": "miniboss_ink_jade_warden",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_02",
+        "encounter_kind": "MINI_BOSS",
+        "id": "chest_window_mini_02",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 7,
+        "source_id": "miniboss_veil_harvester",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_03",
+        "encounter_kind": "MINI_BOSS",
+        "id": "chest_window_mini_03",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 8,
+        "source_id": "miniboss_lotus_ritekeeper",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_04",
+        "encounter_kind": "MINI_BOSS",
+        "id": "chest_window_mini_04",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 9,
+        "source_id": "miniboss_bell_rhythm_ascetic",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": "mini_boss_checkpoint_05",
+        "encounter_kind": "MINI_BOSS",
+        "id": "chest_window_mini_05",
+        "is_final": false,
+        "outcome_policy_ref": "boss_chest_resolver",
+        "sequence": 10,
+        "source_id": "miniboss_moonroot_ferryman",
+        "source_kind": "BOSS_CHEST",
+        "status": "CONFIGURED"
+      },
+      {
+        "checkpoint_id": null,
+        "encounter_kind": "ELITE_VARIANT",
+        "id": "chest_window_elite_01",
+        "is_final": false,
+        "outcome_policy_ref": "elite_chest_resolver",
+        "sequence": 11,
+        "source_id": null,
+        "source_kind": "ELITE_CHEST",
+        "source_registry_ref": "enemy_registry.runtime_active_registry",
+        "status": "RESERVED_PENDING_B1",
+        "trigger_ref": "elite_variant_selected.v1"
+      },
+      {
+        "checkpoint_id": null,
+        "encounter_kind": "ELITE_VARIANT",
+        "id": "chest_window_elite_02",
+        "is_final": false,
+        "outcome_policy_ref": "elite_chest_resolver",
+        "sequence": 12,
+        "source_id": null,
+        "source_kind": "ELITE_CHEST",
+        "source_registry_ref": "enemy_registry.runtime_active_registry",
+        "status": "RESERVED_PENDING_B1",
+        "trigger_ref": "elite_variant_selected.v1"
+      },
+      {
+        "checkpoint_id": null,
+        "encounter_kind": "ELITE_VARIANT",
+        "id": "chest_window_elite_03",
+        "is_final": false,
+        "outcome_policy_ref": "elite_chest_resolver",
+        "sequence": 13,
+        "source_id": null,
+        "source_kind": "ELITE_CHEST",
+        "source_registry_ref": "enemy_registry.runtime_active_registry",
+        "status": "RESERVED_PENDING_B1",
+        "trigger_ref": "elite_variant_selected.v1"
+      },
+      {
+        "checkpoint_id": null,
+        "encounter_kind": "ELITE_VARIANT",
+        "id": "chest_window_elite_04",
+        "is_final": false,
+        "outcome_policy_ref": "elite_chest_resolver",
+        "sequence": 14,
+        "source_id": null,
+        "source_kind": "ELITE_CHEST",
+        "source_registry_ref": "enemy_registry.runtime_active_registry",
+        "status": "RESERVED_PENDING_B1",
+        "trigger_ref": "elite_variant_selected.v1"
+      },
+      {
+        "checkpoint_id": null,
+        "encounter_kind": "ELITE_VARIANT",
+        "id": "chest_window_elite_05",
+        "is_final": false,
+        "outcome_policy_ref": "elite_chest_resolver",
+        "sequence": 15,
+        "source_id": null,
+        "source_kind": "ELITE_CHEST",
+        "source_registry_ref": "enemy_registry.runtime_active_registry",
+        "status": "RESERVED_PENDING_B1",
+        "trigger_ref": "elite_variant_selected.v1"
+      }
+    ]
+  },
+  "drops": {
+    "aftermath_items": [],
+    "artifact_offer_refs": [],
+    "xp_items": []
+  },
+  "event_envelope": {
+    "correlation_id": null,
+    "event_id": null,
+    "event_kind": "COMMAND_OR_DOMAIN_EVENT_OR_UI_PROJECTION",
+    "event_name": null,
+    "event_version": 1,
+    "extension_fields": [
+      "encounter_kind",
+      "schedule_index",
+      "wave_cycle_id",
+      "wave_phase_id",
+      "base_enemy_id",
+      "variant_id",
+      "chest_window_id",
+      "source_kind"
+    ],
+    "idempotency_key": null,
+    "occurred_at": null,
+    "payload": {},
+    "run_id": null,
+    "state_revision": null
   },
   "id_policy": {
+    "content_version_required": true,
     "stable_scopes": [
       "run_id",
       "hero_id",
@@ -162,594 +911,204 @@
       "variant_id",
       "encounter_schedule_id"
     ],
-    "content_version_required": true,
     "unknown_ids": "Quarantine optional records; block authoritative run restore."
   },
-  "run": {
-    "run_id": null,
-    "content_version": null,
-    "seed": null,
-    "selected_hero_id": null,
-    "state": "RUN_LOADING",
-    "elapsed_seconds": 0,
-    "active_wave_band_id": "wave_cycle_01",
-    "active_stage_id": null,
-    "active_boss_encounter_id": null,
-    "state_revision": 0,
-    "schema_version": 2,
-    "current_wave_cycle_id": "wave_cycle_01",
-    "current_wave_phase_id": "OPENING",
-    "scheduled_encounter_cursor": 0,
-    "encounter_kind": null,
-    "chest_windows_opened": [],
-    "chest_windows_claimed": [],
-    "synergy_claimed_count": 0
-  },
-  "content": {
-    "artifact_effects": {
+  "invariants": [
+    "UI never owns authoritative run state.",
+    "RunSession is the source of truth for an active run.",
+    "Content Registry is immutable and versioned during a run.",
+    "XP drops and aftermath items are separate entity types.",
+    "MAIN_BOSS freezes visible run clock, wave clock, XP progression and ordinary spawning from intro through settlement.",
+    "MINI_BOSS keeps visible run clock, wave clock, XP progression and ordinary spawning advancing; the separate encounter clock advances for both kinds.",
+    "Final victory requires authoritative defeat of boss_black_moon_empress at the terminal schedule slot.",
+    "The terminal encounter creates no chest; first-clear artifact offer is a separate post-result boundary.",
+    "Every non-final main or mini encounter has one typed BOSS_CHEST window; five additional typed ELITE_CHEST windows remain reserved for Balance cadence.",
+    "Every artifact offer contains exactly three candidates and one chosen candidate becomes one active run effect.",
+    "Active artifacts do not consume weapon or passive slots and have no fixed run capacity.",
+    "Variants inherit the base XP, drop and aftermath boundary unless B1 explicitly overrides it.",
+    "The three beetle records require a non-color marker and do not create a second XP or aftermath boundary.",
+    "The ordinary registry has ten records; the elite catalog has ten records; at most five elite records enter the run projection; two legacy records are compatibility-only.",
+    "Rewards are committed atomically with the corresponding wallet or unlock revision.",
+    "Unknown numeric values remain pending until confirmed by B1.",
+    "Unknown product rules remain pending until confirmed by the product owner.",
+    "Missing resource errors produce diagnostics, never a blank screen.",
+    "Non-final chest, artifact and terminal result effects are idempotent.",
+    "Legacy snapshots cannot be silently reinterpreted as the v3 30-minute run.",
+    "Every non-final encounter enters post-boss relief before the next wave ramp.",
+    "Content and events carry registry IDs, encounter kind and state revision so replay cannot duplicate XP or aftermath."
+  ],
+  "open_questions": [
+    {
+      "id": "U-01",
       "status": "PENDING_PRODUCT_DECISION",
-      "effect_types": [
-        "AURA",
-        "DERIVED_STAT",
-        "TARGET_MODIFIER",
-        "WEAPON_MODIFIER",
-        "TRIGGERED_EFFECT",
-        "COOLDOWN_MODIFIER"
-      ],
-      "definitions": []
+      "field": "stats.bonus_state",
+      "owner": "Product",
+      "next_action": "Approve optional bonus semantics before result slice."
     },
-    "main_bosses": [
-      {
-        "id": "boss_hua_lin",
-        "name": "Хуа Линь",
-        "checkpoint_seconds": 300,
-        "is_final": false,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "EXISTING"
-      },
-      {
-        "id": "boss_miyeon",
-        "name": "Миён",
-        "checkpoint_seconds": 600,
-        "is_final": false,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "EXISTING"
-      },
-      {
-        "id": "boss_seika",
-        "name": "Сэйка",
-        "checkpoint_seconds": 900,
-        "is_final": false,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "EXISTING"
-      },
-      {
-        "id": "boss_extension_slot_04",
-        "name": null,
-        "checkpoint_seconds": 1200,
-        "is_final": false,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "PENDING_CONTENT_REGISTRY",
-        "source": "user extension brief"
-      },
-      {
-        "id": "boss_extension_slot_05",
-        "name": null,
-        "checkpoint_seconds": 1500,
-        "is_final": false,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "PENDING_CONTENT_REGISTRY",
-        "source": "user extension brief"
-      },
-      {
-        "id": "boss_black_moon_empress",
-        "name": "Императрица Чёрной Луны",
-        "checkpoint_seconds": 1800,
-        "is_final": true,
-        "encounter_kind": "MAIN_BOSS",
-        "status": "EXISTING_ID_RETIMED_BY_EXTENSION"
-      }
-    ],
-    "intermediate_bosses": [
-      {
-        "id": "miniboss_ink_jade_warden",
-        "name": "Чернильный Нефритовый Страж",
-        "checkpoint_seconds": 450,
-        "is_final": false,
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "chest_window_id": "chest_window_intermediate_01",
-        "status": "C3_TARGET"
-      },
-      {
-        "id": "miniboss_veil_harvester",
-        "name": "Жнец Завесы",
-        "checkpoint_seconds": 750,
-        "is_final": false,
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "chest_window_id": "chest_window_intermediate_02",
-        "status": "C3_TARGET"
-      },
-      {
-        "id": "miniboss_extension_slot_03",
-        "name": null,
-        "checkpoint_seconds": 1350,
-        "is_final": false,
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "chest_window_id": "chest_window_intermediate_03",
-        "status": "PENDING_CONTENT_REGISTRY",
-        "cadence_status": "PENDING_PRODUCT_DECISION"
-      }
-    ],
-    "wave_bands": [
-      {
-        "id": "wave_cycle_01",
-        "cycle_index": 1,
-        "starts_after": "RUN_START",
-        "ends_at": "main_boss_checkpoint_01",
-        "phase_sequence": [
-          "OPENING",
-          "PRE_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      },
-      {
-        "id": "wave_cycle_02",
-        "cycle_index": 2,
-        "starts_after": "main_boss_checkpoint_01",
-        "ends_at": "main_boss_checkpoint_02",
-        "phase_sequence": [
-          "POST_BOSS_RELIEF",
-          "POST_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      },
-      {
-        "id": "wave_cycle_03",
-        "cycle_index": 3,
-        "starts_after": "main_boss_checkpoint_02",
-        "ends_at": "main_boss_checkpoint_03",
-        "phase_sequence": [
-          "POST_BOSS_RELIEF",
-          "POST_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      },
-      {
-        "id": "wave_cycle_04",
-        "cycle_index": 4,
-        "starts_after": "main_boss_checkpoint_03",
-        "ends_at": "main_boss_checkpoint_04",
-        "phase_sequence": [
-          "POST_BOSS_RELIEF",
-          "POST_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      },
-      {
-        "id": "wave_cycle_05",
-        "cycle_index": 5,
-        "starts_after": "main_boss_checkpoint_04",
-        "ends_at": "main_boss_checkpoint_05",
-        "phase_sequence": [
-          "POST_BOSS_RELIEF",
-          "POST_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      },
-      {
-        "id": "wave_cycle_06",
-        "cycle_index": 6,
-        "starts_after": "main_boss_checkpoint_05",
-        "ends_at": "main_boss_checkpoint_06",
-        "phase_sequence": [
-          "POST_BOSS_RELIEF",
-          "POST_BOSS_RAMP",
-          "PRE_BOSS_PEAK"
-        ],
-        "spawn_budget_profile_ref": "PENDING_B1_EXTENSION",
-        "active_cap_profile_ref": "PENDING_B1_EXTENSION",
-        "allowed_roster_ref": "CONTENT_REGISTRY_BY_PHASE",
-        "allowed_variants_ref": "content_registry.enemy_variants",
-        "status": "TARGET_ARCHITECTURE",
-        "source": "../../../docs/BALANCE_ECONOMY_SPEC.md (extension sync required)"
-      }
-    ],
-    "enemy_extension_slots": [
-      {
-        "slot_id": "enemy_extension_slot_11",
-        "selected_enemy_id": null,
-        "status": "PENDING_CONTENT_REGISTRY",
-        "source": "user extension brief",
-        "candidate_pool_ref": "C3 future enemy proposals"
-      },
-      {
-        "slot_id": "enemy_extension_slot_12",
-        "selected_enemy_id": null,
-        "status": "PENDING_CONTENT_REGISTRY",
-        "source": "user extension brief",
-        "candidate_pool_ref": "C3 future enemy proposals"
-      },
-      {
-        "slot_id": "enemy_extension_slot_13",
-        "selected_enemy_id": null,
-        "status": "PENDING_CONTENT_REGISTRY",
-        "source": "user extension brief",
-        "candidate_pool_ref": "C3 future enemy proposals"
-      }
-    ],
-    "enemy_variants": [
-      {
-        "variant_id": "enemy_ink_beetle_variant_01",
-        "base_enemy_id": "enemy_ink_beetle",
-        "balance_profile_ref": "PENDING_B1",
-        "visual_record_ref": "PENDING_VISUAL",
-        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
-        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
-        "status": "TARGET_ARCHITECTURE"
-      },
-      {
-        "variant_id": "enemy_ink_beetle_variant_02",
-        "base_enemy_id": "enemy_ink_beetle",
-        "balance_profile_ref": "PENDING_B1",
-        "visual_record_ref": "PENDING_VISUAL",
-        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
-        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
-        "status": "TARGET_ARCHITECTURE"
-      },
-      {
-        "variant_id": "enemy_ink_beetle_variant_03",
-        "base_enemy_id": "enemy_ink_beetle",
-        "balance_profile_ref": "PENDING_B1",
-        "visual_record_ref": "PENDING_VISUAL",
-        "visual_marker_policy": "detail_plus_palette; color_only_is_invalid",
-        "inheritance": "BASE_ENEMY_UNLESS_EXPLICIT_OVERRIDE",
-        "status": "TARGET_ARCHITECTURE"
-      }
-    ],
-    "chest_windows": [
-      {
-        "id": "chest_window_main_01",
-        "sequence": 1,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "MAIN_BOSS",
-        "source_id": "boss_hua_lin",
-        "checkpoint_id": "main_boss_checkpoint_01",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_main_02",
-        "sequence": 2,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "MAIN_BOSS",
-        "source_id": "boss_miyeon",
-        "checkpoint_id": "main_boss_checkpoint_02",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_main_03",
-        "sequence": 3,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "MAIN_BOSS",
-        "source_id": "boss_seika",
-        "checkpoint_id": "main_boss_checkpoint_03",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_main_04",
-        "sequence": 4,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "MAIN_BOSS",
-        "source_id": "boss_extension_slot_04",
-        "checkpoint_id": "main_boss_checkpoint_04",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_main_05",
-        "sequence": 5,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "MAIN_BOSS",
-        "source_id": "boss_extension_slot_05",
-        "checkpoint_id": "main_boss_checkpoint_05",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_intermediate_01",
-        "sequence": 6,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "source_id": "miniboss_ink_jade_warden",
-        "checkpoint_id": "intermediate_boss_checkpoint_01",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_intermediate_02",
-        "sequence": 7,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "source_id": "miniboss_veil_harvester",
-        "checkpoint_id": "intermediate_boss_checkpoint_02",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_intermediate_03",
-        "sequence": 8,
-        "source_kind": "BOSS_CHEST",
-        "encounter_kind": "INTERMEDIATE_BOSS",
-        "source_id": "miniboss_extension_slot_03",
-        "checkpoint_id": "intermediate_boss_checkpoint_03",
-        "is_final": false,
-        "status": "CONFIGURED",
-        "outcome_policy_ref": "chest_resolver"
-      },
-      {
-        "id": "chest_window_additional_01",
-        "sequence": 9,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_02",
-        "sequence": 10,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_03",
-        "sequence": 11,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_04",
-        "sequence": 12,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_05",
-        "sequence": 13,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_06",
-        "sequence": 14,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      },
-      {
-        "id": "chest_window_additional_07",
-        "sequence": 15,
-        "source_kind": "ADDITIONAL_CHEST_SOURCE",
-        "encounter_kind": null,
-        "source_id": null,
-        "checkpoint_id": null,
-        "is_final": false,
-        "status": "RESERVED_PENDING",
-        "trigger_ref": "PENDING_PRODUCT_DECISION",
-        "outcome_policy_ref": "PENDING_PRODUCT_DECISION"
-      }
-    ]
-  },
-  "build": {
-    "weapon_slots": 6,
-    "passive_slots": 6,
-    "weapons": [],
-    "passives": [],
-    "claimed_synergy_ids": []
-  },
-  "active_artifacts": [],
-  "artifact_offer": {
-    "artifact_offer_id": null,
-    "source_kind": "ELITE_PACK_OR_FIRST_CLEAR_REWARD",
-    "source_id": null,
-    "status": "OPEN",
-    "choice_count": 3,
-    "choice_artifact_ids": [],
-    "selected_artifact_id": null,
-    "refresh_count": 0,
-    "refresh_policy": {
+    {
+      "id": "U-04",
       "status": "PENDING_PRODUCT_DECISION",
-      "cost_type": null,
-      "cost_value": null,
-      "max_refreshes": null,
-      "reroll_behavior": null
+      "field": "chest_offer.fallback_policy",
+      "owner": "Product",
+      "next_action": "Publish fallback table."
     },
-    "source_constraints": {
-      "elite_pack": "ALLOWED_PENDING_SCHEDULE",
-      "first_clear_reward": "REQUIRED_POST_RESULT",
-      "boss_chest": "SEPARATE_CHEST_OFFER",
-      "final_boss": "NO_CHEST"
+    {
+      "id": "U-06",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "save_snapshot.restore_policy",
+      "owner": "Product + Runtime",
+      "next_action": "Approve recovery window and abandon behavior."
+    },
+    {
+      "id": "U-08",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "HUD/result optional fields",
+      "owner": "Product",
+      "next_action": "Publish presentation matrix."
+    },
+    {
+      "id": "U-11",
+      "status": "PENDING_B1",
+      "field": "defeat_gold_rounding",
+      "owner": "Balance",
+      "next_action": "Add rule to B1."
+    },
+    {
+      "id": "U-12",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.refresh_policy",
+      "owner": "Product",
+      "next_action": "Approve cost, currency and refresh limit."
+    },
+    {
+      "id": "U-13",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "artifact_offer.duplicate_and_stacking_policy",
+      "owner": "Product",
+      "next_action": "Approve stacking behavior."
+    },
+    {
+      "id": "U-14",
+      "status": "PENDING_B1",
+      "field": "elite_variant_schedule_and_composition",
+      "owner": "Balance",
+      "next_action": "Bind catalog variants to phases and cadence."
+    },
+    {
+      "id": "U-15",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "content_registry.artifact_effects",
+      "owner": "Product",
+      "next_action": "Approve effect definitions."
+    },
+    {
+      "id": "U-17",
+      "status": "PENDING_B1",
+      "field": "wave_policy.extension_profiles",
+      "owner": "Balance",
+      "next_action": "Publish 30-minute numeric profiles."
+    },
+    {
+      "id": "U-18",
+      "status": "PENDING_VISUAL",
+      "field": "enemy_variant_visual_records",
+      "owner": "Visual Lab",
+      "next_action": "Approve palette plus detail markers."
+    },
+    {
+      "id": "U-19",
+      "status": "PENDING_PRODUCT_DECISION",
+      "field": "elite_chest_outcome_and_cadence",
+      "owner": "Product + Balance",
+      "next_action": "Publish typed ELITE_CHEST resolver."
+    },
+    {
+      "id": "U-20",
+      "status": "BLOCKED_EXTERNAL_SYNC",
+      "field": "schema_migration.runtime_adapter",
+      "owner": "Runtime + Product",
+      "next_action": "Implement adapter and evidence."
+    },
+    {
+      "id": "U-21",
+      "status": "BLOCKED_EXTERNAL_SYNC",
+      "field": "Godot runtime evidence",
+      "owner": "Runtime",
+      "next_action": "Publish successful stdout and exit-code evidence."
     }
-  },
-  "stats": {
-    "hp_current": null,
-    "hp_max": null,
-    "attack": null,
-    "critical_chance": null,
-    "critical_multiplier": null,
-    "movement_speed": null,
-    "cooldown": null,
-    "armor": null,
-    "xp_current": 0,
-    "level": 1,
-    "kills": 0
-  },
-  "drops": {
-    "xp_items": [],
-    "aftermath_items": [],
-    "artifact_offer_refs": []
-  },
+  ],
   "reward_ledger": {
     "committed_idempotency_keys": [],
     "result_claimed": false
   },
+  "run": {
+    "active_boss_encounter_id": null,
+    "active_stage_id": null,
+    "active_wave_band_id": "wave_cycle_01",
+    "chest_windows_claimed": [],
+    "chest_windows_opened": [],
+    "content_version": null,
+    "current_wave_cycle_id": "wave_cycle_01",
+    "current_wave_phase_id": "OPENING",
+    "elapsed_seconds": 0,
+    "encounter_kind": null,
+    "run_id": null,
+    "scheduled_encounter_cursor": 0,
+    "schema_version": 3,
+    "seed": null,
+    "selected_hero_id": null,
+    "state": "RUN_LOADING",
+    "state_revision": 0,
+    "synergy_claimed_count": 0
+  },
+  "runtime_implemented": false,
   "save_snapshot": {
-    "pending_offers": {
-      "upgrade": null,
-      "artifact": null,
-      "chest": null
-    },
     "active_artifact_instances": [],
+    "pending_offers": {
+      "artifact": null,
+      "chest": null,
+      "upgrade": null
+    },
     "schema_version": 2
   },
-  "event_envelope": {
-    "event_id": null,
-    "event_name": null,
-    "event_version": 1,
-    "event_kind": "COMMAND_OR_DOMAIN_EVENT_OR_UI_PROJECTION",
-    "occurred_at": null,
-    "run_id": null,
-    "state_revision": null,
-    "correlation_id": null,
-    "idempotency_key": null,
-    "payload": {},
-    "extension_fields": [
-      "encounter_kind",
-      "schedule_index",
-      "wave_cycle_id",
-      "wave_phase_id",
-      "base_enemy_id",
-      "variant_id",
-      "chest_window_id",
-      "source_kind"
-    ]
-  },
-  "invariants": [
-    "Every artifact offer has exactly three candidates and one selection.",
-    "Active artifacts have no fixed capacity and do not consume weapon/passive slots.",
-    "Boss chest is a separate non-final synergy/evolution/fallback offer.",
-    "Final boss never creates a boss chest; first-clear artifact offer is post-result and separate.",
-    "Artifact effects are typed run modifiers separate from ordinary passive slot modifiers.",
-    "Clock advances during BOSS_INTRO and BOSS_ACTIVE for every boss and freezes at offer, pause, settlement and terminal/transaction boundaries.",
-    "Target duration is 1800 seconds with six main and three intermediate encounter slots.",
-    "Chest window cap is 15; final boss creates no chest; synergy cap is separate.",
-    "Every non-final encounter enters relief before ramp.",
-    "Enemy variants preserve base reward boundaries and require a non-color marker.",
-    "Legacy v1 snapshots are not silently restored into v2."
-  ],
-  "open_questions": [
-    "artifact_refresh_policy",
-    "artifact_duplicate_and_stacking_policy",
-    "elite_pack_schedule_and_composition",
-    "artifact_effect_definitions",
-    "duration_extension_wave_and_reward_values",
-    "new_boss_and_enemy_registry_records",
-    "additional_chest_window_sources_and_outcomes",
-    "enemy_variant_balance_profiles",
-    "legacy_v1_save_migration"
-  ],
+  "schema": "moonveil.first_run.architecture_contract",
   "schema_migration": {
     "from_versions": [
-      1
+      1,
+      2
     ],
-    "current_version": 2,
+    "current_version": 3,
     "legacy_v1_policy": "BLOCK_RESTORE_PENDING_EXPLICIT_MIGRATION",
-    "reason": "v1 describes a 20-minute final slot at 1200 seconds; v2 retimes the target final slot to 1800 seconds and adds schedule/chest/variant records.",
+    "legacy_v2_policy": "READ_ONLY_UNTIL_V3_ADAPTER",
+    "changes": [
+      "30-minute schedule is authoritative with six main and five mini encounter records.",
+      "The current encounter collection contains five MINI_BOSS records.",
+      "Chest windows are typed as ten BOSS_CHEST and five ELITE_CHEST records.",
+      "Clock policy is conditional by encounter_kind.",
+      "Registry map binds ten ordinary records, ten elite catalog records, five active elite slots and two compatibility records."
+    ],
     "silent_reinterpretation": false
   },
-  "chest_offer": {
-    "chest_offer_id": null,
-    "run_id": null,
-    "chest_window_id": null,
-    "source_kind": "BOSS_CHEST_OR_ADDITIONAL_CHEST_SOURCE",
-    "source_id": null,
-    "checkpoint_id": null,
-    "content_version": null,
-    "offer_seed": null,
-    "status": "OPEN",
-    "outcome_type": "SYNERGY_OR_EVOLUTION_OR_FALLBACK_OR_PENDING",
-    "evaluator_outcome": "PENDING",
-    "eligible_synergy_id": null,
-    "outcome_id": null,
-    "fallback_policy": {
-      "status": "PENDING_PRODUCT_DECISION",
-      "reward_type": null,
-      "reward_value": null
-    },
-    "claimed_outcome": null,
-    "is_final_source": false,
-    "final_boss_policy": "NO_CHEST",
-    "idempotency_key": null
-  }
+  "source_refs": [
+    "../../../GAME_MANIFEST.md",
+    "../../../AGENT_CONTEXT.md",
+    "../../../docs/BALANCE_ECONOMY_SPEC.md",
+    "./AGENT_TASK.md",
+    "../../../docs/agents/content-design/C3_MINI_BOSSES_AND_CHEST_FLOW.md"
+  ],
+  "stats": {
+    "armor": null,
+    "attack": null,
+    "cooldown": null,
+    "critical_chance": null,
+    "critical_multiplier": null,
+    "hp_current": null,
+    "hp_max": null,
+    "kills": 0,
+    "level": 1,
+    "movement_speed": null,
+    "xp_current": 0
+  },
+  "status": "TEMPLATE",
+  "version": 3
 }
