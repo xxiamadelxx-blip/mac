@@ -49,23 +49,28 @@ The following runtime/CI commits are part of the live main history: 4109881 (reg
 
 ## 5. Fresh R2 evidence
 
-Run: https://github.com/xxiamadelxx-blip/mac/actions/runs/34594035965
+The fresh trace was executed from an evidence branch created from live `main` HEAD `105b5ca75bda73fd61ddca52c169a14e193e32ae`. The evidence branch changed only the R2 workflow branch filter so GitHub Actions could start a push-triggered run; the runtime code, architecture contract, registry map and published `BALANCE_MODEL.json` were inherited unchanged from `main`.
 
-- Run number: 10
-- Run HEAD: 560ced8b23013449f70d240567617fd7e6833956
-- Job: 103245570551 — Godot R2 registry and policy acceptance
-- Workflow conclusion: success
-- godot-import.exit: 0
-- r2-runtime-test.exit: 0
-- R2_RUNTIME_TEST marker: ok=true, status=TESTED
-- R2_RUNTIME_TRACE marker: ok=true, status=TESTED
-- Artifact: https://github.com/xxiamadelxx-blip/mac/actions/runs/34594035965/artifacts/10260183512
-- Artifact ID: 10260183512
-- Artifact digest: sha256:926f5915b1b08c4a87d3d89663290bf334efbe51742977dbd409ec38c0301872
+- Source baseline: `main` `105b5ca75bda73fd61ddca52c169a14e193e32ae`
+- Published balance blob: `docs/agents/balance-economy/BALANCE_MODEL.json` SHA `5732a34c0eaa27b7d429b75b0343e1015daa0cb0`
+- Evidence branch: `agent/runtime-r2-fresh-105b5ca`
+- Evidence HEAD: `c8471f7532052aa00cb2fbbfcde18b9092398c0a`
+- Run: https://github.com/xxiamadelxx-blip/mac/actions/runs/34645155164
+- Run number: 12
+- Job: `103414041567` — Godot R2 registry and policy acceptance
+- Runner image: `barichello/godot-ci:4.7.2`
+- Godot: `4.7.2.stable.official.ed1daf0bf`
+- Workflow/job conclusion: success
+- Artifact: https://github.com/xxiamadelxx-blip/mac/actions/runs/34645155164/artifacts/10281057852
+- Artifact ID/digest: `10281057852` / `sha256:fc040fad282e8de0e9b1897a2f2468eb12def310e6492b8dbb860cc9f87ccf6b`
+- Artifact exit evidence: `godot-import.exit=0`; `r2-runtime-test.exit=0`
+- Stdout markers: `R2_RUNTIME_TEST {"ok":true,...,"status":"TESTED"}`; `R2_RUNTIME_TRACE {"ok":true,...,"status":"TESTED"}`
+- Joined registry: `READY`; model status remains `PARTIAL` as a balance-governance status, not a runtime failure
+- 30-minute envelope: `target_duration_seconds=1800.0`; `wave_coverage_end_seconds=1800.0`
+- Joined counts: 6 main bosses, 5 mini-bosses, 10 elite catalog records, 5 active elite limit, 15 chest windows
+- Policy assertions: `main_boss_freezes=true`, `mini_boss_continues=true`, final main boss has no chest, all five mini-boss paths produce `MINI_BOSS_CHEST`, seed 505 selects 5 from the 10-record elite catalog
 
-The trace reports live_registry_join.status=READY with counts main_bosses=6, mini_bosses=5, ordinary=10, elite=10, legacy=2, chest_windows=15, boss_chest_windows=10 and elite_chest_windows=5. It reports main_boss_freezes=true and mini_boss_continues=true. The final boss trace has boss_chest=false and duplicate-safe settlement; all five mini-boss IDs execute the continuing-clock chest path. Seed 505 produces a deterministic five-record elite projection from the ten-record catalog.
-
-The runner also prints environment warnings about fontconfig/ADB availability; they do not affect the two zero exit codes or the successful R2 markers.
+The log contains only environment warnings for missing fontconfig/ADB support; it contains no Godot/GDScript parse or script errors. The exact stdout and exit files are retained in the artifact above.
 
 ## 6. Verification and status separation
 
