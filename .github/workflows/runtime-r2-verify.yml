@@ -1,0 +1,69 @@
+name: R2 Runtime Verification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/runtime/**"
+      - "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json"
+      - "docs/agents/architecture/REGISTRY_VARIANT_MAP.json"
+      - "docs/agents/balance-economy/BALANCE_MODEL.json"
+      - "project.godot"
+      - ".github/workflows/runtime-r2-verify.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  r2-runtime:
+    name: Godot R2 registry and policy acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: barichello/godot-ci:4.7.2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run R2 checks
+        shell: bash
+        run: |
+          set +e -u -o pipefail
+          mkdir -p build/verification
+          failed=0
+
+          godot --headless --path . --editor --quit             2>&1 | tee build/verification/godot-import.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/godot-import.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+
+          godot --headless --path . --script scripts/runtime/r2_runtime_test.gd             2>&1 | tee build/verification/r2-runtime-test.log
+          status=${PIPESTATUS[0]}
+          printf '%s\n' "${status}" > build/verification/r2-runtime-test.exit
+          if [ "${status}" -ne 0 ]; then
+            failed=1
+          fi
+          if ! grep -Eq 'R2_RUNTIME_TEST {.*"ok":true' build/verification/r2-runtime-test.log; then
+            echo "Required R2_RUNTIME_TEST success marker was not found."
+            failed=1
+          fi
+          if ! grep -Eq 'R2_RUNTIME_TRACE {.*"ok":true' build/verification/r2-runtime-test.log; then
+            echo "Required R2_RUNTIME_TRACE success marker was not found."
+            failed=1
+          fi
+
+          if [ "${failed}" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Upload R2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r2-runtime-evidence
+          path: build/verification
