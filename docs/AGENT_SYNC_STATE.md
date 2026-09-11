@@ -2,14 +2,14 @@
 
 > **Operational router, not a release/approval claim.** Read this file from the current `main` before any work. Re-check `main` immediately before writing.
 
-- Snapshot HEAD: `105b5ca75bda73fd61ddca52c169a14e193e32ae`
-- Snapshot tree: `baa870ec5e7d809731cdd275ce255edd3df300fe`
+- Snapshot HEAD: `ac6686265874a037b1b64cf87962201e94652b1b`
+- Snapshot tree: `81168354b2ea59b6e83f1f8da948b370352592d7`
 - Snapshot date: 2026-09-11 UTC
 - Repository: `xxiamadelxx-blip/mac`, branch `main`
 
 ## 0. Anti-context-loss rule
 
-One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are committed as individual PNG files in GitHub; each agent run places one bounded batch of at most 40 files and the evidence manifest carries metadata only.
+One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are committed as individual PNG files in GitHub; each agent run places exactly 40 files when 40 or more remain, or the complete final remainder when fewer than 40 remain, and the evidence manifest carries metadata only.
 
 Before work: read this file; claim one task ID; record the parent SHA; edit only the assigned paths; report exact evidence and one next action.
 
@@ -28,7 +28,7 @@ Before work: read this file; claim one task ID; record the parent SHA; edit only
 | Runtime registry | Targets 1800s, 6 main, 5 mini; current JSON shape does not expose consumable `mini_bosses` or `elite_variants` arrays | **R2/R3 BLOCKED** |
 | CI/Godot | No current R2/R3 or Android proof; recent evidence is incomplete/failing | **NO RELEASE EVIDENCE** |
 
-Tree entries at snapshot: 346.
+Tree entries at snapshot: 232.
 
 ## 2. Active locks for continuation
 
