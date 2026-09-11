@@ -2,8 +2,8 @@
 
 > **Operational router, not a release/approval claim.** Read this file from the current `main` before any work. Re-check `main` immediately before writing.
 
-- Snapshot HEAD: `ac6686265874a037b1b64cf87962201e94652b1b`
-- Snapshot tree: `81168354b2ea59b6e83f1f8da948b370352592d7`
+- Snapshot HEAD: `ac01b613a61b9699899f611f5e26a7e9715c5339`
+- Snapshot tree: `064925e7f28ce89f8e2008f97e1bcc2564b598c4`
 - Snapshot date: 2026-09-11 UTC
 - Repository: `xxiamadelxx-blip/mac`, branch `main`
 
