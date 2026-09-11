@@ -10,7 +10,7 @@ var content_status: Dictionary = {}
 
 func _init() -> void:
     var coordinator: Variant = RunCoordinatorType.new()
-    var boot := coordinator.boot()
+    var boot: Dictionary = coordinator.boot()
     _check(bool(boot.get("ok", false)), "R2 registry boots")
     if not bool(boot.get("ok", false)):
         _finish("BLOCKED")
@@ -70,7 +70,7 @@ func _test_main_boss_freeze_and_duplicate(coordinator: Variant) -> void:
     _check(bool(started.get("ok", false)), "Main boss starts from registry content")
     if not bool(started.get("ok", false)):
         return
-    var run_before := coordinator.clock.run_seconds
+    var run_before: float = float(coordinator.clock.run_seconds)
     coordinator.advance(2.0)
     _check(is_equal_approx(coordinator.clock.run_seconds, run_before), "Main boss freezes run clock")
     _check(is_equal_approx(coordinator.clock.encounter_seconds, 2.0), "Main boss advances encounter clock")
