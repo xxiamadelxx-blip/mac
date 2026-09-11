@@ -69,3 +69,11 @@ Detailed dependency matrix, conflict review, open decisions and acceptance evide
 ## 6. Next owner
 
 Architecture/Project Owner resolves C5-P1-01…05. After that, Balance, Runtime and Visual Lab consume the handoff in the order stated above. New content ideas after C5 require a separate proposal and do not reopen this completed documentation slice.
+
+## Обновлённая граница передачи
+
+Родительский main: ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Контент передаёт 10/10/10/10, 5 мини-боссов, 2 main-boss proposals, 7 drops, 6 ветвей и 17 узлов.
+
+Потребителям передаются stable IDs, роли, теги, зависимости, точки появления, условия допуска и границы наград. Пассивка действует глобально; weapon binding используется только в синергии.
+
+Открытые внешние пункты: consumer cap 10/10, два артефакта и typed effects, numeric promotion, runtime/Godot proof, visual approval. Новых ID в этой сверке не добавлено.

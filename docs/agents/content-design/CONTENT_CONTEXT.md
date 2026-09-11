@@ -188,3 +188,11 @@ Boss design не должен писать собственные reward numbers
 - RETIRED — контент снят без удаления истории.
 
 Нельзя объявлять PRODUCTION или PLAYABLE только по документу Content Agent.
+
+## Актуальная граница состава
+
+Сверка от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29: активный набор обычных противников — 10 записей из архитектурной карты; enemy_stone_oni и enemy_eclipse_serpent сохранены только для совместимости; enemy_silver_reed_seer и enemy_moontrail_stalker остаются будущими.
+
+Пять мини-боссов и два расширения главных боссов имеют зависимости от C3, FIRST_RUN_DATA_CONTRACT, BALANCE_MODEL и runtime handoff. Зависимость не означает approval.
+
+Статус: CONTENT_SCOPE_CLOSED; runtime, balance и visual gates остаются у владельцев.

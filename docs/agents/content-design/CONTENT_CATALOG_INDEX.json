@@ -3,7 +3,7 @@
   "version": 1,
   "status": "CONTENT_SPECIFIED",
   "repository": "xxiamadelxx-blip/mac",
-  "source_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
+  "source_head": "ec30c239aa22aa1d9c8ad1faab25d99633f4cb29",
   "source_refs": [
     "docs/agents/content-design/C0_CONTENT_AUDIT.md",
     "docs/agents/content-design/C1_WEAPONS_PASSIVES_SYNERGIES.md",
@@ -20,12 +20,13 @@
     "docs/agents/core-gameplay-runtime/R3_RUNTIME_HANDOFF.md",
     "docs/agents/balance-economy/BALANCE_MODEL.json",
     "docs/agents/balance-economy/BALANCE_WAVE_TABLE.md",
-    "docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md"
+    "docs/agents/balance-economy/BALANCE_ACCEPTANCE_MATRIX.md",
+    "docs/agents/content-design/CONTENT_AUDIT_AND_BLOCKER_CLOSURE.md"
   ],
   "sync_01": {
     "task_id": "SYNC-01",
     "scope": "CONTENT_ONLY",
-    "parent_head": "601c6b57137e4e9807e3b8fbb419b106916fb06f",
+    "parent_head": "ec30c239aa22aa1d9c8ad1faab25d99633f4cb29",
     "status": "PROPOSED",
     "record_count": 5,
     "pending_records": [
@@ -42,7 +43,7 @@
           "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
           "docs/agents/balance-economy/BALANCE_MODEL.json"
         ],
-        "registry_status": "PENDING_ARCHITECTURE",
+        "registry_status": "PENDING_RUNTIME_AND_BALANCE",
         "status": "PROPOSED"
       },
       {
@@ -58,7 +59,7 @@
           "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
           "docs/agents/balance-economy/BALANCE_MODEL.json"
         ],
-        "registry_status": "PENDING_ARCHITECTURE",
+        "registry_status": "PENDING_RUNTIME_AND_BALANCE",
         "status": "PROPOSED"
       },
       {
@@ -73,7 +74,7 @@
           "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
           "docs/agents/balance-economy/BALANCE_MODEL.json"
         ],
-        "registry_status": "PENDING_ARCHITECTURE",
+        "registry_status": "PENDING_RUNTIME_AND_BALANCE",
         "status": "PROPOSED"
       },
       {
@@ -88,7 +89,7 @@
           "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
           "docs/agents/balance-economy/BALANCE_MODEL.json"
         ],
-        "registry_status": "PENDING_ARCHITECTURE",
+        "registry_status": "PENDING_RUNTIME_AND_BALANCE",
         "status": "PROPOSED"
       },
       {
@@ -103,7 +104,7 @@
           "docs/agents/core-gameplay-runtime/RUNTIME_CONTEXT.md",
           "docs/agents/balance-economy/BALANCE_MODEL.json"
         ],
-        "registry_status": "PENDING_ARCHITECTURE",
+        "registry_status": "PENDING_RUNTIME_AND_BALANCE",
         "status": "PROPOSED"
       }
     ],
@@ -214,7 +215,7 @@
     ],
     "final_boss_chest": "FORBIDDEN",
     "cross_system_target": {
-      "status": "RECONCILIATION_REQUIRED",
+      "status": "CONTENT_SCOPE_CLOSED_EXTERNAL_RECONCILIATION_PENDING",
       "envelope_target_seconds": 1800,
       "main_boss_checkpoints_seconds": [
         300,
@@ -227,17 +228,17 @@
       "final_boss_id": "boss_black_moon_empress",
       "final_boss_chest": "FORBIDDEN",
       "max_chest_windows_per_run": 15,
-      "configured_non_final_boss_chest_windows": 8,
-      "reserved_additional_chest_windows": 7,
+      "configured_non_final_boss_chest_windows": 10,
+      "reserved_additional_chest_windows": 5,
       "max_synergy_claims_per_run": 5,
-      "main_boss_clock": "FREEZE_PER_RUNTIME_ACCEPTANCE_PENDING_DATA_CONTRACT_RECONCILIATION",
-      "mini_boss_clock": "ADVANCES_PER_RUNTIME_ACCEPTANCE",
+      "main_boss_clock": "FREEZE_PER_ARCHITECTURE_CONTRACT",
+      "mini_boss_clock": "ADVANCES_PER_ARCHITECTURE_CONTRACT",
       "mini_boss_count": {
         "c3_named_content": 5,
-        "data_contract_records": 3,
+        "data_contract_records": 5,
         "runtime_acceptance_target": 5,
-        "b1_registry_records": 0,
-        "status": "CANONICAL_CONTENT_TARGET_5_REGISTRY_SYNC_PENDING",
+        "b1_registry_records": 5,
+        "status": "STRUCTURAL_ROSTER_RECONCILED_RUNTIME_PROOF_PENDING",
         "content_ids": [
           "miniboss_ink_jade_warden",
           "miniboss_veil_harvester",
@@ -245,7 +246,7 @@
           "miniboss_bell_rhythm_ascetic",
           "miniboss_moonroot_ferryman"
         ],
-        "approved_additional_ids": [
+        "proposed_additional_ids": [
           "miniboss_lotus_ritekeeper",
           "miniboss_bell_rhythm_ascetic",
           "miniboss_moonroot_ferryman"
@@ -307,8 +308,8 @@
           1350,
           1650
         ],
-        "content_status": "CONTENT_SPECIFIED",
-        "external_sync_status": "ARCHITECTURE_RUNTIME_REGISTRY_PENDING"
+        "content_status": "CONTENT_SCOPE_CLOSED",
+        "external_sync_status": "RUNTIME_PROOF_AND_BALANCE_PROMOTION_PENDING"
       }
     },
     "main_boss_extension_ids": [
@@ -360,7 +361,14 @@
       },
       "final_boss_chest": "FORBIDDEN"
     },
-    "run_duration_seconds": 1800
+    "run_duration_seconds": 1800,
+    "synergy_gate": {
+      "weapon_level_required": 10,
+      "passive_rank_required": 10,
+      "requires_both_maxed": true,
+      "max_claims_per_run": 5,
+      "applies_to": "ALL_WEAPON_PASSIVE_PAIRS"
+    }
   },
   "arena_drops": {
     "ids": [
@@ -426,12 +434,12 @@
     "applies": "NEXT_RUN"
   },
   "statuses": {
-    "content": "CONTENT_SPECIFIED",
+    "content": "CONTENT_SCOPE_CLOSED",
     "balance": "BALANCE_PENDING",
     "visual": "VISUAL_BRIEF_READY",
     "runtime": "RUNTIME_HANDOFF_READY",
     "artistic": "PENDING",
-    "cross_system": "HANDOFF_READY_WITH_OPEN_RECONCILIATIONS"
+    "cross_system": "CONTENT_SCOPE_CLOSED_WITH_OPEN_RECONCILIATIONS"
   },
   "registry_sync_pending": [
     "artifact_tideglass",
@@ -488,22 +496,22 @@
       "miniboss_bell_rhythm_ascetic",
       "miniboss_moonroot_ferryman"
     ],
-    "status": "CONTENT_SPECIFIED",
-    "registry_sync": "PENDING_ARCHITECTURE",
+    "status": "CONTENT_SCOPE_CLOSED_EXTERNAL_RECONCILIATION_PENDING",
+    "registry_sync": "PENDING_RUNTIME_BALANCE",
     "not_part_of_run_1_registry": true,
     "no_existing_first_run_replacement": true,
     "roster_reconciliation": {
-      "status": "CONTENT_TARGET_5_REGISTRY_SYNC_PENDING",
+      "status": "CONTENT_TARGET_5_RUNTIME_PROOF_PENDING",
       "c3_named_mini_boss_count": 5,
       "data_contract_intermediate_boss_count": 3,
       "runtime_acceptance_mini_boss_count": 5,
       "b1_registry_records": 0,
-      "approved_additional_ids": [
+      "do_not_create_speculative_ids": true,
+      "proposed_additional_ids": [
         "miniboss_lotus_ritekeeper",
         "miniboss_bell_rhythm_ascetic",
         "miniboss_moonroot_ferryman"
-      ],
-      "do_not_create_speculative_ids": true
+      ]
     },
     "main_boss_extension_ids": [
       "boss_tideglass_regent",
@@ -512,8 +520,8 @@
   },
   "c5_cross_system_handoff": {
     "stage": "C5",
-    "status": "HANDOFF_READY_WITH_OPEN_RECONCILIATIONS",
-    "baseline_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
+    "status": "CONTENT_SCOPE_CLOSED_WITH_OPEN_RECONCILIATIONS",
+    "baseline_head": "ec30c239aa22aa1d9c8ad1faab25d99633f4cb29",
     "document": "docs/agents/content-design/C5_CROSS_SYSTEM_HANDOFF.md",
     "scope": [
       "catalog_index",
@@ -538,38 +546,34 @@
     },
     "architecture_snapshot": {
       "artifact_registry_records": 8,
-      "main_boss_records": 6,
-      "intermediate_boss_records": 3,
+      "main_boss_records": 0,
+      "intermediate_boss_records": 5,
       "chest_window_records": 15,
       "typed_arena_drop_session_records": false,
       "artifact_effect_definitions": 0,
-      "content_mini_boss_records": 3,
-      "content_main_boss_extension_records": 0
+      "content_mini_boss_records": 5,
+      "content_main_boss_extension_records": 2
     },
-    "b1_runtime_registry_boundary": "20_MINUTE_FOUR_MAIN_ZERO_MINI_PER_R3_HANDOFF",
+    "b1_runtime_registry_boundary": "30_MINUTE_MODEL_WITH_RUNTIME_PROOF_PENDING",
     "evidence_source_shas": {
-      "architecture_data_contract": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+      "architecture_data_contract": "e9a50971f61f204cbbda39edaad2c48a08e2228b",
+      "architecture_variant_map": "0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8",
       "runtime_context": "37e48475c7f6ca265d25c7a1a0104cf0c80eb091",
       "runtime_acceptance": "cee3aacfa5c6417cf1a770961aa1ee128731bdf1",
-      "runtime_r3_handoff": "8ccec29fc17c5519b3a0f1c0ac019c519ca6b1c9",
-      "balance_model": "d39f8dc420e0802088aac42fd1e4285a429479a6",
-      "balance_wave_table": "dbe65eac66e5e84011453cea1566540dc553c4fb",
-      "balance_acceptance": "2cb937cbd4e1de7668de4f75791193da6e785803",
-      "game_manifest": "1d6d6fdc463b9d74cec64ba00bae0f12dd668e5a",
-      "previous_content_index": "668b832da11150a868e4882638010ecdaa18f3cd"
+      "runtime_r3_handoff": "bebfb80fedffcf14ed86a4a43aafb7b4c1ca1529",
+      "balance_model": "5732a34c0eaa27b7d429b75b0343e1015daa0cb0",
+      "balance_wave_table": "8483cf006d5cb6a47d5fe5b9a5de1787d22dd70c",
+      "balance_acceptance": "5d2af6480cb610cc841b45f89b5323024fe106a1",
+      "game_manifest": "bfa60abf96ab7f3911693c75f12d4cdbb76ecfd2"
     },
     "open_findings": [
-      "C5-P1-01",
-      "C5-P1-02",
-      "C5-P1-03",
-      "C5-P1-04",
-      "C5-P1-05",
-      "C5-P2-01",
-      "C5-P2-02",
-      "C5-P2-03",
-      "C5-P2-04",
-      "C5-P2-05",
-      "C5-P1-06"
+      "C5-P1-03_ARTIFACT_REGISTRY",
+      "C5-P1-06_PROGRESSION_GATE",
+      "C5-P2-01_ARENA_DROP_EVENTS",
+      "C5-P2-02_VARIANT_RUNTIME_BINDING",
+      "C5-P2-03_ARTIFACT_STACKING_POLICY",
+      "C5-P2-04_DISPLAY_NAME_COLLISION",
+      "C5-P2-05_RESOURCE_LABEL"
     ],
     "acceptance": {
       "json_parse_required": true,
@@ -606,7 +610,13 @@
         "passive_slots_unchanged": 6,
         "status": "CONTENT_TARGET_ARCHITECTURE_RUNTIME_RECONCILIATION_PENDING"
       }
-    }
+    },
+    "resolved_structural_findings": [
+      "C5-P1-01_CLOCK_POLICY",
+      "C5-P1-02_MINI_ROSTER",
+      "C5-P1-04_TIME_ENVELOPE",
+      "C5-P1-05_CHEST_TAXONOMY"
+    ]
   },
   "artifact_effect_catalog": {
     "content_semantic_effect_definitions": 10,
@@ -628,8 +638,8 @@
   "ref_content_01": {
     "task_id": "REF-CONTENT-01",
     "scope": "CONTENT_ONLY",
-    "status": "PARTIAL",
-    "source_head": "6d7c2a361944ada398622e77c2436a79a47baf46",
+    "status": "CONTENT_SCOPE_CLOSED",
+    "source_head": "ec30c239aa22aa1d9c8ad1faab25d99633f4cb29",
     "document": "docs/agents/content-design/REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md",
     "new_ids_introduced": [
       "elite_variant_ink_beetle_ironcarapace",
@@ -770,5 +780,37 @@
       "max_synergy_claims_per_run": 5,
       "status": "CONTENT_SPECIFIED_ARCHITECTURE_RUNTIME_RECONCILIATION_PENDING"
     }
+  },
+  "content_scope_status": "CONTENT_SCOPE_CLOSED",
+  "content_scope": {
+    "status": "CONTENT_SCOPE_CLOSED",
+    "audit_document": "docs/agents/content-design/CONTENT_AUDIT_AND_BLOCKER_CLOSURE.md",
+    "parent_head": "ec30c239aa22aa1d9c8ad1faab25d99633f4cb29",
+    "proposed_ids_only": true,
+    "runtime_approval": false,
+    "artistic_approval": false,
+    "balance_lock": false,
+    "counts": {
+      "weapons": 10,
+      "passives": 10,
+      "synergies": 10,
+      "artifacts": 10,
+      "mini_bosses": 5,
+      "main_boss_extensions": 2
+    },
+    "static_validation": {
+      "json_parse": "PASS",
+      "unique_weapon_ids": "PASS",
+      "unique_passive_ids": "PASS",
+      "unique_synergy_ids": "PASS",
+      "unique_artifact_ids": "PASS",
+      "synergy_gate": "weapon_level_10_and_passive_rank_10",
+      "max_synergy_claims_per_run": 5,
+      "mini_boss_count": "PASS",
+      "reward_windows": "10_BOSS_CHEST_PLUS_5_ELITE_CHEST",
+      "final_boss_chest": "FORBIDDEN",
+      "proposed_ids": "PASS"
+    },
+    "external_reconciliation": "PENDING_ARCHITECTURE_RUNTIME_BALANCE_PRODUCT"
   }
 }

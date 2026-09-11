@@ -504,3 +504,11 @@ synergy_run_policy:
 - soft tonal code: deep blue-grey, smoky teal, warm ivory, muted brass, jade; crimson/violet только как role/status accent;
 - icon identity должна читаться по форме, silhouette и interaction, а не только по цвету;
 - Visual Lab отдельно проверяет 390×844 UI scale, true 1× combat scale, telegraph visibility и no-asset-drift.
+
+## Актуальная граница C1
+
+Сверка выполнена от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. В каталоге остаются 10 оружий, 10 общих пассивок и 10 пар синергии.
+
+Каждая пассивка действует на общую систему характеристик или поведения сборки. Её weapon binding используется только для проверки пары синергии и не является скрытым улучшением одного оружия. Синергия открывается только при weapon level 10 и passive rank 10; общий лимит подтверждений за забег — 5.
+
+Статус: CONTENT_SCOPE_CLOSED; numeric binding, runtime implementation, visual approval и balance lock не заявлены.

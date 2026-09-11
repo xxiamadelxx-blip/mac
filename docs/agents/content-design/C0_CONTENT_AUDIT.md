@@ -134,3 +134,12 @@
 Аудит подтверждает достаточную основу для C1/C2/C3: стабильные weapon/passive/synergy IDs есть, визуальная tonal family закреплена, архитектурные consumers определены. После product review узкая weapon-bound passive logic отклонена; новая общая passive logic и mini-boss chest flow вынесены в отдельную revision. Основные unresolved items вынесены в handoff и не скрыты в описаниях.
 
 Следующий результат: `C1_WEAPONS_PASSIVES_SYNERGIES.md`, `C2_ARTIFACTS.md`, `C3_MINI_BOSSES_AND_CHEST_FLOW.md`, `META_PASSIVE_TREE.md` и сводный handoff.
+
+## Актуальная граница C0
+
+Аудит обновлён от живого main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29.
+
+- Контентная область закрыта структурно: каталоги, зависимости, 10/10 gate, 5 мини-боссов, 2 расширения главных боссов, active/legacy/future boundary и окна C01–C15.
+- Сняты документальные расхождения, которые уже исправлены в живой архитектуре: 30-минутная сетка, 6 главных боссов, 5 мини-боссов, 10 BOSS_CHEST + 5 ELITE_CHEST и clock policy.
+- Остались внешние блокеры: architecture consumer cap всё ещё 6/5 вместо content target 10/10; architecture содержит 8 артефактов и 0 typed effect definitions; Balance остаётся PARTIAL; runtime/Godot/Android и visual approval не доказаны.
+- Контент не меняет эти внешние области и не объявляет их исправленными.

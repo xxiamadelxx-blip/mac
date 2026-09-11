@@ -12,7 +12,9 @@ The following records are canonical for Run 1 and are not replaced by this C3 pr
 
 | Type | Stable IDs |
 |---|---|
-| Enemy | enemy_ink_beetle, enemy_lantern_moth, enemy_bone_carp, enemy_paper_ghost, enemy_jade_toad, enemy_mirror_fox, enemy_bell_crab, enemy_thread_doll, enemy_stone_oni, enemy_eclipse_serpent |
+| Активные обычные | enemy_ink_beetle, enemy_lantern_moth, enemy_bone_carp, enemy_paper_ghost, enemy_jade_toad, enemy_mirror_fox, enemy_bell_crab, enemy_thread_doll, enemy_lotus_usher, enemy_moonroot_burrower |
+| Совместимость | enemy_stone_oni, enemy_eclipse_serpent (не входят в 10 активных) |
+| Только будущее | enemy_silver_reed_seer, enemy_moontrail_stalker (не входят в Run 1) |
 | Boss | boss_hua_lin, boss_miyeon, boss_seika, boss_black_moon_empress |
 
 The four future enemy IDs, five mini-boss IDs and two main-boss extension IDs in this file are content proposals. They remain outside the runtime Registry until Architecture/Balance approve their registry shape and stage placement.
@@ -75,7 +77,7 @@ Content target первого забега — 30 минут / 1800 секунд
 
 Рабочее имя: **Чернильный Нефритовый Страж**.
 
-Статус ID: `PROPOSAL`, `REGISTRY_SYNC_PENDING`.
+Статус ID: `PROPOSED`, `REGISTRY_SYNC_PENDING`.
 
 ### Роль и skill-check
 
@@ -105,14 +107,14 @@ Content target первого забега — 30 минут / 1800 секунд
 - `route`: `SPRITE` + `VFX` + `UI_ART`.
 - `stage_path`: `docs/mockups/05-bosses/`; это brief, не запись в stage.
 - `asset_id`, `family_id`, `candidate_id`: `null` до Visual Lab intake.
-- `status`: `PROPOSAL`; `technical_status: NOT_RUN`; `artistic_status: PENDING`.
+- `status`: `PROPOSED`; `technical_status: NOT_RUN`; `artistic_status: PENDING`.
 - `visual code`: smoky teal/soft jade body language, warm ivory telegraph, muted brass edge; no toxic neon ink.
 
 ## 3. Mini-boss B — `miniboss_veil_harvester`
 
 Рабочее имя: **Жнец Завесы**.
 
-Статус ID: `PROPOSAL`, `REGISTRY_SYNC_PENDING`.
+Статус ID: `PROPOSED`, `REGISTRY_SYNC_PENDING`.
 
 ### Роль и skill-check
 
@@ -142,7 +144,7 @@ Content target первого забега — 30 минут / 1800 секунд
 - `route`: `SPRITE` + `VFX` + `UI_ART`.
 - `stage_path`: `docs/mockups/05-bosses/`; production assets остаются у Visual Lab.
 - `asset_id`, `family_id`, `candidate_id`: `null` до Visual Lab intake.
-- `status`: `PROPOSAL`; `technical_status: NOT_RUN`; `artistic_status: PENDING`.
+- `status`: `PROPOSED`; `technical_status: NOT_RUN`; `artistic_status: PENDING`.
 - `visual code`: deep blue-grey silhouette, warm ivory target marker, restrained violet only for status distinction; no black-on-black telegraph.
 
 
@@ -309,7 +311,7 @@ These four entries are future-stage proposals only. They do not enter the first-
 
 ### enemy_lotus_usher — Лотосовый распорядитель
 
-Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+Status: PROPOSED, REGISTRY_SYNC_PENDING.
 
 - Silhouette brief: narrow tall figure with a lotus collar, two hanging binding ribbons and a small bell knot on the back; vertical silhouette and visible links are the primary recognition cues.
 - Role/signature: support tether. The Usher selects two enemy targets and joins them with a lotus knot. While the link is active, the pair receives one shared guard/resonance state; formula and strength belong to Balance.
@@ -323,7 +325,7 @@ Status: PROPOSAL, REGISTRY_SYNC_PENDING.
 
 ### enemy_moonroot_burrower — Луннокорневой землерой
 
-Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+Status: PROPOSED, REGISTRY_SYNC_PENDING.
 
 - Silhouette brief: low root-backed body with a rounded moon bud on the head, short digging limbs and a visible soil line under the body; horizontal profile and emergence trail distinguish it from the existing crab.
 - Role/signature: ambush route shaper. The Burrower previews a path below the arena, emerges at an endpoint and leaves a temporary root patch that changes the safe route.
@@ -337,7 +339,7 @@ Status: PROPOSAL, REGISTRY_SYNC_PENDING.
 
 ### enemy_silver_reed_seer — Серебряный камышовый провидец
 
-Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+Status: PROPOSED, REGISTRY_SYNC_PENDING.
 
 - Silhouette brief: thin reed-built figure with a long petal sleeve and an elongated silver mask; the sharp upright profile and opening sleeve identify it in a dense pack.
 - Role/signature: lane sniper. The Seer selects a straight corridor and fires one long moonline after preparation; it is not a homing projectile.
@@ -351,7 +353,7 @@ Status: PROPOSAL, REGISTRY_SYNC_PENDING.
 
 ### enemy_moontrail_stalker — Лунный следопыт
 
-Status: PROPOSAL, REGISTRY_SYNC_PENDING.
+Status: PROPOSED, REGISTRY_SYNC_PENDING.
 
 - Silhouette brief: four-legged smoky figure with a crescent muzzle and a narrow trail that repeats the last movement direction; it has no fox-like shard tail and no clone flash.
 - Role/signature: predictive flanker. The Stalker records a short recent route, fixes an endpoint and attacks along a shown crescent instead of teleporting behind the player.
@@ -469,5 +471,18 @@ synergy_run_policy:
 
 ## 7. Visual Lab handoff
 
-Мокапы и ассеты отсутствуют намеренно. Visual Lab получает пять mini-boss briefs и два main-boss extension briefs с `candidate_id: null`, `status: PROPOSAL`, `technical_status: NOT_RUN`, `artistic_status: PENDING`. Нужно отдельно проверить силуэты, warning readability at 390×844, true 1× combat scale, cleanup и отсутствие токсичных/neon цветов.
+Мокапы и ассеты отсутствуют намеренно. Visual Lab получает пять mini-boss briefs и два main-boss extension briefs с `candidate_id: null`, `status: PROPOSED`, `technical_status: NOT_RUN`, `artistic_status: PENDING`. Нужно отдельно проверить силуэты, warning readability at 390×844, true 1× combat scale, cleanup и отсутствие токсичных/neon цветов.
 
+## 8. Живая граница C3
+
+Родительский main для этой сверки: ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Архитектурная карта 0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8 разделяет активный набор и совместимость.
+
+| Группа | Записи | Статус в контенте |
+|---|---|---|
+| Активные обычные | 8 существующих записей + enemy_lotus_usher + enemy_moonroot_burrower | CONTENT_SCOPE_CLOSED; новые записи остаются PROPOSED |
+| Совместимость | enemy_stone_oni, enemy_eclipse_serpent (не входят в 10) | LEGACY_PRESERVED |
+| Только будущее | enemy_silver_reed_seer, enemy_moontrail_stalker (не входят в Run 1) | PROPOSED |
+
+Пять мини-боссов и два расширения главных боссов имеют stable semantic IDs, encounter kind, checkpoint и зависимости. Их контентные записи не являются runtime, balance или artistic approval.
+
+Для всех новых записей действует PROPOSED_ONLY: нельзя считать их финальными именами, production-ассетами или зафиксированными числовыми профилями.

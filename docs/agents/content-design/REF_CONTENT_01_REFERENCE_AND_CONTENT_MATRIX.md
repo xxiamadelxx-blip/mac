@@ -256,3 +256,11 @@ synergy_run_policy:
 ## 13. Следующее действие
 
 Владелец продукта и Architecture owner публикуют одну карту реестра для 10 обычных и 10 элитных вариаций, включая судьбу двух legacy `ELITE_FAMILY` записей и bounded selection при текущем лимите 5; до этой публикации Balance и Runtime используют только статус `PROPOSED`.
+
+## Актуальная доказательная граница REF-CONTENT-01
+
+Проверено от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Карта 0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8 подтверждает разделение 10 активных обычных записей, 10 элитных вариантов и 2 legacy-записей.
+
+Контентный набор оригинален и связан через stable IDs: weapon → global passive → synergy; boss/mini-boss → checkpoint → reward window; ordinary enemy → elite variant. Новые записи остаются PROPOSED.
+
+Проверка не является runtime, balance или artistic approval.

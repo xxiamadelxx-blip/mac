@@ -211,3 +211,11 @@ C5 сверяет каталог с live Architecture, Runtime и Balance contra
 - Visual Lab: briefs переданы, mockups и production assets C5 не создаёт.
 
 C5 package status: `HANDOFF_READY_WITH_OPEN_RECONCILIATIONS`; до закрытия P1 findings нельзя ставить `APPROVED`, `IMPLEMENTED`, `VERIFIED`, `PLAYABLE` или `PRODUCTION`.
+
+## Живая сверка каталога
+
+Источник: main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Каталог контента закрыт в пределах docs/agents/content-design.
+
+Итоговые контентные количества: 10 оружий, 10 общих пассивок, 10 синергий, 10 артефактов, 10 обычных противников, 4 будущих противника, 6 главных боссов в расписании, 5 мини-боссов, 7 аренных выпадений, 6 ветвей и 17 узлов дерева.
+
+Из этих записей не следует, что runtime, balance, visual или Godot gates пройдены. Все новые IDs остаются PROPOSED.

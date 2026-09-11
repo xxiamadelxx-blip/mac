@@ -306,3 +306,10 @@ Visual Lab получает artifact brief после того, как Architect
 - точная граница `on_damage_taken_or_guarded_hit` у `artifact_bell_fragment` — `PENDING_ARCHITECTURE`;
 - threat selector и source telegraph projection для `artifact_silent_lantern` — `PENDING_ARCHITECTURE`.
 
+## Актуальная граница C2
+
+Сверка выполнена от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. В каталоге 10 артефактов и 10 смысловых ключей эффектов.
+
+Артефакт — отдельный run-модификатор: он не занимает слот оружия или пассивки. Предложение содержит 3 карты, выбирается 1 карта; точные значения, обновление, дубликаты и накопление остаются внешними решениями.
+
+Статус: CONTENT_SCOPE_CLOSED; registry effect definitions, runtime proof, balance lock и artistic approval не заявлены.

@@ -339,3 +339,11 @@ Magnet отличается от vacuum: magnet ведёт eligible XP к гер
 ## 9. Следующий шаг
 
 После принятия C4 Content Agent выполняет C5: catalog index, dependency matrix, duplicate/conflict review, cross-agent handoff и acceptance evidence. C4 не закрывает решения Balance, Architecture/Runtime или Visual Lab.
+
+## Актуальная граница C4
+
+Сверка выполнена от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Семь аренных выпадений остаются контентными записями с отдельными границами XP, останков, кошелька и сундуков.
+
+Частота, количество, длительность, радиус и экономика принадлежат Balance. События, идемпотентность и применение эффекта принадлежат Architecture/Runtime. Контент не добавляет числовую блокировку.
+
+Статус: CONTENT_SCOPE_CLOSED; runtime и Godot доказательства не заявлены.

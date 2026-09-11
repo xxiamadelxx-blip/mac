@@ -339,3 +339,10 @@ UI не меняет Gold или rank локально без подтвержд
 - reset/refund policy и offline/save-failure behavior;
 - canonical event/schema для meta purchase — не изобретать в content docs до Architecture sync.
 
+## Актуальная граница дерева постоянных улучшений
+
+Сверка выполнена от main ec30c239aa22aa1d9c8ad1faab25d99633f4cb29. Сохранено 6 ветвей и 17 узлов; улучшения применяются к следующему забегу.
+
+Стоимость, кривые рангов, кошелёк и сохранение принадлежат Balance/Runtime. Контент фиксирует только смысловые оси, зависимости и порядок узлов.
+
+Статус: CONTENT_SCOPE_CLOSED; balance lock и runtime proof не заявлены.
