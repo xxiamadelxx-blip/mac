@@ -37,7 +37,7 @@ jobs:
       - name: Checkout canonical main
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.sha }}
           fetch-depth: 1
 
       - name: Resolve request
