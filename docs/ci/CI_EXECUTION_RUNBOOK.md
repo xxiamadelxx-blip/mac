@@ -2,57 +2,29 @@
 
 ## Decision
 
-- **Код и инструкции:** GitHub repository `xxiamadelxx-blip/mac`, branch `main`.
-- **Бинарные ассеты:** приватный Supabase project `ylhbihgrchtqzaphuxvy`, bucket `visual-assets`.
-- **Asset intake executor:** `.github/workflows/import-stage03-release-assets.yml`.
-- **Godot environment:** `barichello/godot-ci:4.7.2` для существующих Godot jobs.
-- **GitLab:** downstream mirror, не источник бинарных ассетов.
-- **CircleCI:** legacy и не acceptance source, пока внешний проект не переподключён.
+- Код, сцены, JSON, инструкции и реальные PNG хранятся в GitHub repository `xxiamadelxx-blip/mac`, branch `main`.
+- PNG лежат отдельными файлами в правильной stage-папке, например `docs/mockups/03-heroes/...`; GitHub Release assets не используются.
+- Максимум одной партии — 40 PNG. При остатке меньше 40 выкладывается только остаток. Один запуск агента обрабатывает одну партию и останавливается.
+- Канонический upload/verification contract: [`GITHUB_PNG_BATCH_UPLOAD.md`](GITHUB_PNG_BATCH_UPLOAD.md).
+- Проверяющий workflow: `.github/workflows/verify-github-png-batches.yml`.
 
-GitHub Actions получает только текстовый request, скачивает каждый Storage object
-по защищённым secrets, проверяет байты и готовит их в build workspace. Бинарные
-файлы не коммитятся обратно в GitHub.
+## Для одной партии
 
-## Required CI secrets
+1. Прочитать живой `main`, `AGENTS.md`, `docs/AGENT_SYNC_STATE.md` и предыдущие `docs/asset_batches/<stage>/batch-*.json`.
+2. Выбрать один `batch_index`; при 40+ оставшихся файлов — ровно 40.
+3. Загрузить PNG как отдельные GitHub repository files через `upload_png_batch_to_github.py`.
+4. Проверить фактические GitHub paths/blobs, размер и SHA-256 каждого файла.
+5. Создать evidence JSON со статусом `PLACED`, commit SHA и списком файлов.
+6. Завершить запуск. Следующий агент/запуск перечитает evidence и начнёт следующую партию.
 
-В настройках репозитория должны быть заданы:
+## Не является доказательством
 
-- `SUPABASE_URL` — URL проекта;
-- `SUPABASE_STORAGE_API_KEY` — ключ Storage API;
-- `SUPABASE_STORAGE_AUTH_TOKEN` — защищённый token/service secret для приватного bucket.
+- папка без PNG;
+- список ожидаемых имён;
+- manifest без связанного GitHub blob;
+- GitHub Release page;
+- скриншот или сообщение другого агента;
+- Base64, data URL, SVG/HTML или кодовая отрисовка;
+- запущенная, но не завершившаяся CI job.
 
-Ни один секрет не записывается в репозиторий, request-файл, issue, URL или
-workflow output. Runtime APK эти secrets не получает.
-
-## Stage 03 acceptance
-
-1. `docs/ci/STAGE03_IMPORT_REQUEST.json` имеет статус `READY`.
-2. Request перечисляет каждый PNG отдельной записью с bucket/object,
-   `local_path`, `content_type`, `sha256` и `size_bytes`.
-3. Workflow скачивает объекты по одному и проверяет hash/size до importer-а.
-4. `.github/scripts/import_stage03_assets.py` сообщает фактические `STAGED`
-   paths, count, dimensions и RGBA.
-5. Build workspace содержит файлы для Godot; GitHub tree не получает бинарный commit.
-6. Evidence содержит download/import logs, object list и exit code.
-
-Manifest без байтов, старый Release, список ожидаемых путей или сообщение агента
-не являются acceptance evidence.
-
-## Проверка runtime отдельно
-
-После intake runtime-проверка остаётся независимой:
-
-1. дождаться реального job conclusion `success`;
-2. проверить runtime trace и отсутствие `SCRIPT ERROR`/`Parse Error`;
-3. для Android требуется отдельное install/launch evidence;
-4. проверить GitLab mirror только как синхронизацию SHA.
-
-Не объявлять CI зелёным, если runner не стартовал.
-
-## Failure contract
-
-- Storage/secret/object unavailable → `BLOCKED_BINARY_ARTIFACT` с конкретной причиной;
-- hash/size mismatch → job fail до Godot/import;
-- invalid PNG → importer fail, без binary commit;
-- runner unavailable → `BLOCKED` в handoff, без имитации evidence;
-- artistic review pending → technical pass не переводит asset в `APPROVED GOLDEN` или `PRODUCTION`.
+Если реальный файл, GitHub write-доступ или проверка недоступны: `BLOCKED_BINARY_ARTIFACT`, точная причина и одно следующее действие. Никаких имитаций.

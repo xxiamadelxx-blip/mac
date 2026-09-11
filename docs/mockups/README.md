@@ -8,28 +8,32 @@
 
 ## Каноническое хранение бинарных mockup-ассетов
 
-Для `docs/mockups/**` действует отдельное решение от 2026-09-11: каноническое хранилище mockup-ассетов — GitHub, ветка `main`. Supabase не используется как источник истины для mockup-ассетов.
+Каноническое бинарное хранилище mockup-ассетов — GitHub repository `xxiamadelxx-blip/mac`, ветка `main`.
+
+- Реальные PNG лежат отдельными файлами под `docs/mockups/<stage>/`.
+- Batch evidence лежит под `docs/asset_batches/<stage>/batch-<NNN>.json`.
+- GitHub Release assets не являются файлами репозитория и не используются.
 
 Правила транспортировки:
 
-- Размер партии не фиксирован: если файлов немного, загружается весь набор; если файлов много (например, развёртка движения героини), набор делится на последовательные партии по текущему лимиту чата и транспорта. Число 40 — только практический пример, не обязательное условие.
-- Base64 применяется только как транспортная кодировка при создании GitHub blob. В репозитории хранится декодированный бинарный PNG, а не текст Base64.
-- Папки, README, manifest, старый Supabase object, Release или сообщение агента не доказывают размещение бинарника.
-- Каждая партия получает статус `PLACED` только после проверки всех её точных GitHub paths, blob SHA и фактического PNG content.
-- До approval допускается отдельный `USER REVIEW` preview-кандидат. Он нужен для проверки внешнего вида, не считается завершённой asset-партией и не переводится в `PLACED`.
-- После каждой партии фиксируются exact placed files, exact queued/workspace files, commit SHA, blob/tree evidence и UTC-время проверки.
-- `APPROVED GOLDEN` и `PRODUCTION` возможны только после отдельного художественного approval Creative Director и manifest linkage.
+- отдельный `USER REVIEW` preview можно разместить для одобрения внешнего вида до пакетной выкладки;
+- если осталось 40 или больше PNG, одна партия содержит ровно 40;
+- если осталось меньше 40, последняя партия содержит ровно оставшийся объём;
+- один агентский запуск обрабатывает только одну партию и после evidence останавливается;
+- `PLACED` ставится только после проверки всех фактических GitHub paths/blobs и SHA-256;
+- ZIP, архивы, PNG/Base64 в чат, data URL, SVG/HTML-замены и кодовая отрисовка финального визуала запрещены;
+- runtime-код только ссылается на локальные asset paths и не рисует финальный визуал кодом.
+
+Исторические внешние объекты и старые Release-записи не являются доказательством размещения в текущем GitHub tree.
 
 ### Restart Stage 01 — текущее состояние
 
-Review-кандидат v02 размещён в GitHub:
+Review-кандидат размещён в GitHub:
 
-- `docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png` — 390×844, `USER REVIEW`; слоган удалён точечной правкой;
-- commit: `ad897f13686865292f88f087fc45a444b5a89ade`;
-- blob: `0d46c417c7d56ce4886df36692c3dd2c675f35a8`;
-- прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png).
-
-Кандидат v01 сохранён как историческая версия до правки и не является текущим preview для approval.
+- `docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png` — 390×844, `USER REVIEW`;
+- commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`;
+- blob: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`;
+- прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
 
 Пакет Stage 01 пока не открыт к загрузке: его exact manifest и размер первой партии будут определены после approval этого кандидата. Нельзя считать исторические Supabase objects v02/v04 размещёнными в GitHub.
 
