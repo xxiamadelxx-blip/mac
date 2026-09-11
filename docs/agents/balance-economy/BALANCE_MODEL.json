@@ -11,9 +11,9 @@
   "repository_evidence": {
     "repository": "xxiamadelxx-blip/mac",
     "branch": "main",
-    "head": "2fc240722b671edce1fb62e424cd8bbb7beb6cc3",
-    "captured_at": "2026-09-11T06:57:35Z",
-    "note": "Live main HEAD read immediately before the XP/progression slice. The parent contains the published balance model; no runtime code is changed by this slice."
+    "head": "7a8112e9bb3175d6c86030b14e680ce01b4e1254",
+    "captured_at": "2026-09-11T11:31:00Z",
+    "note": "Live main HEAD read immediately before balance publication. R2 has structurally consumed the prior model; this slice publishes the registry-bound numeric model without changing runtime code."
   },
   "units": {
     "time": "seconds",
@@ -991,7 +991,7 @@
       "boss_id": "boss_hua_lin",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     },
     {
       "checkpoint_id": "boss_02_10",
@@ -999,7 +999,7 @@
       "boss_id": "boss_miyeon",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     },
     {
       "checkpoint_id": "boss_03_15",
@@ -1007,7 +1007,7 @@
       "boss_id": "boss_seika",
       "boss_status": "CANON",
       "source": "B1/GAME_MANIFEST",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     },
     {
       "checkpoint_id": "boss_04_20",
@@ -1015,7 +1015,7 @@
       "boss_id": "boss_tideglass_regent",
       "boss_status": "PROPOSED_CONTENT_REGISTRY",
       "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     },
     {
       "checkpoint_id": "boss_05_25",
@@ -1023,7 +1023,7 @@
       "boss_id": "boss_omen_paper_archivist",
       "boss_status": "PROPOSED_CONTENT_REGISTRY",
       "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     },
     {
       "checkpoint_id": "boss_final_30",
@@ -1031,7 +1031,7 @@
       "boss_id": "boss_black_moon_empress",
       "boss_status": "CANON_ARCHITECTURE_RETIMED",
       "source": "USER_PRODUCT_DECISION_30_MINUTE_RUN_2026-09-10",
-      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+      "boss_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
     }
   ],
   "main_bosses": [
@@ -1154,70 +1154,90 @@
       "base_enemy_id": "enemy_ink_beetle",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_ink_beetle_ironcarapace",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_ink_beetle_ironcarapace",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_ink_beetle"
     },
     {
       "variant_id": "elite_variant_lantern_moth_prismwing",
       "base_enemy_id": "enemy_lantern_moth",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lantern_moth_prismwing",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lantern_moth_prismwing",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_lantern_moth"
     },
     {
       "variant_id": "elite_variant_bone_carp_tidepiercer",
       "base_enemy_id": "enemy_bone_carp",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bone_carp_tidepiercer",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bone_carp_tidepiercer",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_bone_carp"
     },
     {
       "variant_id": "elite_variant_paper_ghost_sealbreaker",
       "base_enemy_id": "enemy_paper_ghost",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_paper_ghost_sealbreaker",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_paper_ghost_sealbreaker",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_paper_ghost"
     },
     {
       "variant_id": "elite_variant_jade_toad_mudcrown",
       "base_enemy_id": "enemy_jade_toad",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_jade_toad_mudcrown",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_jade_toad_mudcrown",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_jade_toad"
     },
     {
       "variant_id": "elite_variant_mirror_fox_falsepath",
       "base_enemy_id": "enemy_mirror_fox",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_mirror_fox_falsepath",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_mirror_fox_falsepath",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_mirror_fox"
     },
     {
       "variant_id": "elite_variant_bell_crab_resonant_shell",
       "base_enemy_id": "enemy_bell_crab",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bell_crab_resonant_shell",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_bell_crab_resonant_shell",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_bell_crab"
     },
     {
       "variant_id": "elite_variant_thread_doll_cutline",
       "base_enemy_id": "enemy_thread_doll",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_thread_doll_cutline",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_thread_doll_cutline",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_thread_doll"
     },
     {
       "variant_id": "elite_variant_lotus_usher_bloomguard",
       "base_enemy_id": "enemy_lotus_usher",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lotus_usher_bloomguard",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_lotus_usher_bloomguard",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_lotus_usher"
     },
     {
       "variant_id": "elite_variant_moonroot_burrower_gravewake",
       "base_enemy_id": "enemy_moonroot_burrower",
       "overlay_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_moonroot_burrower_gravewake",
       "content_status": "PROPOSED",
-      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET"
+      "runtime_projection": "CANDIDATE_FOR_MAX_FIVE_ACTIVE_SET",
+      "numeric_profile_ref": "simulation_model.elite_variation_policy.variant_overrides.records.elite_variant_moonroot_burrower_gravewake",
+      "base_numeric_profile_ref": "simulation_model.enemy_stats.enemy_moonroot_burrower"
     }
   ],
   "rewards": {
@@ -1599,7 +1619,7 @@
     "evidence": []
   },
   "audit_reference": "docs/agents/balance-economy/BALANCE_AUDIT.md",
-  "runtime_status": "NOT_IMPLEMENTED",
+  "runtime_status": "R2_STRUCTURAL_ONLY_PENDING_FRESH_TRACE",
   "simulation_status": "SIMULATED_MODEL_ONLY_FULL_CONTENT_CATALOG",
   "contract_notes": [
     "B1 CANON values remain unchanged; missing inputs are added only under simulation_model with explicit PROPOSED/PENDING provenance.",
@@ -1607,7 +1627,7 @@
     "Model-only results are not runtime verification.",
     "The architecture contract is the live source for stable IDs, six weapon/six passive slots, separate boss-chest/artifact-offer IDs, unbounded active artifact effects and final-boss NO_CHEST policy.",
     "The live content contract now sets weapon level 10 and passive rank 10 for synergy; this model uses that 10/10 gate while the runtime architecture's legacy 6/5 fields remain a reconciliation blocker.",
-    "The 30-minute schedule, two new main-boss slots, five mini-boss slots, ten ordinary content records and ten elite-variant numeric records remain proposed balance inputs until Architecture/Content registry sync."
+    "The 30-minute schedule, ten ordinary IDs, ten elite catalog IDs, five active-elite bound and five ELITE_CHEST windows are synchronized to the current Architecture registry; their missing B1 absolute values remain explicitly PROPOSED/DERIVED. R2 structurally consumes this shape, but this numeric model still needs a fresh post-publication trace."
   ],
   "simulation_reference": "docs/agents/balance-economy/BALANCE_SIMULATION_REPORT.md",
   "verification": {
@@ -1616,15 +1636,15 @@
     "independent_seed_runs": "PASS_30_SEEDS_REPEAT_HASH_STABLE",
     "main_boss_clock_policy": "PASS_MODEL_ONLY",
     "mini_boss_clock_policy": "PASS_MODEL_ONLY",
-    "elite_variant_policy": "PASS_FINITE_EVENT_MODEL_ONLY",
-    "model_extension_registry_sync": "BLOCKED",
-    "runtime_integration": "NOT_IMPLEMENTED",
+    "elite_variant_policy": "PASS_TEN_ID_CATALOG_MAX_FIVE_ACTIVE_PER_ELITE_CHEST_MODEL_ONLY",
+    "model_extension_registry_sync": "PASS_MODEL_ONLY",
+    "runtime_integration": "R2_STRUCTURAL_ONLY_PENDING_FRESH_BALANCE_MODEL_TRACE",
     "android_performance": "BLOCKED",
     "overall": "PARTIAL"
   },
   "architecture_contract": {
     "path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "source_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+    "source_revision": "e9a50971f61f204cbbda39edaad2c48a08e2228b",
     "status": "VERIFIED_ARCHITECTURE_READ_ONLY",
     "canonical_ids": [
       "hero_lin_yue",
@@ -1652,7 +1672,7 @@
       "status": "CANON",
       "source": "architecture contract canonical"
     },
-    "non_final_chest": "CHECKPOINT_REWARD_THEN_CONFIGURED_CHEST_OR_NEXT_STAGE",
+    "non_final_chest": "CHECKPOINT_REWARD_THEN_BOSS_CHEST_THEN_NEXT_STAGE",
     "final_boss_policy": "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST",
     "reward_idempotency_key_format": "{run_id}:{reward_scope}:{checkpoint_id}:{reward_type}",
     "status_notes": [
@@ -1661,17 +1681,34 @@
       "First-clear artifact delivery is a separate post-result three-card artifact offer; selection is required before the effect exists."
     ],
     "artifact_offer_sources": [
-      "ELITE_PACK",
+      "ELITE_CHEST",
       "FIRST_CLEAR_REWARD"
     ],
-    "artifact_capacity": "UNBOUNDED_WITHIN_RUN"
+    "artifact_capacity": "UNBOUNDED_WITHIN_RUN",
+    "chest_window_policy": {
+      "max_openable_windows_per_run": 15,
+      "configured_boss_chest_windows": 10,
+      "reserved_elite_chest_windows": 5,
+      "one_offer_per_window": true,
+      "final_encounter_creates_chest": false,
+      "boss_chest_sources": [
+        "MAIN_BOSS_NON_FINAL",
+        "MINI_BOSS"
+      ],
+      "reserved_source_kind": "ELITE_CHEST",
+      "one_claim_boundary_per_window": true,
+      "synergy_claims_are_separate": true,
+      "artifact_offers_are_not_chest_windows": true,
+      "elite_chest_trigger_cadence_ref": "simulation_model.build_catalog.offer_model.elite_chest.windows",
+      "status": "PROPOSED_BALANCE_BINDING"
+    }
   },
   "simulation_model": {
-    "model_version": "0.7-xp-40-three-synergies",
+    "model_version": "0.8-registry-ids-elite-chest",
     "status": "PROPOSED_MODEL_ONLY",
-    "source_revision": "2fc240722b671edce1fb62e424cd8bbb7beb6cc3",
-    "architecture_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
-    "runtime_status": "NOT_IMPLEMENTED",
+    "source_revision": "7a8112e9bb3175d6c86030b14e680ce01b4e1254",
+    "architecture_revision": "e9a50971f61f204cbbda39edaad2c48a08e2228b",
+    "runtime_status": "R2_STRUCTURAL_ONLY_PENDING_FRESH_TRACE",
     "scope": "deterministic 30-minute wave/economy model: main bosses pause the visible run clock; mini-bosses keep waves, XP and the visible clock moving; ten ordinary content records and bounded elite variants are selected from this model",
     "main_run_duration_seconds": {
       "value": 1800,
@@ -1702,7 +1739,7 @@
       },
       "derived_formula": "main checkpoints remain on a 5-minute cadence; five mini-bosses occupy the midpoint of each 5-minute interval before the final checkpoint",
       "rationale": "Gives the requested two additional main-boss slots and five mini-boss opportunities without placing encounters on top of one another.",
-      "architecture_sync_status": "BLOCKED_CLOCK_POLICY_AND_FIVE_MINI_CONTENT_SYNC",
+      "architecture_sync_status": "R2_STRUCTURAL_JOIN_VERIFIED;_NUMERIC_BALANCE_TRACE_PENDING",
       "main_boss_checkpoints": [
         {
           "checkpoint_id": "boss_01_05",
@@ -2094,7 +2131,7 @@
     },
     "content_roster": {
       "status": "PROPOSED_MODEL_ONLY",
-      "source": "docs/agents/content-design/CONTENT_CATALOG_INDEX.json, REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md, and architecture REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+      "source": "docs/agents/content-design/CONTENT_CATALOG_INDEX.json, REF_CONTENT_01_REFERENCE_AND_CONTENT_MATRIX.md, and architecture REF-ARCH-02 at live main 0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8",
       "ordinary_enemy_ids": {
         "value": [
           "enemy_ink_beetle",
@@ -2136,7 +2173,7 @@
           "elite_variant_lotus_usher_bloomguard",
           "elite_variant_moonroot_burrower_gravewake"
         ],
-        "source": "REF_CONTENT_01 ten proposed elite variants, reconciled by architecture REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+        "source": "REF_CONTENT_01 ten proposed elite variants, reconciled by architecture REF-ARCH-02 at live main 0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8",
         "derived_formula": "one bounded variant proposal per ordinary content family",
         "rationale": "All ten variants receive a numeric balance record while runtime registration remains capped at five.",
         "status": "PROPOSED"
@@ -2149,35 +2186,85 @@
         "status": "CANON"
       },
       "elite_spawn_windows": {
-        "source": "C3 content reward-window proposal and current mini-boss schedule",
-        "derived_formula": "one finite pack after each defeated mini-boss; no permanent elite composition weight",
+        "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows + C3 elite pressure source",
+        "derived_formula": "one finite pack and one ELITE_CHEST window after each defeated mini-boss",
         "rationale": "Creates five readable elite pressure beats without starting a post-boss interval at peak density.",
         "status": "PROPOSED",
         "windows": [
           {
             "window_id": "elite_window_01",
+            "source_kind": "ELITE_CHEST",
             "after_checkpoint_id": "miniboss_01_07_30",
-            "run_clock_seconds": 450
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 450,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
           },
           {
             "window_id": "elite_window_02",
+            "source_kind": "ELITE_CHEST",
             "after_checkpoint_id": "miniboss_02_12_30",
-            "run_clock_seconds": 750
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 750,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
           },
           {
             "window_id": "elite_window_03",
+            "source_kind": "ELITE_CHEST",
             "after_checkpoint_id": "miniboss_03_17_30",
-            "run_clock_seconds": 1050
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1050,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
           },
           {
             "window_id": "elite_window_04",
+            "source_kind": "ELITE_CHEST",
             "after_checkpoint_id": "miniboss_04_22_30",
-            "run_clock_seconds": 1350
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1350,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
           },
           {
             "window_id": "elite_window_05",
+            "source_kind": "ELITE_CHEST",
             "after_checkpoint_id": "miniboss_05_27_30",
-            "run_clock_seconds": 1650
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1650,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
           }
         ]
       }
@@ -3979,7 +4066,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b",
         "content_description": "Проверка маршрута через огненные круги, веер фонарей и перенос безопасной зоны.",
         "role": "route / zone",
         "tags": [
@@ -4067,7 +4154,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b",
         "content_description": "Проверка выбора цели: истинное тело, копии, отражение снарядов и временные стены.",
         "role": "target selection / decoy",
         "tags": [
@@ -4155,7 +4242,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "CANON",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b",
         "content_description": "Проверка пространства через дуги клинка, нефритовые столбы и фазовый удар по земле.",
         "role": "space / directional defense",
         "tags": [
@@ -4243,7 +4330,7 @@
           "status": "PROPOSED"
         },
         "boss_id_status": "PENDING_CONTENT_REGISTRY",
-        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+        "boss_id_source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b",
         "content_description": "Управляет видимыми дугами потока и временными коридорами; поздний босс проверяет маршрут после 20 минут.",
         "role": "flow / route phase",
         "tags": [
@@ -4955,11 +5042,16 @@
           "elite_variant_lantern_moth_prismwing",
           "elite_variant_bone_carp_tidepiercer",
           "elite_variant_paper_ghost_sealbreaker",
-          "elite_variant_jade_toad_mudcrown"
+          "elite_variant_jade_toad_mudcrown",
+          "elite_variant_mirror_fox_falsepath",
+          "elite_variant_bell_crab_resonant_shell",
+          "elite_variant_thread_doll_cutline",
+          "elite_variant_lotus_usher_bloomguard",
+          "elite_variant_moonroot_burrower_gravewake"
         ],
-        "source": "REF_CONTENT_01 ten-variant proposal plus REF-ARCH-02 maximum-five projection at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394; runtime registry sync is not complete",
-        "derived_formula": "select one stable ID from the first five bounded model records; the remaining five stay proposed until registry reconciliation",
-        "rationale": "The model exercises a bounded five-variant selection while keeping all ten numeric proposals in the same data file.",
+        "source": "REF-ARCH-02 registry map plus Content C1/C3; all ten catalog IDs are now bound",
+        "derived_formula": "catalog_variant_ids = one stable elite ID per ordinary base family; active subset is selected by content_version, run_seed, wave_cycle_id and state_revision",
+        "rationale": "Publishes numeric profiles for all ten mapped variants while preserving the architecture maximum-five active projection.",
         "status": "PROPOSED"
       },
       "proposed_variant_ids": {
@@ -4975,7 +5067,7 @@
           "elite_variant_lotus_usher_bloomguard",
           "elite_variant_moonroot_burrower_gravewake"
         ],
-        "source": "REF_CONTENT_01 reconciled by REF-ARCH-02 at live main 32f6bc3f1a66e000dc97996e5ccf58c395992394",
+        "source": "REF_CONTENT_01 reconciled by REF-ARCH-02 map 0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8",
         "derived_formula": "one proposed elite ID per ordinary content family",
         "rationale": "No proposed variant is silently promoted to the five-ID runtime registration cap.",
         "status": "PROPOSED"
@@ -6020,6 +6112,20 @@
         "rationale": "Small enough for a pressure beat and large enough to be visible.",
         "status": "PROPOSED"
       },
+      "cap_interaction": {
+        "policy": "REPLACE_OLDEST_ORDINARY_SLOTS",
+        "source": "B1 active-cap invariant plus finite elite-pack requirement",
+        "derived_formula": "if active_count + pack_size > active_cap, remove the oldest ordinary active slots before inserting the finite pack; never exceed active_cap",
+        "rationale": "Makes every scheduled elite window a real bounded pressure event without allowing an elite pack to bypass the active cap or create spawn debt.",
+        "status": "PROPOSED"
+      },
+      "pack_settlement": {
+        "policy": "CLEAR_AT_NEXT_MAIN_CHECKPOINT_IF_REMAINING",
+        "source": "30-minute checkpoint boundary plus reserved five-window ELITE_CHEST cadence",
+        "derived_formula": "at the next main-boss checkpoint, clear any remaining finite-pack members before the main encounter and commit its one ELITE_CHEST offer",
+        "rationale": "Prevents a late 27:30 pack from suppressing its reserved 30-minute chest while preserving the main-boss clock freeze and active cap.",
+        "status": "PROPOSED"
+      },
       "selection": {
         "value": "seeded_choice_from_current_wave_composition",
         "source": "B1 wave composition plus user elite-variation rule",
@@ -6028,15 +6134,42 @@
         "status": "DERIVED"
       },
       "reward": {
-        "source_kind": "ELITE_PACK",
+        "source_kind": "ELITE_CHEST",
         "reward_type": "ARTIFACT_OFFER",
         "choice_count": 3,
         "selection": "ONE_OF_THREE",
         "wallet_mutation": false,
-        "idempotency_key_format": "{run_id}:ELITE_PACK:{event_id}:ARTIFACT_OFFER",
+        "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+        "window_count": 5,
+        "cadence_ref": "simulation_model.build_catalog.offer_model.elite_chest.windows",
         "status": "PROPOSED_MODEL_ONLY",
-        "source": "existing artifact_offer_model plus user request for additional chest/offer beats",
-        "derived_formula": "one offer after all members of a finite pack are defeated; duplicate returns stored offer"
+        "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows + B1 reward separation",
+        "derived_formula": "one offer after the linked finite elite pack is defeated; duplicate returns the committed offer without wallet mutation"
+      },
+      "active_selection": {
+        "algorithm": "SEEDED_SUBSET_PER_ELITE_CHEST_WINDOW",
+        "catalog_ref": "simulation_model.content_roster.elite_variant_ids",
+        "active_namespace": "runtime_active_registry",
+        "max_active_records_ref": "simulation_model.content_roster.registered_variant_cap",
+        "max_active_records": {
+          "value": 5,
+          "source": "REF-ARCH-02 max_active_variant_records plus current architecture registry cap",
+          "derived_formula": "min(simulation_model.content_roster.registered_variant_cap, 5)",
+          "rationale": "Keeps the runtime projection bounded at five active elite records while the ten-ID catalog remains addressable.",
+          "status": "DERIVED"
+        },
+        "selection_inputs": [
+          "content_version",
+          "run_seed",
+          "wave_cycle_id",
+          "state_revision"
+        ],
+        "selection_key_template": "{content_version}|{run_seed}|{wave_cycle_id}|{state_revision}",
+        "state_revision_initial": 0,
+        "status": "PROPOSED",
+        "source": "REF-ARCH-02 runtime_projection_contract plus SYNC-03 Balance binding",
+        "derived_formula": "rank catalog IDs by SHA-256(selection_key + ':' + variant_id); keep at most registered_variant_cap, retaining one variant eligible for the current wave when possible",
+        "rationale": "All ten variants are addressable, but no elite window registers more than five IDs or mutates the permanent catalog."
       }
     },
     "combat_math": {
@@ -8837,11 +8970,16 @@
         "boss_chest": {
           "availability": "NON_FINAL_BOSS_CHECKPOINT_ONLY",
           "outcome": "SYNERGY_OR_FALLBACK",
-          "final_boss": "NO_CHEST"
+          "final_boss": "NO_CHEST",
+          "window_count": 10,
+          "sources": [
+            "MAIN_BOSS_NON_FINAL",
+            "MINI_BOSS"
+          ]
         },
         "artifact_offer": {
           "sources": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "choice_count": 3,
@@ -8860,7 +8998,100 @@
           "duplicate_stacking_policy": "PENDING_PRODUCT_DECISION"
         },
         "non_final_boss_chest_only": "CANON_ARCHITECTURE",
-        "boss_chest_final_offer": "NO_CHEST_CANON_ARCHITECTURE"
+        "boss_chest_final_offer": "NO_CHEST_CANON_ARCHITECTURE",
+        "elite_chest": {
+          "availability": "AFTER_EACH_MINI_BOSS_ELITE_PACK_CLEAR",
+          "source_kind": "ELITE_CHEST",
+          "window_count": 5,
+          "windows": [
+            {
+              "window_id": "elite_window_01",
+              "source_kind": "ELITE_CHEST",
+              "after_checkpoint_id": "miniboss_01_07_30",
+              "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+              "run_clock_seconds": 450,
+              "choice_count": 3,
+              "wallet_mutation": false,
+              "one_claim_per_window": true,
+              "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+              "status": "PROPOSED",
+              "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+              "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+              "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+            },
+            {
+              "window_id": "elite_window_02",
+              "source_kind": "ELITE_CHEST",
+              "after_checkpoint_id": "miniboss_02_12_30",
+              "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+              "run_clock_seconds": 750,
+              "choice_count": 3,
+              "wallet_mutation": false,
+              "one_claim_per_window": true,
+              "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+              "status": "PROPOSED",
+              "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+              "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+              "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+            },
+            {
+              "window_id": "elite_window_03",
+              "source_kind": "ELITE_CHEST",
+              "after_checkpoint_id": "miniboss_03_17_30",
+              "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+              "run_clock_seconds": 1050,
+              "choice_count": 3,
+              "wallet_mutation": false,
+              "one_claim_per_window": true,
+              "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+              "status": "PROPOSED",
+              "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+              "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+              "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+            },
+            {
+              "window_id": "elite_window_04",
+              "source_kind": "ELITE_CHEST",
+              "after_checkpoint_id": "miniboss_04_22_30",
+              "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+              "run_clock_seconds": 1350,
+              "choice_count": 3,
+              "wallet_mutation": false,
+              "one_claim_per_window": true,
+              "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+              "status": "PROPOSED",
+              "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+              "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+              "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+            },
+            {
+              "window_id": "elite_window_05",
+              "source_kind": "ELITE_CHEST",
+              "after_checkpoint_id": "miniboss_05_27_30",
+              "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+              "run_clock_seconds": 1650,
+              "choice_count": 3,
+              "wallet_mutation": false,
+              "one_claim_per_window": true,
+              "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+              "status": "PROPOSED",
+              "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+              "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+              "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+            }
+          ],
+          "outcome": "ARTIFACT_OFFER",
+          "choice_count": 3,
+          "selection": "ONE_OF_THREE",
+          "wallet_mutation": false,
+          "one_claim_per_window": true,
+          "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+          "final_boss_interaction": "NO_FINAL_BOSS_CHEST",
+          "status": "PROPOSED_MODEL_ONLY",
+          "source": "FIRST_RUN_DATA_CONTRACT reserved_elite_chest_windows=5; B1 exact trigger cadence was pending",
+          "derived_formula": "window_i follows mini_boss_i; pack clear commits exactly one three-card artifact offer",
+          "rationale": "Publishes the missing typed cadence without converting elite variants into a permanent wave roster or wallet reward."
+        }
       },
       "balance_anchors": {
         "reference_ordinary_hp": {
@@ -8901,7 +9132,7 @@
       },
       "artifact_offer": {
         "sources": [
-          "ELITE_PACK",
+          "ELITE_CHEST",
           "FIRST_CLEAR_REWARD"
         ],
         "choice_count": 3,
@@ -8929,7 +9160,7 @@
           "target": "enemies_in_route_field",
           "counterplay": "Не убивает, не останавливает boss и не проходит сквозь стены.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -8984,7 +9215,7 @@
           "target": "source_hit_zone",
           "counterplay": "Эхо не создаёт новое эхо и не копирует финальный synergy hit автоматически.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9032,7 +9263,7 @@
           "target": "enemies_crossing_path",
           "counterplay": "Путь телеграфируется, не следует за героем и не создаётся от обычных minions.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9094,7 +9325,7 @@
           "target": "controlled_target_and_adjacent_area",
           "counterplay": "Метка истекает, не складывается бесконечно и не держит босса в permanent freeze.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9149,7 +9380,7 @@
           "target": "nearby_enemies",
           "counterplay": "Импульс не даёт бессмертия, не отменяет landed damage и не lock-ит boss.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9204,7 +9435,7 @@
           "target": "next_eligible_incoming_hit",
           "counterplay": "Оберег не становится второй полосой HP и не поглощает любой hazard без whitelist.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9259,7 +9490,7 @@
           "target": "current_boss_phase",
           "counterplay": "Не пропускает фазу и не даёт пассивный damage вне окна.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9307,7 +9538,7 @@
           "target": "last_weapon_source_and_nearby_elite_pack",
           "counterplay": "Работает только на последнем источнике, не тянет через стены и не меняет SynergyEvaluator.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9362,7 +9593,7 @@
           "target": "enemies_crossing_saved_path",
           "counterplay": "Не тянет предметы, не меняет XP и не становится permanent arena wall.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9424,7 +9655,7 @@
           "target": "one_current_highest_threat",
           "counterplay": "Один target за раз; preview не видит сквозь стены и не делает boss harmless.",
           "source_channels": [
-            "ELITE_PACK",
+            "ELITE_CHEST",
             "FIRST_CLEAR_REWARD"
           ],
           "consumes_weapon_or_passive_slot": false,
@@ -9550,7 +9781,7 @@
       "choice_count": 3,
       "choice_rule": "ONE_OF_THREE",
       "sources": [
-        "ELITE_PACK",
+        "ELITE_CHEST",
         "FIRST_CLEAR_REWARD"
       ],
       "active_capacity": "UNBOUNDED_WITHIN_RUN",
@@ -9592,7 +9823,91 @@
         "automatic_grant": false,
         "separate_from_boss_chest": true
       },
-      "artifact_catalog_ref": "simulation_model.build_catalog.artifacts"
+      "artifact_catalog_ref": "simulation_model.build_catalog.artifacts",
+      "elite_chest_schedule": {
+        "status": "PROPOSED",
+        "source_kind": "ELITE_CHEST",
+        "cadence": "AFTER_EACH_MINI_BOSS_ELITE_PACK_CLEAR",
+        "window_count": 5,
+        "windows": [
+          {
+            "window_id": "elite_window_01",
+            "source_kind": "ELITE_CHEST",
+            "after_checkpoint_id": "miniboss_01_07_30",
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 450,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+          },
+          {
+            "window_id": "elite_window_02",
+            "source_kind": "ELITE_CHEST",
+            "after_checkpoint_id": "miniboss_02_12_30",
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 750,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+          },
+          {
+            "window_id": "elite_window_03",
+            "source_kind": "ELITE_CHEST",
+            "after_checkpoint_id": "miniboss_03_17_30",
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1050,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+          },
+          {
+            "window_id": "elite_window_04",
+            "source_kind": "ELITE_CHEST",
+            "after_checkpoint_id": "miniboss_04_22_30",
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1350,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+          },
+          {
+            "window_id": "elite_window_05",
+            "source_kind": "ELITE_CHEST",
+            "after_checkpoint_id": "miniboss_05_27_30",
+            "trigger": "AFTER_MINI_BOSS_DEFEAT_AND_ELITE_PACK_CLEAR",
+            "run_clock_seconds": 1650,
+            "choice_count": 3,
+            "wallet_mutation": false,
+            "one_claim_per_window": true,
+            "idempotency_key_format": "{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER",
+            "status": "PROPOSED",
+            "source": "FIRST_RUN_DATA_CONTRACT reserved ELITE_CHEST windows; exact cadence was PENDING_B1",
+            "derived_formula": "one window per scheduled mini-boss checkpoint, resolved only after its finite pack is defeated",
+            "rationale": "Separates the mini-boss BOSS_CHEST from the later elite pressure/artifact offer and preserves the five-window cap."
+          }
+        ],
+        "pack_size_ref": "simulation_model.elite_variation_policy.pack_size"
+      }
     },
     "boss_clock_policy": {
       "status": "CANON",
@@ -9628,14 +9943,14 @@
       "rationale": "Mini-bosses are pressure beats inside the wave cadence: spawning, XP pickup and the visible timer continue while the mini-boss is alive.",
       "status_reason": "Runtime encounter_kind and timer behavior are not yet in the architecture registry."
     },
-    "status_reason": "Full content numeric binding is model-only; B1 lacks canonical absolute values and Godot has not consumed this model."
+    "status_reason": "Full content numeric binding remains model-only; B1 lacks canonical absolute values. R2 verified the prior registry shape, while this post-publication numeric model awaits a fresh trace."
   },
   "runtime_integration": {
-    "status": "NOT_IMPLEMENTED",
+    "status": "R2_STRUCTURAL_ONLY_PENDING_FRESH_TRACE",
     "owner": "Runtime/Architecture",
     "balance_model_path": "docs/agents/balance-economy/BALANCE_MODEL.json",
     "architecture_contract_path": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json",
-    "architecture_contract_revision": "bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00",
+    "architecture_contract_revision": "e9a50971f61f204cbbda39edaad2c48a08e2228b",
     "join_policy": {
       "stable_id_key": "semantic IDs",
       "checkpoint_boss_mapping": [
@@ -9643,59 +9958,61 @@
           "checkpoint_id": "boss_01_05",
           "boss_id": "boss_hua_lin",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "checkpoint_id": "boss_02_10",
           "boss_id": "boss_miyeon",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "checkpoint_id": "boss_03_15",
           "boss_id": "boss_seika",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "checkpoint_id": "boss_04_20",
           "boss_id": "boss_extension_slot_04",
           "status": "PENDING_CONTENT_REGISTRY",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "checkpoint_id": "boss_05_25",
           "boss_id": "boss_extension_slot_05",
           "status": "PENDING_CONTENT_REGISTRY",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "checkpoint_id": "boss_final_30",
           "boss_id": "boss_black_moon_empress",
           "status": "CANON_ARCHITECTURE_RETIMED",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         }
       ],
       "run_30m_extension": {
-        "status": "BLOCKED_CLOCK_AND_MINI_SCHEDULE_CONFLICT",
+        "status": "R2_STRUCTURAL_JOIN_VERIFIED_NUMERIC_BALANCE_PENDING",
         "main_boss_mapping": "read from simulation_model.run_schedule.main_boss_checkpoints",
         "mini_boss_mapping": "read from simulation_model.run_schedule.mini_boss_checkpoints",
         "clock_split": {
           "main_boss": "FREEZE_VISIBLE_RUN_WAVE_XP_SPAWN_CLOCK",
           "mini_boss": "ADVANCE_VISIBLE_RUN_WAVE_XP_SPAWN_CLOCK"
         },
-        "unresolved_ids": [
-          "boss_extension_slot_04",
-          "boss_extension_slot_05",
-          "miniboss_pending_03",
-          "miniboss_extension_slot_03",
-          "miniboss_pending_05"
-        ],
+        "unresolved_ids": [],
         "required_architecture_fields": [
           "main_boss_clock_policy_alignment_with_balance_freeze",
           "five_mini_boss_content_registry_records",
           "mini_boss_timer_policy_for_all_five_slots",
           "elite_variant_numeric_overrides_and_visual_records",
+          "30m_wave_numeric_profiles_and_rewards"
+        ],
+        "required_runtime_fields": [
+          "main_boss_clock_policy_alignment_with_balance_freeze",
+          "five_mini_boss_content_registry_records",
+          "mini_boss_timer_policy_for_all_five_slots",
+          "ten_elite_catalog_ids_with_max_five_active_projection",
+          "five_typed_elite_chest_windows",
           "30m_wave_numeric_profiles_and_rewards"
         ]
       },
@@ -9706,27 +10023,27 @@
         {
           "wave_band_id": "wave_warmup_0_2",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "wave_band_id": "wave_pressure_2_5",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "wave_band_id": "wave_threat_5_10",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "wave_band_id": "wave_elite_10_15",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "wave_band_id": "wave_eclipse_15_20",
           "status": "CANON",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "wave_band_id": "wave_cataclysm_20_25",
@@ -9744,31 +10061,31 @@
           "model_wave_band_id": "wave_warmup_0_2",
           "architecture_wave_band_id": "wave_cycle_01",
           "status": "CANON_ARCHITECTURE_ALIAS",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "model_wave_band_id": "wave_pressure_2_5",
           "architecture_wave_band_id": "wave_cycle_01",
           "status": "CANON_ARCHITECTURE_ALIAS",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "model_wave_band_id": "wave_threat_5_10",
           "architecture_wave_band_id": "wave_cycle_02",
           "status": "CANON_ARCHITECTURE_ALIAS",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "model_wave_band_id": "wave_elite_10_15",
           "architecture_wave_band_id": "wave_cycle_03",
           "status": "CANON_ARCHITECTURE_ALIAS",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "model_wave_band_id": "wave_eclipse_15_20",
           "architecture_wave_band_id": "wave_cycle_04",
           "status": "CANON_ARCHITECTURE_ALIAS",
-          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision bd1d4d44f9c0a525b26ac136d98ace3cf76a3d00"
+          "source": "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json revision e9a50971f61f204cbbda39edaad2c48a08e2228b"
         },
         {
           "model_wave_band_id": "wave_cataclysm_20_25",
@@ -9799,9 +10116,9 @@
       "ArtifactOfferSystem",
       "ArtifactEffectSystem"
     ],
-    "evidence_boundary": "NOT_IMPLEMENTED: current Godot scripts are menu/arena previews and do not consume this model."
+    "evidence_boundary": "R2 structural evidence exists on the prior model shape; no fresh post-publication Godot trace proves these proposed numeric values, TTK or economy outcomes."
   },
-  "model_version": "0.7-xp-40-three-synergies",
+  "model_version": "0.8-registry-ids-elite-chest",
   "content_balance_binding": {
     "status": "PROPOSED_MODEL_ONLY",
     "source_policy": "B1 remains canonical for explicit values; mockups/content docs supply role/behavior semantics; absent absolute values are proposed with formula and rationale, never CANON.",
@@ -9880,10 +10197,10 @@
         "status": "PENDING_B1"
       },
       {
-        "id": "RUNTIME_REGISTRY_NOT_CONSUMING_MODEL",
-        "source": "scripts/runtime/content_registry.gd and live architecture map; no R2/R3 evidence.",
-        "model_handling": "No runtime promotion; this commit remains model-only.",
-        "status": "BLOCKED"
+        "id": "RUNTIME_NUMERIC_BALANCE_NOT_REVERIFIED",
+        "source": "R2 runtime handoff 7a8112e9bb3175d6c86030b14e680ce01b4e1254; structural join is verified, but the trace ran before this numeric model publication.",
+        "model_handling": "Keep all absent B1 values PROPOSED/DERIVED; request a fresh trace after this model is consumed.",
+        "status": "PENDING_SIMULATION_AND_RUNTIME"
       }
     ],
     "catalog_refs": {
@@ -9902,5 +10219,127 @@
       "boss": "base_hp/base_damage/base_speed/attack_interval/telegraph are proposed where B1 is silent; phase metadata is proposed",
       "build": "weapon/passive/synergy/artifact numeric fields are proposed content bindings with formula/rationale per field"
     }
-  }
+  },
+  "ordinary_enemies": [
+    {
+      "enemy_id": "enemy_ink_beetle",
+      "paired_elite_variant_id": "elite_variant_ink_beetle_ironcarapace",
+      "stats_ref": "simulation_model.enemy_stats.enemy_ink_beetle",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_lantern_moth",
+      "paired_elite_variant_id": "elite_variant_lantern_moth_prismwing",
+      "stats_ref": "simulation_model.enemy_stats.enemy_lantern_moth",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_bone_carp",
+      "paired_elite_variant_id": "elite_variant_bone_carp_tidepiercer",
+      "stats_ref": "simulation_model.enemy_stats.enemy_bone_carp",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_paper_ghost",
+      "paired_elite_variant_id": "elite_variant_paper_ghost_sealbreaker",
+      "stats_ref": "simulation_model.enemy_stats.enemy_paper_ghost",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_jade_toad",
+      "paired_elite_variant_id": "elite_variant_jade_toad_mudcrown",
+      "stats_ref": "simulation_model.enemy_stats.enemy_jade_toad",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_mirror_fox",
+      "paired_elite_variant_id": "elite_variant_mirror_fox_falsepath",
+      "stats_ref": "simulation_model.enemy_stats.enemy_mirror_fox",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_bell_crab",
+      "paired_elite_variant_id": "elite_variant_bell_crab_resonant_shell",
+      "stats_ref": "simulation_model.enemy_stats.enemy_bell_crab",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_thread_doll",
+      "paired_elite_variant_id": "elite_variant_thread_doll_cutline",
+      "stats_ref": "simulation_model.enemy_stats.enemy_thread_doll",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_lotus_usher",
+      "paired_elite_variant_id": "elite_variant_lotus_usher_bloomguard",
+      "stats_ref": "simulation_model.enemy_stats.enemy_lotus_usher",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    },
+    {
+      "enemy_id": "enemy_moonroot_burrower",
+      "paired_elite_variant_id": "elite_variant_moonroot_burrower_gravewake",
+      "stats_ref": "simulation_model.enemy_stats.enemy_moonroot_burrower",
+      "registry_class": "ORDINARY_BASE",
+      "runtime_projection": "ordinary_roster",
+      "numeric_profile_status": "PROPOSED",
+      "content_status": "PROPOSED_CONTENT_REGISTRY",
+      "source_path": "simulation_model.content_roster.ordinary_enemy_ids"
+    }
+  ],
+  "legacy_compatibility_enemies": [
+    {
+      "enemy_id": "enemy_stone_oni",
+      "registry_class": "LEGACY_ELITE_FAMILY",
+      "runtime_projection": "stage_04_compatibility",
+      "target_30m_runtime_eligible": false,
+      "stats_ref": "simulation_model.enemy_stats.enemy_stone_oni",
+      "numeric_profile_status": "DERIVED_LEGACY_BASELINE",
+      "source_path": "simulation_model.content_roster.legacy_b1_ids_excluded_from_ordinary_count"
+    },
+    {
+      "enemy_id": "enemy_eclipse_serpent",
+      "registry_class": "LEGACY_ELITE_FAMILY",
+      "runtime_projection": "stage_04_compatibility",
+      "target_30m_runtime_eligible": false,
+      "stats_ref": "simulation_model.enemy_stats.enemy_eclipse_serpent",
+      "numeric_profile_status": "DERIVED_LEGACY_BASELINE",
+      "source_path": "simulation_model.content_roster.legacy_b1_ids_excluded_from_ordinary_count"
+    }
+  ]
 }

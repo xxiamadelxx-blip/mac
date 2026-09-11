@@ -89,8 +89,12 @@ def main() -> int:
 
     error(errors, model.get("status") == "PARTIAL", "model status must remain PARTIAL")
     error(errors, simulation.get("status") == "PROPOSED_MODEL_ONLY", "simulation_model must remain PROPOSED_MODEL_ONLY")
-    error(errors, model.get("runtime_status") == "NOT_IMPLEMENTED", "runtime_status must remain NOT_IMPLEMENTED")
-    error(errors, simulation.get("runtime_status") == "NOT_IMPLEMENTED", "simulation runtime_status must remain NOT_IMPLEMENTED")
+    allowed_runtime_statuses = {
+        "NOT_IMPLEMENTED",
+        "R2_STRUCTURAL_ONLY_PENDING_FRESH_TRACE",
+    }
+    error(errors, model.get("runtime_status") in allowed_runtime_statuses, "runtime_status is not an allowed evidence state")
+    error(errors, simulation.get("runtime_status") in allowed_runtime_statuses, "simulation runtime_status is not an allowed evidence state")
     error(errors, isinstance(model.get("source_of_truth", {}).get("source_revision"), str), "B1 source revision is missing")
     error(errors, number(simulation.get("main_run_duration_seconds", -1)) == 1800, "model duration must be 1800 seconds")
     error(errors, number(schedule.get("duration_seconds", -1)) == 1800, "schedule duration must be 1800 seconds")
@@ -152,12 +156,20 @@ def main() -> int:
     proposed_variant_ids = list(unwrap(roster.get("elite_variant_ids", [])))
     selected_variant_ids = list(unwrap(elite_policy.get("variant_ids", [])))
     registered_cap = int(number(roster.get("registered_variant_cap", 0)))
+    ordinary_registry = model.get("ordinary_enemies", [])
     error(errors, len(ordinary_ids) == 10 and len(set(ordinary_ids)) == 10, "ordinary content roster must contain ten unique IDs")
+    error(errors, {str(row.get("enemy_id")) for row in ordinary_registry} == set(ordinary_ids), "ordinary registry does not match the ten mapped content IDs")
+    error(errors, all(str(row.get("stats_ref", "")).startswith("simulation_model.enemy_stats.") for row in ordinary_registry), "ordinary registry is missing numeric stats references")
     error(errors, len(proposed_variant_ids) == 10 and len(set(proposed_variant_ids)) == 10, "elite content roster must contain ten unique IDs")
-    error(errors, len(set(selected_variant_ids)) <= registered_cap <= 5, "selected elite projection exceeds the maximum-five cap")
+    error(errors, len(selected_variant_ids) == 10 and len(set(selected_variant_ids)) == 10, "elite policy must retain the complete ten-ID catalog")
+    active_selection = elite_policy.get("active_selection", {})
+    active_cap = int(number(active_selection.get("max_active_records", 0))) if active_selection.get("max_active_records") else 0
+    error(errors, 0 < active_cap <= registered_cap <= 5, "active elite projection exceeds the maximum-five cap")
+    error(errors, active_selection.get("selection_inputs") == ["content_version", "run_seed", "wave_cycle_id", "state_revision"], "active elite selection inputs drifted")
+    error(errors, bool(active_selection.get("selection_key_template")), "active elite selection key template is missing")
     registry_variant_ids = {str(row.get("variant_id", "")) for row in elite_registry}
     error(errors, registry_variant_ids == set(proposed_variant_ids), "elite registry does not match the ten mapped content IDs")
-    error(errors, set(selected_variant_ids).issubset(registry_variant_ids), "selected elite projection references an unregistered ID")
+    error(errors, set(selected_variant_ids) == registry_variant_ids, "elite policy references IDs outside the mapped registry")
     overlay_records = elite_policy.get("variant_overrides", {}).get("records", {})
     overlay_provenance = elite_policy.get("variant_overrides", {}).get("record_provenance", {})
     error(errors, set(proposed_variant_ids).issubset(overlay_records), "one or more mapped elite variants lacks a numeric overlay")
@@ -262,7 +274,16 @@ def main() -> int:
     reward_ids = {str(row.get("checkpoint_id")) for row in model.get("rewards", {}).get("checkpoint_rewards", [])}
     error(errors, reward_ids >= {str(row.get("checkpoint_id")) for row in main_schedule + mini_schedule}, "checkpoint rewards do not cover all 30-minute encounters")
     error(errors, number(simulation.get("build_catalog", {}).get("offer_model", {}).get("choice_count", 0)) == 3, "upgrade offer must expose three choices")
-    error(errors, int(simulation.get("elite_variation_policy", {}).get("reward", {}).get("choice_count", 0)) == 3, "elite offer must expose three choices")
+    elite_chest = catalog.get("offer_model", {}).get("elite_chest", {})
+    elite_windows = elite_chest.get("windows", [])
+    error(errors, elite_chest.get("source_kind") == "ELITE_CHEST", "elite offer source kind must be ELITE_CHEST")
+    error(errors, int(elite_chest.get("window_count", 0)) == 5 and len(elite_windows) == 5, "ELITE_CHEST must expose five windows")
+    error(errors, int(elite_chest.get("choice_count", 0)) == 3, "ELITE_CHEST must expose three choices")
+    error(errors, elite_chest.get("wallet_mutation") is False, "ELITE_CHEST must not mutate the wallet")
+    error(errors, [int(number(row.get("run_clock_seconds", -1))) for row in elite_windows] == mini_times, "ELITE_CHEST cadence must bind to all five mini-boss times")
+    error(errors, {str(row.get("after_checkpoint_id")) for row in elite_windows} == {str(row.get("checkpoint_id")) for row in mini_schedule}, "ELITE_CHEST cadence must bind one-for-one to mini checkpoints")
+    error(errors, len({str(row.get("window_id")) for row in elite_windows}) == 5, "ELITE_CHEST windows must have unique IDs")
+    error(errors, all(row.get("source_kind") == "ELITE_CHEST" and row.get("one_claim_per_window") is True for row in elite_windows), "ELITE_CHEST window records are incomplete")
     error(errors, model.get("architecture_contract", {}).get("final_boss_policy") == "CHECKPOINT_REWARD_THEN_RUN_VICTORY_NO_BOSS_CHEST", "final boss policy must forbid a boss chest")
 
     if args.variant_map.exists():
@@ -303,7 +324,7 @@ def main() -> int:
     print("BALANCE_MODEL_CHECK=PASS")
     print(f"model={args.model}")
     print(f"waves={len(waves)} main_bosses={len(main_registry)} mini_bosses={len(mini_registry)} elite_variants={len(elite_registry)}")
-    print("runtime_claim=NOT_IMPLEMENTED")
+    print(f"runtime_claim={model.get('runtime_status', 'NOT_IMPLEMENTED')}")
     if join_warnings:
         print("ARCHITECTURE_JOIN=BLOCKED")
         for item in join_warnings:

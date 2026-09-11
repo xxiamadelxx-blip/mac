@@ -1,6 +1,6 @@
 # Balance Simulation Report — deterministic 30-minute model
 
-Status: `PARTIAL / SIMULATED_MODEL_ONLY`.
+Status: `PARTIAL / SIMULATED_MODEL_ONLY` (R2 structural join exists; this is not a gameplay trace).
 
 The model is now complete enough to calculate the full content catalog, but it
 is not the Godot runtime. It cannot prove FPS, collision, telegraph readability
@@ -28,10 +28,10 @@ waves=7 main_bosses=6 mini_bosses=5 elite_variants=10
 single-seed shape_check=PASS, run_count=6
 INDEPENDENT_30M_CHECK=PASS
 run_count=30
-repeat_hash=c741b3d238fd8df29bc20caf36e89a9522204796e92d00efd0f0fe834ae4174c
+repeat_hash=da5a6c752d2665e5d92f5cc5a1a6a9f8bbd0b7932eabe2e8005ff7ba431c3715
 survived=30
 completed=30
-runtime_claim=NOT_IMPLEMENTED
+runtime_claim=R2_STRUCTURAL_ONLY_PENDING_FRESH_TRACE
 ```
 
 Seeds: `101, 202, 303, 404, 505`. Profiles: `fresh`, `moderate`, `max_m1`.
@@ -41,7 +41,7 @@ Heroes: `hero_lin_yue`, `hero_seoyeon_han`.
 
 | Check | Observed | Status |
 |---|---|---|
-| Full catalog coverage | 10/10/10/10/10/10/6/5 | PASS / MODEL |
+| Full catalog coverage | 10/10/10/10/10/10/6/5; ordinary/elite IDs joined to live map | PASS / MODEL |
 | Visible run duration | 1800 seconds | PASS / MODEL |
 | Main checkpoints | 6 at 300-second cadence | PASS / MODEL |
 | Mini checkpoints | 5 at midpoint windows | PASS / MODEL |
@@ -51,9 +51,9 @@ Heroes: `hero_lin_yue`, `hero_seoyeon_han`.
 | Active cap | no occupancy above selected cap | PASS / MODEL |
 | Post-boss ramp | five monotonic relief-to-siege cycles | PASS / MODEL |
 | Main/mini TTK | concrete values in combat report | PARTIAL / PROPOSED |
-| Incoming single-hit bound | worst sample 14/90 = 15.56% | PARTIAL / WATCH |
+| Incoming single-hit bound | worst sample 13.72/100 = 13.72% | PASS / MODEL; runtime watch |
 | Final boss chest | no boss chest | PASS / MODEL |
-| Reward idempotency | wallet/chest/elite/first-clear duplicate-safe | PASS / MODEL |
+| Reward idempotency | wallet/chest/ELITE_CHEST/first-clear duplicate-safe | PASS / MODEL |
 | Godot invocation | not run | BLOCKED |
 | Android FPS/occupancy | not measured | BLOCKED |
 
@@ -61,12 +61,20 @@ Heroes: `hero_lin_yue`, `hero_seoyeon_han`.
 
 | Profile / hero | Survived | Completed | Min HP mean | Incoming mean | Peak mean | Cap max / p95 |
 |---|---:|---:|---:|---:|---:|---:|
-| fresh / Lin Yue | 5/5 | 5/5 | 39.880 | 50.120 | 45.080 | 400 / 382.000 |
-| fresh / Soyeon Han | 5/5 | 5/5 | 61.770 | 48.230 | 49.280 | 400 / 382.000 |
-| moderate / Lin Yue | 5/5 | 5/5 | 57.739 | 37.661 | 46.099 | 400 / 382.000 |
-| moderate / Soyeon Han | 5/5 | 5/5 | 77.292 | 39.308 | 46.648 | 400 / 382.000 |
-| max M1 / Lin Yue | 5/5 | 5/5 | 86.265 | 21.735 | 34.272 | 400 / 382.000 |
-| max M1 / Soyeon Han | 5/5 | 5/5 | 113.730 | 18.270 | 41.328 | 400 / 382.000 |
+| fresh / Lin Yue | 5/5 | 5/5 | 49.890 | 40.110 | 43.960 | 400 / 382.000 |
+| fresh / Soyeon Han | 5/5 | 5/5 | 49.870 | 60.130 | 46.760 | 400 / 382.000 |
+| moderate / Lin Yue | 5/5 | 5/5 | 57.258 | 38.142 | 46.922 | 400 / 382.000 |
+| moderate / Soyeon Han | 5/5 | 5/5 | 75.166 | 41.434 | 48.020 | 400 / 382.000 |
+| max M1 / Lin Yue | 5/5 | 5/5 | 87.525 | 20.475 | 34.524 | 400 / 382.000 |
+| max M1 / Soyeon Han | 5/5 | 5/5 | 105.288 | 26.712 | 37.800 | 400 / 382.000 |
+
+Elite variant TTK is measured for the anchor variant actually defeated by the
+model; the remaining finite-pack members may be settled at the next main
+checkpoint by the explicit proposed settlement rule. In the seed-101 fresh
+Lin Yue run, variant TTK was `11.00s` mean/p95 against the proposed `5–15s`
+window. Across the five-seed set, all six profile/hero rows produced at least
+one measured variant kill, with the selected values remaining visible in the
+JSON result rather than being inferred from the registry record.
 
 ## Boss and reward results
 
@@ -80,7 +88,16 @@ Across the completed seed-101 fresh Lin Yue model run:
 - distinct synergies `3`: `synergy_heavenly_seals`, `synergy_winter_palace`, `synergy_nine_reflections`;
 - first-clear ledger `1575 Gold / 520 Lunar Seals / 16 Boss Essence`;
 - final boss chest `false`, artifact choice count `3`;
-- wallet, chest, elite offer and first-clear idempotency `PASS`.
+- five committed `ELITE_CHEST` offers at model times `556.75 / 892.50 /
+  1200.00 / 1500.00 / 1800.00s`; the first two resolved by finite pack clear
+  and the last three by the declared next-main-checkpoint settlement;
+- wallet, boss-chest, ELITE_CHEST and first-clear idempotency `PASS`.
+
+The same seed-101 fresh Lin Yue run reports main-boss TTK
+`62.25 / 54.75 / 48.50 / 89.25 / 81.50 / 81.75s` and mini-boss TTK
+`39.00 / 36.00 / 33.25 / 36.00 / 35.25s`. The final-boss value is below the
+separate proposed 90–120s final target for this profile; max-M1 is expected to
+clear it faster. This is a model watch item, not a hidden retune.
 
 ## Interpretation boundary
 

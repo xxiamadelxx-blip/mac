@@ -11,10 +11,13 @@ in Python.
 
 | Field | Value |
 |---|---|
-| Parent main read before this slice | `2fc240722b671edce1fb62e424cd8bbb7beb6cc3` |
+| Parent main read before this slice | `7a8112e9bb3175d6c86030b14e680ce01b4e1254` |
 | B1 | `docs/BALANCE_ECONOMY_SPEC.md`, `6aa4ec96afc8a8c9e6a35c164c99e7d62910a687` |
-| Model | `BALANCE_MODEL.json`, version `0.7-xp-40-three-synergies` |
+| Architecture contract | `e9a50971f61f204cbbda39edaad2c48a08e2228b` |
+| Registry map | `0b8cb1bb96d4ab2d0bd14bd7a21b042e53d8c5e8` |
+| Model | `BALANCE_MODEL.json`, version `0.8-registry-ids-elite-chest` |
 | Numeric status rule | B1 exact values are `CANON`; formulas from explicit records are `DERIVED`; absent B1 absolute values are `PROPOSED` and never silently promoted |
+| Runtime boundary | R2 structurally consumes the registry shape; this model's numeric values remain `PROPOSED`/`DERIVED` until a fresh post-publication trace |
 | Late-run rule | 20:00–30:00 effective stats are derived from the proposed base records and proposed wave multipliers |
 
 Every numeric record in the JSON has `value`, `source`, `derived_formula`,
@@ -91,7 +94,7 @@ Stage 06/07 mockups still say 6/5, so that gate is explicitly
 ## Artifacts — 10
 
 Artifacts do not consume weapon/passive build slots. They are offered from the
-elite-pack and first-clear channels, exactly three cards per offer. Numeric
+`ELITE_CHEST` and first-clear channels, exactly three cards per offer. Numeric
 parameters below are proposed model inputs with their complete provenance in
 the JSON.
 
@@ -187,9 +190,11 @@ two-threat summon cap. MINI encounters continue run/wave/XP/ordinary spawning.
 
 `weapon → passive → synergy` pairs are one-to-one in the catalog. A boss chest
 resolves an eligible synergy or the bounded `fallback_damage_resonance` (+3%
-once per unresolved non-final chest). Elite packs produce a separate three-card
-artifact offer and do not mutate the wallet. Final 30:00 has no boss chest;
-first-clear artifact offer remains separate and idempotent.
+once per unresolved non-final chest). Five `ELITE_CHEST` windows follow the
+five mini-boss checkpoints; their finite pressure packs use the ten-ID elite
+catalog with a maximum-five active projection, and each three-card offer does
+not mutate the wallet. Final 30:00 has no boss chest; first-clear artifact
+offer remains separate and idempotent.
 
 ## Open decisions
 

@@ -11,6 +11,7 @@ runtime FPS, collision, telegraph, or player-behavior evidence.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import random
@@ -31,6 +32,45 @@ def number(value: Any) -> float:
 
 def integer(value: Any) -> int:
     return int(round(number(value)))
+
+
+def active_variant_ids_for_window(
+    model: Dict[str, Any],
+    seed: int,
+    wave_cycle_id: str,
+    state_revision: int,
+    eligible_base_ids: Optional[Iterable[str]] = None,
+) -> List[str]:
+    """Project at most the model-declared active elite records for one window."""
+    simulation = model["simulation_model"]
+    policy = simulation["elite_variation_policy"]
+    selection = policy["active_selection"]
+    catalog_ids = [str(value) for value in unwrap(policy["variant_ids"])]
+    cap = integer(selection["max_active_records"])
+    selection_key = str(selection["selection_key_template"]).format(
+        content_version=simulation["model_version"],
+        run_seed=seed,
+        wave_cycle_id=wave_cycle_id,
+        state_revision=state_revision,
+    )
+    ranked = sorted(
+        catalog_ids,
+        key=lambda variant_id: hashlib.sha256(
+            f"{selection_key}:{variant_id}".encode("utf-8")
+        ).hexdigest(),
+    )
+    eligible = set(eligible_base_ids or [])
+    records = policy.get("variant_overrides", {}).get("records", {})
+    if eligible:
+        eligible_ranked = [
+            variant_id
+            for variant_id in ranked
+            if str(records.get(variant_id, {}).get("base_enemy_id", "")) in eligible
+        ]
+        if eligible_ranked:
+            first = eligible_ranked[0]
+            ranked = [first] + [variant_id for variant_id in ranked if variant_id != first]
+    return ranked[:cap]
 
 
 def require_status(value: Any, allowed: Iterable[str], label: str) -> None:
@@ -95,9 +135,24 @@ def load_model(path: Path) -> Dict[str, Any]:
     elite_registry_ids = {str(record.get("variant_id", "")) for record in elite_registry}
     if "" in elite_registry_ids or len(elite_registry_ids) != 10:
         raise ValueError("elite_variants registry must expose ten unique variant IDs")
-    selected_variant_ids = set(unwrap(simulation["elite_variation_policy"].get("variant_ids", [])))
-    if not selected_variant_ids.issubset(elite_registry_ids):
-        raise ValueError("selected elite variants must be a bounded subset of the registry")
+    elite_policy = simulation["elite_variation_policy"]
+    selected_variant_ids = list(unwrap(elite_policy.get("variant_ids", [])))
+    if len(selected_variant_ids) != 10 or set(selected_variant_ids) != elite_registry_ids:
+        raise ValueError("elite variation policy must expose the complete ten-ID registry catalog")
+    active_selection = elite_policy.get("active_selection", {})
+    if not isinstance(active_selection, dict):
+        raise ValueError("elite variation policy is missing active_selection")
+    if integer(active_selection.get("max_active_records", 0)) <= 0:
+        raise ValueError("active elite projection must declare a positive numeric cap")
+    if integer(active_selection["max_active_records"]) > integer(simulation["content_roster"].get("registered_variant_cap", 0)):
+        raise ValueError("active elite projection exceeds the registered variant cap")
+    if active_selection.get("selection_inputs") != [
+        "content_version",
+        "run_seed",
+        "wave_cycle_id",
+        "state_revision",
+    ]:
+        raise ValueError("active elite selection inputs are not the declared deterministic tuple")
     if clock_policy.get("applies_to") != "MAIN_BOSS_CHECKPOINTS":
         raise ValueError("main boss clock policy must apply to main checkpoints")
     if clock_policy.get("checkpoint_seconds") != [int(number(row["time_seconds"])) for row in main_checkpoints]:
@@ -147,8 +202,24 @@ def load_model(path: Path) -> Dict[str, Any]:
     records = simulation["elite_variation_policy"].get("variant_overrides", {}).get("records", {})
     if len(proposed_variants) != 10 or any(variant_id not in records for variant_id in proposed_variants):
         raise ValueError("content roster must expose numeric records for all ten elite variants")
-    if len(variant_ids) > integer(roster.get("registered_variant_cap", 5)):
-        raise ValueError("model variant selection exceeds the registered variant cap")
+    if integer(simulation["elite_variation_policy"]["active_selection"]["max_active_records"]) > integer(roster.get("registered_variant_cap", 5)):
+        raise ValueError("active elite selection exceeds the registered variant cap")
+    elite_chest = simulation["build_catalog"].get("offer_model", {}).get("elite_chest", {})
+    elite_windows = elite_chest.get("windows", [])
+    if (
+        elite_chest.get("source_kind") != "ELITE_CHEST"
+        or integer(elite_chest.get("window_count", 0)) != 5
+        or len(elite_windows) != 5
+        or integer(elite_chest.get("choice_count", 0)) != 3
+        or elite_chest.get("wallet_mutation") is not False
+    ):
+        raise ValueError("ELITE_CHEST model must expose five three-card non-wallet windows")
+    if [int(number(row["run_clock_seconds"])) for row in elite_windows] != [int(number(row["time_seconds"])) for row in mini_checkpoints]:
+        raise ValueError("ELITE_CHEST windows must bind one-for-one to the five mini-boss times")
+    if elite_policy.get("cap_interaction", {}).get("policy") != "REPLACE_OLDEST_ORDINARY_SLOTS":
+        raise ValueError("elite pack cap interaction must preserve the active cap by replacing ordinary slots")
+    if elite_policy.get("pack_settlement", {}).get("policy") != "CLEAR_AT_NEXT_MAIN_CHECKPOINT_IF_REMAINING":
+        raise ValueError("elite pack settlement must preserve the five-window checkpoint cadence")
     progression = simulation["build_catalog"].get("synergy_progression")
     if not progression:
         raise ValueError("build_catalog must expose the data-driven synergy progression contract")
@@ -752,7 +823,7 @@ def reward_scenario_audit(model: Dict[str, Any]) -> Dict[str, Any]:
         "repeat_clear_30m_total": repeat_total,
         "defeat_after_checkpoint": defeat_rows,
         "idempotency_pass": idempotency_pass,
-        "runtime_claim": "NOT_IMPLEMENTED",
+        "runtime_claim": model.get("runtime_status", "NOT_IMPLEMENTED"),
     }
 
 
@@ -1288,6 +1359,7 @@ def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed
     run_completed = survived and boss is None and next_checkpoint_index >= len(checkpoints) and run_elapsed >= main_duration - 1e-9
     return {
         "status": "SIMULATED_MODEL_ONLY",
+        "runtime_claim": model.get("runtime_status", "NOT_IMPLEMENTED"),
         "source_revision": model["source_of_truth"]["source_revision"],
         "architecture_revision": model["architecture_contract"]["source_revision"],
         "seed": seed,
@@ -1481,7 +1553,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
     upgrade_events: List[Dict[str, Any]] = []
     chest_results: List[Dict[str, Any]] = []
     artifact_offer_results: List[Dict[str, Any]] = []
-    elite_pack_offer_results: List[Dict[str, Any]] = []
+    elite_chest_offer_results: List[Dict[str, Any]] = []
     elite_pack_states: Dict[str, Dict[str, Any]] = {}
     chest_ledger: Dict[str, Dict[str, Any]] = {}
     reward_results: List[Dict[str, Any]] = []
@@ -1503,18 +1575,30 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             upgrade_events.append(upgrade)
 
     def resolve_elite_pack_offer(event_id: str, run_clock: float) -> None:
-        key = f"{run_id}:ELITE_PACK:{event_id}:ARTIFACT_OFFER"
-        first = key not in elite_pack_states.get(event_id, {}).get("offer_ledger", {})
         event = elite_pack_states[event_id]
+        elite_chest = simulation["build_catalog"]["offer_model"]["elite_chest"]
+        window_id = str(event["chest_window_id"])
+        key = str(elite_chest["idempotency_key_format"]).format(
+            run_id=run_id,
+            window_id=window_id,
+            event_id=event_id,
+            reward_type="ARTIFACT_OFFER",
+        )
+        first = key not in event.get("offer_ledger", {})
         event.setdefault("offer_ledger", {})
         if first:
-            event["offer_ledger"][key] = {"event_id": event_id, "choice_count": 3}
+            event["offer_ledger"][key] = {
+                "event_id": event_id,
+                "window_id": window_id,
+                "choice_count": integer(elite_chest["choice_count"]),
+            }
         duplicate = key in event["offer_ledger"]
-        elite_pack_offer_results.append({
+        elite_chest_offer_results.append({
             "event_id": event_id,
-            "source_kind": "ELITE_PACK",
+            "window_id": window_id,
+            "source_kind": str(elite_chest["source_kind"]),
             "reward_type": "ARTIFACT_OFFER",
-            "choice_count": integer(simulation["elite_variation_policy"]["reward"]["choice_count"]),
+            "choice_count": integer(elite_chest["choice_count"]),
             "offer_created": first,
             "duplicate_attempt_idempotent": duplicate and not first,
             "time": round(run_clock, 3),
@@ -1528,12 +1612,23 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             return
         policy = simulation["elite_variation_policy"]
         pack_size = integer(policy["pack_size"])
-        variant_ids = list(unwrap(policy["variant_ids"]))
         overlay_records = policy.get("variant_overrides", {}).get("records", {})
+        elite_windows = simulation["build_catalog"]["offer_model"]["elite_chest"]["windows"]
+        chest_window = next(
+            window for window in elite_windows
+            if str(window["after_checkpoint_id"]) == str(mini_row["checkpoint_id"])
+        )
         # A variant overlays one ordinary family. Select the anchor and
         # variant as a linked pair so an ink-beetle overlay cannot silently be
         # applied to a moth or another family.
         band_weights = band.get("composition_weights", weights[band["wave_band_id"]])
+        variant_ids = active_variant_ids_for_window(
+            model,
+            seed,
+            str(band["wave_band_id"]),
+            state_revision=integer(chest_window["run_clock_seconds"]),
+            eligible_base_ids=band_weights.keys(),
+        )
         allowed_pairs = [
             (variant_id, str(overlay_records[variant_id]["base_enemy_id"]))
             for variant_id in variant_ids
@@ -1549,17 +1644,36 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         anchor_enemy = weighted_choice(rng, pair_weights)
         matching_variants = [variant_id for variant_id, enemy_id in allowed_pairs if enemy_id == anchor_enemy]
         variant_id = matching_variants[rng.randrange(len(matching_variants))]
-        pack_size = min(pack_size, max(0, integer(band["active_cap"]) - len(active)))
+        active_cap = integer(band["active_cap"])
+        available_slots = max(0, active_cap - len(active))
+        evicted_ordinary_count = 0
+        if pack_size > available_slots:
+            required_slots = pack_size - available_slots
+            ordinary_active = sorted(
+                [entity for entity in active if not entity.get("boss") and not entity.get("elite_variant")],
+                key=lambda entity: (entity["spawn_wall_time"], entity["entity_id"]),
+            )
+            evict_ids = {entity["entity_id"] for entity in ordinary_active[:required_slots]}
+            if evict_ids:
+                active[:] = [entity for entity in active if entity["entity_id"] not in evict_ids]
+                evicted_ordinary_count = len(evict_ids)
+            available_slots = max(0, active_cap - len(active))
+        pack_size = min(pack_size, available_slots)
         elite_pack_states[event_id] = {
             "event_id": event_id,
+            "chest_window_id": chest_window["window_id"],
             "source_checkpoint_id": mini_row["checkpoint_id"],
             "anchor_enemy_id": anchor_enemy,
             "variant_id": variant_id,
+            "active_variant_ids": variant_ids,
+            "evicted_ordinary_count": evicted_ordinary_count,
+            "pack_size": pack_size,
             "remaining": pack_size,
             "defeated": 0,
             "offer_ledger": {},
         }
         if pack_size == 0:
+            resolve_elite_pack_offer(event_id, run_clock)
             resolve_elite_pack_offer(event_id, run_clock)
             return
         for member_index in range(pack_size):
@@ -1577,6 +1691,21 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             entity["elite_pack_event_id"] = event_id
             next_entity_id += 1
             active.append(entity)
+
+    def settle_unresolved_elite_packs(run_clock: float) -> None:
+        """Close a late finite pack at the next main checkpoint boundary."""
+        for event_id, event in elite_pack_states.items():
+            if event["remaining"] <= 0:
+                continue
+            active[:] = [
+                entity for entity in active
+                if entity.get("elite_pack_event_id") != event_id
+            ]
+            event["remaining"] = 0
+            event["settlement_clear"] = True
+            event["clear_reason"] = "NEXT_MAIN_CHECKPOINT_BOUNDARY"
+            resolve_elite_pack_offer(event_id, run_clock)
+            resolve_elite_pack_offer(event_id, run_clock)
 
     def register_kill(entity: Dict[str, Any], wall_clock: float, run_clock: float) -> None:
         spawn_ttk = wall_clock - entity["spawn_wall_time"]
@@ -1736,6 +1865,7 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             if next_main_index < len(main_schedule) and run_elapsed + 1e-9 >= number(main_schedule[next_main_index]["time_seconds"]):
                 row = main_schedule[next_main_index]
                 checkpoint_id = str(row["checkpoint_id"])
+                settle_unresolved_elite_packs(run_elapsed)
                 main_boss = make_entity(
                     model,
                     str(row["boss_id"]),
@@ -1995,7 +2125,31 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
             "fallback_damage_bonus": round(state["fallback_damage_bonus"], 6),
             "chest_results": chest_results,
             "artifact_offer_results": artifact_offer_results,
-            "elite_pack_offer_results": elite_pack_offer_results,
+            "elite_chest_offer_results": elite_chest_offer_results,
+            "elite_pack_offer_results": elite_chest_offer_results,
+            "elite_chest_active_projections": [
+                {
+                    "window_id": state_row["chest_window_id"],
+                    "source_checkpoint_id": state_row["source_checkpoint_id"],
+                    "active_variant_ids": list(state_row["active_variant_ids"]),
+                    "active_variant_count": len(state_row["active_variant_ids"]),
+                    "evicted_ordinary_count": state_row["evicted_ordinary_count"],
+                }
+                for state_row in elite_pack_states.values()
+            ],
+            "elite_chest_pack_states": [
+                {
+                    "window_id": state_row["chest_window_id"],
+                    "source_checkpoint_id": state_row["source_checkpoint_id"],
+                    "pack_size": state_row["pack_size"],
+                    "defeated": state_row["defeated"],
+                    "remaining": state_row["remaining"],
+                    "offer_committed": bool(state_row.get("offer_ledger")),
+                    "settlement_clear": bool(state_row.get("settlement_clear", False)),
+                    "clear_reason": state_row.get("clear_reason", "ALL_PACK_MEMBERS_DEFEATED"),
+                }
+                for state_row in elite_pack_states.values()
+            ],
         },
         "risk": {
             "survived_main_run": survived,
@@ -2038,10 +2192,17 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
                 for event in chest_results
             ),
             "first_clear_artifact_offer_created": bool(artifact_offer_results),
-            "elite_pack_offer_count": len(elite_pack_offer_results),
+            "elite_chest_offer_count": len({
+                str(event["window_id"]) for event in elite_chest_offer_results
+            }),
+            "elite_chest_offer_idempotency_pass": all(
+                event.get("offer_created", False) or event.get("duplicate_attempt_idempotent", False)
+                for event in elite_chest_offer_results
+            ),
+            "elite_pack_offer_count": len(elite_chest_offer_results),
             "elite_pack_offer_idempotency_pass": all(
                 event.get("offer_created", False) or event.get("duplicate_attempt_idempotent", False)
-                for event in elite_pack_offer_results
+                for event in elite_chest_offer_results
             ),
             "artifact_offer_choice_count": integer(simulation["artifact_offer_model"]["choice_count"]) if artifact_offer_results else 0,
         },

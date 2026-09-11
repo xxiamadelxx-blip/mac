@@ -1,6 +1,6 @@
 # Balance Wave Table — 30-minute model
 
-Status: `PARTIAL / MODEL_ONLY`.
+Status: `PARTIAL / MODEL_ONLY` (R2 structural policy verified; numeric wave values remain model-only).
 
 `CANON` means the value is explicit in live B1. The 20:00–30:00 extension and
 post-boss numeric ramp are `PROPOSED`; they are not silently treated as B1.
@@ -59,7 +59,8 @@ final siege. These inputs are in `simulation_model.boss_wave_ramp`.
 | 25:00 → 30:00 | 30.4 / 272 | 48 / 400 | SIEGE at 1.00 |
 
 The independent shape checker confirms all five cycles are monotonic and end in
-the peak-density siege. It does not prove that Godot uses the same cadence.
+the peak-density siege. R2 confirms the runtime policy seam, but it does not
+prove that Godot uses these newly published numeric values.
 
 ## Occupancy evidence
 
@@ -72,5 +73,7 @@ occupancy `382`; this is a target envelope, not Android performance evidence.
 | Seven contiguous bands | 0–1800 seconds | PASS / MODEL |
 | Cap overflow | no occupancy above selected cap | PASS / MODEL |
 | Post-boss ramp | relief → monotonic ramp → siege, five cycles | PASS / MODEL |
-| Elite roster | 10 catalog IDs, at most 5 selected for a run | PASS / MODEL |
+| Elite roster | 10 catalog IDs from the live registry map; at most 5 selected per ELITE_CHEST window | PASS / MODEL |
+| ELITE_CHEST cadence | Five windows after mini bosses at 07:30/12:30/17:30/22:30/27:30; three cards, no wallet mutation | PASS / MODEL / PROPOSED |
+| Late pack settlement | Remaining finite pack members settle at the next main checkpoint before the freeze | PASS / MODEL / PROPOSED |
 | Runtime occupancy/FPS | no Godot/device trace | BLOCKED |

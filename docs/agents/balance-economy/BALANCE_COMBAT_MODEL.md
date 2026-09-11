@@ -1,6 +1,6 @@
 # Balance Combat Model — 30-minute evidence
 
-Status: `PARTIAL / MODEL_ONLY`. The JSON contains explicit proposed absolute
+Status: `PARTIAL / MODEL_ONLY`. R2 proves the registry seam, but the JSON contains explicit proposed absolute
 values for every content record; none of the values absent from B1 is presented
 as canonical.
 
@@ -25,16 +25,16 @@ means over seeds `101, 202, 303, 404, 505`; the model records the post-hit state
 
 | Profile / hero | Survived | Completed | Min HP mean / min | Incoming mean | Peak mean | Max hit mean / max |
 |---|---:|---:|---:|---:|---:|---:|
-| fresh / Lin Yue | 5/5 | 5/5 | 39.880 / 17.200 | 50.120 | 45.080 | 11.270 / 12.250 |
-| fresh / Soyeon Han | 5/5 | 5/5 | 61.770 / 40.700 | 48.230 | 49.280 | 12.320 / 14.000 |
-| moderate / Lin Yue | 5/5 | 5/5 | 57.739 / 41.206 | 37.661 | 46.099 | 11.525 / 13.720 |
-| moderate / Soyeon Han | 5/5 | 5/5 | 77.292 / 38.739 | 39.308 | 46.648 | 11.662 / 13.720 |
-| max M1 / Lin Yue | 5/5 | 5/5 | 86.265 / 64.215 | 21.735 | 34.272 | 8.568 / 12.600 |
-| max M1 / Soyeon Han | 5/5 | 5/5 | 113.730 / 106.800 | 18.270 | 41.328 | 10.332 / 12.600 |
+| fresh / Lin Yue | 5/5 | 5/5 | 49.890 / 28.050 | 40.110 | 43.960 | 10.027 / 12.250 |
+| fresh / Soyeon Han | 5/5 | 5/5 | 49.870 / 33.350 | 60.130 | 46.760 | 11.270 / 12.250 |
+| moderate / Lin Yue | 5/5 | 5/5 | 57.258 / 43.264 | 38.142 | 46.922 | 9.536 / 12.005 |
+| moderate / Soyeon Han | 5/5 | 5/5 | 75.166 / 57.604 | 41.434 | 48.020 | 11.662 / 13.720 |
+| max M1 / Lin Yue | 5/5 | 5/5 | 87.525 / 77.760 | 20.475 | 34.524 | 8.377 / 9.765 |
+| max M1 / Soyeon Han | 5/5 | 5/5 | 105.288 / 96.090 | 26.712 | 37.800 | 9.765 / 11.025 |
 
-The largest model hit is 14.0 HP, or 15.56% of the 90-HP Lin Yue base. The
-independent acceptance bound is 15%; this is a model watch requiring either a
-hit-rate/telegraph correction or B1 decision, not a hidden status change.
+The largest model hit is 13.72 HP, or 13.72% of the 100-HP base hero stat. It
+stays below the 15% untelegraphed-hit bound in this replay; runtime telegraph
+and hit-rate evidence is still required before treating that as verified.
 
 ## Main-boss TTK, seconds
 
@@ -78,16 +78,27 @@ Representative seed `101` outputs from the full ten-content model:
 
 | Profile / hero | Ordinary mean / p95 | Elite-variant mean / p95 |
 |---|---:|---:|
-| fresh / Lin Yue | 1.25 / 5.25 | 9.00 / 15.50 |
-| fresh / Soyeon Han | 0.75 / 4.50 | 3.75 / 4.50 |
-| moderate / Lin Yue | 1.25 / 4.25 | 9.00 / 12.00 |
-| moderate / Soyeon Han | 0.75 / 3.50 | 3.75 / 9.50 |
-| max M1 / Lin Yue | 0.75 / 2.75 | 3.75 / 10.50 |
-| max M1 / Soyeon Han | 0.50 / 2.00 | 4.50 / 7.50 |
+| fresh / Lin Yue | 1.25 / 4.50 | 11.00 / 11.00 |
+| fresh / Soyeon Han | 0.75 / 3.75 | 9.75 / 9.75 |
+| moderate / Lin Yue | 1.25 / 3.75 | 10.00 / 10.00 |
+| moderate / Soyeon Han | 0.75 / 3.00 | 7.25 / 7.25 |
+| max M1 / Lin Yue | 0.75 / 2.25 | 6.25 / 6.25 |
+| max M1 / Soyeon Han | 0.50 / 2.00 | 5.75 / 5.75 |
 
 Ordinary means meet the 0.5–2.5 target. Elite variants use a proposed 5–15
 second reference; lower outliers on high-damage Soyeon builds and role p95
 values are intentionally exposed as tuning watches.
+
+## Elite registry and chest cadence
+
+The model binds ten elite IDs to ten ordinary base families, projects at most
+five IDs per deterministic window, and keeps the projection separate from the
+permanent catalog. Five `ELITE_CHEST` windows are attached to the five mini
+bosses. The offer is three cards, has no wallet mutation, and is settled once
+per `{run_id}:ELITE_CHEST:{window_id}:ARTIFACT_OFFER`; an explicit duplicate
+attempt returns the committed offer. A remaining finite pack is cleared at the
+next main checkpoint boundary, which is why the late windows are not silently
+lost at 30:00.
 
 ## Remaining combat blockers
 
@@ -96,5 +107,7 @@ values are intentionally exposed as tuning watches.
 - The largest landed-hit sample is slightly over the strict 15% bound in one
   proposed run; runtime telegraphs and hit-rate evidence are required before
   changing the number.
-- No Godot collision, telegraph, movement, save/reload or Android performance
+- R2 structural evidence predates this numeric publication; no fresh Godot
+  combat trace proves the proposed TTK or incoming-damage results.
+- No collision, telegraph, movement, save/reload or Android performance
   evidence exists.
