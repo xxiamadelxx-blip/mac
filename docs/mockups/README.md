@@ -8,61 +8,34 @@
 
 ## Каноническое хранение бинарных mockup-ассетов
 
-Для ассетов, относящихся к этой папке `docs/mockups/`, решение Supabase откатировано. Каноническое место бинарных mockup-ассетов — GitHub-репозиторий `xxiamadelxx-blip/mac`.
+Каноническое бинарное хранилище mockup-ассетов — приватный Supabase Storage:
+
+- project: `ylhbihgrchtqzaphuxvy`;
+- bucket: `visual-assets`;
+- prefix: `moonevil-eclipse/docs/mockups/`.
+
+Каждый PNG/SVG хранится отдельным Storage object с путём, зеркалящим
+каноническую stage-папку. GitHub хранит только код, текстовые индексы,
+manifest, инструкции и evidence metadata. Бинарные файлы не передаются через
+чат, не кодируются в Base64 и не коммитятся в GitHub.
 
 Правила:
 
-1. Каждый отдельный mockup-asset package выпускается ровно из **40 реальных бинарных PNG-файлов**.
-2. PNG должны быть настоящими файлами в соответствующей stage-папке GitHub. Base64, data URL, PNG внутри текста, SVG/HTML/canvas-замена и ZIP без распакованных PNG не считаются размещением.
-3. Пакет сначала имеет статус `QUEUED`. Статус `PLACED` разрешён только после подтверждения фактического GitHub tree/Contents: найдены все 40 точных путей и соответствующие бинарные blobs.
-4. После подтверждения в реестре ниже обязательно записываются точные пути всех размещённых файлов, точные пути файлов в очереди, commit SHA и дата проверки.
-5. Наличие объекта в Supabase, старого Release, README, manifest или сообщения агента не считается размещением в GitHub.
-6. Размещение PNG в GitHub не означает Visual Lab approval. `PLACED` не равно `CANDIDATE`, `APPROVED GOLDEN` или `PRODUCTION`; provenance, technical QA и художественное решение Creative Director остаются обязательными.
-7. Если stage требует несколько пакетов, каждый пакет ведётся отдельной записью по 40 PNG. Количество и имена файлов нельзя додумывать — их добавляют в реестр только по фактическому package manifest.
+1. Сначала определить `stage_path`, `asset_id`, `family_id`, `candidate_id` и
+   художественный/технический статус через Visual Lab.
+2. Для каждого файла manifest содержит отдельные `object`, `local_path`,
+   `content_type`, `size_bytes` и `sha256`.
+3. Статус `READY` ставится только после фактической загрузки и побайтной
+   проверки каждого Storage object.
+4. Наличие папки, имени файла, manifest, старого Release или сообщения агента
+   не является доказательством существования бинарного объекта.
+5. Техническая проверка Storage не равна `CANDIDATE`, `APPROVED GOLDEN` или
+   `PRODUCTION`; художественные ворота Visual Lab остаются обязательными.
+6. Для сборки CI скачивает проверенные объекты в build workspace. Runtime-код
+   только ссылается на локальные asset paths и не рисует финальный визуал кодом.
 
-## Реестр бинарных PNG: размещено и на очереди
-
-Этот раздел обновляется только после реальной проверки GitHub. Нельзя отмечать файл размещённым заранее.
-
-### Фактически размещено в GitHub
-
-Проверка: `main@d495aaa431fa6da481ed258c6ac9ae85233e441c`.
-
-- Подтверждённых PNG в `docs/mockups/`: **0**.
-- Точные размещённые файлы: **нет**.
-- PNG, находящиеся только в Supabase или упомянутые в stage README, сюда не включаются.
-
-### Пакеты на очереди
-
-| Пакет / stage | Размещено | На очереди | Статус |
-|---|---:|---|---|
-| `docs/mockups/01-menu/` | 0/40 | 40 PNG; точные пути будут внесены после package manifest | `QUEUED` |
-| `docs/mockups/02-arena/` | 0/40 | 40 PNG; точные пути будут внесены после package manifest | `QUEUED` |
-| `docs/mockups/03-heroes/` | 0/40 | 40 PNG; точные пути будут внесены после package manifest | `QUEUED` |
-| `docs/mockups/04-enemies/` | 0/40 | 40 PNG; точные пути будут внесены после package manifest | `QUEUED` |
-| Stage 05–19 | 0 | Пакет открывается отдельной записью только при начале соответствующего этапа | `NOT_OPENED` |
-
-### Формат записи после подтверждения
-
-Для каждого пакета в этот README добавляются:
-
-```text
-package_id: <stable package ID>
-stage_path: docs/mockups/<stage>/
-required_png_count: 40
-status: PLACED | QUEUED
-placed_files:
-  - docs/mockups/<stage>/<exact-file-01>.png
-  - ...
-queued_files:
-  - docs/mockups/<stage>/<exact-file-01>.png
-  - ...
-github_commit: <commit SHA>
-github_tree_or_contents_evidence: <verified path/blob evidence>
-checked_at_utc: <timestamp>
-```
-
-Файл нельзя переводить из `QUEUED` в `PLACED`, пока список `placed_files` не содержит все 40 фактически подтверждённых PNG.
+Инвентарь и статусы обновляются только по фактическому Storage evidence, а не
+по предполагаемому количеству файлов.
 
 ## Активная визуальная итерация
 
