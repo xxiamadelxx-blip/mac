@@ -3,7 +3,7 @@ name: R2 Runtime Verification
 on:
   push:
     branches:
-      - main
+      - agent/runtime-r2-fresh-105b5ca
     paths:
       - "scripts/runtime/**"
       - "docs/architecture/first-run/FIRST_RUN_DATA_CONTRACT.json"
