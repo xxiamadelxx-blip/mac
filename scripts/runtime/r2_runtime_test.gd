@@ -137,7 +137,7 @@ func _test_mini_boss_missing_is_explicit(coordinator: Variant) -> void:
     _check(bool(mini_started.get("ok", false)), "Mini boss starts from registry content")
     if not bool(mini_started.get("ok", false)):
         return
-    var run_before := mini_coordinator.clock.run_seconds
+    var run_before: float = float(mini_coordinator.clock.run_seconds)
     mini_coordinator.advance(2.0)
     _check(mini_coordinator.clock.run_seconds > run_before, "Mini boss keeps run clock moving")
     _check(mini_coordinator.clock.encounter_seconds > 0.0, "Mini boss advances encounter clock")
