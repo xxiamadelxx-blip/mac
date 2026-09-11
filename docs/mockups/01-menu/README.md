@@ -53,7 +53,7 @@ Status: **IN PROGRESS / USER REVIEW**.
 - [STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md](./STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md)
 - [STAGE01_MENU_SYSTEM_PROVENANCE_v04.json](./STAGE01_MENU_SYSTEM_PROVENANCE_v04.json)
 
-v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Все 50 индивидуальных PNG-объектов доставлены в приватный Supabase bucket `visual-assets` по зеркальному пути `moonevil-eclipse/docs/mockups/01-menu/layers/` и проверены. До явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
+v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Пакет состоит из 50 отдельных PNG-файлов в `docs/mockups/01-menu/layers/`, но в текущем GitHub tree бинарное размещение не подтверждено: `PENDING_GITHUB_UPLOAD`. Нужны две отдельные партии: `40` и `10`. До явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
 
 
 ## Restart Stage 01 — candidate v01 — USER REVIEW
@@ -73,4 +73,4 @@ Preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./candidates/STAGE01_MENU_HOME_CA
 
 Размер файла проверен как 390×844, PNG, sRGB; GitHub blob SHA: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`. Бинарный commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`. Это единственный текущий GitHub preview-кандидат для approval.
 
-Исторические v02/v04-объекты, ранее заявленные в Supabase, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первая партия Stage 01; её размер определяется manifest и доступным лимитом чата/транспорта. До approval batch не запускается.
+Исторические v02/v04-объекты, ранее заявленные во внешнем хранилище, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первая партия Stage 01; её размер определяется manifest и доступным лимитом чата/транспорта. До approval batch не запускается.

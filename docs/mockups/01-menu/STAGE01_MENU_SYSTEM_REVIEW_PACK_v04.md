@@ -12,7 +12,7 @@ Candidate ID: vl-20260910-moonveil-menu-system-v04
 Status: USER REVIEW
 Technical status: PARTIAL / STATIC_IMAGE_PASS
 Artistic status: PENDING
-Binary delivery status: DELIVERED_TO_SUPABASE
+Binary delivery status: PENDING_GITHUB_UPLOAD
 
 ## Решение по отклонённому v03
 
@@ -74,20 +74,20 @@ Binary delivery status: DELIVERED_TO_SUPABASE
 
 В character cards использованы существующие PNG-ассеты Stage 03:
 
-- `visual-assets/moonevil-eclipse/docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png`;
-- `visual-assets/moonevil-eclipse/docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png`.
+- `docs/mockups/03-heroes/layers/STAGE03_HERO_LIN_YUE_PORTRAIT_v02.png`;
+- `docs/mockups/03-heroes/layers/STAGE03_HERO_SOYEON_HAN_PORTRAIT_v02.png`.
 
 Линь Юэ и Соён Хан не перегенерировались и не менялись как identity family.
 
-## Supabase delivery
+## GitHub PNG batch delivery
 
-Канонический binary destination для каждого файла:
+Канонический binary destination: `xxiamadelxx-blip/mac@main/docs/mockups/01-menu/layers/<filename>.png`.
 
-`visual-assets/moonevil-eclipse/docs/mockups/01-menu/layers/<filename>.png`
+Пакет содержит 50 отдельных PNG. В текущем GitHub tree фактическое наличие этих файлов не подтверждено, поэтому статус — `PENDING_GITHUB_UPLOAD`.
 
-Созданы индивидуальные PNG-файлы; ZIP и Base64-представление не используются.
+Размещение выполняется двумя отдельными запусками: batch 001 = 40 PNG, затем после проверки batch 001 batch 002 = оставшиеся 10 PNG. Каждый batch получает отдельный evidence-файл в `docs/asset_batches/01-menu/`.
 
-Фактический статус handoff: все 50 индивидуальных PNG появились в Supabase Storage и проверены по количеству distinct объектов и суммарному размеру 12 827 197 байт. Временная anon INSERT-политика использовалась только на время доставки и удалена; постоянная политика authenticated ограничена bucket `visual-assets` и PNG-путями `moonevil-eclipse/docs/mockups/*.png`. Candidate остаётся `USER REVIEW`: доставка выполнена, approval и runtime promotion не выполнены.
+ZIP, архивы, PNG/Base64 в чат, GitHub Release assets, SVG/HTML/data URL и кодовая отрисовка запрещены. Доставка не меняет и не перегенерирует Линь Юэ или Соён Хан.
 
 ## Static checks
 
@@ -106,7 +106,7 @@ Binary delivery status: DELIVERED_TO_SUPABASE
 
 ## Next action
 
-Binary delivery уже завершён: 50 PNG находятся в указанных Supabase object paths и проверены. Следующее действие — пользовательское визуальное решение по четырём экранам и UI asset family. До APPROVE runtime manifest и runtime integration не менять.
+Сделать отдельный запуск для batch 001 из 40 PNG, проверить GitHub paths/blobs и записать evidence. После этого остановиться; batch 002 запускается отдельно.
 
 ## Asset inventory
 

@@ -2,14 +2,14 @@
 
 > **Operational router, not a release/approval claim.** Read this file from the current `main` before any work. Re-check `main` immediately before writing.
 
-- Snapshot HEAD: `7061f6e8715c2822b0d856e8d91a3b595d4947c8`
-- Snapshot tree: `79734b665defa9cb6b5139fff85f078702802d40`
+- Snapshot HEAD: `105b5ca75bda73fd61ddca52c169a14e193e32ae`
+- Snapshot tree: `baa870ec5e7d809731cdd275ce255edd3df300fe`
 - Snapshot date: 2026-09-11 UTC
 - Repository: `xxiamadelxx-blip/mac`, branch `main`
 
 ## 0. Anti-context-loss rule
 
-One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are transported as individual objects in the private Supabase Storage bucket `visual-assets`; the request and manifest carry metadata only.
+One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are committed as individual PNG files in GitHub; each agent run places one bounded batch of at most 40 files and the evidence manifest carries metadata only.
 
 Before work: read this file; claim one task ID; record the parent SHA; edit only the assigned paths; report exact evidence and one next action.
 
@@ -78,7 +78,7 @@ Tree entries at snapshot: 346.
 |---|---|---|---|
 | `VIS-02` | Visual Lab / Arena | `docs/mockups/02-arena/` | Review v03 and preserve v02 fallback; no scene promotion or production claim without approval/import/collision proof. |
 | `VIS-04` | Visual Lab / Enemies | `docs/mockups/04-enemies/` | Inventory actual partial files first; correct manifest; approve representative master before deriving nine candidates; no full-pack claim. |
-| `ASSET-03` | Binary transport | Individual Supabase Storage objects + Stage 03 workflow request | Exact 96/192 PNG objects in `visual-assets`; request has one object/local_path/size/SHA-256 per file; CI verifies each file in the build workspace. No chat encoding. |
+| `ASSET-03` | Binary transport | Individual GitHub PNG batch commits + Stage 03 evidence | Exact 96/192 PNG files under `docs/mockups/03-heroes/`; one run places 40 or the final remainder; evidence has paths, blob SHA, size and SHA-256. No chat encoding. |
 | `PROJECT-INTEGRATOR` | Single docs integrator | root docs after accepted handoffs | Update legacy markers/indexes from accepted Phase A/B results in one small commit; no parallel root rewrites. |
 
 Dependency order:
@@ -124,13 +124,16 @@ Report: parent HEAD, resulting HEAD, changed paths, status, evidence, blockers, 
 - Do not promote Arena v03 or enemy candidates without Visual Lab gates.
 - If `main` moved, stop, re-read this file, and rebase the task mentally before writing.
 
-## 8. Binary transport migration
+## 8. GitHub PNG batch transport
 
-- GitHub Release is not the canonical binary store and does not close asset intake.
-- The canonical route is individual files on the agent filesystem -> per-file upload to Supabase Storage -> READY request -> CI download/hash check -> build workspace -> Godot export.
-- The live request remains `PENDING_SUPABASE_UPLOAD` until every listed object exists and its exact bytes, size and SHA-256 are verified.
-- This migration changes transport only. It does not approve, mutate, regenerate or promote Lin Yue, Soyeon Han, Arena v03 or any other visual asset.
-
-
+- Каноническое бинарное хранилище — repository `xxiamadelxx-blip/mac`, branch `main`; PNG лежат отдельными файлами под `docs/mockups/<stage>/`.
+- GitHub Release assets не считаются файлами репозитория и не используются для intake.
+- Отдельный `USER REVIEW` preview допускается до открытия большой партии для утверждения внешнего вида.
+- Один агентский запуск обрабатывает одну партию: ровно 40 PNG, если осталось 40 или больше, либо весь остаток, если осталось меньше 40.
+- После каждой партии создаётся `docs/asset_batches/<stage>/batch-<NNN>.json` с фактическими paths, blob SHA, размером, SHA-256 и commit SHA.
+- `PLACED` ставится только после проверки фактических GitHub blobs. Manifest, список имён, скриншот и сообщение агента не являются binary evidence.
+- `docs/ci/STAGE03_IMPORT_REQUEST.json` остаётся `PENDING_GITHUB_UPLOAD` до размещения 192 отдельных PNG Stage 03; ожидаемый порядок: `40 + 40 + 40 + 40 + 32`.
+- ZIP, архивы, PNG/Base64 в чат и кодовая отрисовка финального визуала запрещены. Внутреннее кодирование GitHub API не передаётся в чат.
+- Этот transport reset не утверждает, не мутирует и не перегенерирует Линь Юэ, Соён Хан, арену или другой арт.
 
 Current conclusion: **coordination baseline is published by this file; the project is not release-ready.**

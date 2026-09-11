@@ -1,15 +1,29 @@
 {
-  "schema": "moonveil.stage03.storage_import_request",
-  "version": 2,
-  "status": "PENDING_SUPABASE_UPLOAD",
-  "provider": "supabase_storage",
-  "storage": {
-    "project_ref": "ylhbihgrchtqzaphuxvy",
-    "bucket": "visual-assets",
-    "prefix": "moonevil-eclipse/docs/mockups/03-heroes"
+  "schema": "moonveil.stage03.github_png_batch_request",
+  "version": 3,
+  "status": "PENDING_GITHUB_UPLOAD",
+  "repository": "xxiamadelxx-blip/mac",
+  "branch": "main",
+  "asset_root": "docs/mockups/03-heroes",
+  "batching": {
+    "max_files_per_batch": 40,
+    "one_batch_per_agent_run": true,
+    "expected_file_count": 192,
+    "expected_batch_sizes": [
+      40,
+      40,
+      40,
+      40,
+      32
+    ],
+    "completed_batches": [],
+    "next_batch_index": 1
   },
   "asset_set": {
-    "heroes": ["lin_yue", "soyeon_han"],
+    "heroes": [
+      "lin_yue",
+      "soyeon_han"
+    ],
     "directions": [
       "front",
       "back",
@@ -34,9 +48,8 @@
       "death_02",
       "shadow"
     ],
-    "expected_file_count": 192,
+    "per_hero_file_count": 96,
     "format": "PNG_RGBA_1024"
   },
-  "assets": [],
-  "next_action": "Upload and byte-verify every individual PNG, then add its local_path, object, size_bytes and sha256 here before changing status to READY."
+  "next_action": "Prepare batch 001 only: 40 real PNG files, commit them individually under docs/mockups/03-heroes/, verify paths/blobs and SHA-256, write docs/asset_batches/03-heroes/batch-001.json, then stop."
 }
