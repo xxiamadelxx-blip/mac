@@ -2,16 +2,18 @@
 
 > **Operational router, not a release/approval claim.** Read this file from the current `main` before any work. Re-check `main` immediately before writing.
 
-- Snapshot HEAD: `ceb9781c24adcd8737f6953573f4ebc9103ae366`
-- Snapshot tree: `002277223c247a4400eba541674ef312b5f398fc`
-- Snapshot date: 2026-09-10 UTC
+- Snapshot HEAD: `d495aaa431fa6da481ed258c6ac9ae85233e441c`
+- Snapshot tree: `527ceb456aa2057521c1e60a2c176ec7bb63b224`
+- Snapshot date: 2026-09-11 UTC
 - Repository: `xxiamadelxx-blip/mac`, branch `main`
 
 ## 0. Anti-context-loss rule
 
-One task has one observable result, one owned write set, and one evidence bundle. Do not paste PNG/Base64 into chat. Hero binaries arrive as a real ZIP in the private Supabase Storage bucket game-assets; the Stage 03 workflow downloads and verifies the exact object before importing it.
+One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are transported as individual objects in the private Supabase Storage bucket `visual-assets`; the request and manifest carry metadata only.
 
 Before work: read this file; claim one task ID; record the parent SHA; edit only the assigned paths; report exact evidence and one next action.
+
+
 
 ## 1. Observed repository state
 
@@ -76,7 +78,7 @@ Tree entries at snapshot: 346.
 |---|---|---|---|
 | `VIS-02` | Visual Lab / Arena | `docs/mockups/02-arena/` | Review v03 and preserve v02 fallback; no scene promotion or production claim without approval/import/collision proof. |
 | `VIS-04` | Visual Lab / Enemies | `docs/mockups/04-enemies/` | Inventory actual partial files first; correct manifest; approve representative master before deriving nine candidates; no full-pack claim. |
-| `ASSET-03` | Binary transport | Supabase Storage object + Stage 03 workflow request | Exact 96/192-PNG ZIP in Storage; request has bucket/object/size/SHA-256; CI reports actual count/dimensions/RGBA. No chat encoding. |
+| `ASSET-03` | Binary transport | Individual Supabase Storage objects + Stage 03 workflow request | Exact 96/192 PNG objects in `visual-assets`; request has one object/local_path/size/SHA-256 per file; CI verifies each file in the build workspace. No chat encoding. |
 | `PROJECT-INTEGRATOR` | Single docs integrator | root docs after accepted handoffs | Update legacy markers/indexes from accepted Phase A/B results in one small commit; no parallel root rewrites. |
 
 Dependency order:
@@ -124,9 +126,11 @@ Report: parent HEAD, resulting HEAD, changed paths, status, evidence, blockers, 
 
 ## 8. Binary transport migration
 
-- GitHub Release is retained only as a historical source reference for the old ZIP; it is not the canonical binary store and does not trigger intake.
-- The canonical route is agent filesystem -> Supabase Storage -> READY request -> CI download/hash check -> importer -> commit of actual PNG.
-- The live request remains PENDING_SUPABASE_UPLOAD until the exact ZIP is uploaded to the selected private Storage project.
+- GitHub Release is not the canonical binary store and does not close asset intake.
+- The canonical route is individual files on the agent filesystem -> per-file upload to Supabase Storage -> READY request -> CI download/hash check -> build workspace -> Godot export.
+- The live request remains `PENDING_SUPABASE_UPLOAD` until every listed object exists and its exact bytes, size and SHA-256 are verified.
 - This migration changes transport only. It does not approve, mutate, regenerate or promote Lin Yue, Soyeon Han, Arena v03 or any other visual asset.
+
+
 
 Current conclusion: **coordination baseline is published by this file; the project is not release-ready.**

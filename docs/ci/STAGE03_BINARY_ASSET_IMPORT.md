@@ -1,35 +1,34 @@
-# Stage 03 — binary asset import
+# Stage 03 — individual binary asset import
 
 Статус: **IMPLEMENTED / BINARY INTAKE PENDING**.
 
-Этот контур принимает уже существующие бинарные PNG только через Supabase
-Storage. Он не генерирует изображения, не мутирует героинь и не переносит PNG,
-ZIP или Base64 через чат.
+Контур принимает уже существующие PNG героинь через приватный Supabase Storage.
+Он не генерирует изображения, не мутирует героинь и не передаёт бинарные данные
+через чат.
 
-Полный storage-контракт находится в
+Полный транспортный контракт находится в
 [`SUPABASE_ASSET_STORAGE.md`](SUPABASE_ASSET_STORAGE.md).
 
 ## Канонический поток
 
 ```text
 готовые PNG на диске агента
-  -> проверенный ZIP
-  -> raw/resumable upload в приватный Supabase Storage
-  -> manifest + SHA-256
-  -> STAGE03_IMPORT_REQUEST.json со статусом READY
-  -> GitHub Actions download + verify
-  -> importer
-  -> docs/mockups/03-heroes/<hero>/...png
-  -> commit в main
+  -> manifest с отдельными файлами и SHA-256
+  -> отдельные Storage objects в visual-assets
+  -> request со статусом READY
+  -> GitHub Actions download + verify каждого объекта
+  -> PNG validator
+  -> build workspace/docs/mockups/03-heroes/<hero>/...
+  -> Godot export
 ```
 
-GitHub Release больше не используется как источник или триггер. Старый Release
-asset остаётся историческим резервом до точной загрузки в Storage и сам по себе
-не закрывает `BINARY_INTAKE_PENDING`.
+GitHub Release не является источником бинарных байтов. Runtime-файлы не
+коммитятся обратно в GitHub: они скачиваются в рабочую директорию конкретной
+сборки и исчезают после job.
 
-## Содержимое ZIP
+## Требуемая структура Stage 03
 
-Для одного героя архив содержит полный набор из 96 файлов:
+Для одного героя требуется полный набор из 96 отдельных PNG:
 
 ```text
 lin_yue/
@@ -39,106 +38,59 @@ lin_yue/
   south_west/shadow.png
 ```
 
-Разрешены два героя в одном архиве, тогда всего 192 PNG:
+Для двух героинь request перечисляет 192 отдельных объекта:
 
 ```text
 lin_yue/<direction>/<state>.png
 soyeon_han/<direction>/<state>.png
 ```
 
-Также принимается архив с префиксом `docs/mockups/03-heroes/`. Другие файлы,
-включая README и произвольные manifests, не являются частью этого ZIP-контракта
-и отклоняются.
+Разрешены восемь направлений (`front`, `back`, `left`, `right`, `north_west`,
+`north_east`, `south_east`, `south_west`) и двенадцать состояний (`idle`,
+`move_01`, `move_02`, `move_03`, `attack_01`, `attack_02`, `attack_03`,
+`hit_01`, `hit_02`, `death_01`, `death_02`, `shadow`).
 
-Проверяются:
-
-- полное множество одного или двух героев;
-- восемь направлений и двенадцать состояний;
-- каждый файл — PNG 1024×1024, 8-bit true RGBA;
-- отсутствие `..`, абсолютных путей, symlink и дубликатов;
-- ZIP CRC;
-- запрет перезаписи уже существующего runtime-файла.
-
-Импортёр не меняет `hero_manifest.json`, stage manifest, provenance, artistic
-status или runtime code. Импортированные PNG остаются candidate/technical
-intake, пока Creative Director отдельно не подтвердит exact candidate.
+Каждый файл проверяется как PNG 1024×1024, 8-bit true RGBA. Также проверяются
+пути без traversal, отсутствие дубликатов и совпадение заявленного размера и
+SHA-256.
 
 ## Upload из телефона или удалённой среды
 
-1. Получить настоящий ZIP в файловой системе агента. Имя первого пакета:
-   `stage03-assets-lin-yue-v01.zip`.
-2. Настроить в защищённой среде `SUPABASE_URL`,
+1. Получить реальные отдельные PNG в файловой системе агента.
+2. Создать manifest с `local_path`, Storage `object`, MIME type, размером и
+   SHA-256 для каждого файла.
+3. Настроить в защищённой среде `SUPABASE_URL`,
    `SUPABASE_STORAGE_API_KEY` и `SUPABASE_STORAGE_AUTH_TOKEN`.
-3. Запустить:
+4. Запустить:
 
    ```bash
-   python3 scripts/assets/upload_stage03_to_supabase.py \
-     stage03-assets-lin-yue-v01.zip
+   python3 scripts/assets/upload_assets_to_supabase.py \
+     --manifest path/to/upload-manifest.json \
+     --report-output path/to/upload-report.json
    ```
 
-4. Сохранить выведенные `SHA256`, `SIZE_BYTES`, bucket/object и два текстовых
-   файла manifest/checksum.
-5. Обновить `docs/ci/STAGE03_IMPORT_REQUEST.json`: поставить `READY` и указать
-   точные Storage object, SHA-256 и размер.
-6. Commit request-файла запускает workflow. На телефоне достаточно сделать
-   upload и commit текстового request; сам ZIP в чат или GitHub не загружается.
+5. Убедиться, что отчёт содержит `VERIFIED` для каждого объекта.
+6. Перенести проверенные метаданные в `STAGE03_IMPORT_REQUEST.json`, поставить
+   `READY` и отправить только текстовый request в GitHub.
 
-Для ZIP больше 6 MiB скрипт по умолчанию использует TUS resumable upload с
-чанками 6 MiB. Это протокольные запросы к Storage; байты архива передаются
-потоком и не сериализуются в текст.
+Если Storage API write-token недоступен, не менять RLS и не создавать замену:
+вернуть `BLOCKED_BINARY_ARTIFACT` с указанием недостающего канала.
 
-## Request-файл
+## Request statuses
 
-Минимальная форма `READY`:
-
-```json
-{
-  "schema": "moonveil.stage03.storage_import_request",
-  "version": 1,
-  "status": "READY",
-  "provider": "supabase_storage",
-  "asset_name": "stage03-assets-lin-yue-v01.zip",
-  "storage": {
-    "bucket": "game-assets",
-    "object": "releases/stage03-assets-lin-yue-v01.zip"
-  },
-  "integrity": {
-    "sha256": "<64 lowercase hex characters>",
-    "size_bytes": 82744571
-  },
-  "manifest_object": "manifests/stage03-assets-lin-yue-v01.json",
-  "checksum_object": "checksums/stage03-assets-lin-yue-v01.sha256"
-}
-```
-
-Статусы:
-
-- `PENDING_SUPABASE_UPLOAD` — архив ещё не в Storage;
-- `READY` — exact bytes и целостность подтверждены, CI может скачать;
-- `IMPORTED` — CI реально создал список PNG и commit;
-- `BLOCKED_BINARY_ARTIFACT` — отсутствует бинарный канал, secret, runner или
-  evidence.
+- `PENDING_SUPABASE_UPLOAD` — хотя бы один объект ещё не загружен или не проверен;
+- `READY` — все перечисленные объекты имеют подтверждённые байты, размер и SHA-256;
+- `IMPORTED` — CI скачал и проверил все файлы в build workspace;
+- `BLOCKED_BINARY_ARTIFACT` — отсутствует Storage write-token, object, runner или evidence.
 
 ## Приёмка
 
-Успешный импорт означает только следующее:
+Успешный intake означает только следующее:
 
-- Storage object скачан без подмены и его SHA-256/размер совпали;
-- все файлы прошли структурную и PNG-проверку;
-- PNG появились в правильной hero-папке;
-- Actions создал commit в `main`;
-- evidence содержит download/import log.
+- каждый Storage object скачан без подмены;
+- размер и SHA-256 каждого объекта совпали;
+- PNG прошли структурную проверку;
+- файлы появились в build workspace нужной hero-папки;
+- job завершился с exit code 0.
 
 Это не означает artistic approval, `APPROVED GOLDEN` или `PRODUCTION`.
-
-## Причины типичного отказа
-
-- `Asset name must match...` — имя должно начинаться с `stage03-assets-` и
-  заканчиваться `.zip`;
-- `incomplete` — не хватает одного из 96/192 путей либо есть лишний путь;
-- `expected 1024x1024` — экспорт сделан в другом размере;
-- `expected 8-bit true RGBA` — PNG палитровый, RGB без alpha или с другим bit
-  depth;
-- `refusing to overwrite` — путь уже импортирован; создай новый candidate;
-- `BLOCKED_BINARY_ARTIFACT` — не имитировать готовность, а исправить именно
-  указанный Storage/CI канал.

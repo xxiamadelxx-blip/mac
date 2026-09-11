@@ -1,4 +1,4 @@
-name: Import Stage 03 binary hero assets from Supabase Storage
+name: Verify Stage 03 individual assets from Supabase Storage
 
 on:
   push:
@@ -7,39 +7,25 @@ on:
       - .github/scripts/download_supabase_asset.py
       - .github/scripts/import_stage03_assets.py
       - .github/workflows/import-stage03-release-assets.yml
+      - scripts/assets/upload_assets_to_supabase.py
   workflow_dispatch:
     inputs:
-      storage_bucket:
-        description: Private Supabase Storage bucket
+      request_file:
+        description: Request manifest in the repository
         required: true
-        type: string
-      storage_object:
-        description: Exact object path inside the bucket
-        required: true
-        type: string
-      asset_name:
-        description: Local ZIP name, for example stage03-assets-lin-yue-v01.zip
-        required: true
-        type: string
-      expected_sha256:
-        description: SHA-256 of the exact ZIP bytes
-        required: true
-        type: string
-      expected_size_bytes:
-        description: Exact ZIP size in bytes
-        required: true
+        default: docs/ci/STAGE03_IMPORT_REQUEST.json
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: stage03-binary-asset-import
+  group: stage03-individual-asset-intake
   cancel-in-progress: false
 
 jobs:
-  import:
-    name: Import Stage 03 Storage object
+  verify:
+    name: Download and verify individual Stage 03 assets
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -52,175 +38,127 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Resolve Storage request
-        id: asset
+      - name: Resolve request
+        id: request
         env:
           EVENT_NAME: ${{ github.event_name }}
-          REQUEST_FILE: docs/ci/STAGE03_IMPORT_REQUEST.json
-          INPUT_BUCKET: ${{ inputs.storage_bucket }}
-          INPUT_OBJECT: ${{ inputs.storage_object }}
-          INPUT_ASSET_NAME: ${{ inputs.asset_name }}
-          INPUT_SHA256: ${{ inputs.expected_sha256 }}
-          INPUT_SIZE_BYTES: ${{ inputs.expected_size_bytes }}
+          INPUT_REQUEST_FILE: ${{ inputs.request_file }}
         shell: bash
         run: |
           set -euo pipefail
-
-          if [[ "${EVENT_NAME}" == "push" ]]; then
-            if [[ ! -f "${REQUEST_FILE}" ]]; then
-              echo "No Stage 03 Storage request; nothing to import."
-              echo "should_import=false" >> "${GITHUB_OUTPUT}"
-              exit 0
-            fi
-            status="$(jq -r '.status // ""' "${REQUEST_FILE}")"
-            if [[ "${status}" != "READY" ]]; then
-              echo "Stage 03 request status is ${status:-<empty>}; binary intake remains pending."
-              echo "should_import=false" >> "${GITHUB_OUTPUT}"
-              exit 0
-            fi
-            bucket="$(jq -r '.storage.bucket // ""' "${REQUEST_FILE}")"
-            object_path="$(jq -r '.storage.object // ""' "${REQUEST_FILE}")"
-            asset_name="$(jq -r '.asset_name // ""' "${REQUEST_FILE}")"
-            expected_sha256="$(jq -r '.integrity.sha256 // ""' "${REQUEST_FILE}")"
-            expected_size_bytes="$(jq -r '.integrity.size_bytes // ""' "${REQUEST_FILE}")"
-          elif [[ "${EVENT_NAME}" == "workflow_dispatch" ]]; then
-            bucket="${INPUT_BUCKET}"
-            object_path="${INPUT_OBJECT}"
-            asset_name="${INPUT_ASSET_NAME}"
-            expected_sha256="${INPUT_SHA256}"
-            expected_size_bytes="${INPUT_SIZE_BYTES}"
-          else
-            echo "Unsupported event: ${EVENT_NAME}" >&2
+          request_file="docs/ci/STAGE03_IMPORT_REQUEST.json"
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" && -n "${INPUT_REQUEST_FILE:-}" ]]; then
+            request_file="${INPUT_REQUEST_FILE}"
+          fi
+          if [[ "${request_file}" == /* || "${request_file}" == *".."* || "${request_file}" == *"\\"* ]]; then
+            echo "Unsafe request path: ${request_file}" >&2
             exit 1
           fi
-
-          if [[ -z "${bucket}" || ! "${bucket}" =~ ^[A-Za-z0-9._-]+$ ]]; then
-            echo "Storage bucket is missing or has unsupported characters." >&2
+          if [[ ! -f "${request_file}" ]]; then
+            echo "Request file does not exist: ${request_file}" >&2
             exit 1
           fi
-          if [[ -z "${object_path}" || "${object_path}" == /* || "${object_path}" == *".."* || "${object_path}" == *"\\"* ]]; then
-            echo "Storage object must be a safe relative path." >&2
+          status="$(jq -r '.status // ""' "${request_file}")"
+          if [[ "${status}" != "READY" ]]; then
+            echo "Request status is ${status:-<empty>}; no binary intake is run."
+            echo "should_import=false" >> "${GITHUB_OUTPUT}"
+            echo "request_file=${request_file}" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          bucket="$(jq -r '.storage.bucket // ""' "${request_file}")"
+          project_ref="$(jq -r '.storage.project_ref // ""' "${request_file}")"
+          count="$(jq '.assets | length' "${request_file}")"
+          if [[ "${project_ref}" != "ylhbihgrchtqzaphuxvy" || "${bucket}" != "visual-assets" ]]; then
+            echo "Request does not target the canonical MAC Storage project/bucket." >&2
             exit 1
           fi
-          if [[ ! "${asset_name}" =~ ^stage03-assets-[A-Za-z0-9._-]+\.zip$ ]]; then
-            echo "Asset name must match stage03-assets-<id>.zip." >&2
+          if [[ "${count}" -le 0 ]]; then
+            echo "READY request contains no assets." >&2
             exit 1
           fi
-          if [[ ! "${expected_sha256}" =~ ^[0-9a-fA-F]{64}$ ]]; then
-            echo "Expected SHA-256 must be 64 hexadecimal characters." >&2
+          if jq -e '[.assets[] | select((.local_path | ascii_downcase | endswith(".zip")) or (.object | ascii_downcase | endswith(".zip")) or (.content_type == "application/zip"))] | length > 0' "${request_file}" >/dev/null; then
+            echo "Archive entries are forbidden; list individual visual files." >&2
             exit 1
           fi
-          if [[ ! "${expected_size_bytes}" =~ ^[1-9][0-9]*$ ]]; then
-            echo "Expected size must be a positive integer." >&2
-            exit 1
-          fi
-
           {
             echo "should_import=true"
-            echo "storage_bucket=${bucket}"
-            echo "storage_object=${object_path}"
-            echo "asset_name=${asset_name}"
-            echo "expected_sha256=${expected_sha256}"
-            echo "expected_size_bytes=${expected_size_bytes}"
+            echo "request_file=${request_file}"
+            echo "asset_count=${count}"
           } >> "${GITHUB_OUTPUT}"
+          echo "Request: ${request_file}; assets: ${count}"
 
       - name: Check Storage credentials
-        if: steps.asset.outputs.should_import == 'true'
+        if: steps.request.outputs.should_import == 'true'
         shell: bash
         run: |
           set -euo pipefail
           if [[ -z "${SUPABASE_URL:-}" || -z "${SUPABASE_STORAGE_API_KEY:-}" || -z "${SUPABASE_STORAGE_AUTH_TOKEN:-}" ]]; then
-            echo "BLOCKED_BINARY_ARTIFACT: SUPABASE_URL/API_KEY/AUTH_TOKEN are not configured as CI secrets." >&2
+            echo "BLOCKED_BINARY_ARTIFACT: Supabase Storage URL/API key/auth token are not configured as CI secrets." >&2
             exit 2
           fi
 
-      - name: Download and verify Storage ZIP
-        if: steps.asset.outputs.should_import == 'true'
+      - name: Download and verify each Storage object
+        if: steps.request.outputs.should_import == 'true'
         env:
-          STORAGE_BUCKET: ${{ steps.asset.outputs.storage_bucket }}
-          STORAGE_OBJECT: ${{ steps.asset.outputs.storage_object }}
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
-          EXPECTED_SHA256: ${{ steps.asset.outputs.expected_sha256 }}
-          EXPECTED_SIZE_BYTES: ${{ steps.asset.outputs.expected_size_bytes }}
+          REQUEST_FILE: ${{ steps.request.outputs.request_file }}
         shell: bash
         run: |
           set -euo pipefail
-          archive="${RUNNER_TEMP}/${ASSET_NAME}"
-          python3 .github/scripts/download_supabase_asset.py \
-            --bucket "${STORAGE_BUCKET}" \
-            --object "${STORAGE_OBJECT}" \
-            --output "${archive}" \
-            --expected-sha256 "${EXPECTED_SHA256}" \
-            --expected-size "${EXPECTED_SIZE_BYTES}" \
-            2>&1 | tee "${RUNNER_TEMP}/download.log"
-          cp docs/ci/STAGE03_IMPORT_REQUEST.json "${RUNNER_TEMP}/storage-request.json" 2>/dev/null || true
+          download_root="${RUNNER_TEMP}/stage03-assets"
+          mkdir -p "${download_root}"
+          : > "${RUNNER_TEMP}/stage03-download.log"
+          while IFS= read -r record; do
+            object_path="$(jq -r '.object' <<<"${record}")"
+            local_path="$(jq -r '.local_path' <<<"${record}")"
+            sha256="$(jq -r '.sha256' <<<"${record}")"
+            size_bytes="$(jq -r '.size_bytes' <<<"${record}")"
+            output="${download_root}/${local_path}"
+            mkdir -p "$(dirname "${output}")"
+            python3 .github/scripts/download_supabase_asset.py \
+              --bucket "visual-assets" \
+              --object "${object_path}" \
+              --output "${output}" \
+              --expected-sha256 "${sha256}" \
+              --expected-size "${size_bytes}" \
+              2>&1 | tee -a "${RUNNER_TEMP}/stage03-download.log"
+          done < <(jq -c '.assets[]' "${REQUEST_FILE}")
+
+      - name: Validate and stage assets for the build workspace
+        if: steps.request.outputs.should_import == 'true'
+        env:
+          REQUEST_FILE: ${{ steps.request.outputs.request_file }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          target_root="${RUNNER_TEMP}/mac-build-assets/docs/mockups/03-heroes"
+          python3 .github/scripts/import_stage03_assets.py \
+            "${REQUEST_FILE}" \
+            "${RUNNER_TEMP}/stage03-assets" \
+            "${target_root}" \
+            2>&1 | tee "${RUNNER_TEMP}/stage03-import.log"
           {
-            echo "Stage 03 binary intake from Supabase Storage"
-            echo "Bucket: ${STORAGE_BUCKET}"
-            echo "Object: ${STORAGE_OBJECT}"
-            echo "Asset: ${ASSET_NAME}"
-            echo "SHA-256: ${EXPECTED_SHA256}"
-            echo "Size bytes: ${EXPECTED_SIZE_BYTES}"
+            echo "### Stage 03 individual asset intake"
+            echo "Request: ${REQUEST_FILE}"
+            echo "Assets: ${{ steps.request.outputs.asset_count }}"
+            echo "Storage: visual-assets"
+            echo "Result: VERIFIED in build workspace"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Refresh main before import
-        if: steps.asset.outputs.should_import == 'true'
+      - name: Publish text evidence
+        if: always() && steps.request.outputs.should_import == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin main
-          git pull --ff-only origin main
-
-      - name: Validate and import PNG files
-        if: steps.asset.outputs.should_import == 'true'
-        env:
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 .github/scripts/import_stage03_assets.py \
-            "${RUNNER_TEMP}/${ASSET_NAME}" \
-            "docs/mockups/03-heroes" \
-            2>&1 | tee "${RUNNER_TEMP}/import.log"
-
-      - name: Commit imported PNG files
-        if: steps.asset.outputs.should_import == 'true'
-        env:
-          ASSET_NAME: ${{ steps.asset.outputs.asset_name }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t imported_files < <(
-            sed -n 's/^IMPORTED //p' "${RUNNER_TEMP}/import.log"
-          )
-          if (( ${#imported_files[@]} == 0 )); then
-            echo "Importer produced no file list." >&2
-            exit 1
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- "${imported_files[@]}"
-          if [[ "${GITHUB_EVENT_NAME}" == "push" && -f docs/ci/STAGE03_IMPORT_REQUEST.json ]]; then
-            git rm -- docs/ci/STAGE03_IMPORT_REQUEST.json
-          fi
-          if git diff --cached --quiet; then
-            echo "No new files to commit." >&2
-            exit 1
-          fi
-          git commit -m "Import Stage 03 binary hero assets from Supabase Storage (${ASSET_NAME})"
-          git push origin HEAD:main
-          git log -1 --format='Imported commit: %H' >> "${GITHUB_STEP_SUMMARY}"
-
-      - name: Upload import evidence
-        if: always() && steps.asset.outputs.should_import == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: stage03-binary-import-evidence-${{ github.run_id }}
-          path: |
-            ${{ runner.temp }}/download.log
-            ${{ runner.temp }}/import.log
-            ${{ runner.temp }}/storage-request.json
-          if-no-files-found: ignore
+          {
+            echo "### Evidence files"
+            echo '```text'
+            if [[ -f "${RUNNER_TEMP}/stage03-download.log" ]]; then
+              sed -n '1,240p' "${RUNNER_TEMP}/stage03-download.log"
+            fi
+            if [[ -f "${RUNNER_TEMP}/stage03-import.log" ]]; then
+              sed -n '1,240p' "${RUNNER_TEMP}/stage03-import.log"
+            fi
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"

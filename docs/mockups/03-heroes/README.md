@@ -43,9 +43,8 @@ docs/mockups/03-heroes/{hero_id}/{direction}/{state}.png
 
 ## Binary transport
 
-Точный ZIP-пакет доставляется через private Supabase Storage по
-docs/ci/SUPABASE_ASSET_STORAGE.md.
-GitHub хранит только request/manifest/инструкции, а CI импортирует PNG после
-проверки размера и SHA-256. Это build-time transport, не runtime network
-dependency и не художественное approval. Пока request имеет
+Каждый PNG доставляется отдельным объектом private Supabase Storage по
+docs/ci/SUPABASE_ASSET_STORAGE.md. GitHub хранит только request/manifest/инструкции,
+а CI скачивает и проверяет файлы в build workspace. Это build-time transport,
+не runtime network dependency и не художественное approval. Пока request имеет
 PENDING_SUPABASE_UPLOAD, папки runtime остаются без доказанного binary intake.

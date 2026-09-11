@@ -1,5 +1,19 @@
 # Agent Instructions — Moonveil: Eclipse
 
+## 0A. Repo-local mandatory gates
+
+Эти пять repo-local skills являются обязательными воротами MAC:
+
+- `.agents/skills/repo-state/SKILL.md` — live HEAD, канон и drift;
+- `.agents/skills/bounded-task/SKILL.md` — границы задачи и write set;
+- `.agents/skills/godot-release-gate/SKILL.md` — реальный Android release evidence;
+- `.agents/skills/supabase-asset-contract/SKILL.md` — asset paths, manifest и Storage;
+- `.agents/skills/evidence-first-report/SKILL.md` — доказательство каждого статуса.
+
+Сначала применяй `repo-state` и `bounded-task`. Для визуальных файлов дополнительно применяй `supabase-asset-contract`; для APK/AAB — `godot-release-gate`; каждый handoff оформляй по `evidence-first-report`.
+
+Если repo-local skill противоречит живому контракту проекта, остановись и зафиксируй противоречие в handoff; не выбирай удобную версию молча.
+
 Этот файл обязателен для любого агента, работающего в репозитории xxiamadelxx-blip/mac.
 
 ## 1. Обязательный старт
@@ -67,11 +81,13 @@ Technical PASS и artistic approval — разные состояния. Про�
 
 ## 5A. Binary asset transport (mandatory)
 
-- GitHub is the source for code, scenes, JSON, manifests and instructions. It is not the canonical store for PNG/ZIP binaries.
-- Real PNG/ZIP packages go through the private Supabase Storage bucket game-assets using raw streaming or resumable upload. Never paste binary bytes, Base64 or data URLs into chat, issues, comments or repository text.
-- CI may import an asset only after it downloads the exact Storage object and verifies size_bytes and SHA-256. The APK receives imported files at build time and does not need Storage at runtime.
-- A manifest, expected file list, old GitHub Release asset or agent message is not binary evidence. Without a real channel, report BLOCKED_BINARY_ARTIFACT; do not simulate upload/import.
-- The Binary Asset Transport Agent owns upload, manifest/checksum, request metadata and CI intake. It does not generate, mutate or approve art.
+- GitHub is the source for code, scenes, JSON, manifests and instructions. It is not the canonical store for PNG/SVG binaries.
+- Each real PNG/SVG is uploaded as its own object to the private Supabase Storage bucket `visual-assets` using a streaming Storage API path. Never paste binary bytes, Base64 or data URLs into chat, issues, comments or repository text.
+- CI may import an asset only after it downloads that exact object and verifies `size_bytes` and SHA-256. The APK receives imported files at build time and does not need Storage at runtime.
+- A manifest, expected file list, old GitHub Release asset or agent message is not binary evidence. Without an authorized Storage write channel, report `BLOCKED_BINARY_ARTIFACT`; do not simulate upload.
+- The Binary Asset Transport Agent owns per-file upload, manifest/checksum metadata, request metadata and CI intake. It does not generate, mutate or approve art.
+
+
 
 ## 6. Definition of Done для визуальной работы
 

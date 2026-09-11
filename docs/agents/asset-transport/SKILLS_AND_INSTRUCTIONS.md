@@ -16,42 +16,46 @@
 
 Для технической реализации применяются `codex-engineering-guardrails:code-work`
 и `codex-engineering-guardrails:code-verification`. Для Storage-интеграции
-используется Supabase skill и только актуальный Storage API.
+используется Supabase skill и актуальный Storage API.
 
 ## Канонический протокол
 
 ```text
-реальный ZIP на диске агента
-  -> локальная структурная проверка
-  -> raw/resumable upload в приватный Supabase bucket
-  -> manifest + SHA-256
+отдельные реальные PNG/SVG на диске агента
+  -> локальная проверка каждого файла
+  -> отдельные raw/resumable uploads в visual-assets
+  -> manifest с object/size/SHA-256
   -> текстовый request READY в GitHub
-  -> CI download + verify
-  -> существующий importer
-  -> commit фактически созданных PNG
+  -> CI download + verify каждого файла
+  -> build workspace / Godot export
 ```
 
-GitHub Release не является источником бинарных байтов. GitHub используется для
-текста и управления request-файлом. Бинарные байты нельзя помещать в commit,
-issue, comment или чат в виде PNG, ZIP, Base64, data URL или «примерного» файла.
+GitHub используется для текста и управления request-файлом. Бинарные байты нельзя
+помещать в commit, issue, comment или чат. GitHub Release не закрывает intake.
+
+## Проверка подключения
+
+Сначала проверь Supabase project `ylhbihgrchtqzaphuxvy` и bucket
+`visual-assets`. Management/SQL-коннектор подтверждает проект и metadata, но
+для передачи байтов нужен авторизованный Storage API/CLI/CI write-token. Не
+называй Supabase «отключённым», если management connection отвечает; укажи
+точно, какого бинарного метода или секрета не хватает.
 
 ## Статусы
 
-- `PENDING_SUPABASE_UPLOAD` — ZIP ещё не загружен или его точность не доказана;
-- `READY` — есть bucket/object, размер, SHA-256 и manifest/checksum object;
-- `IMPORTED` — CI реально проверил и импортировал перечисленные PNG;
-- `BLOCKED_BINARY_ARTIFACT` — канал, секрет, runner или evidence недоступны.
+- `PENDING_SUPABASE_UPLOAD` — хотя бы один отдельный файл не загружен или не проверен;
+- `READY` — у каждого объекта есть bucket/path, размер и SHA-256, подтверждённые Storage;
+- `IMPORTED` — CI реально скачал и проверил перечисленные файлы в build workspace;
+- `BLOCKED_BINARY_ARTIFACT` — отсутствует файл, Storage write-token, runner или evidence.
 
 `READY` и `IMPORTED` нельзя ставить вручную без соответствующего evidence.
-Manifest, список путей или старый Release не заменяют архив.
 
 ## Границы записи
 
-Разрешено менять только transport scripts, storage contract, CI workflow,
-request metadata и handoff-документы. Нельзя менять визуальные файлы, hero
-manifests, artistic status, runtime mechanics или делать массовую регенерацию.
-Importer может создать PNG только как точную распаковку принятого ZIP; агент не
-создаёт заменяющие изображения.
+Разрешено менять только transport scripts, storage contract, CI workflow, request
+metadata и handoff-документы. Нельзя менять визуальные файлы, hero manifests,
+artistic status, runtime mechanics или делать массовую регенерацию. CI не
+коммитит бинарные файлы в GitHub.
 
 ## Секреты и безопасность
 
@@ -61,9 +65,9 @@ Importer может создать PNG только как точную расп
 - `SUPABASE_STORAGE_API_KEY`;
 - `SUPABASE_STORAGE_AUTH_TOKEN`.
 
-Секреты не пишутся в репозиторий, лог, URL, request или handoff. Bucket
-остаётся приватным; runtime игры не получает Storage credentials. APK получает
-ассеты на этапе CI и может работать офлайн.
+Секреты не пишутся в репозиторий, лог, URL, request или handoff. Bucket остаётся
+приватным; runtime игры не получает Storage credentials. RLS не изменять для
+обхода отсутствующего write-token.
 
 ## Handoff
 
@@ -72,12 +76,12 @@ TASK-ID: ASSET-03
 Parent HEAD: <SHA>
 Changed paths: <exact list>
 Status: READY | PARTIAL | BLOCKED | VERIFIED
-Storage bucket/object: <metadata only>
+Storage bucket/objects: <metadata only, one row per file>
 SHA-256 / size: <values>
-Evidence: <command, exit code, CI run, artifact>
+Evidence: <command, exit code, CI run, object verification>
 Open blockers: <concrete list>
 Next action: <exactly one>
 ```
 
-Если настоящий ZIP или авторизованный Storage project отсутствует, остановись
+Если отдельные файлы или авторизованный Storage write-channel отсутствуют, оставайся
 на `BLOCKED_BINARY_ARTIFACT` и укажи ровно, что требуется для продолжения.

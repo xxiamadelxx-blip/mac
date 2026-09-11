@@ -1,22 +1,16 @@
 #!/usr/bin/env python3
-"""Validate and atomically import a Stage 03 hero PNG archive.
-
-The archive is deliberately handled as bytes by the GitHub Actions runner.
-The chat agent only passes the release asset name; it never serializes PNG
-bytes or Base64 into a model message.
-"""
+"""Validate and stage individual Stage 03 hero PNGs for a build workspace."""
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
-import re
 import shutil
-import stat
 import struct
 import sys
 import tempfile
-import zipfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 
 HEROES = {"lin_yue", "soyeon_han"}
@@ -45,55 +39,53 @@ STATES = {
     "shadow",
 }
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
-MAX_MEMBER_BYTES = 32 * 1024 * 1024
-MAX_ARCHIVE_BYTES = 512 * 1024 * 1024
-CANONICAL_PREFIX = "docs/mockups/03-heroes/"
-MEMBER_RE = re.compile(
-    r"(?P<hero>lin_yue|soyeon_han)/"
-    r"(?P<direction>[a-z_]+)/"
-    r"(?P<state>[a-z0-9_]+)\.png"
-)
+STREAM_CHUNK_SIZE = 1024 * 1024
+MAX_FILE_SIZE = 32 * 1024 * 1024
 
 
-def fail(message: str) -> None:
+def fail(message: str) -> "NoReturn":
     raise SystemExit(f"ERROR: {message}")
 
 
-def normalize_member(name: str) -> str:
-    normalized = name.replace("\\", "/")
-    if "\x00" in normalized:
-        fail("archive member contains a NUL byte")
-    if normalized.startswith("/"):
-        fail(f"absolute archive path is not allowed: {name!r}")
-
-    parts = normalized.split("/")
-    if ".." in parts:
-        fail(f"path traversal is not allowed: {name!r}")
-    parts = [part for part in parts if part not in ("", ".")]
-    normalized = "/".join(parts)
-
-    if normalized.startswith(CANONICAL_PREFIX):
-        normalized = normalized[len(CANONICAL_PREFIX) :]
-    return normalized
+def safe_relative(value: str) -> str:
+    path = PurePosixPath(value)
+    if (
+        not value
+        or path.is_absolute()
+        or ".." in path.parts
+        or "\\" in value
+        or value.lower().endswith(".zip")
+    ):
+        fail(f"unsafe or unsupported asset path: {value!r}")
+    return "/".join(part for part in path.parts if part not in {"", "."})
 
 
-def validate_png(data: bytes, member: str) -> None:
-    if len(data) < 29 or data[:8] != PNG_SIGNATURE:
-        fail(f"{member}: not a PNG file")
-
-    ihdr_length = struct.unpack(">I", data[8:12])[0]
-    if data[12:16] != b"IHDR" or ihdr_length != 13:
-        fail(f"{member}: missing or invalid PNG IHDR")
-
-    width, height, bit_depth, color_type = struct.unpack(">IIBB", data[16:26])
-    if (width, height) != (1024, 1024):
-        fail(f"{member}: expected 1024x1024, got {width}x{height}")
-    if bit_depth != 8 or color_type != 6:
-        fail(
-            f"{member}: expected 8-bit true RGBA PNG "
-            f"(bit_depth=8, color_type=6), got "
-            f"bit_depth={bit_depth}, color_type={color_type}"
-        )
+def load_manifest(path: Path) -> list[dict[str, object]]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        fail(f"cannot read request manifest: {exc}")
+    if not isinstance(payload, dict):
+        fail("request manifest root must be an object")
+    if payload.get("status") != "READY":
+        fail(f"request status is {payload.get('status')!r}, expected READY")
+    records = payload.get("assets")
+    if not isinstance(records, list) or not records:
+        fail("request manifest must contain a non-empty assets array")
+    result: list[dict[str, object]] = []
+    seen: set[str] = set()
+    for index, raw in enumerate(records):
+        if not isinstance(raw, dict):
+            fail(f"assets[{index}] must be an object")
+        local_path = raw.get("local_path")
+        if not isinstance(local_path, str):
+            fail(f"assets[{index}] has no local_path")
+        normalized = safe_relative(local_path)
+        if normalized in seen:
+            fail(f"duplicate local_path: {normalized}")
+        seen.add(normalized)
+        result.append({**raw, "local_path": normalized})
+    return result
 
 
 def expected_for(hero: str) -> set[str]:
@@ -104,114 +96,124 @@ def expected_for(hero: str) -> set[str]:
     }
 
 
+def validate_png(path: Path, display_name: str) -> None:
+    if path.stat().st_size <= 0 or path.stat().st_size > MAX_FILE_SIZE:
+        fail(f"{display_name}: file size is outside the allowed range")
+    with path.open("rb") as stream:
+        header = stream.read(26)
+    if len(header) < 26 or header[:8] != PNG_SIGNATURE:
+        fail(f"{display_name}: not a PNG file")
+    ihdr_length = struct.unpack(">I", header[8:12])[0]
+    if header[12:16] != b"IHDR" or ihdr_length != 13:
+        fail(f"{display_name}: missing or invalid PNG IHDR")
+    width, height, bit_depth, color_type = struct.unpack(">IIBB", header[16:26])
+    if (width, height) != (1024, 1024):
+        fail(f"{display_name}: expected 1024x1024, got {width}x{height}")
+    if bit_depth != 8 or color_type != 6:
+        fail(
+            f"{display_name}: expected 8-bit true RGBA PNG, "
+            f"got bit_depth={bit_depth}, color_type={color_type}"
+        )
+
+
+def digest(path: Path) -> tuple[int, str]:
+    size_bytes = 0
+    sha256 = hashlib.sha256()
+    with path.open("rb") as stream:
+        while chunk := stream.read(STREAM_CHUNK_SIZE):
+            size_bytes += len(chunk)
+            sha256.update(chunk)
+    return size_bytes, sha256.hexdigest()
+
+
 def main() -> int:
-    if len(sys.argv) not in (2, 3):
-        fail("usage: import_stage03_assets.py ARCHIVE.zip [TARGET_ROOT]")
+    if len(sys.argv) not in (3, 4):
+        fail(
+            "usage: import_stage03_assets.py REQUEST.json DOWNLOAD_ROOT "
+            "[TARGET_ROOT]"
+        )
+    request_path = Path(sys.argv[1]).resolve()
+    download_root = Path(sys.argv[2]).resolve()
+    target_root = Path(
+        sys.argv[3] if len(sys.argv) == 4 else "build_assets/docs/mockups/03-heroes"
+    ).resolve()
+    if not download_root.is_dir():
+        fail(f"download root does not exist: {download_root}")
 
-    archive = Path(sys.argv[1])
-    target_root = Path(sys.argv[2] if len(sys.argv) == 3 else "docs/mockups/03-heroes")
-    if not archive.is_file():
-        fail(f"archive does not exist: {archive}")
-    if not target_root.is_dir():
-        fail(f"target root does not exist: {target_root}")
+    records = load_manifest(request_path)
+    entries: dict[str, tuple[Path, dict[str, object]]] = {}
+    for record in records:
+        local_path = str(record["local_path"])
+        source = (download_root / local_path).resolve()
+        if download_root not in source.parents:
+            fail(f"resolved source escaped download root: {local_path}")
+        if not source.is_file():
+            fail(f"downloaded asset is missing: {local_path}")
+        if not local_path.endswith(".png"):
+            fail(f"Stage 03 hero asset must be PNG: {local_path}")
+        parts = local_path.split("/")
+        if len(parts) != 3 or parts[0] not in HEROES:
+            fail(f"unsupported hero asset path: {local_path}")
+        hero, direction, state_file = parts
+        state = state_file.removesuffix(".png")
+        if direction not in DIRECTIONS or state not in STATES:
+            fail(f"unsupported direction/state: {local_path}")
+        validate_png(source, local_path)
+        size_bytes, sha256 = digest(source)
+        expected_size = record.get("size_bytes")
+        expected_sha256 = record.get("sha256")
+        if expected_size is None or expected_sha256 is None:
+            fail(f"{local_path}: request lacks size_bytes or sha256")
+        if int(expected_size) != size_bytes:
+            fail(f"{local_path}: size mismatch")
+        if str(expected_sha256).lower() != sha256:
+            fail(f"{local_path}: SHA-256 mismatch")
+        if local_path in entries:
+            fail(f"duplicate hero asset: {local_path}")
+        entries[local_path] = (source, record)
 
-    entries: dict[str, bytes] = {}
-    total_uncompressed = 0
-
-    try:
-        with zipfile.ZipFile(archive) as package:
-            for info in package.infolist():
-                if info.is_dir():
-                    continue
-
-                file_mode = (info.external_attr >> 16) & 0o170000
-                if file_mode == stat.S_IFLNK:
-                    fail(f"symbolic links are not allowed: {info.filename!r}")
-                if info.file_size <= 0 or info.file_size > MAX_MEMBER_BYTES:
-                    fail(
-                        f"{info.filename!r}: uncompressed member size is outside "
-                        f"the allowed range"
-                    )
-
-                total_uncompressed += info.file_size
-                if total_uncompressed > MAX_ARCHIVE_BYTES:
-                    fail("archive exceeds the 512 MiB uncompressed safety limit")
-
-                member = normalize_member(info.filename)
-                match = MEMBER_RE.fullmatch(member)
-                if not match:
-                    fail(
-                        f"unsupported archive member {info.filename!r}; "
-                        "only hero/direction/state.png is accepted"
-                    )
-                if match.group("direction") not in DIRECTIONS:
-                    fail(f"unsupported direction in {member}")
-                if match.group("state") not in STATES:
-                    fail(f"unsupported state in {member}")
-                if member in entries:
-                    fail(f"duplicate archive member after path normalization: {member}")
-
-                data = package.read(info)
-                if len(data) != info.file_size:
-                    fail(f"short read while reading {member}")
-                validate_png(data, member)
-                entries[member] = data
-    except zipfile.BadZipFile as exc:
-        fail(f"invalid ZIP archive: {exc}")
-
-    if not entries:
-        fail("archive contains no PNG files")
-
-    heroes_present = {member.split("/", 1)[0] for member in entries}
-    if not heroes_present.issubset(HEROES):
-        fail("archive contains an unknown hero directory")
+    heroes_present = {path.split("/", 1)[0] for path in entries}
     for hero in sorted(heroes_present):
-        actual = {member for member in entries if member.startswith(f"{hero}/")}
+        actual = {path for path in entries if path.startswith(f"{hero}/")}
         expected = expected_for(hero)
         if actual != expected:
             missing = sorted(expected - actual)
             extra = sorted(actual - expected)
-            details = []
-            if missing:
-                details.append(f"missing={missing[:8]}{'...' if len(missing) > 8 else ''}")
-            if extra:
-                details.append(f"extra={extra[:8]}{'...' if len(extra) > 8 else ''}")
-            fail(f"{hero} is incomplete ({'; '.join(details)})")
+            fail(
+                f"{hero} is incomplete; missing={missing[:8]} "
+                f"extra={extra[:8]}"
+            )
 
-    target_root = target_root.resolve()
-    destinations: dict[str, Path] = {}
-    for member in sorted(entries):
-        destination = (target_root / member).resolve()
-        if target_root not in destination.parents:
-            fail(f"resolved destination escaped target root: {member}")
-        if destination.exists():
-            fail(f"refusing to overwrite an existing file: {destination}")
-        destinations[member] = destination
-
+    target_root.mkdir(parents=True, exist_ok=True)
     temporary_root = Path(
-        tempfile.mkdtemp(prefix=".stage03-import-", dir=str(target_root.parent))
+        tempfile.mkdtemp(prefix=".stage03-assets-", dir=str(target_root.parent))
     )
     try:
-        for member, data in entries.items():
-            staged = temporary_root / member
+        destinations: dict[str, Path] = {}
+        for local_path, (source, _record) in sorted(entries.items()):
+            destination = (target_root / local_path).resolve()
+            if target_root not in destination.parents:
+                fail(f"resolved destination escaped target root: {local_path}")
+            if destination.exists():
+                existing_size, existing_sha256 = digest(destination)
+                source_size, source_sha256 = digest(source)
+                if (existing_size, existing_sha256) != (source_size, source_sha256):
+                    fail(f"refusing to replace a different existing asset: {destination}")
+                continue
+            staged = temporary_root / local_path
             staged.parent.mkdir(parents=True, exist_ok=True)
-            staged.write_bytes(data)
+            shutil.copyfile(source, staged)
+            destinations[local_path] = destination
 
-        for member, destination in destinations.items():
+        for local_path, destination in destinations.items():
             destination.parent.mkdir(parents=True, exist_ok=True)
-            os.replace(temporary_root / member, destination)
+            os.replace(temporary_root / local_path, destination)
     finally:
         shutil.rmtree(temporary_root, ignore_errors=True)
 
-    display_root = Path(sys.argv[2] if len(sys.argv) == 3 else "docs/mockups/03-heroes")
-    for member in sorted(entries):
-        print(f"IMPORTED {(display_root / member).as_posix()}")
-    print(
-        "SUMMARY "
-        f"heroes={','.join(sorted(heroes_present))} "
-        f"files={len(entries)} "
-        f"uncompressed_bytes={total_uncompressed}"
-    )
+    for local_path in sorted(entries):
+        print(f"STAGED {target_root / local_path}")
+    print(f"SUMMARY heroes={','.join(sorted(heroes_present))} files={len(entries)}")
     return 0
 
 

@@ -1,22 +1,42 @@
 {
   "schema": "moonveil.stage03.storage_import_request",
-  "version": 1,
+  "version": 2,
   "status": "PENDING_SUPABASE_UPLOAD",
   "provider": "supabase_storage",
-  "asset_name": "stage03-assets-lin-yue-v01.zip",
-  "storage": null,
-  "integrity": {
-    "sha256": "028d5b4dd3f914a37ddd10b5ac519ec83d70ed2e389cec90a68dd43ba84a8bff",
-    "size_bytes": 82744571
+  "storage": {
+    "project_ref": "ylhbihgrchtqzaphuxvy",
+    "bucket": "visual-assets",
+    "prefix": "moonevil-eclipse/docs/mockups/03-heroes"
   },
-  "legacy_source": {
-    "provider": "github_release",
-    "release_tag": "stage03-assets-lin-yue-v01",
-    "asset_name": "stage03-assets-lin-yue-v01.zip",
-    "asset_id": 555293572,
-    "note": "Historical source reference only; not the canonical binary store."
+  "asset_set": {
+    "heroes": ["lin_yue", "soyeon_han"],
+    "directions": [
+      "front",
+      "back",
+      "left",
+      "right",
+      "north_west",
+      "north_east",
+      "south_east",
+      "south_west"
+    ],
+    "states": [
+      "idle",
+      "move_01",
+      "move_02",
+      "move_03",
+      "attack_01",
+      "attack_02",
+      "attack_03",
+      "hit_01",
+      "hit_02",
+      "death_01",
+      "death_02",
+      "shadow"
+    ],
+    "expected_file_count": 192,
+    "format": "PNG_RGBA_1024"
   },
-  "manifest_object": null,
-  "checksum_object": null,
-  "next_action": "Upload the exact ZIP bytes to the selected private Supabase Storage project, then replace storage/integrity metadata with a READY request."
+  "assets": [],
+  "next_action": "Upload and byte-verify every individual PNG, then add its local_path, object, size_bytes and sha256 here before changing status to READY."
 }

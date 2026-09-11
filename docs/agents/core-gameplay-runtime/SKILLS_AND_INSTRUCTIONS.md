@@ -67,12 +67,10 @@ Runtime Agent потребляет утверждённые manifests и не п
 
 ## Binary asset transport boundary
 
-Runtime Agent не запрашивает PNG/ZIP через чат и не принимает manifest за
-бинарное содержимое. Если runtime нужен новый visual asset, он создаёт только
-consumer/manifest contract и передаёт intake Binary Asset Transport Agent.
-Runtime потребляет фактически импортированные файлы из репозитория; Storage
-credentials и сеть во время офлайн-игры не нужны. Никакой мутации или
-перегенерации героинь в рамках runtime task.
+Runtime Agent не запрашивает бинарные файлы через чат и не принимает manifest за бинарное содержимое. Если runtime нужен новый visual asset, он создаёт только consumer/manifest contract и передаёт intake Binary Asset Transport Agent.
+Runtime потребляет фактически проверенные файлы из build workspace; Storage credentials и сеть во время офлайн-игры не нужны. Никакой мутации или перегенерации героинь в рамках runtime task.
+
+
 
 ## Технические правила
 

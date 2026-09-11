@@ -184,17 +184,11 @@ Manifest не может помечать candidate как production тольк
 
 ## 10A. Binary delivery boundary
 
-Visual Lab governs provenance, technical status, artistic review and promotion. It
-does not require GitHub to store binary payloads. Runtime exports are transported
-as exact ZIP objects through private Supabase Storage; GitHub keeps the text
-manifest, checksum, request and CI code.
+Visual Lab governs provenance, technical status, artistic review and promotion. It does not require GitHub to store binary payloads. Each runtime visual file is transported as an individual object through private Supabase Storage; GitHub keeps the text manifest, request and CI code.
 
-The Storage manifest records bucket/object, byte size, SHA-256, archive member
-count and producing evidence. CI verifies those fields before importing. Upload
-success is not artistic approval, and import success is not APPROVED GOLDEN or
-PRODUCTION. If the binary channel is unavailable, the status is
-BLOCKED_BINARY_ARTIFACT; no PNG or ZIP is pasted into chat or reconstructed
-from text.
+The Storage manifest records one bucket/object, byte size and SHA-256 per file, plus the producing evidence. CI verifies those fields before staging the files. Upload success is not artistic approval, and import success is not `APPROVED GOLDEN` or `PRODUCTION`. If the binary channel is unavailable, the status is `BLOCKED_BINARY_ARTIFACT`; no binary file is pasted into chat or reconstructed from text.
+
+
 
 ## 11. Stage integration
 
