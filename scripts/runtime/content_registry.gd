@@ -362,7 +362,7 @@ func select_active_elite_variants(seed: int) -> Array[Dictionary]:
     if all_variants.is_empty() or limit <= 0:
         return selected
 
-    var count := min(limit, all_variants.size())
+    var count: int = min(limit, all_variants.size())
     var normalized_seed := seed if seed >= 0 else -seed
     var start_index := normalized_seed % all_variants.size()
     for offset in range(count):
