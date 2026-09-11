@@ -8,6 +8,7 @@ const WaveDirectorType = preload("res://scripts/runtime/wave_director.gd")
 const BossDirectorType = preload("res://scripts/runtime/boss_director.gd")
 const RewardLedgerType = preload("res://scripts/runtime/reward_ledger.gd")
 const ArtifactOfferSystemType = preload("res://scripts/runtime/artifact_offer_system.gd")
+const EnemyVariantResolverType = preload("res://scripts/runtime/enemy_variant_resolver.gd")
 
 ## R1 orchestration boundary.
 ##
@@ -23,6 +24,7 @@ var wave_director: WaveDirector
 var boss_director: BossDirector
 var reward_ledger: RewardLedger
 var artifact_offer_system: ArtifactOfferSystem
+var enemy_variant_resolver: Object
 var trace: Array[Dictionary] = []
 var diagnostics: Array[Dictionary] = []
 var start_outcomes: Dictionary = {}
@@ -50,12 +52,63 @@ func boot(content_path: String = ContentRegistry.DEFAULT_PATH) -> Dictionary:
     boss_director = BossDirectorType.new(registry)
     reward_ledger = RewardLedgerType.new()
     artifact_offer_system = ArtifactOfferSystemType.new(registry)
+    enemy_variant_resolver = EnemyVariantResolverType.new(registry)
     _emit("content_loaded", {
         "content_version": registry.content_version,
         "model_id": result.get("model_id", ""),
         "model_status": result.get("model_status", ""),
         "source_path": content_path,
         "r2_content_status": registry.get_r2_content_status()
+    })
+    return result
+
+
+func resolve_elite_variant_event(
+        wave_band_id: String = "",
+        event_revision: int = -1
+    ) -> Dictionary:
+    if session == null or clock == null:
+        return _fail("RUN_NOT_STARTED", "Elite pressure requires an active RunSession.", true)
+    if not [
+        RunSession.STATE_RUN_ACTIVE,
+        RunSession.STATE_MINI_BOSS_ACTIVE
+    ].has(session.state):
+        return _fail(
+            "ELITE_EVENT_NOT_ALLOWED",
+            "Elite pressure is only resolved during ordinary or mini-boss waves.",
+            true
+        )
+    if enemy_variant_resolver == null:
+        return _fail("ELITE_RESOLVER_NOT_READY", "Elite resolver is not initialized.", true)
+
+    var resolved_wave_band_id := wave_band_id
+    if resolved_wave_band_id.is_empty():
+        resolved_wave_band_id = session.current_wave_band_id
+    var resolved_revision := session.state_revision if event_revision < 0 else event_revision
+    var result: Dictionary = enemy_variant_resolver.resolve_event(
+        session.seed,
+        resolved_revision,
+        resolved_wave_band_id
+    )
+    if not bool(result.get("ok", false)):
+        _record_diagnostic(
+            str(result.get("code", "ELITE_VARIANT_RESOLUTION_FAILED")),
+            "Elite variant resolution remained fail-closed.",
+            true,
+            result
+        )
+        return result
+
+    var variant_ids: Array[String] = []
+    for variant in result.get("variants", []):
+        variant_ids.append(str(variant.get("variant_id", "")))
+    _emit("elite_variant_event_resolved", {
+        "wave_band_id": resolved_wave_band_id,
+        "event_revision": resolved_revision,
+        "variant_ids": variant_ids,
+        "reward_boundary": result.get("reward_boundary", "ELITE_CHEST"),
+        "automatic_artifact_offer": false,
+        "persistent_roster_mutation": false
     })
     return result
 
