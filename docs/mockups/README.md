@@ -8,36 +8,47 @@
 
 ## Каноническое хранение бинарных mockup-ассетов
 
-Каноническое бинарное хранилище mockup-ассетов — приватный Supabase Storage:
+Для `docs/mockups/**` действует отдельное решение от 2026-09-11: каноническое хранилище mockup-ассетов — GitHub, ветка `main`. Supabase не используется как источник истины для mockup-ассетов.
 
-- project: `ylhbihgrchtqzaphuxvy`;
-- bucket: `visual-assets`;
-- prefix: `moonevil-eclipse/docs/mockups/`.
+Правила транспортировки:
 
-Каждый PNG/SVG хранится отдельным Storage object с путём, зеркалящим
-каноническую stage-папку. GitHub хранит только код, текстовые индексы,
-manifest, инструкции и evidence metadata. Бинарные файлы не передаются через
-чат, не кодируются в Base64 и не коммитятся в GitHub.
+- Каждый отдельный пакет mockup-ассетов содержит ровно **40 реальных бинарных PNG-файлов**.
+- Base64 применяется только как транспортная кодировка при создании GitHub blob. В репозитории хранится декодированный бинарный PNG, а не текст Base64.
+- Папки, README, manifest, старый Supabase object, Release или сообщение агента не доказывают размещение бинарника.
+- Пакет получает статус `PLACED` только после проверки всех 40 точных GitHub paths, blob SHA и фактического PNG content.
+- До approval допускается отдельный `USER REVIEW` preview-кандидат. Он нужен для проверки внешнего вида, не считается 40-файловым пакетом и не переводится в `PLACED`.
+- После каждой партии фиксируются exact placed files, exact queued/workspace files, commit SHA, blob/tree evidence и UTC-время проверки.
+- `APPROVED GOLDEN` и `PRODUCTION` возможны только после отдельного художественного approval Creative Director и manifest linkage.
 
-Правила:
+### Restart Stage 01 — текущее состояние
 
-1. Сначала определить `stage_path`, `asset_id`, `family_id`, `candidate_id` и
-   художественный/технический статус через Visual Lab.
-2. Для каждого файла manifest содержит отдельные `object`, `local_path`,
-   `content_type`, `size_bytes` и `sha256`.
-3. Статус `READY` ставится только после фактической загрузки и побайтной
-   проверки каждого Storage object.
-4. Наличие папки, имени файла, manifest, старого Release или сообщения агента
-   не является доказательством существования бинарного объекта.
-5. Техническая проверка Storage не равна `CANDIDATE`, `APPROVED GOLDEN` или
-   `PRODUCTION`; художественные ворота Visual Lab остаются обязательными.
-6. Для сборки CI скачивает проверенные объекты в build workspace. Runtime-код
-   только ссылается на локальные asset paths и не рисует финальный визуал кодом.
+Review-кандидат размещён в GitHub:
 
-Инвентарь и статусы обновляются только по фактическому Storage evidence, а не
-по предполагаемому количеству файлов.
+- `docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png` — 390×844, `USER REVIEW`;
+- commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`;
+- blob: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`;
+- прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
+
+Пакет Stage 01 из 40 PNG пока не открыт к загрузке: его exact manifest и список файлов будут записаны после approval этого кандидата. Нельзя считать исторические Supabase objects v02/v04 размещёнными в GitHub.
+
+### Handoff-формат для каждой партии
+
+```yaml
+package_id: stage01-menu-home-batch-01
+stage_path: docs/mockups/01-menu/
+required_png_count: 40
+status: QUEUED
+placed_files: []
+queued_files: []
+workspace_files: []
+github_commit: null
+github_tree_or_contents_evidence: null
+checked_at_utc: null
+```
 
 ## Активная визуальная итерация
+
+
 
 Этапы 1–2 используют единый soft-tonal candidate pack v02: [меню](./01-menu/README.md) и [арена](./02-arena/README.md). Активные composites, contracts, provenance и review-пакеты находятся только в соответствующих stage-папках.
 

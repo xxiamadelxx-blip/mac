@@ -1,0 +1,42 @@
+{
+  "schema_version": "visual-lab.candidate-provenance.v1",
+  "route": "UI_ART",
+  "secondary_route": "MOCKUP",
+  "stage_path": "docs/mockups/01-menu/",
+  "asset_kind": "screen/master",
+  "asset_id": "menu.home",
+  "family_id": "moonveil-menu-soft-tonal-v02",
+  "candidate_id": "vl-20260911-menu-home-master-v01",
+  "status": "USER REVIEW",
+  "technical_status": {
+    "status": "STATIC EXPORT CHECKED",
+    "content_type": "image/png",
+    "dimensions": "390x844",
+    "colorspace": "sRGB",
+    "bytes": 504785,
+    "sha256": "899a4b16690df34e405e654570dd2153f76d65e4328819f48843b7cdac3c086a",
+    "github_blob_sha": "14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd",
+    "binary_commit": "4cf3caeb7f930cef6f17f245e360b6d3fa369571",
+    "checks": [
+      "PNG signature and MIME verified locally",
+      "390x844 target-size export verified locally",
+      "GitHub Contents API returned the same blob SHA with base64 encoding"
+    ]
+  },
+  "source": {
+    "generator": "built-in ImageGen",
+    "generated_master_workspace_path": "generated_images/exec-aaed408c-f1e1-45ab-b1d4-34f3e4bb63cc.png",
+    "generated_master_dimensions": "853x1844",
+    "target_preview_workspace_path": "stage01_menu_home_candidate_v01.png",
+    "target_preview_derivation": "mechanical target-size export from generated master; no creative repaint"
+  },
+  "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png",
+  "github_preview_url": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png",
+  "artistic_status": "PENDING CREATIVE DIRECTOR APPROVAL",
+  "manifest_consumer": "not promoted; no runtime manifest",
+  "open_decisions": [
+    "Approve, revise or reject the exact home-menu visual direction",
+    "After approval, open the first 40-PNG Stage 01 batch"
+  ],
+  "next_action": "Creative Director reviews the exact GitHub candidate"
+}

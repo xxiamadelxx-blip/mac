@@ -54,3 +54,23 @@ Status: **IN PROGRESS / USER REVIEW**.
 - [STAGE01_MENU_SYSTEM_PROVENANCE_v04.json](./STAGE01_MENU_SYSTEM_PROVENANCE_v04.json)
 
 v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Все 50 индивидуальных PNG-объектов доставлены в приватный Supabase bucket `visual-assets` по зеркальному пути `moonevil-eclipse/docs/mockups/01-menu/layers/` и проверены. До явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
+
+
+## Restart Stage 01 — candidate v01 — USER REVIEW
+
+Работа по визуальному pipeline начата заново с Stage 01. Текущий hero master для проверки направления:
+
+- route: `UI_ART` + secondary `MOCKUP`;
+- stage path: `docs/mockups/01-menu/`;
+- asset ID: `menu.home`;
+- family ID: `moonveil-menu-soft-tonal-v02`;
+- candidate ID: `vl-20260911-menu-home-master-v01`;
+- status: `USER REVIEW`;
+- technical status: `STATIC EXPORT CHECKED`;
+- artistic status: `PENDING CREATIVE DIRECTOR APPROVAL`.
+
+Preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
+
+Размер файла проверен как 390×844, PNG, sRGB; GitHub blob SHA: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`. Бинарный commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`. Это единственный текущий GitHub preview-кандидат для approval.
+
+Исторические v02/v04-объекты, ранее заявленные в Supabase, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первый пакет из 40 PNG; до этого batch не запускается.

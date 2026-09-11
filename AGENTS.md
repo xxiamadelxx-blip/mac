@@ -89,6 +89,16 @@ Technical PASS и artistic approval — разные состояния. Про�
 
 
 
+
+### Mockup-specific storage override — 2026-09-11
+
+For `docs/mockups/**`, the Project Owner decision is GitHub-first binary storage. This overrides the generic Supabase transport rule above for mockup candidates and mockup packages only.
+
+- Upload each PNG as a real GitHub blob; Base64 is transport encoding only.
+- Review previews may be uploaded as `USER REVIEW` candidates before a 40-file package is opened.
+- Every subsequent mockup package must contain exactly 40 PNG files and must be verified by exact GitHub paths/blobs before `PLACED`.
+- Runtime assets outside `docs/mockups/**` remain under their existing contract until separately changed.
+
 ## 6. Definition of Done для визуальной работы
 
 Работа считается завершённой только если:
