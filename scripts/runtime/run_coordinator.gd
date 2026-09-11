@@ -17,13 +17,13 @@ const EnemyVariantResolverType = preload("res://scripts/runtime/enemy_variant_re
 ## deliberately small fixture backed by BALANCE_MODEL.json's explicit
 ## simulation_model records; the trace keeps that proposed status visible.
 
-var registry: ContentRegistry
-var session: RunSession
-var clock: SimulationClock
-var wave_director: WaveDirector
-var boss_director: BossDirector
-var reward_ledger: RewardLedger
-var artifact_offer_system: ArtifactOfferSystem
+var registry: Object
+var session: Object
+var clock: Object
+var wave_director: Object
+var boss_director: Object
+var reward_ledger: Object
+var artifact_offer_system: Object
 var enemy_variant_resolver: Object
 var trace: Array[Dictionary] = []
 var diagnostics: Array[Dictionary] = []
@@ -38,7 +38,7 @@ var run_sequence := 0
 var booted := false
 
 
-func boot(content_path: String = ContentRegistry.DEFAULT_PATH) -> Dictionary:
+func boot(content_path: String = "res://docs/agents/balance-economy/BALANCE_MODEL.json") -> Dictionary:
     registry = ContentRegistryType.new()
     var result: Dictionary = registry.load_and_validate(content_path)
     if not bool(result.get("ok", false)):
@@ -68,10 +68,10 @@ func resolve_elite_variant_event(
         event_revision: int = -1
     ) -> Dictionary:
     if session == null or clock == null:
-        return _fail("RUN_NOT_STARTED", "Elite pressure requires an active RunSession.", true)
+        return _fail("RUN_NOT_STARTED", "Elite pressure requires an active RunSessionType.", true)
     if not [
-        RunSession.STATE_RUN_ACTIVE,
-        RunSession.STATE_MINI_BOSS_ACTIVE
+        RunSessionType.STATE_RUN_ACTIVE,
+        RunSessionType.STATE_MINI_BOSS_ACTIVE
     ].has(session.state):
         return _fail(
             "ELITE_EVENT_NOT_ALLOWED",
@@ -84,7 +84,7 @@ func resolve_elite_variant_event(
     var resolved_wave_band_id := wave_band_id
     if resolved_wave_band_id.is_empty():
         resolved_wave_band_id = session.current_wave_band_id
-    var resolved_revision := session.state_revision if event_revision < 0 else event_revision
+    var resolved_revision: int = session.state_revision if event_revision < 0 else event_revision
     var result: Dictionary = enemy_variant_resolver.resolve_event(
         session.seed,
         resolved_revision,
@@ -145,17 +145,17 @@ func start_run(
         _emit("run_start_duplicate", {"client_request_id": client_request_id, "run_id": session.run_id})
         return existing
 
-    var hero_profile := registry.get_runtime_hero_profile(character_id)
+    var hero_profile: Dictionary = registry.get_runtime_hero_profile(character_id)
     if hero_profile.is_empty():
         return _fail("UNKNOWN_CHARACTER", "Character is not present in the loaded Content Registry.", false, {"character_id": character_id})
 
     var starting_weapon := str(hero_profile.get("starting_weapon_id", ""))
     var starting_passive := str(hero_profile.get("starting_passive_id", ""))
-    var weapon_fixture := registry.get_weapon_fixture(starting_weapon)
+    var weapon_fixture: Dictionary = registry.get_weapon_fixture(starting_weapon)
     if weapon_fixture.is_empty():
         return _fail("STARTING_WEAPON_MISSING", "Starting weapon is missing from the loaded Content Registry.", false, {"weapon_id": starting_weapon})
 
-    var initial_wave := registry.get_wave_band_for_time(0.0)
+    var initial_wave: Dictionary = registry.get_wave_band_for_time(0.0)
     if initial_wave.is_empty():
         return _fail("WAVE_CONTENT_MISSING", "No initial wave band is available in the Content Registry.", false)
 
@@ -209,7 +209,7 @@ func start_run(
         stats,
         str(initial_wave.get("wave_band_id", ""))
     )
-    session.state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_RUN_ACTIVE
     session.bump_revision()
 
     clock = SimulationClockType.new()
@@ -245,20 +245,20 @@ func start_run(
 func advance(delta_seconds: float) -> Dictionary:
     if session == null or clock == null:
         return _fail("RUN_NOT_STARTED", "No RunSession exists.", true)
-    var result := clock.advance(delta_seconds)
+    var result: Dictionary = clock.advance(delta_seconds)
     if not bool(result.get("ok", false)):
         _record_diagnostic("CLOCK_ADVANCE_FAILED", "Simulation clock rejected the delta.", true, {"delta": delta_seconds})
         return result
 
     session.stats["elapsed_time"] = clock.run_seconds
     if _is_wave_progression_active() and result.get("advanced", false):
-        var pressure := wave_director.resolve(clock.run_seconds, _active_boss_kind())
+        var pressure: Dictionary = wave_director.resolve(clock.run_seconds, _active_boss_kind())
         _emit("wave_pressure_sample", pressure)
-        var band := registry.get_wave_band_for_time(clock.run_seconds)
+        var band: Dictionary = registry.get_wave_band_for_time(clock.run_seconds)
         if not band.is_empty():
             var next_band_id := str(band.get("wave_band_id", ""))
             if next_band_id != session.current_wave_band_id:
-                var previous_band_id := session.current_wave_band_id
+                var previous_band_id: String = str(session.current_wave_band_id)
                 session.current_wave_band_id = next_band_id
                 session.stats["current_wave_band"] = next_band_id
                 session.bump_revision()
@@ -282,7 +282,7 @@ func spawn_wave_fixture() -> Dictionary:
             "active_enemy": session.active_enemy.duplicate(true)
         }
 
-    var admission := wave_director.evaluate_spawn(
+    var admission: Dictionary = wave_director.evaluate_spawn(
         clock.run_seconds,
         _active_boss_kind(),
         int(session.stats.get("active_enemy_count", 0)),
@@ -308,7 +308,7 @@ func spawn_wave_fixture() -> Dictionary:
     if enemy_id.is_empty():
         return _fail("WAVE_COMPOSITION_EMPTY", "Wave band has no usable fixture composition.", true)
 
-    var enemy := registry.get_enemy_fixture(enemy_id)
+    var enemy: Dictionary = registry.get_enemy_fixture(enemy_id)
     var hp_record: Dictionary = enemy.get("base_hp", {})
     var damage_record: Dictionary = enemy.get("base_damage", {})
     var speed_record: Dictionary = enemy.get("base_speed", {})
@@ -355,7 +355,7 @@ func resolve_fixture_attack() -> Dictionary:
     if session.active_enemy.is_empty():
         return _fail("NO_ACTIVE_ENEMY", "Combat fixture has no active enemy.", true)
 
-    var contact_cooldown := registry.get_contact_damage_cooldown()
+    var contact_cooldown: float = float(registry.get_contact_damage_cooldown())
     if clock.run_seconds - session.last_hit_at < contact_cooldown:
         _emit("combat_hit_rejected", {
             "reason": "HIT_COOLDOWN",
@@ -368,12 +368,12 @@ func resolve_fixture_attack() -> Dictionary:
     if weapon_ids.is_empty():
         return _fail("BUILD_WEAPON_MISSING", "Combat fixture has no weapon in the build.", false)
     var weapon_id := str(weapon_ids[0])
-    var weapon := registry.get_weapon_fixture(weapon_id)
+    var weapon: Dictionary = registry.get_weapon_fixture(weapon_id)
     var base_damage := float(weapon.get("base_damage", {}).get("value", 0.0))
     var damage_multiplier := float(session.stats.get("damage_multiplier", 1.0))
     var damage := base_damage * damage_multiplier
     var before_hp := float(session.active_enemy.get("hp_current", 0.0))
-    var after_hp := max(0.0, before_hp - damage)
+    var after_hp: float = maxf(0.0, before_hp - damage)
     session.active_enemy["hp_current"] = after_hp
     session.last_hit_at = clock.run_seconds
     session.bump_revision()
@@ -381,7 +381,7 @@ func resolve_fixture_attack() -> Dictionary:
     if after_hp <= 0.0:
         var defeated_enemy_id := str(session.active_enemy.get("enemy_id", ""))
         var xp_value := int(session.active_enemy.get("xp_value", 0))
-        var drop := session.create_xp_drop(defeated_enemy_id, "fixture_xp", xp_value)
+        var drop: Dictionary = session.create_xp_drop(defeated_enemy_id, "fixture_xp", xp_value)
         session.active_enemy = {}
         session.stats["active_enemy_count"] = 0
         session.stats["enemies_defeated"] = int(session.stats.get("enemies_defeated", 0)) + 1
@@ -441,7 +441,7 @@ func collect_xp(xp_item_id: String) -> Dictionary:
         "source_enemy_id": drop.get("source_enemy_id", "")
     })
 
-    var level_up := _maybe_open_level_up_offer()
+    var level_up: Dictionary = _maybe_open_level_up_offer()
     return {
         "ok": true,
         "duplicate": false,
@@ -458,7 +458,7 @@ func claim_upgrade(offer_id: String, choice_id: String, expected_revision: int) 
         _emit("offer_claim_duplicate", {"offer_id": offer_id, "choice_id": choice_id})
         return completed
 
-    if session == null or session.state != RunSession.STATE_UPGRADE_OFFER:
+    if session == null or session.state != RunSessionType.STATE_UPGRADE_OFFER:
         return _fail("OFFER_NOT_OPEN", "No blocking upgrade offer is open.", true, {"offer_id": offer_id})
     if str(session.pending_offer.get("offer_id", "")) != offer_id:
         return _fail("STALE_OFFER", "Offer ID does not match the open offer.", true, {"offer_id": offer_id})
@@ -505,7 +505,7 @@ func claim_upgrade(offer_id: String, choice_id: String, expected_revision: int) 
     session.completed_offer_outcomes[offer_id] = outcome.duplicate(true)
     completed_offer_outcomes[offer_id] = outcome.duplicate(true)
     session.pending_offer = {}
-    session.state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_RUN_ACTIVE
     clock.resume()
     session.bump_revision()
     _emit("upgrade_applied", outcome)
@@ -513,21 +513,21 @@ func claim_upgrade(offer_id: String, choice_id: String, expected_revision: int) 
 
 
 func start_main_boss(checkpoint_id: String) -> Dictionary:
-    if session == null or session.state != RunSession.STATE_RUN_ACTIVE:
+    if session == null or session.state != RunSessionType.STATE_RUN_ACTIVE:
         return _fail("MAIN_BOSS_NOT_ALLOWED", "Main boss requires RUN_ACTIVE.", true)
-    var started := boss_director.begin(BossDirectorType.KIND_MAIN, checkpoint_id, "", clock.run_seconds)
+    var started: Dictionary = boss_director.begin(BossDirectorType.KIND_MAIN, checkpoint_id, "", clock.run_seconds)
     if not bool(started.get("ok", false)):
         return _fail(str(started.get("code", "BOSS_START_FAILED")), "Main boss could not start.", false, started)
 
-    session.resume_state = RunSession.STATE_RUN_ACTIVE
+    session.resume_state = RunSessionType.STATE_RUN_ACTIVE
     session.active_boss_encounter = started.get("encounter", {}).duplicate(true)
     session.checkpoint_id = checkpoint_id
-    session.state = RunSession.STATE_MAIN_BOSS_INTRO
+    session.state = RunSessionType.STATE_MAIN_BOSS_INTRO
     session.bump_revision()
     _emit("main_boss_intro", session.active_boss_encounter)
 
     clock.start_encounter()
-    session.state = RunSession.STATE_MAIN_BOSS_ACTIVE
+    session.state = RunSessionType.STATE_MAIN_BOSS_ACTIVE
     session.bump_revision()
     _emit("main_boss_active", {
         "encounter_id": session.active_boss_encounter.get("encounter_id", ""),
@@ -540,21 +540,21 @@ func start_main_boss(checkpoint_id: String) -> Dictionary:
 
 
 func start_mini_boss(boss_id: String) -> Dictionary:
-    if session == null or session.state != RunSession.STATE_RUN_ACTIVE:
+    if session == null or session.state != RunSessionType.STATE_RUN_ACTIVE:
         return _fail("MINI_BOSS_NOT_ALLOWED", "Mini boss requires RUN_ACTIVE.", true)
-    var started := boss_director.begin(BossDirectorType.KIND_MINI, "", boss_id, clock.run_seconds)
+    var started: Dictionary = boss_director.begin(BossDirectorType.KIND_MINI, "", boss_id, clock.run_seconds)
     if not bool(started.get("ok", false)):
         return _fail(str(started.get("code", "MINI_BOSS_START_FAILED")), "Mini boss content is not available in the loaded registry.", true, started)
 
-    session.resume_state = RunSession.STATE_RUN_ACTIVE
+    session.resume_state = RunSessionType.STATE_RUN_ACTIVE
     session.active_boss_encounter = started.get("encounter", {}).duplicate(true)
     session.checkpoint_id = str(session.active_boss_encounter.get("checkpoint_id", ""))
-    session.state = RunSession.STATE_MINI_BOSS_INTRO
+    session.state = RunSessionType.STATE_MINI_BOSS_INTRO
     session.bump_revision()
     _emit("mini_boss_intro", session.active_boss_encounter)
 
     clock.start_mini_boss()
-    session.state = RunSession.STATE_MINI_BOSS_ACTIVE
+    session.state = RunSessionType.STATE_MINI_BOSS_ACTIVE
     session.bump_revision()
     _emit("mini_boss_active", {
         "encounter_id": session.active_boss_encounter.get("encounter_id", ""),
@@ -569,7 +569,7 @@ func start_mini_boss(boss_id: String) -> Dictionary:
 func defeat_active_boss() -> Dictionary:
     if session == null:
         return _fail("NO_ACTIVE_BOSS", "There is no active boss encounter.", true)
-    if not [RunSession.STATE_MAIN_BOSS_ACTIVE, RunSession.STATE_MINI_BOSS_ACTIVE].has(session.state):
+    if not [RunSessionType.STATE_MAIN_BOSS_ACTIVE, RunSessionType.STATE_MINI_BOSS_ACTIVE].has(session.state):
         if not session.last_boss_encounter_id.is_empty() and session.boss_defeat_outcomes.has(session.last_boss_encounter_id):
             var duplicate: Dictionary = session.boss_defeat_outcomes[session.last_boss_encounter_id].duplicate(true)
             duplicate["duplicate"] = true
@@ -577,7 +577,7 @@ func defeat_active_boss() -> Dictionary:
             return duplicate
         return _fail("NO_ACTIVE_BOSS", "There is no active boss encounter.", true)
     var encounter_id := str(session.active_boss_encounter.get("encounter_id", ""))
-    var defeated := boss_director.defeat(encounter_id)
+    var defeated: Dictionary = boss_director.defeat(encounter_id)
     if not bool(defeated.get("ok", false)):
         return _fail(str(defeated.get("code", "BOSS_DEFEAT_FAILED")), "Boss defeat was stale or missing.", false, defeated)
 
@@ -587,17 +587,17 @@ func defeat_active_boss() -> Dictionary:
     session.active_boss_encounter = encounter
     clock.freeze()
     if str(encounter.get("boss_kind", "")) == BossDirectorType.KIND_MAIN:
-        session.state = RunSession.STATE_CHECKPOINT_SETTLEMENT
+        session.state = RunSessionType.STATE_CHECKPOINT_SETTLEMENT
         session.bump_revision()
         _emit("main_boss_defeated", {"encounter": encounter, "encounter_seconds": clock.encounter_seconds})
-        var main_result := settle_checkpoint()
+        var main_result: Dictionary = settle_checkpoint()
         session.boss_defeat_outcomes[encounter_id] = main_result.duplicate(true)
         return main_result
 
-    session.state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_RUN_ACTIVE
     session.bump_revision()
     _emit("mini_boss_defeated", {"encounter": encounter, "encounter_seconds": clock.encounter_seconds})
-    var mini_settlement := reward_ledger.settle(
+    var mini_settlement: Dictionary = reward_ledger.settle(
         session.run_id,
         "MINI_BOSS",
         str(encounter.get("boss_id", "")),
@@ -606,7 +606,7 @@ func defeat_active_boss() -> Dictionary:
     )
     session.reward_ledger_entries[mini_settlement.get("ledger_key", "")] = mini_settlement.duplicate(true)
     session.active_boss_encounter = {}
-    var mini_result := _create_chest_offer("MINI_BOSS_CHEST", str(encounter.get("boss_id", "")), mini_settlement)
+    var mini_result: Dictionary = _create_chest_offer("MINI_BOSS_CHEST", str(encounter.get("boss_id", "")), mini_settlement)
     session.boss_defeat_outcomes[encounter_id] = mini_result.duplicate(true)
     return mini_result
 
@@ -615,17 +615,17 @@ func settle_checkpoint() -> Dictionary:
     if session == null:
         return _fail("CHECKPOINT_SETTLEMENT_NOT_ALLOWED", "No RunSession exists.", true)
     var checkpoint_id := str(session.active_boss_encounter.get("checkpoint_id", session.checkpoint_id))
-    if session.state != RunSession.STATE_CHECKPOINT_SETTLEMENT:
+    if session.state != RunSessionType.STATE_CHECKPOINT_SETTLEMENT:
         if session.checkpoint_settlement_outcomes.has(checkpoint_id):
             var duplicate: Dictionary = session.checkpoint_settlement_outcomes[checkpoint_id].duplicate(true)
             duplicate["duplicate"] = true
             _emit("checkpoint_settlement_duplicate", {"checkpoint_id": checkpoint_id})
             return duplicate
         return _fail("CHECKPOINT_SETTLEMENT_NOT_ALLOWED", "Checkpoint settlement requires CHECKPOINT_SETTLEMENT.", true)
-    var is_final := registry.is_final_checkpoint(checkpoint_id)
-    var reward := registry.get_checkpoint_reward(checkpoint_id)
+    var is_final: bool = bool(registry.is_final_checkpoint(checkpoint_id))
+    var reward: Dictionary = registry.get_checkpoint_reward(checkpoint_id)
     var reward_type := "FINAL_SETTLEMENT" if is_final else "CHECKPOINT_REWARD"
-    var settlement := reward_ledger.settle(session.run_id, "MAIN_BOSS", checkpoint_id, reward_type, reward)
+    var settlement: Dictionary = reward_ledger.settle(session.run_id, "MAIN_BOSS", checkpoint_id, reward_type, reward)
     session.reward_ledger_entries[settlement.get("ledger_key", "")] = settlement.duplicate(true)
     if not bool(settlement.get("duplicate", false)):
         _apply_wallet_reward(reward)
@@ -639,7 +639,7 @@ func settle_checkpoint() -> Dictionary:
     })
 
     if is_final:
-        session.state = RunSession.STATE_RUN_VICTORY
+        session.state = RunSessionType.STATE_RUN_VICTORY
         session.active_boss_encounter = {}
         session.bump_revision()
         clock.freeze()
@@ -664,7 +664,7 @@ func claim_chest(offer_id: String, expected_revision: int) -> Dictionary:
         duplicate["duplicate"] = true
         _emit("chest_claim_duplicate", {"offer_id": offer_id})
         return duplicate
-    if session == null or session.state != RunSession.STATE_BOSS_CHEST:
+    if session == null or session.state != RunSessionType.STATE_BOSS_CHEST:
         return _fail("CHEST_NOT_OPEN", "No chest offer is open.", true, {"offer_id": offer_id})
     if str(session.pending_chest_offer.get("offer_id", "")) != offer_id:
         return _fail("STALE_CHEST", "Chest offer ID does not match.", true, {"offer_id": offer_id})
@@ -685,7 +685,7 @@ func claim_chest(offer_id: String, expected_revision: int) -> Dictionary:
     session.completed_chest_outcomes[offer_id] = outcome.duplicate(true)
     session.pending_chest_offer = {}
     session.active_boss_encounter = {}
-    session.state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_RUN_ACTIVE
     session.bump_revision()
     clock.start_run()
     _emit("chest_claimed", outcome)
@@ -699,19 +699,19 @@ func open_artifact_offer(source: String, client_request_id: String = "") -> Dict
         var duplicate: Dictionary = artifact_open_outcomes[client_request_id].duplicate(true)
         duplicate["duplicate"] = true
         return duplicate
-    if source == "FIRST_CLEAR_REWARD" and session.state != RunSession.STATE_RUN_VICTORY:
+    if source == "FIRST_CLEAR_REWARD" and session.state != RunSessionType.STATE_RUN_VICTORY:
         return _fail("FIRST_CLEAR_OFFER_NOT_ALLOWED", "First-clear offer requires a finalized victory.", false)
-    if source == "ELITE_PACK" and session.state != RunSession.STATE_RUN_ACTIVE:
+    if source == "ELITE_PACK" and session.state != RunSessionType.STATE_RUN_ACTIVE:
         return _fail("ELITE_PACK_OFFER_NOT_ALLOWED", "Elite-pack offer requires an active run.", false)
 
     session.artifact_sequence += 1
-    var offer := artifact_offer_system.create_offer(session.run_id, session.seed, source, session.artifact_sequence, session.state_revision)
+    var offer: Dictionary = artifact_offer_system.create_offer(session.run_id, session.seed, source, session.artifact_sequence, session.state_revision)
     if not bool(offer.get("ok", false)):
         session.artifact_sequence -= 1
         return _fail(str(offer.get("code", "ARTIFACT_OFFER_FAILED")), "Artifact offer contract is unavailable.", false, offer)
     session.resume_state = session.state
     session.pending_artifact_offer = offer.duplicate(true)
-    session.state = RunSession.STATE_ARTIFACT_OFFER
+    session.state = RunSessionType.STATE_ARTIFACT_OFFER
     session.bump_revision()
     if source == "FIRST_CLEAR_REWARD":
         clock.freeze()
@@ -729,13 +729,13 @@ func refresh_artifact_offer(offer_id: String, request_id: String, expected_revis
         var duplicate: Dictionary = artifact_refresh_outcomes[request_id].duplicate(true)
         duplicate["duplicate"] = true
         return duplicate
-    if session == null or session.state != RunSession.STATE_ARTIFACT_OFFER:
+    if session == null or session.state != RunSessionType.STATE_ARTIFACT_OFFER:
         return _fail("ARTIFACT_OFFER_NOT_OPEN", "No artifact offer is open.", true)
     if str(session.pending_artifact_offer.get("offer_id", "")) != offer_id:
         return _fail("STALE_ARTIFACT_OFFER", "Artifact offer ID does not match.", true)
     if expected_revision != int(session.pending_artifact_offer.get("created_at_revision", -1)):
         return _fail("STALE_COMMAND", "Artifact offer revision is stale.", true)
-    var refreshed := artifact_offer_system.refresh_offer(session.pending_artifact_offer, session.seed + session.artifact_sequence)
+    var refreshed: Dictionary = artifact_offer_system.refresh_offer(session.pending_artifact_offer, session.seed + session.artifact_sequence)
     session.bump_revision()
     refreshed["created_at_revision"] = session.state_revision
     session.pending_artifact_offer = refreshed
@@ -752,13 +752,13 @@ func claim_artifact(offer_id: String, choice_id: String, expected_revision: int)
         duplicate["duplicate"] = true
         _emit("artifact_claim_duplicate", {"offer_id": offer_id, "choice_id": choice_id})
         return duplicate
-    if session == null or session.state != RunSession.STATE_ARTIFACT_OFFER:
+    if session == null or session.state != RunSessionType.STATE_ARTIFACT_OFFER:
         return _fail("ARTIFACT_OFFER_NOT_OPEN", "No artifact offer is open.", true)
     if str(session.pending_artifact_offer.get("offer_id", "")) != offer_id:
         return _fail("STALE_ARTIFACT_OFFER", "Artifact offer ID does not match.", true)
     if expected_revision != int(session.pending_artifact_offer.get("created_at_revision", -1)):
         return _fail("STALE_COMMAND", "Artifact choice revision is stale.", true)
-    var selected := artifact_offer_system.select(session.pending_artifact_offer, choice_id)
+    var selected: Dictionary = artifact_offer_system.select(session.pending_artifact_offer, choice_id)
     if not bool(selected.get("ok", false)):
         return _fail(str(selected.get("code", "INVALID_ARTIFACT_CHOICE")), "Artifact choice is not in the open offer.", false)
 
@@ -783,11 +783,11 @@ func claim_artifact(offer_id: String, choice_id: String, expected_revision: int)
     }
     completed_artifact_outcomes[offer_id] = outcome.duplicate(true)
     session.completed_artifact_outcomes[offer_id] = outcome.duplicate(true)
-    var resume_state := session.resume_state
+    var resume_state: String = str(session.resume_state)
     session.pending_artifact_offer = {}
-    session.state = resume_state if not resume_state.is_empty() else RunSession.STATE_RUN_ACTIVE
+    session.state = resume_state if not resume_state.is_empty() else RunSessionType.STATE_RUN_ACTIVE
     session.bump_revision()
-    if session.state == RunSession.STATE_RUN_VICTORY:
+    if session.state == RunSessionType.STATE_RUN_VICTORY:
         clock.freeze()
     else:
         clock.start_run()
@@ -796,14 +796,14 @@ func claim_artifact(offer_id: String, choice_id: String, expected_revision: int)
 
 
 func pause(reason: String = "MANUAL") -> Dictionary:
-    if session == null or session.state != RunSession.STATE_RUN_ACTIVE:
+    if session == null or session.state != RunSessionType.STATE_RUN_ACTIVE:
         return _fail("PAUSE_NOT_ALLOWED", "Pause requires RUN_ACTIVE.", true)
     session.resume_state = session.state
     session.pause_reason = reason
     last_coherent_snapshot = session.to_snapshot(clock.snapshot())
     last_coherent_snapshot["checksum"] = _snapshot_checksum(last_coherent_snapshot)
     clock.pause()
-    session.state = RunSession.STATE_RUN_PAUSED
+    session.state = RunSessionType.STATE_RUN_PAUSED
     session.bump_revision()
     _emit("run_paused", {
         "pause_reason": reason,
@@ -815,15 +815,15 @@ func pause(reason: String = "MANUAL") -> Dictionary:
 
 
 func resume_from_snapshot(snapshot: Dictionary = {}) -> Dictionary:
-    if session == null or (session.state != RunSession.STATE_RUN_PAUSED and session.state != RunSession.STATE_RECOVERY_REVIEW):
+    if session == null or (session.state != RunSessionType.STATE_RUN_PAUSED and session.state != RunSessionType.STATE_RECOVERY_REVIEW):
         return _fail("RESUME_NOT_ALLOWED", "Resume requires RUN_PAUSED or RECOVERY_REVIEW.", true)
-    var candidate := snapshot.duplicate(true) if not snapshot.is_empty() else last_coherent_snapshot.duplicate(true)
+    var candidate: Dictionary = snapshot.duplicate(true) if not snapshot.is_empty() else last_coherent_snapshot.duplicate(true)
     if candidate.is_empty() or not candidate.has("checksum") or str(candidate.get("checksum", "")) != _snapshot_checksum(candidate):
         return _enter_recovery("SAVE_RESTORE_FAILED", "Snapshot checksum or shape is invalid.", {"snapshot_id": candidate.get("run_id", "")})
     var clock_snapshot: Dictionary = candidate.get("clock", {})
     if not session.restore_snapshot(candidate) or not clock.restore(clock_snapshot):
         return _enter_recovery("SAVE_RESTORE_FAILED", "Snapshot could not be restored into the active domain state.", {"snapshot_id": candidate.get("run_id", "")})
-    session.state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_RUN_ACTIVE
     completed_offer_outcomes = session.completed_offer_outcomes.duplicate(true)
     completed_chest_outcomes = session.completed_chest_outcomes.duplicate(true)
     completed_artifact_outcomes = session.completed_artifact_outcomes.duplicate(true)
@@ -877,25 +877,25 @@ func trace_report() -> Dictionary:
 
 
 func _maybe_open_level_up_offer() -> Dictionary:
-    if session.state != RunSession.STATE_RUN_ACTIVE:
+    if session.state != RunSessionType.STATE_RUN_ACTIVE:
         return {"opened": false, "reason": "STATE_BLOCKED"}
     var level := int(session.stats.get("level", 1))
-    var threshold := registry.get_xp_to_next(level)
+    var threshold: float = float(registry.get_xp_to_next(level))
     if threshold < 0:
         _record_diagnostic("LEVEL_FORMULA_UNAVAILABLE", "The registry could not evaluate the level threshold.", true, {"level": level})
         return {"opened": false, "reason": "FORMULA_ERROR"}
     if int(session.stats.get("xp", 0)) < threshold:
         return {"opened": false, "threshold": threshold}
 
-    var choices := registry.get_upgrade_choices(session.selected_hero_id)
-    var expected_choice_count := registry.get_upgrade_choice_count()
+    var choices: Array[Dictionary] = registry.get_upgrade_choices(str(session.selected_hero_id))
+    var expected_choice_count: int = int(registry.get_upgrade_choice_count())
     if expected_choice_count <= 0 or choices.size() != expected_choice_count:
         _record_diagnostic("UPGRADE_OFFER_INVALID", "R1 requires the registry-defined number of data-backed choices.", true, {"choice_count": choices.size(), "expected_choice_count": expected_choice_count})
         return {"opened": false, "reason": "CHOICE_COUNT_INVALID"}
 
     session.stats["level"] = level + 1
     session.bump_revision()
-    session.state = RunSession.STATE_UPGRADE_OFFER
+    session.state = RunSessionType.STATE_UPGRADE_OFFER
     session.create_offer(choices)
     clock.pause()
     _emit("level_up", {"level": session.stats["level"], "xp_total": session.stats["xp"], "threshold": threshold})
@@ -910,19 +910,19 @@ func _maybe_open_level_up_offer() -> Dictionary:
 
 
 func _is_active() -> bool:
-    return session != null and session.state == RunSession.STATE_RUN_ACTIVE and clock != null
+    return session != null and session.state == RunSessionType.STATE_RUN_ACTIVE and clock != null
 
 
 func _is_wave_progression_active() -> bool:
-    return session != null and clock != null and session.state in [RunSession.STATE_RUN_ACTIVE, RunSession.STATE_MINI_BOSS_ACTIVE]
+    return session != null and clock != null and session.state in [RunSessionType.STATE_RUN_ACTIVE, RunSessionType.STATE_MINI_BOSS_ACTIVE]
 
 
 func _active_boss_kind() -> String:
     if session == null:
         return ""
-    if session.state in [RunSession.STATE_MAIN_BOSS_INTRO, RunSession.STATE_MAIN_BOSS_ACTIVE, RunSession.STATE_CHECKPOINT_SETTLEMENT]:
+    if session.state in [RunSessionType.STATE_MAIN_BOSS_INTRO, RunSessionType.STATE_MAIN_BOSS_ACTIVE, RunSessionType.STATE_CHECKPOINT_SETTLEMENT]:
         return BossDirectorType.KIND_MAIN
-    if session.state in [RunSession.STATE_MINI_BOSS_INTRO, RunSession.STATE_MINI_BOSS_ACTIVE]:
+    if session.state in [RunSessionType.STATE_MINI_BOSS_INTRO, RunSessionType.STATE_MINI_BOSS_ACTIVE]:
         return BossDirectorType.KIND_MINI
     return ""
 
@@ -945,8 +945,8 @@ func _create_chest_offer(offer_type: String, source_id: String, settlement: Dict
         "settlement": settlement.duplicate(true),
         "claimed": false
     }
-    session.state = RunSession.STATE_BOSS_CHEST
-    session.resume_state = RunSession.STATE_RUN_ACTIVE
+    session.state = RunSessionType.STATE_BOSS_CHEST
+    session.resume_state = RunSessionType.STATE_RUN_ACTIVE
     session.bump_revision()
     clock.pause()
     _emit("chest_offer_created", session.pending_chest_offer)
@@ -1010,7 +1010,7 @@ func _snapshot_checksum(snapshot: Dictionary) -> String:
 
 
 func _enter_recovery(code: String, message: String, details: Dictionary) -> Dictionary:
-    session.state = RunSession.STATE_RECOVERY_REVIEW
+    session.state = RunSessionType.STATE_RECOVERY_REVIEW
     session.record_diagnostic(code, message, true, details)
     clock.pause()
     _emit("save_restore_failed", {"code": code, "message": message, "details": details})
