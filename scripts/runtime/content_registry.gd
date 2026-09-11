@@ -99,7 +99,6 @@ func load_and_validate(path: String = DEFAULT_PATH) -> Dictionary:
         "model_id": str(data.get("model_id", "")),
         "model_status": str(data.get("status", "")),
         "source_path": loaded_path,
-        "content_version": content_version,
         "architecture_contract_path": ARCHITECTURE_CONTRACT_PATH,
         "variant_map_path": VARIANT_MAP_PATH,
         "live_registry_join": get_live_registry_join_status(),
