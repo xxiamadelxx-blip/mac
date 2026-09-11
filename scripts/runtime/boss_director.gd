@@ -32,6 +32,16 @@ func begin(kind: String, checkpoint_id: String = "", boss_id: String = "", run_s
             "boss_id": boss_id
         }
 
+    if registry.has_method("is_runtime_record_ready") and not bool(registry.is_runtime_record_ready(record)):
+        return {
+            "ok": false,
+            "code": "MINI_BOSS_CONTENT_PENDING" if kind == KIND_MINI else "MAIN_BOSS_CONTENT_PENDING",
+            "boss_kind": kind,
+            "checkpoint_id": checkpoint_id,
+            "boss_id": boss_id,
+            "source_status": record.get("content_status", "PENDING_CONTENT_SYNC")
+        }
+
     sequence += 1
     var resolved_boss_id := str(record.get("boss_id", record.get("mini_boss_id", record.get("id", boss_id))))
     var resolved_checkpoint := str(record.get("checkpoint_id", checkpoint_id))
