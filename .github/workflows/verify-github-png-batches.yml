@@ -1,0 +1,56 @@
+name: Verify committed GitHub PNG batches
+
+on:
+  push:
+    paths:
+      - "docs/mockups/**/*.png"
+      - "docs/asset_batches/**/*.json"
+      - ".github/scripts/validate_github_png_batch.py"
+      - ".github/workflows/verify-github-png-batches.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-png-batch-verification
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify each committed PNG batch
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Validate batch evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t manifests < <(find docs/asset_batches -type f -name 'batch-*.json' -print 2>/dev/null | sort)
+          if [[ ${#manifests[@]} -eq 0 ]]; then
+            echo "No committed batch evidence yet; binary intake remains pending."
+            exit 0
+          fi
+          for manifest in "${manifests[@]}"; do
+            python3 .github/scripts/validate_github_png_batch.py --manifest "${manifest}" --repository-root .
+          done
+
+      - name: Reject archives and encoded visual substitutes
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$(find docs/mockups -type f \( -iname '*.zip' -o -iname '*.tar' -o -iname '*.gz' \) -print -quit 2>/dev/null || true)"
+          if [[ -n "${archive}" ]]; then
+            echo "Archives are forbidden in the visual asset tree: ${archive}" >&2
+            exit 2
+          fi
+          if grep -RInE 'data:image/|application/zip|BEGIN[[:space:]]+BASE64' docs/asset_batches docs/mockups 2>/dev/null; then
+            echo "Encoded or archive visual substitutes are forbidden." >&2
+            exit 2
+          fi
