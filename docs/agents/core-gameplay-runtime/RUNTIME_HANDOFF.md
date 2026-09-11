@@ -1,77 +1,86 @@
-# Runtime Handoff — SYNC-04 R2 registry reconciliation checkpoint
+# Runtime Handoff — SYNC-04 R2 live registry verification
 
 ## 1. Work identity
 
-- Repository: `xxiamadelxx-blip/mac`
-- Branch: `main`
-- Parent HEAD: `4dce51b2b86957533faa20b668f8725a112b4a20`
-- Resulting HEAD: exact SHA is supplied with the GitHub commit handoff
-- Slice: `SYNC-04` / R2 registry reconciliation after the content `SYNC-01` handoff
-- Status: `PARTIAL` / `BLOCKED`
-- Runtime implementation baseline: `af2b7fbdd4d155e1d8e2ae3ad48690eac342792c`
-- Content version: `moonveil_first_run_balance:0.1@6aa4ec96afc8a8c9e6a35c164c99e7d62910a687`
-- Runtime test inputs: 101, 202, 303
+- Repository: xxiamadelxx-blip/mac
+- Branch: main
+- Parent HEAD: 560ced8b23013449f70d240567617fd7e6833956
+- Resulting HEAD: publication commit returned with this handoff update
+- Slice: SYNC-04 / R2 BALANCE_MODEL-to-live-registry reconciliation
+- Status: RUNTIME_VERIFIED for the R2 registry, wave and boss-policy acceptance slice
+- Canonical engine: Godot 4.x / GDScript
+- Historical requested trace SHA: 7af78c63997b54edc78a6905613cbd61f489265b; it is not the current main HEAD and is not used as current evidence
+- Current content version: moonveil_first_run_balance:0.1@6aa4ec96afc8a8c9e6a35c164c99e7d62910a687
+- Balance model status: PARTIAL remains unchanged by design; proposed late-run values are not promoted by R2
 
-## 2. This follow-up
+## 2. Outcome
 
-This commit refreshes this handoff against the live `main` after external Content and Balance updates. It changes no runtime source, architecture, balance, content or visual files.
+The live runtime now reads BALANCE_MODEL.json through ContentRegistry and validates a joined view against the verified architecture contract and the Architecture/Product registry map. R2 fails closed on a missing or inconsistent join; it does not invent mini-bosses, elite variants, chest windows, or numeric balance values.
 
-The content handoff `SYNC-01` is present and valid as a content-only proposal: five records, all `PROPOSED`, all `PENDING_ARCHITECTURE`. Its promotion guard explicitly forbids runtime registration before Architecture and Balance reconciliation.
+No Balance or architecture data file was modified for this reconciliation. The existing contract already contains the reconciled target: six main bosses, five mini-bosses, ten elite catalog records, a five-record active elite projection, fifteen chest windows, and the MAIN_BOSS freeze / MINI_BOSS continue clock policy.
 
 ## 3. Live registry join
 
-| Input | Live evidence | Runtime consequence | Status |
+| Input | Runtime source and check | Current evidence | Status |
 |---|---|---|---|
-| Main bosses | B1 `boss_checkpoints`: 6 records | `ContentRegistry.get_main_bosses()` can consume the six-record main roster | PASS for count; numeric extension values remain proposed |
-| Mini bosses | B1 exposes no top-level `mini_bosses` array and no `simulation_model.mini_bosses` array | Runtime must return `MINI_BOSS_CONTENT_PENDING`; it must not read proposal IDs as canonical | BLOCKED |
-| Elite variants | B1 exposes no top-level `elite_variants` array and no `simulation_model.elite_variants` array | Runtime must return pending content status; no elite encounter or offer is invented | BLOCKED |
-| Run envelope | B1 has 7 wave bands, contiguous=true, coverage=1800 seconds; declared duration=1800 | The envelope is structurally available, while extension values remain `PROPOSED`/model-only | PARTIAL |
-| Architecture | Contract declares 6 main, 3 intermediate and 15 chest windows | Target is five mini-bosses; three intermediate records are insufficient | BLOCKED |
+| Balance model | res://docs/agents/balance-economy/BALANCE_MODEL.json via ContentRegistry.DEFAULT_PATH | model_id moonveil_first_run_balance; declared and covered duration 1800 seconds | PASS |
+| Main bosses | BALANCE_MODEL.json main_bosses joined to contract content_registry.bosses | 6 stable IDs joined | PASS |
+| Mini bosses | BALANCE_MODEL.json mini_bosses joined to contract content_registry.mini_bosses and encounter_schedule | 5 stable IDs joined | PASS |
+| Ordinary roster | REGISTRY_VARIANT_MAP.json ordinary_roster joined to contract and simulation_model.enemy_stats | 10 mapped records; 2 legacy records quarantined separately | PASS |
+| Elite variants | BALANCE_MODEL.json elite_variants joined to contract and elite_variant_catalog | 10 catalog IDs joined; active runtime projection limit is 5 | PASS |
+| Chest windows | architecture contract content_registry.chest_windows | 15 total: 10 BOSS_CHEST and 5 ELITE_CHEST; final main boss has no chest reference | PASS |
+| Encounter schedule | architecture encounter_schedule joined by ID, kind, time and final flag | all 11 encounter records joined | PASS |
+| Clock policy | architecture canonical.clock_policy | MAIN_BOSS freezes visible run clock; MINI_BOSS continues it | PASS |
+| Wave envelope | BALANCE_MODEL.json wave_bands | contiguous coverage from 0 through 1800 seconds | PASS |
 
-## 4. Canonical policy reconciliation
+## 4. Implemented runtime seam
 
-- Runtime code implements the user-canonical policy: `MAIN_BOSS` freezes visible run time, wave progression, XP and ordinary spawning; `MINI_BOSS` keeps them moving.
-- The current architecture contract still states that the clock advances during `BOSS_INTRO` and `BOSS_ACTIVE` for every boss. This remains an unresolved cross-system conflict; runtime does not silently change the architecture document.
-- Final main boss remains chest-free.
-- Artifact offers remain separate from boss chest windows and do not become pre-run loadout slots.
+The live implementation includes:
 
-## 5. Implemented runtime seams
+- ContentRegistry loading BALANCE_MODEL.json plus the architecture contract and registry map.
+- ContentRegistry.get_live_registry_join_status() with stable-ID, schedule, count, chest and clock-policy diagnostics.
+- ContentRegistry.get_r2_content_status() returning READY only when the joined registry is valid.
+- Deterministic elite selection from the ten-record catalog with a maximum active projection of five.
+- WaveDirector and SpawnDirector enforcing the registry-backed wave and active-cap policy.
+- RunCoordinator and R2 acceptance coverage for main-boss freeze, mini-boss continuation, final-boss chest absence, checkpoint chest claims and duplicate-safe outcomes.
+- A bounded GitHub Actions R2 command that records Godot import and test exit files plus stdout artifacts.
 
-- `ContentRegistry.get_r2_content_status()` exposes `READY` versus `PENDING_CONTENT_SYNC` instead of hiding missing content.
-- `ContentRegistry.get_wave_band_for_time()` does not extend the last source band beyond its declared end.
-- `WaveDirector.evaluate_spawn()` applies registry active-cap admission.
-- `BossDirector` normalizes stable IDs and stores replay-safe defeat outcomes.
-- `RunSession` snapshots boss-defeat and checkpoint-settlement replay maps.
-- `RunCoordinator` carries chest source fields and preserves duplicate-safe boss, settlement and chest behavior.
-- `r2_runtime_test.gd` fails closed when content is incomplete; it does not silently pass an empty mini roster.
+The following runtime/CI commits are part of the live main history: 4109881 (registry parser fix), 6842616 (coordinator types), 75e2828 (wave/director types), fdd8e82 (spawn/director types), 4f0582f (final null chest policy), 560ced8 (R2 marker check).
 
-## 6. Verification
+## 5. Fresh R2 evidence
 
-- `CONTENT_CATALOG_INDEX.json` parse: PASS; `SYNC-01` has 5 records, all `PROPOSED`.
-- `FIRST_RUN_DATA_CONTRACT.json` parse: PASS; architecture status is `VERIFIED_ARCHITECTURE`, but its intermediate-boss registry contains 3 records.
-- `BALANCE_MODEL.json` parse: PASS; model status is `PARTIAL`, simulation is model-only, runtime integration is not implemented.
-- Live R2 projection: `PENDING_CONTENT_SYNC`; blockers are `MINI_BOSS_ROSTER_COUNT` and `ELITE_VARIANT_CONTENT`.
-- Static runtime source review from implementation baseline: PASS for delimiter balance, duplicate function/top-level variable scan, trailing whitespace and forbidden artifact-slot terminology.
-- Godot focused runtime execution: not available in the workspace; no stdout or exit code is claimed.
-- CI runtime evidence: no valid Godot stdout/exit-code evidence; previous runner failures occurred before step allocation.
+Run: https://github.com/xxiamadelxx-blip/mac/actions/runs/34594035965
 
-## 7. Scope and status separation
+- Run number: 10
+- Run HEAD: 560ced8b23013449f70d240567617fd7e6833956
+- Job: 103245570551 — Godot R2 registry and policy acceptance
+- Workflow conclusion: success
+- godot-import.exit: 0
+- r2-runtime-test.exit: 0
+- R2_RUNTIME_TEST marker: ok=true, status=TESTED
+- R2_RUNTIME_TRACE marker: ok=true, status=TESTED
+- Artifact: https://github.com/xxiamadelxx-blip/mac/actions/runs/34594035965/artifacts/10260183512
+- Artifact ID: 10260183512
+- Artifact digest: sha256:926f5915b1b08c4a87d3d89663290bf334efbe51742977dbd409ec38c0301872
 
-- This follow-up changes only `docs/agents/core-gameplay-runtime/RUNTIME_HANDOFF.md`.
-- No architecture, B1, content-design, Visual Lab, mockup, scene, asset or APK file is changed.
-- `R1`: prior `RUNTIME_VERIFIED` evidence remains separate.
-- `R2`: `PARTIAL/BLOCKED`; implementation seams exist, but joined mini/elite content and executable evidence are missing.
-- `R3`: `RUNTIME_VERIFICATION_BLOCKED`.
-- `R4`: `BLOCKED`; Android/APK is outside this slice.
+The trace reports live_registry_join.status=READY with counts main_bosses=6, mini_bosses=5, ordinary=10, elite=10, legacy=2, chest_windows=15, boss_chest_windows=10 and elite_chest_windows=5. It reports main_boss_freezes=true and mini_boss_continues=true. The final boss trace has boss_chest=false and duplicate-safe settlement; all five mini-boss IDs execute the continuing-clock chest path. Seed 505 produces a deterministic five-record elite projection from the ten-record catalog.
 
-## 8. Blockers and one next action
+The runner also prints environment warnings about fontconfig/ADB availability; they do not affect the two zero exit codes or the successful R2 markers.
 
-### Blockers
+## 6. Verification and status separation
 
-1. Architecture must reconcile the five mini-boss target and replace the advancing-all-boss clock statement with the user-canonical `MAIN_BOSS` freeze / `MINI_BOSS` continue policy.
-2. Balance must publish consumable `mini_bosses[5]` and bounded `elite_variants` records with stable IDs, while keeping proposed numbers explicitly labelled.
-3. CI/QA must provide a working Godot runner and capture the R2 command, stdout and exit code.
+- BALANCE_MODEL.json remains PARTIAL because late extension values are still proposed; R2 verifies consumption and structural joins, not balance approval.
+- R2 registry/policy acceptance is RUNTIME_VERIFIED by the successful Godot CI evidence above.
+- Full combat gameplay, Android background lifecycle, APK packaging and device performance are not claimed complete by this handoff.
+- R3/full gameplay verification requires its own acceptance scope and evidence; it is not silently promoted by R2.
+- No Unity migration, visual asset generation, PNG/SVG/Base64/ZIP creation, or balance-file edit was performed.
+
+## 7. Blockers and one next action
+
+No blocker remains for the R2 BALANCE_MODEL-to-live-registry join.
+
+External pending work remains intentionally separated: Balance owns promotion of proposed late-run numbers, while the broader gameplay/APK evidence belongs to later runtime/QA slices.
 
 ### Next action
 
-After Architecture and Balance publish the reconciled registry, Runtime runs `godot --headless --path . --script res://scripts/runtime/r2_runtime_test.gd` and records the deterministic policy trace.
+Core Gameplay Runtime Agent extends this verified registry seam into the next gameplay vertical slice and attaches a separate Godot trace.
