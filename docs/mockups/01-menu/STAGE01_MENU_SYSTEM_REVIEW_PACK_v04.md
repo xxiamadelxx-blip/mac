@@ -12,7 +12,7 @@ Candidate ID: vl-20260910-moonveil-menu-system-v04
 Status: USER REVIEW
 Technical status: PARTIAL / STATIC_IMAGE_PASS
 Artistic status: PENDING
-Binary delivery status: BLOCKED_BINARY_ARTIFACT
+Binary delivery status: DELIVERED_TO_SUPABASE
 
 ## Решение по отклонённому v03
 
@@ -87,7 +87,7 @@ Binary delivery status: BLOCKED_BINARY_ARTIFACT
 
 Созданы индивидуальные PNG-файлы; ZIP и Base64-представление не используются.
 
-Фактический статус handoff: binaries ещё не появились в Supabase. Доступный текущий канал не завершает binary upload; RLS-политики не менялись. Поэтому candidate не объявляется delivered, approved или production.
+Фактический статус handoff: все 50 индивидуальных PNG появились в Supabase Storage и проверены по количеству distinct объектов и суммарному размеру 12 827 197 байт. Временная anon INSERT-политика использовалась только на время доставки и удалена; постоянная политика authenticated ограничена bucket `visual-assets` и PNG-путями `moonevil-eclipse/docs/mockups/*.png`. Candidate остаётся `USER REVIEW`: доставка выполнена, approval и runtime promotion не выполнены.
 
 ## Static checks
 
@@ -102,11 +102,11 @@ Binary delivery status: BLOCKED_BINARY_ARTIFACT
 
 - Artistic approval/revision/rejection для v04;
 - подтверждение, что магазин входит в нужный продуктовый срез, несмотря на историческую M1-оговорку;
-- доставка индивидуальных PNG в приватный Supabase bucket.
+- подтверждение/коррекция художественного решения v04 и последующий runtime promotion после APPROVE.
 
 ## Next action
 
-После восстановления binary upload доставить весь inventory в указанные Supabase object paths, проверить размер/SHA-256, затем передать четыре exact screens и UI asset family на пользовательское визуальное решение. До APPROVE runtime manifest и runtime integration не менять.
+Binary delivery уже завершён: 50 PNG находятся в указанных Supabase object paths и проверены. Следующее действие — пользовательское визуальное решение по четырём экранам и UI asset family. До APPROVE runtime manifest и runtime integration не менять.
 
 ## Asset inventory
 
