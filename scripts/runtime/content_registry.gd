@@ -310,6 +310,63 @@ func get_elite_variants() -> Array[Dictionary]:
     return result
 
 
+func get_runtime_ready_elite_variants() -> Array[Dictionary]:
+    return _runtime_ready_records(get_elite_variants())
+
+
+func is_runtime_record_ready(record: Dictionary) -> bool:
+    var statuses: Array[String] = []
+    for key in [
+        "runtime_binding_status",
+        "runtime_status",
+        "registry_status",
+        "content_status",
+        "status",
+        "boss_status",
+        "id_status"
+    ]:
+        if record.has(key):
+            var value := str(record.get(key, "")).strip_edges().to_upper()
+            if not value.is_empty():
+                statuses.append(value)
+
+    if statuses.is_empty():
+        return false
+
+    var has_ready_status := false
+    for status in statuses:
+        if (
+            status.contains("PENDING")
+            or status.contains("PROPOSED")
+            or status.contains("NOT_IMPLEMENTED")
+            or status.contains("BLOCKED")
+            or status.contains("NOT_DELIVERED")
+        ):
+            return false
+        if status in [
+            "READY",
+            "RUNTIME_READY",
+            "RUNTIME_VERIFIED",
+            "IMPLEMENTED",
+            "CANON",
+            "CANONICAL",
+            "CANON_ARCHITECTURE",
+            "CANON_ARCHITECTURE_RETIMED",
+            "CONTENT_READY",
+            "CONTENT_SPECIFIED"
+        ]:
+            has_ready_status = true
+    return has_ready_status
+
+
+func _runtime_ready_records(records: Array[Dictionary]) -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    for record in records:
+        if is_runtime_record_ready(record):
+            result.append(record.duplicate(true))
+    return result
+
+
 func get_wave_envelope_status() -> Dictionary:
     var bands: Variant = data.get("wave_bands", [])
     var coverage_end := 0.0
@@ -343,18 +400,30 @@ func get_r2_content_status() -> Dictionary:
     var main_bosses := get_main_bosses()
     var mini_bosses := get_mini_bosses()
     var elite_variants := get_elite_variants()
+    var runtime_ready_main := _runtime_ready_records(main_bosses)
+    var runtime_ready_mini := _runtime_ready_records(mini_bosses)
+    var runtime_ready_elite := _runtime_ready_records(elite_variants)
     var wave_status := get_wave_envelope_status()
     var blockers: Array[String] = []
     var main_count := _count_stable_records(main_bosses, "boss_id")
     var mini_count := _count_stable_records(mini_bosses, "boss_id")
     var elite_count := _count_stable_records(elite_variants, "variant_id")
+    var runtime_main_count := _count_stable_records(runtime_ready_main, "boss_id")
+    var runtime_mini_count := _count_stable_records(runtime_ready_mini, "boss_id")
+    var runtime_elite_count := _count_stable_records(runtime_ready_elite, "variant_id")
 
     if main_count != TARGET_MAIN_BOSS_COUNT:
         blockers.append("MAIN_BOSS_ROSTER_COUNT")
+    if runtime_main_count != TARGET_MAIN_BOSS_COUNT:
+        blockers.append("MAIN_BOSS_CONTENT_PENDING")
     if mini_count != TARGET_MINI_BOSS_COUNT:
         blockers.append("MINI_BOSS_ROSTER_COUNT")
+    if runtime_mini_count != TARGET_MINI_BOSS_COUNT:
+        blockers.append("MINI_BOSS_CONTENT_PENDING")
     if elite_count == 0:
-        blockers.append("ELITE_VARIANT_CONTENT")
+        blockers.append("ELITE_VARIANT_CONTENT_MISSING")
+    elif runtime_elite_count == 0:
+        blockers.append("ELITE_VARIANT_CONTENT_PENDING")
     if float(wave_status.get("declared_duration_seconds", 0.0)) < TARGET_RUN_DURATION_SECONDS:
         blockers.append("RUN_DURATION_CONTENT")
     if not bool(wave_status.get("ready_for_target", false)):
@@ -368,9 +437,12 @@ func get_r2_content_status() -> Dictionary:
         "wave_coverage_end_seconds": wave_status.get("coverage_end_seconds", 0.0),
         "target_main_boss_count": TARGET_MAIN_BOSS_COUNT,
         "available_main_boss_count": main_count,
+        "runtime_ready_main_boss_count": runtime_main_count,
         "target_mini_boss_count": TARGET_MINI_BOSS_COUNT,
         "available_mini_boss_count": mini_count,
+        "runtime_ready_mini_boss_count": runtime_mini_count,
         "available_elite_variant_count": elite_count,
+        "runtime_ready_elite_variant_count": runtime_elite_count,
         "blockers": blockers
     }
 
@@ -411,7 +483,19 @@ func _normalize_encounter_record(record: Dictionary, kind: String) -> Dictionary
             normalized["mini_boss_id"] = record_id
     normalized["encounter_kind"] = kind
     normalized["source_path"] = str(record.get("source_path", record.get("source", record.get("boss_source", "BALANCE_MODEL.json"))))
-    normalized["content_status"] = str(record.get("content_status", record.get("boss_status", record.get("status", "PENDING_CONTENT_SYNC"))))
+    normalized["content_status"] = str(record.get(
+        "content_status",
+        record.get(
+            "runtime_binding_status",
+            record.get(
+                "registry_status",
+                record.get(
+                    "boss_status",
+                    record.get("id_status", record.get("status", "PENDING_CONTENT_SYNC"))
+                )
+            )
+        )
+    ))
     return normalized
 
 
@@ -421,7 +505,16 @@ func _normalize_elite_variant(record: Dictionary) -> Dictionary:
     if not variant_id.is_empty():
         normalized["variant_id"] = variant_id
     normalized["source_path"] = str(record.get("source_path", record.get("source", "BALANCE_MODEL.json")))
-    normalized["content_status"] = str(record.get("content_status", record.get("status", "PENDING_CONTENT_SYNC")))
+    normalized["content_status"] = str(record.get(
+        "content_status",
+        record.get(
+            "runtime_binding_status",
+            record.get(
+                "registry_status",
+                record.get("status", "PENDING_CONTENT_SYNC")
+            )
+        )
+    ))
     return normalized
 
 
