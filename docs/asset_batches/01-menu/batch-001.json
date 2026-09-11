@@ -11,8 +11,8 @@
   "batch_size_policy": "adaptive",
   "batch_reason": "Пакет содержит 11 PNG; весь пакет размещён одной безопасной партией. Число 40 — только пример для больших наборов.",
   "delivery_status": "PLACED",
-  "artistic_status": "PENDING",
-  "package_status": "USER REVIEW",
+  "artistic_status": "APPROVED BY CREATIVE DIRECTOR",
+  "package_status": "APPROVED GOLDEN",
   "old_mockups_used": false,
   "approved_main_menu": {
     "candidate_id": "vl-20260911-menu-home-master-v02",
@@ -31,7 +31,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "4172010267c09418973bce514fdf3c675178f63cbbda2f1155e6c0ec70b7164e",
-      "git_blob_sha": "a0ae2db2fa2e615797da27a5186f9acdd7536e7b"
+      "git_blob_sha": "a0ae2db2fa2e615797da27a5186f9acdd7536e7b",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_HERO_SOYEON_HAN_MOCKUP_v01.png",
@@ -42,7 +43,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "d9db56dbbbf5834bfa6ee193233305ce1548b6f410bd395abac0e1ebc94e26c1",
-      "git_blob_sha": "ec32bec6e251931309fe72a4faa9efe394c84c74"
+      "git_blob_sha": "ec32bec6e251931309fe72a4faa9efe394c84c74",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_CHARACTER_SELECT_CANDIDATE_v01.png",
@@ -53,7 +55,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "3f4f901da56562c78ba914e1e83641a22c390533e2dc9ee38ff9b6b31efbc36b",
-      "git_blob_sha": "805b1844482f0ed4fc1151ab03d97a59bccaf923"
+      "git_blob_sha": "805b1844482f0ed4fc1151ab03d97a59bccaf923",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_STAGE_SELECT_CANDIDATE_v01.png",
@@ -64,7 +67,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "107ef2f02e238ead6ef08a3d0a05922ccb46fa3fc1401001e219963a5c549408",
-      "git_blob_sha": "925398392eb2d94f66f351cb52e58b80ad9c6609"
+      "git_blob_sha": "925398392eb2d94f66f351cb52e58b80ad9c6609",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RUN_CONFIRM_CANDIDATE_v01.png",
@@ -75,7 +79,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "694622d4af9c1c8c248858428a917b8f944d3ad5ddb4b4bcc21f762504f1b447",
-      "git_blob_sha": "22d338b984a84d28b6611580fae3757a39d4d470"
+      "git_blob_sha": "22d338b984a84d28b6611580fae3757a39d4d470",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_LOADING_CANDIDATE_v01.png",
@@ -86,7 +91,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "6c3f5aed7904d38f22baccf000e3a0802d202a9b4a785a81897a5d47a39035a0",
-      "git_blob_sha": "202c538a53158b268337f39b17006947cebb708d"
+      "git_blob_sha": "202c538a53158b268337f39b17006947cebb708d",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RESULT_VICTORY_CANDIDATE_v01.png",
@@ -97,7 +103,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "a3f817749f8bae3c189f79292a457755d22b3a762408a2350ae2682f3d98c45e",
-      "git_blob_sha": "bd4522bfbfa75833d6fd4d75286855d834f9c57e"
+      "git_blob_sha": "bd4522bfbfa75833d6fd4d75286855d834f9c57e",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RESULT_DEFEAT_CANDIDATE_v01.png",
@@ -108,7 +115,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "82aeb9c906ea7919bba8177ba4617f999a278cf045fd06059b06d331effb4cf0",
-      "git_blob_sha": "123881df3001f4eb6173d3fd40959c116a4007f2"
+      "git_blob_sha": "123881df3001f4eb6173d3fd40959c116a4007f2",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_SETTINGS_CANDIDATE_v01.png",
@@ -119,7 +127,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "07c2a2fc67c0d80901fe22af5c52cf6210c0e62dd28a70a7820fda81276bdf39",
-      "git_blob_sha": "4aa5cf214c790ef2f5465df49d1d160ee8461b31"
+      "git_blob_sha": "4aa5cf214c790ef2f5465df49d1d160ee8461b31",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png",
@@ -130,7 +139,8 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "0e8f10c32a3e84c993cf7485545ea3c0775d7003ee5a94fa21c0713ddbbf1b0e",
-      "git_blob_sha": "443ed32ab8cb6fbcf01ffb8faabf73abf355a2bb"
+      "git_blob_sha": "443ed32ab8cb6fbcf01ffb8faabf73abf355a2bb",
+      "status": "APPROVED GOLDEN"
     },
     {
       "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_NEW_REVIEW_GRID_v01.png",
@@ -141,11 +151,18 @@
       "color_space": "sRGB",
       "channels": "sRGB",
       "sha256": "29b69366ad43964e1be4c26f59eabc5d926f6b671e360b0ed7a32902bfeb3eb3",
-      "git_blob_sha": "fa80251028e1e6d0143bcbb8d423a7e8ed64d296"
+      "git_blob_sha": "fa80251028e1e6d0143bcbb8d423a7e8ed64d296",
+      "status": "EVIDENCE ONLY"
     }
   ],
   "queued_files": [],
   "workspace_only_sources": "/workspace/scratch/ae8b141c7d02/generated_images/* и stage01-new-candidates/*",
   "checked_at_utc": "2026-09-11",
-  "note": "GitHub tree evidence подтверждает все 11 фактических paths, blob SHA и размеры. Base64 использовался только внутри транспорта."
+  "note": "GitHub tree evidence confirms all 11 factual paths, blob SHA and sizes. Base64 was used only inside transport. User approved the 10 exact visual candidates on 2026-09-11; the review grid remains evidence-only. No runtime promotion was performed. The separately requested Soyeon Han victory/defeat variants were not generated or placed because the built-in image generator returned usage_limit_reached.",
+  "approval_record": {
+    "decision": "APPROVE",
+    "approved_by": "Creative Director (user)",
+    "approved_at_utc": "2026-09-11",
+    "scope": "10 visual candidates approved; review grid is evidence-only."
+  }
 }

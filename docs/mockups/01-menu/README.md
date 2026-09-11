@@ -1,6 +1,6 @@
 # Stage 01 — Menu
 
-Status: **IN PROGRESS / HOME MASTER APPROVED; NEW RESTART PACKAGE v01 IN USER REVIEW**.
+Status: **IN PROGRESS / HOME MASTER APPROVED; RESTART PACKAGE v01 APPROVED GOLDEN; SOYEON RESULT VARIANTS BLOCKED BEFORE GENERATION**.
 
 Активное визуальное семейство: `moonveil-menu-soft-tonal-v02`.
 
@@ -102,9 +102,9 @@ Preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./candidates/STAGE01_MENU_HOME_CA
 
 После approval home master следующая работа — создавать остальные внутренние экраны Stage 01. Размер любой партии определяется фактическим manifest и лимитом чата/транспорта; 40 — только пример.
 
-## Stage 01 restart — NEW mockup package v01 — USER REVIEW
+## Stage 01 restart — NEW mockup package v01 — APPROVED GOLDEN
 
-Пакет собран с нуля текущим генератором изображений. Старые Stage 01 v02/v04 mockups не использовались. Утверждённый MAIN MENU v02 не изменён.
+Пакет собран с нуля текущим генератором изображений. Старые Stage 01 v02/v04 mockups не использовались. Утверждённый MAIN MENU v02 не изменён. Пользователь утвердил 10 точных визуальных кандидатов 2026-09-11.
 
 - [STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md](./candidates/STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md)
 - [STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json](./candidates/STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json)
@@ -123,4 +123,14 @@ Preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./candidates/STAGE01_MENU_HOME_CA
 - [STAGE01_MENU_SETTINGS_CANDIDATE_v01.png](./candidates/STAGE01_MENU_SETTINGS_CANDIDATE_v01.png)
 - [STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png](./candidates/STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png)
 
-Delivery: `PLACED`, 11/11 PNG; queued: `[]`. Artistic status: `PENDING`. Runtime promotion: not performed.
+Delivery: `PLACED`, 11/11 PNG; queued: `[]`. Artistic status: `APPROVED BY CREATIVE DIRECTOR` для 10 визуальных кандидатов; review grid — evidence only. Runtime promotion: not performed.
+
+
+## Requested addition — Soyeon Han result variants — BLOCKED BEFORE GENERATION
+
+Запрошены два новых независимых варианта для второй героини, СОЁН ХАН:
+
+- `STAGE01_MENU_RESULT_VICTORY_SOYEON_VARIANT_CANDIDATE_v01.png` — победа;
+- `STAGE01_MENU_RESULT_DEFEAT_SOYEON_VARIANT_CANDIDATE_v01.png` — поражение.
+
+Оба файла **не созданы и не размещены**: встроенный новый генератор изображений вернул `429 usage_limit_reached` до выдачи результата. Старые мокапы не использовались, существующие PNG не мутировались и не копировались. Для этого запроса `batch-002` не создавался; очередь бинарной выкладки отсутствует, пока нет новых PNG. Следующее действие — отдельная генерация, техническая проверка, GitHub placement и передача ссылок на `USER REVIEW`.

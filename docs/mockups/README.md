@@ -64,7 +64,7 @@
 - внутриигровой интерфейс артефактов относится к Stage 17;
 - отображение информации о синергиях относится к Stage 19.
 
-Stage 01 restart package v01 уже создан: 11 новых PNG размещены в GitHub и переданы на USER REVIEW. Старые v02/v04 screen mockups в новый пакет не включены.
+Stage 01 restart package v01 уже создан: 11 новых PNG размещены в GitHub; 10 точных визуальных кандидатов утверждены пользователем как `APPROVED GOLDEN`, review grid остаётся evidence-only. Старые v02/v04 screen mockups в новый пакет не включены.
 
 ### Handoff для следующей партии
 
@@ -93,7 +93,7 @@ checked_at_utc: 2026-09-11
 
 Первое визуальное семейство v01 вынесено из активных каталогов в [`_archive/family-v01/`](./_archive/family-v01/README.md). Архив не является active candidate, golden или production source.
 
-Stage 01 home master — **APPROVED GOLDEN**; вся внутренняя menu/navigation system Stage 01 остаётся **IN PROGRESS** до утверждения остальных экранов и нужных runtime/Android-проверок. Stage 02 остаётся **USER REVIEW**.
+Stage 01 home master и restart package v01 — **APPROVED GOLDEN**; вся внутренняя menu/navigation system Stage 01 остаётся **IN PROGRESS** до нужных runtime/Android-проверок и отдельного production promotion. Stage 02 остаётся **USER REVIEW**.
 
 
 ### Stage 01 restart package v01 — handoff
@@ -107,3 +107,8 @@ Stage 01 home master — **APPROVED GOLDEN**; вся внутренняя menu/n
 - old mockups used: `[]`;
 - review pack: [STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md](./01-menu/candidates/STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md);
 - next action: Creative Director возвращает APPROVE, REVISION или REJECT; следующая партия в этом запуске не начинается.
+
+
+#### Follow-up: Soyeon Han result variants
+
+Запрошены два новых варианта `ПОБЕДА` и `ПОРАЖЕНИЕ` для СОЁН ХАН. Они пока не сгенерированы и не размещены: built-in imagegen вернул `429 usage_limit_reached`. Старые мокапы и мутация существующих PNG запрещены; `batch-002` не создавался до появления новых бинарных файлов.

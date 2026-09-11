@@ -4,16 +4,23 @@ TASK-ID: MOCKUP-01-MENU-RESTART-01
 Parent HEAD: `727703c944f21fc94cd32f61101e7b3ca15e76ee`  
 Binary commit: [6322c90](https://github.com/xxiamadelxx-blip/mac/commit/6322c90ed8dab8ffff9e331bfe91683aad4a98ad)  
 Route: `UI_ART` + secondary `MOCKUP`  
-Status: **USER REVIEW**  
+Status: **APPROVED GOLDEN — 10 exact visual candidates; review grid evidence only**  
 Technical status: **PASS / 390×844 sRGB screen exports**  
 Binary delivery: **PLACED — 11/11 PNG**  
-Artistic status: **PENDING CREATIVE DIRECTOR**
+Artistic status: **APPROVED BY CREATIVE DIRECTOR**
 
 ## Boundary
 
 - [Approved MAIN MENU v02](https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png) remains unchanged; blob `0d46c417c7d56ce4886df36692c3dd2c675f35a8`.
 - Old Stage 01 v02/v04 screen mockups were not used.
 - No runtime manifest or scene was changed.
+
+## Approval record
+
+- User decision on 2026-09-11: **APPROVE**.
+- The 10 exact visual candidates in the list below are now `APPROVED GOLDEN` with the recorded GitHub blobs.
+- The review grid is evidence-only and is not a runtime asset or a separate artistic candidate.
+- The approved MAIN MENU v02 remains immutable; this approval does not promote anything to runtime.
 
 ## New files for review
 
@@ -37,6 +44,15 @@ Review overview: [new review grid](https://github.com/xxiamadelxx-blip/mac/blob/
 - Evidence: [batch-001.json](https://github.com/xxiamadelxx-blip/mac/blob/main/docs/asset_batches/01-menu/batch-001.json).
 - Provenance: [STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json](https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json).
 
-## Approval gate
+## Follow-up request — Soyeon Han result variants
 
-The package is not `APPROVED GOLDEN` and not `PRODUCTION`. Review the exact PNGs and return **APPROVE**, **REVISION** or **REJECT** per file or for the package.
+Two additional files were requested but were **not generated and not placed** because the built-in new image generator returned `429 usage_limit_reached` before producing an artifact:
+
+- planned `STAGE01_MENU_RESULT_VICTORY_SOYEON_VARIANT_CANDIDATE_v01.png`;
+- planned `STAGE01_MENU_RESULT_DEFEAT_SOYEON_VARIANT_CANDIDATE_v01.png`.
+
+No old mockups were used, no existing image was mutated, no copy was registered as a variant, and no `batch-002` was created. The next agent may generate these as a separate `USER REVIEW` package when imagegen is available, then place and verify them in GitHub.
+
+## Recorded approval
+
+This restart package is approved as recorded above. Keep its exact PNGs immutable; runtime manifest linkage and production promotion still require a separate explicit request.
