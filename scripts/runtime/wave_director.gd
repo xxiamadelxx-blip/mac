@@ -63,7 +63,7 @@ func begin_post_boss_cycle(from_checkpoint_id: String, to_checkpoint_id: String)
 
 
 func resolve(run_seconds: float, boss_kind: String = "") -> Dictionary:
-    var phase := spawn_director.phase_for(run_seconds, boss_kind)
+    var phase: String = str(spawn_director.phase_for(run_seconds, boss_kind))
     if boss_kind == "MAIN_BOSS":
         return {
             "ok": true,
