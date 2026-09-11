@@ -697,7 +697,7 @@ func _encounter_schedule_join(schedule_records: Variant, main_records: Array[Dic
         if not (schedule is Dictionary):
             blockers.append("ENCOUNTER_SCHEDULE_RECORD_INVALID")
             continue
-        encounter_id := str(schedule.get("encounter_id", schedule.get("id", "")))
+        var encounter_id := str(schedule.get("encounter_id", schedule.get("id", "")))
         if encounter_id.is_empty() or not actual_by_id.has(encounter_id):
             blockers.append("ENCOUNTER_SCHEDULE_ID_JOIN")
             continue
