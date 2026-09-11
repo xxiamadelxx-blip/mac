@@ -43,7 +43,7 @@ Review-кандидат размещён в GitHub:
 package_id: stage01-menu-home-batch-01
 stage_path: docs/mockups/01-menu/
 manifest_png_count: null
-batch_size_policy: adaptive
+batch_size_policy: exact-40-or-final-remainder
 status: QUEUED
 placed_files: []
 queued_files: []
