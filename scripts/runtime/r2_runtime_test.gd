@@ -11,7 +11,7 @@ var content_status: Dictionary = {}
 
 func _init() -> void:
     var registry_coordinator: Variant = RunCoordinatorType.new()
-    var boot := registry_coordinator.boot()
+    var boot: Dictionary = registry_coordinator.boot()
     _check(bool(boot.get("ok", false)), "R2 registry boots from BALANCE_MODEL.json")
     if not bool(boot.get("ok", false)):
         _finish("BLOCKED")
@@ -106,7 +106,7 @@ func _test_main_boss_freeze_and_duplicate() -> void:
     if not bool(started.get("ok", false)):
         return
 
-    var run_before := coordinator.clock.run_seconds
+    var run_before: float = coordinator.clock.run_seconds
     coordinator.advance(2.0)
     _check(is_equal_approx(coordinator.clock.run_seconds, run_before), "Main boss freezes visible run clock")
     _check(is_equal_approx(coordinator.clock.encounter_seconds, 2.0), "Main boss advances separate encounter clock")
@@ -176,7 +176,7 @@ func _test_all_mini_bosses() -> void:
         if not bool(mini_started.get("ok", false)):
             continue
 
-        var run_before := coordinator.clock.run_seconds
+        var run_before: float = coordinator.clock.run_seconds
         coordinator.advance(2.0)
         _check(coordinator.clock.run_seconds > run_before, "Mini-boss %s keeps visible run clock moving" % boss_id)
         _check(coordinator.clock.encounter_seconds > 0.0, "Mini-boss %s advances encounter clock" % boss_id)
@@ -204,7 +204,7 @@ func _test_all_mini_bosses() -> void:
 func _test_elite_projection(coordinator: Variant) -> void:
     var all_variants: Array[Dictionary] = coordinator.registry.get_elite_variants()
     _check(all_variants.size() == 10, "Elite catalog contains ten variants")
-    var limit := coordinator.registry.get_active_elite_limit()
+    var limit: int = coordinator.registry.get_active_elite_limit()
     _check(limit == 5, "Elite active projection limit is five")
     var selected_first: Array[Dictionary] = coordinator.registry.select_active_elite_variants(505)
     var selected_second: Array[Dictionary] = coordinator.registry.select_active_elite_variants(505)
