@@ -188,7 +188,7 @@ Manifest не может помечать candidate как production тольк
 
 Visual Lab governs provenance, technical status, artistic review and promotion. GitHub stores the actual PNG payloads as individual repository files; manifests and batch evidence store metadata only.
 
-The canonical path is `xxiamadelxx-blip/mac@main/docs/mockups/<stage>/<asset>.png`. GitHub Release assets are not used. A separate `USER REVIEW` preview may be committed before a package; one agent run then commits exactly 40 PNG files when 40 or more remain, or the entire remainder when fewer than 40 remain, and stops.
+The canonical path is `xxiamadelxx-blip/mac@main/docs/mockups/<stage>/<asset>.png`. GitHub Release assets are not used. A separate `USER REVIEW` preview may be committed before a package; one agent run then commits one adaptive package/batch sized by the actual manifest and safe chat/transport limit. Forty PNG is only an example for large sets, not a mandatory size; a smaller set is committed in full, and the run stops after evidence.
 
 Each batch records exact paths, byte sizes, SHA-256 values, Git blob SHAs, asset commit SHA and verification result in `docs/asset_batches/<stage>/batch-<NNN>.json`. `PLACED` is allowed only after the actual GitHub blobs are checked.
 

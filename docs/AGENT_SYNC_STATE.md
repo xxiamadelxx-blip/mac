@@ -9,7 +9,7 @@
 
 ## 0. Anti-context-loss rule
 
-One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are committed as individual PNG files in GitHub; each agent run places exactly 40 files when 40 or more remain, or the complete final remainder when fewer than 40 remain, and the evidence manifest carries metadata only.
+One task has one observable result, one owned write set, and one evidence bundle. Do not paste binary files or Base64 into chat. Visual binaries are committed as individual PNG files in GitHub; each agent run places one adaptive package sized by the actual manifest and safe chat/transport limit, and the evidence manifest carries metadata only. Forty is only an example for large sets.
 
 Before work: read this file; claim one task ID; record the parent SHA; edit only the assigned paths; report exact evidence and one next action.
 
@@ -129,7 +129,7 @@ Report: parent HEAD, resulting HEAD, changed paths, status, evidence, blockers, 
 - Каноническое бинарное хранилище — repository `xxiamadelxx-blip/mac`, branch `main`; PNG лежат отдельными файлами под `docs/mockups/<stage>/`.
 - GitHub Release assets не считаются файлами репозитория и не используются для intake.
 - Отдельный `USER REVIEW` preview допускается до открытия большой партии для утверждения внешнего вида.
-- Один агентский запуск обрабатывает одну партию: ровно 40 PNG, если осталось 40 или больше, либо весь остаток, если осталось меньше 40.
+- Один агентский запуск обрабатывает одну адаптивную партию по фактическому manifest и безопасному лимиту чата/транспорта; 40 PNG — только пример для больших наборов, а не обязательный размер.
 - После каждой партии создаётся `docs/asset_batches/<stage>/batch-<NNN>.json` с фактическими paths, blob SHA, размером, SHA-256 и commit SHA.
 - `PLACED` ставится только после проверки фактических GitHub blobs. Manifest, список имён, скриншот и сообщение агента не являются binary evidence.
 - `docs/ci/STAGE03_IMPORT_REQUEST.json` остаётся `PENDING_GITHUB_UPLOAD` до размещения 192 отдельных PNG Stage 03; ожидаемый порядок: `40 + 40 + 40 + 40 + 32`.

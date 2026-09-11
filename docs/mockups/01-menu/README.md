@@ -1,10 +1,12 @@
 # Stage 01 — Menu
 
-Status: **IN PROGRESS / HOME MASTER APPROVED; INTERNAL MENU SCREENS REMAIN**.
+Status: **IN PROGRESS / HOME MASTER APPROVED; NEW RESTART PACKAGE v01 IN USER REVIEW**.
 
 Активное визуальное семейство: `moonveil-menu-soft-tonal-v02`.
 
-## Активный пакет v02
+## Исторический пакет v02 — НЕ ИСПОЛЬЗУЕТСЯ В НОВОМ RESTART
+
+Старые screen mockups из этого раздела сохранены только как история. В новый пакет Stage 01 restart v01 они не переносились и не использовались.
 
 Пакет использует мягкую живописную anime-fantasy подачу: глубокий сине-серый фон, дымчатый teal, тёплый ivory, приглушённую brass-фурнитуру и мягкий jade как основной акцент. Категория персонажей в интерфейсе — **ПЕРСОНАЖИ**.
 
@@ -41,7 +43,7 @@ Status: **IN PROGRESS / HOME MASTER APPROVED; INTERNAL MENU SCREENS REMAIN**.
 Этап закрывается только после явного утверждения выбранного visual family, проверки всех обязательных состояний, читаемости на телефоне, safe area и навигационного маршрута без тупиков, а также требуемого runtime/Android evidence.
 
 
-## Candidate package v04 — USER REVIEW
+## Исторический пакет v04 — НЕ ИСПОЛЬЗУЕТСЯ В НОВОМ RESTART
 
 Новая серия экранов и активных UI-ассетов после отклонения v03:
 
@@ -99,3 +101,26 @@ Preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./candidates/STAGE01_MENU_HOME_CA
 Не путать экран и содержимое: экран магазина — Stage 01, а сами passive assets/data — Stage 07; портреты и боевые ассеты героинь — Stage 03; внутриигровой HUD — Stage 10; внутриигровые предложения оружия/пассивок — Stage 16; artifact UI — Stage 17; synergy info — Stage 19.
 
 После approval home master следующая работа — создавать остальные внутренние экраны Stage 01. Размер любой партии определяется фактическим manifest и лимитом чата/транспорта; 40 — только пример.
+
+## Stage 01 restart — NEW mockup package v01 — USER REVIEW
+
+Пакет собран с нуля текущим генератором изображений. Старые Stage 01 v02/v04 mockups не использовались. Утверждённый MAIN MENU v02 не изменён.
+
+- [STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md](./candidates/STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md)
+- [STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json](./candidates/STAGE01_MENU_SYSTEM_RESTART_v01.provenance.json)
+- [STAGE01_MENU_NEW_REVIEW_GRID_v01.png](./candidates/STAGE01_MENU_NEW_REVIEW_GRID_v01.png)
+
+Новые candidate PNG:
+
+- [STAGE01_HERO_LIN_YUE_MOCKUP_v01.png](./candidates/STAGE01_HERO_LIN_YUE_MOCKUP_v01.png)
+- [STAGE01_HERO_SOYEON_HAN_MOCKUP_v01.png](./candidates/STAGE01_HERO_SOYEON_HAN_MOCKUP_v01.png)
+- [STAGE01_MENU_CHARACTER_SELECT_CANDIDATE_v01.png](./candidates/STAGE01_MENU_CHARACTER_SELECT_CANDIDATE_v01.png)
+- [STAGE01_MENU_STAGE_SELECT_CANDIDATE_v01.png](./candidates/STAGE01_MENU_STAGE_SELECT_CANDIDATE_v01.png)
+- [STAGE01_MENU_RUN_CONFIRM_CANDIDATE_v01.png](./candidates/STAGE01_MENU_RUN_CONFIRM_CANDIDATE_v01.png)
+- [STAGE01_MENU_LOADING_CANDIDATE_v01.png](./candidates/STAGE01_MENU_LOADING_CANDIDATE_v01.png)
+- [STAGE01_MENU_RESULT_VICTORY_CANDIDATE_v01.png](./candidates/STAGE01_MENU_RESULT_VICTORY_CANDIDATE_v01.png)
+- [STAGE01_MENU_RESULT_DEFEAT_CANDIDATE_v01.png](./candidates/STAGE01_MENU_RESULT_DEFEAT_CANDIDATE_v01.png)
+- [STAGE01_MENU_SETTINGS_CANDIDATE_v01.png](./candidates/STAGE01_MENU_SETTINGS_CANDIDATE_v01.png)
+- [STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png](./candidates/STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png)
+
+Delivery: `PLACED`, 11/11 PNG; queued: `[]`. Artistic status: `PENDING`. Runtime promotion: not performed.

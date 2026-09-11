@@ -17,8 +17,8 @@
 Правила транспортировки:
 
 - отдельный `USER REVIEW` preview можно разместить для одобрения внешнего вида до пакетной выкладки;
-- если осталось 40 или больше PNG, одна партия содержит ровно 40;
-- если осталось меньше 40, последняя партия содержит ровно оставшийся объём;
+- размер партии определяется фактическим manifest и безопасным лимитом чата/транспорта;
+- 40 файлов — только ориентир для больших наборов, не обязательный размер; если набор меньше, выкладывается весь набор;
 - один агентский запуск обрабатывает только одну партию и после evidence останавливается;
 - следующая партия начинается только отдельным запуском после перечитывания живого `main` и проверки evidence предыдущей;
 - `PLACED` ставится только после проверки всех фактических GitHub paths/blobs и SHA-256;
@@ -64,7 +64,7 @@
 - внутриигровой интерфейс артефактов относится к Stage 17;
 - отображение информации о синергиях относится к Stage 19.
 
-Партия следующих Stage 01-ассетов пока не открыта: после утверждения home master следующий набор создаётся по фактическому manifest и загружается адаптивными последовательными партиями. Число 40 не является обязательным.
+Stage 01 restart package v01 уже создан: 11 новых PNG размещены в GitHub и переданы на USER REVIEW. Старые v02/v04 screen mockups в новый пакет не включены.
 
 ### Handoff для следующей партии
 
@@ -94,3 +94,16 @@ checked_at_utc: 2026-09-11
 Первое визуальное семейство v01 вынесено из активных каталогов в [`_archive/family-v01/`](./_archive/family-v01/README.md). Архив не является active candidate, golden или production source.
 
 Stage 01 home master — **APPROVED GOLDEN**; вся внутренняя menu/navigation system Stage 01 остаётся **IN PROGRESS** до утверждения остальных экранов и нужных runtime/Android-проверок. Stage 02 остаётся **USER REVIEW**.
+
+
+### Stage 01 restart package v01 — handoff
+
+- package: `stage01-menu-restart-v01`;
+- candidate status: `USER REVIEW`;
+- binary delivery: `PLACED`, 11/11 PNG;
+- approved MAIN MENU v02: unchanged;
+- placed files: все 11 путей перечислены в [batch-001.json](./../asset_batches/01-menu/batch-001.json);
+- queued files: `[]`;
+- old mockups used: `[]`;
+- review pack: [STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md](./01-menu/candidates/STAGE01_MENU_SYSTEM_RESTART_v01_REVIEW_PACK.md);
+- next action: Creative Director возвращает APPROVE, REVISION или REJECT; следующая партия в этом запуске не начинается.

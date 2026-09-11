@@ -1,0 +1,186 @@
+{
+  "task_id": "MOCKUP-01-MENU-RESTART-01",
+  "route": "UI_ART",
+  "secondary_route": "MOCKUP",
+  "stage_path": "docs/mockups/01-menu/",
+  "asset_kind": "new Stage 01 menu/navigation screen family plus new heroine mockup references",
+  "asset_id": "menu.system.restart.v01",
+  "family_id": "moonveil-menu-soft-tonal-v02",
+  "candidate_id": "vl-20260911-stage01-menu-system-restart-v01",
+  "status": "USER REVIEW",
+  "technical_status": "PASS / screen exports 390x844 sRGB; heroine references 390x694 sRGB; binary evidence checked",
+  "artistic_status": "PENDING CREATIVE DIRECTOR",
+  "binary_delivery_status": "PLACED",
+  "parent_approved_master": {
+    "candidate_id": "vl-20260911-menu-home-master-v02",
+    "path": "docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png",
+    "blob_sha": "0d46c417c7d56ce4886df36692c3dd2c675f35a8",
+    "status": "APPROVED GOLDEN",
+    "untouched": true
+  },
+  "source_policy": {
+    "old_stage01_mockups_used": [],
+    "approved_home_mutated": false,
+    "note": "Все новые изображения созданы текущим OpenAI image generation tool. Старые Stage 01 v02/v04 mockups не использовались."
+  },
+  "generator_or_tool": {
+    "name": "OpenAI built-in image generation tool",
+    "version": "current tool; exact model version not exposed",
+    "workflow": "Visual Lab UI_ART + MOCKUP",
+    "post_processing": "ImageMagick mechanical resize/colorspace normalization only",
+    "editable_source": null
+  },
+  "navigation_flow": [
+    "ГЛАВНОЕ МЕНЮ",
+    "НАЧАТЬ ЗАБЕГ",
+    "ВЫБОР ПЕРСОНАЖА",
+    "ВЫБОР ЭТАПА",
+    "ПОДТВЕРЖДЕНИЕ",
+    "ЗАГРУЗКА",
+    "РЕЗУЛЬТАТ"
+  ],
+  "side_routes": [
+    "ГЛАВНОЕ МЕНЮ → НАСТРОЙКИ",
+    "ГЛАВНОЕ МЕНЮ → МАГАЗИН"
+  ],
+  "assets": [
+    {
+      "file": "STAGE01_HERO_LIN_YUE_MOCKUP_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_HERO_LIN_YUE_MOCKUP_v01.png",
+      "role": "new heroine mockup / Lin Yue",
+      "candidate_id": "vl-20260911-stage01-lin-yue-mockup-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x694",
+      "delivered_bytes": 516396,
+      "delivered_sha256": "4172010267c09418973bce514fdf3c675178f63cbbda2f1155e6c0ec70b7164e",
+      "git_blob_sha": "a0ae2db2fa2e615797da27a5186f9acdd7536e7b",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_HERO_SOYEON_HAN_MOCKUP_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_HERO_SOYEON_HAN_MOCKUP_v01.png",
+      "role": "new heroine mockup / Soyeon Han",
+      "candidate_id": "vl-20260911-stage01-soyeon-han-mockup-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x694",
+      "delivered_bytes": 526444,
+      "delivered_sha256": "d9db56dbbbf5834bfa6ee193233305ce1548b6f410bd395abac0e1ebc94e26c1",
+      "git_blob_sha": "ec32bec6e251931309fe72a4faa9efe394c84c74",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_CHARACTER_SELECT_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_CHARACTER_SELECT_CANDIDATE_v01.png",
+      "role": "screen / character selection",
+      "candidate_id": "vl-20260911-stage01-character-select-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 625852,
+      "delivered_sha256": "3f4f901da56562c78ba914e1e83641a22c390533e2dc9ee38ff9b6b31efbc36b",
+      "git_blob_sha": "805b1844482f0ed4fc1151ab03d97a59bccaf923",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_STAGE_SELECT_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_STAGE_SELECT_CANDIDATE_v01.png",
+      "role": "screen / stage selection",
+      "candidate_id": "vl-20260911-stage01-stage-select-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 482519,
+      "delivered_sha256": "107ef2f02e238ead6ef08a3d0a05922ccb46fa3fc1401001e219963a5c549408",
+      "git_blob_sha": "925398392eb2d94f66f351cb52e58b80ad9c6609",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_RUN_CONFIRM_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RUN_CONFIRM_CANDIDATE_v01.png",
+      "role": "screen / run confirmation",
+      "candidate_id": "vl-20260911-stage01-run-confirm-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 617212,
+      "delivered_sha256": "694622d4af9c1c8c248858428a917b8f944d3ad5ddb4b4bcc21f762504f1b447",
+      "git_blob_sha": "22d338b984a84d28b6611580fae3757a39d4d470",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_LOADING_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_LOADING_CANDIDATE_v01.png",
+      "role": "screen / loading",
+      "candidate_id": "vl-20260911-stage01-loading-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 607595,
+      "delivered_sha256": "6c3f5aed7904d38f22baccf000e3a0802d202a9b4a785a81897a5d47a39035a0",
+      "git_blob_sha": "202c538a53158b268337f39b17006947cebb708d",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_RESULT_VICTORY_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RESULT_VICTORY_CANDIDATE_v01.png",
+      "role": "screen / victory result",
+      "candidate_id": "vl-20260911-stage01-result-victory-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 610405,
+      "delivered_sha256": "a3f817749f8bae3c189f79292a457755d22b3a762408a2350ae2682f3d98c45e",
+      "git_blob_sha": "bd4522bfbfa75833d6fd4d75286855d834f9c57e",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_RESULT_DEFEAT_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_RESULT_DEFEAT_CANDIDATE_v01.png",
+      "role": "screen / defeat result",
+      "candidate_id": "vl-20260911-stage01-result-defeat-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 594769,
+      "delivered_sha256": "82aeb9c906ea7919bba8177ba4617f999a278cf045fd06059b06d331effb4cf0",
+      "git_blob_sha": "123881df3001f4eb6173d3fd40959c116a4007f2",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_SETTINGS_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_SETTINGS_CANDIDATE_v01.png",
+      "role": "screen / settings",
+      "candidate_id": "vl-20260911-stage01-settings-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 497195,
+      "delivered_sha256": "07c2a2fc67c0d80901fe22af5c52cf6210c0e62dd28a70a7820fda81276bdf39",
+      "git_blob_sha": "4aa5cf214c790ef2f5465df49d1d160ee8461b31",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_PASSIVE_SHOP_CANDIDATE_v01.png",
+      "role": "screen / meta passive shop",
+      "candidate_id": "vl-20260911-stage01-passive-shop-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "390x844",
+      "delivered_bytes": 493541,
+      "delivered_sha256": "0e8f10c32a3e84c993cf7485545ea3c0775d7003ee5a94fa21c0713ddbbf1b0e",
+      "git_blob_sha": "443ed32ab8cb6fbcf01ffb8faabf73abf355a2bb",
+      "manifest_consumer": "not promoted; review candidate only"
+    },
+    {
+      "file": "STAGE01_MENU_NEW_REVIEW_GRID_v01.png",
+      "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_NEW_REVIEW_GRID_v01.png",
+      "role": "review evidence grid; not runtime",
+      "candidate_id": "vl-20260911-stage01-review-grid-v01",
+      "status": "USER REVIEW",
+      "delivered_dimensions": "600x612",
+      "delivered_bytes": 755456,
+      "delivered_sha256": "29b69366ad43964e1be4c26f59eabc5d926f6b671e360b0ed7a32902bfeb3eb3",
+      "git_blob_sha": "fa80251028e1e6d0143bcbb8d423a7e8ed64d296",
+      "manifest_consumer": "not promoted; review candidate only"
+    }
+  ],
+  "open_decisions": [
+    "Approve/revise/reject the two new heroine mockups.",
+    "Approve/revise/reject each new Stage 01 screen candidate.",
+    "After approval, create runtime manifest entries; no runtime promotion in this task."
+  ],
+  "next_action": "Creative Director reviews exact GitHub candidates and returns APPROVE, REVISION or REJECT."
+}

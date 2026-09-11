@@ -84,7 +84,7 @@ Technical PASS и artistic approval — разные состояния. Про�
 - GitHub repository `xxiamadelxx-blip/mac`, branch `main`, is the canonical store for real PNG binaries as well as code and manifests.
 - Every PNG is committed as its own repository file under the correct `docs/mockups/<stage>/...` path. GitHub Release assets are not used.
 - A single `USER REVIEW` preview may be committed before a package is opened so the Creative Director can approve the exact appearance. It is not a package and does not become `PLACED` automatically.
-- One agent run handles one package only: exactly 40 PNG files when 40 or more remain; if fewer than 40 remain, upload exactly the remainder. Never start the next package in the same run.
+- One agent run handles one package/batch only. Batch size is adaptive and is determined by the actual manifest plus the safe chat/transport limit; 40 PNG is an example for large sets, not a mandatory size. If the set is smaller, upload the whole set. Never start the next package/batch in the same run.
 - Record batch index, all paths, per-file size/SHA-256, asset commit SHA and evidence in `docs/asset_batches/<stage>/batch-<NNN>.json`.
 - `PLACED` is allowed only after actual GitHub paths/blobs and every file's size/SHA-256 are verified. A manifest, screenshot, release page or agent message is not binary evidence.
 - Use the GitHub batch uploader or equivalent Git-Data operation. Any API-internal Base64 is never pasted into chat, issue, comment or repository text.
