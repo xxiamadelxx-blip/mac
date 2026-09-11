@@ -48,11 +48,11 @@ jobs:
           if [ "${status}" -ne 0 ]; then
             failed=1
           fi
-          if ! grep -Eq 'R2_RUNTIME_TEST \\{.*"ok":true' build/verification/r2-runtime-test.log; then
+          if ! grep -Eq 'R2_RUNTIME_TEST \{.*"ok":true' build/verification/r2-runtime-test.log; then
             echo "Required R2_RUNTIME_TEST success marker was not found."
             failed=1
           fi
-          if ! grep -Eq 'R2_RUNTIME_TRACE \\{.*"ok":true' build/verification/r2-runtime-test.log; then
+          if ! grep -Eq 'R2_RUNTIME_TRACE \{.*"ok":true' build/verification/r2-runtime-test.log; then
             echo "Required R2_RUNTIME_TRACE success marker was not found."
             failed=1
           fi
