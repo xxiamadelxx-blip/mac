@@ -35,7 +35,7 @@ Review-кандидат размещён в GitHub:
 - blob: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`;
 - прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
 
-Пакет Stage 01 пока не открыт к загрузке: его exact manifest и размер первой партии будут определены после approval этого кандидата. Нельзя считать исторические Supabase objects v02/v04 размещёнными в GitHub.
+Пакет Stage 01 пока не открыт к загрузке: его exact manifest и размер первой партии будут определены после approval этого кандидата. Нельзя считать исторические внешние objects v02/v04 размещёнными в GitHub.
 
 ### Handoff-формат для каждой партии
 
