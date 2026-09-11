@@ -39,6 +39,20 @@ def error(errors: List[str], condition: bool, message: str) -> None:
         errors.append(message)
 
 
+def check_provenance(errors: List[str], value: Any, label: str) -> None:
+    """Require an explicit numeric provenance object for content tuning."""
+    if not isinstance(value, dict) or "value" not in value:
+        error(errors, False, f"{label} is not an explicit value/provenance record")
+        return
+    for field in ("source", "derived_formula", "rationale", "status"):
+        error(errors, field in value and bool(value[field]), f"{label} lacks {field}")
+    error(
+        errors,
+        value.get("status") in {"CANON", "DERIVED", "PROPOSED", "PENDING_B1", "PENDING_PRODUCT_DECISION", "BLOCKED"},
+        f"{label} has unsupported status {value.get('status')!r}",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     here = Path(__file__).resolve().parent
@@ -152,10 +166,91 @@ def main() -> int:
     for variant_id in proposed_variant_ids:
         record = overlay_records.get(variant_id, {})
         error(errors, bool(record.get("base_enemy_id")), f"elite overlay has no base_enemy_id: {variant_id}")
+        for stat_path in ("hp_multiplier", "damage_multiplier", "speed_multiplier", "xp_multiplier"):
+            check_provenance(errors, record.get(stat_path), f"{variant_id}.{stat_path}")
+        for stat_path in ("hp", "atk", "speed"):
+            check_provenance(errors, record.get("resolved_base_stats", {}).get(stat_path), f"{variant_id}.resolved_base_stats.{stat_path}")
+        for stat_path in ("hp", "atk", "speed"):
+            check_provenance(errors, record.get("late_run_effective_stats", {}).get(stat_path), f"{variant_id}.late_run_effective_stats.{stat_path}")
     enemy_stats = simulation.get("enemy_stats", {})
     error(errors, all(enemy_id in enemy_stats for enemy_id in ordinary_ids), "one or more ordinary content IDs lacks numeric stats")
     error(errors, simulation.get("boss_stats", {}).keys() >= {str(row.get("checkpoint_id")) for row in main_schedule}, "one or more main checkpoints lacks stats")
     error(errors, simulation.get("mini_boss_stats", {}).keys() >= {str(row.get("boss_id")) for row in mini_schedule}, "one or more mini-boss checkpoints lacks stats")
+
+    # Full content binding is Balance-owned.  The model must expose every
+    # content record in one JSON source; the simulator must not have to invent
+    # the remaining eight weapons/passives/synergies or any artifact effects.
+    catalog = simulation.get("build_catalog", {})
+    check_provenance(errors, catalog.get("weapon_max_level"), "build_catalog.weapon_max_level")
+    check_provenance(errors, catalog.get("passive_max_rank"), "build_catalog.passive_max_rank")
+    expected_weapons = {
+        "weapon_moon_blade", "weapon_jade_talismans", "weapon_crimson_flame_fan",
+        "weapon_frost_pearl", "weapon_thunder_needles", "weapon_spirit_bell",
+        "weapon_fox_mirage", "weapon_lotus_mines", "weapon_star_bow",
+        "weapon_black_eclipse_umbrella",
+    }
+    expected_passives = {
+        "passive_wind_of_travel", "passive_jade_focus", "passive_ember_heart",
+        "passive_frost_thread", "passive_heavenly_seal", "passive_iron_bell",
+        "passive_mirror_shard", "passive_lotus_heart", "passive_star_compass",
+        "passive_spirit_lens",
+    }
+    expected_synergies = {
+        "synergy_moon_dance", "synergy_heavenly_seals", "synergy_phoenix_sky",
+        "synergy_winter_palace", "synergy_heavenly_judgment", "synergy_guardian_bell",
+        "synergy_nine_reflections", "synergy_lotus_sanctuary", "synergy_constellation_rain",
+        "synergy_eclipse_vortex",
+    }
+    expected_artifacts = {
+        "artifact_jade_compass", "artifact_mirror_shard", "artifact_phoenix_feather",
+        "artifact_frost_bead", "artifact_bell_fragment", "artifact_lotus_seed",
+        "artifact_moon_crown", "artifact_black_bead", "artifact_tideglass",
+        "artifact_silent_lantern",
+    }
+    for field, expected in (("weapons", expected_weapons), ("passives", expected_passives), ("synergies", expected_synergies), ("artifacts", expected_artifacts)):
+        actual = set(catalog.get(field, {}))
+        error(errors, actual == expected, f"full content catalog {field} is incomplete or has drifted IDs")
+        for content_id in expected:
+            record = catalog.get(field, {}).get(content_id, {})
+            error(errors, bool(record.get("content_description")), f"{field}.{content_id} lacks content description")
+            error(errors, record.get("balance_status") == "PROPOSED", f"{field}.{content_id} must remain explicitly PROPOSED")
+            if field == "weapons":
+                for numeric_field in ("base_damage", "attack_interval_seconds", "targets_per_attack", "range_world_units", "area_radius_world_units", "projectile_speed_world_units_per_second", "lifetime_seconds", "pierce_or_chain_limit", "knockback_world_units", "status_duration_seconds"):
+                    check_provenance(errors, record.get(numeric_field), f"{field}.{content_id}.{numeric_field}")
+                for numeric_field in ("damage_multiplier", "attack_interval_multiplier", "area_multiplier", "extra_targets", "effect_duration_seconds"):
+                    check_provenance(errors, record.get("evolution", {}).get(numeric_field), f"{field}.{content_id}.evolution.{numeric_field}")
+            elif field == "passives":
+                for numeric_field in ("damage_per_rank", "defense_per_rank", "primary_value_per_rank", "trigger_cooldown_seconds", "effect_duration_seconds", "stack_cap"):
+                    check_provenance(errors, record.get(numeric_field), f"{field}.{content_id}.{numeric_field}")
+            elif field == "synergies":
+                for numeric_field in ("damage_multiplier", "attack_interval_multiplier", "area_multiplier", "extra_targets", "effect_duration_seconds", "requires_weapon_level", "requires_passive_rank"):
+                    check_provenance(errors, record.get(numeric_field), f"{field}.{content_id}.{numeric_field}")
+            else:
+                for numeric_field in record.get("effect_parameters", {}):
+                    check_provenance(errors, record["effect_parameters"].get(numeric_field), f"{field}.{content_id}.effect_parameters.{numeric_field}")
+
+    error(errors, len(model.get("content_balance_binding", {}).get("source_documents", {})) >= 8, "content balance binding lacks source document evidence")
+    error(errors, model.get("content_balance_binding", {}).get("status") == "PROPOSED_MODEL_ONLY", "content balance binding status is missing")
+    error(errors, not any("extension_slot" in str(row.get("boss_id", "")) for row in main_schedule), "main schedule still contains placeholder boss IDs")
+    error(errors, not any("pending_" in str(row.get("boss_id", "")) or "extension_slot" in str(row.get("boss_id", "")) for row in mini_schedule), "mini schedule still contains placeholder boss IDs")
+    for enemy_id in ordinary_ids:
+        record = enemy_stats.get(enemy_id, {})
+        error(errors, bool(record.get("content_description")), f"ordinary enemy lacks content description: {enemy_id}")
+        for stat_path in ("hp", "atk", "speed"):
+            check_provenance(errors, record.get("resolved_base_stats", {}).get(stat_path), f"{enemy_id}.resolved_base_stats.{stat_path}")
+            check_provenance(errors, record.get("late_run_effective_stats", {}).get(stat_path), f"{enemy_id}.late_run_effective_stats.{stat_path}")
+    for checkpoint_id, record in simulation.get("boss_stats", {}).items():
+        if checkpoint_id in {str(row.get("checkpoint_id")) for row in main_schedule}:
+            error(errors, bool(record.get("content_description")), f"main boss lacks content description: {checkpoint_id}")
+            error(errors, record.get("balance_status") == "PROPOSED", f"main boss numeric binding must remain PROPOSED: {checkpoint_id}")
+            for stat_path in ("base_hp", "base_damage", "base_speed", "attack_interval_seconds", "telegraph_seconds"):
+                check_provenance(errors, record.get(stat_path), f"{checkpoint_id}.{stat_path}")
+    for boss_id in {str(row.get("boss_id")) for row in mini_schedule}:
+        record = simulation.get("mini_boss_stats", {}).get(boss_id, {})
+        error(errors, bool(record.get("content_description")), f"mini boss lacks content description: {boss_id}")
+        error(errors, record.get("balance_status") == "PROPOSED", f"mini boss numeric binding must remain PROPOSED: {boss_id}")
+        for stat_path in ("base_hp", "base_damage", "base_speed", "attack_interval_seconds", "telegraph_seconds", "xp_value"):
+            check_provenance(errors, record.get(stat_path), f"{boss_id}.{stat_path}")
 
     ramp = simulation.get("boss_wave_ramp", {})
     error(errors, ramp.get("status") == "PROPOSED", "post-boss ramp must remain explicitly PROPOSED")

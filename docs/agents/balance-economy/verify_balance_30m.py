@@ -41,8 +41,8 @@ def fail(errors: List[str], condition: bool, message: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     here = Path(__file__).resolve().parent
-    parser.add_argument("--model", type=Path, default=here / "BALANCE_MODEL.json")
-    parser.add_argument("--simulator", type=Path, default=here / "balance_simulator.py")
+    parser.add_argument("--model", type=Path, default=here / "current_balance_model.json")
+    parser.add_argument("--simulator", type=Path, default=here / "current_balance_simulator.py")
     args = parser.parse_args()
 
     first = run_once(args.simulator, args.model)
@@ -93,4 +93,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -719,6 +719,141 @@ def percentile(values: List[float], fraction: float) -> Optional[float]:
     return round(ordered[index], 3)
 
 
+def content_balance_audit(model: Dict[str, Any]) -> Dict[str, Any]:
+    """Calculate measurable budgets for every content record in the model.
+
+    The run loop exercises the two protected starter builds. This independent
+    pass proves that the remaining catalog records are populated, linked, and
+    numerically inspectable without promoting proposed values to CANON or
+    runtime evidence.
+    """
+    simulation = model["simulation_model"]
+    catalog = simulation["build_catalog"]
+    anchors = catalog["balance_anchors"]
+    reference_hp = number(anchors["reference_ordinary_hp"])
+    target_share = number(simulation["target_policy"]["synergy_damage_share_max"])
+
+    weapons: Dict[str, Any] = {}
+    for weapon_id, weapon in catalog["weapons"].items():
+        base_dps = number(weapon["base_damage"]) * integer(weapon["targets_per_attack"]) / number(weapon["attack_interval_seconds"])
+        evolved = weapon["evolution"]
+        evolved_targets = integer(weapon["targets_per_attack"]) + integer(evolved["extra_targets"])
+        evolved_dps = (
+            number(weapon["base_damage"])
+            * evolved_targets
+            * (1.0 + number(evolved["damage_multiplier"]))
+            / (number(weapon["attack_interval_seconds"]) * number(evolved["attack_interval_multiplier"]))
+        )
+        weapons[weapon_id] = {
+            "base_dps_reference": round(base_dps, 3),
+            "evolved_dps_reference": round(evolved_dps, 3),
+            "base_reference_ttk_seconds": round(reference_hp / max(base_dps, 1e-9), 3),
+            "evolved_reference_ttk_seconds": round(reference_hp / max(evolved_dps, 1e-9), 3),
+            "status": weapon.get("balance_status", "PROPOSED"),
+        }
+
+    passives: Dict[str, Any] = {}
+    passive_cap = integer(catalog["passive_max_rank"])
+    for passive_id, passive in catalog["passives"].items():
+        passives[passive_id] = {
+            "max_rank": passive_cap,
+            "max_damage_multiplier": round(1.0 + number(passive["damage_per_rank"]) * passive_cap, 4),
+            "max_defense_fraction_before_cap": round(number(passive["defense_per_rank"]) * passive_cap, 4),
+            "max_primary_value": round(number(passive["primary_value_per_rank"]) * passive_cap, 4),
+            "trigger_cooldown_seconds": number(passive["trigger_cooldown_seconds"]),
+            "stack_cap": integer(passive["stack_cap"]),
+            "status": passive.get("balance_status", "PROPOSED"),
+        }
+
+    synergies: Dict[str, Any] = {}
+    for synergy_id, synergy in catalog["synergies"].items():
+        raw_share = number(synergy["damage_multiplier"]) / (1.0 + number(synergy["damage_multiplier"]))
+        synergies[synergy_id] = {
+            "damage_share_before_geometry_guard": round(raw_share, 4),
+            "damage_share_guard": target_share,
+            "guard_pass": raw_share <= target_share + 1e-9,
+            "effective_interval_multiplier": number(synergy["attack_interval_multiplier"]),
+            "extra_targets": integer(synergy["extra_targets"]),
+            "effect_duration_seconds": number(synergy["effect_duration_seconds"]),
+            "status": synergy.get("balance_status", "PROPOSED"),
+        }
+
+    artifacts: Dict[str, Any] = {}
+    for artifact_id, artifact in catalog["artifacts"].items():
+        artifacts[artifact_id] = {
+            "effect_key": artifact["effect_key"],
+            "effect_family": artifact["effect_family"],
+            "numeric_parameters": {key: number(value) for key, value in artifact["effect_parameters"].items()},
+            "uses_build_slots": bool(artifact["consumes_weapon_or_passive_slot"]),
+            "status": artifact.get("balance_status", "PROPOSED"),
+        }
+
+    ordinary: Dict[str, Any] = {}
+    for enemy_id in unwrap(simulation["content_roster"]["ordinary_enemy_ids"]):
+        record = simulation["enemy_stats"][enemy_id]
+        ordinary[enemy_id] = {
+            "base_stats": {key: number(record["resolved_base_stats"][key]) for key in ("hp", "atk", "speed")},
+            "late_run_stats": {key: number(record["late_run_effective_stats"][key]) for key in ("hp", "atk", "speed")},
+            "role": record.get("attack_type", "ordinary"),
+            "status": record.get("balance_status", "PROPOSED"),
+        }
+
+    elite: Dict[str, Any] = {}
+    for variant_id in unwrap(simulation["content_roster"]["elite_variant_ids"]):
+        record = simulation["elite_variation_policy"]["variant_overrides"]["records"][variant_id]
+        elite[variant_id] = {
+            "base_enemy_id": record["base_enemy_id"],
+            "resolved_base_stats": {key: number(record["resolved_base_stats"][key]) for key in ("hp", "atk", "speed", "xp")},
+            "late_run_stats": {key: number(record["late_run_effective_stats"][key]) for key in ("hp", "atk", "speed")},
+            "status": record.get("balance_status", "PROPOSED"),
+        }
+
+    bosses: Dict[str, Any] = {}
+    for checkpoint_id, record in simulation["boss_stats"].items():
+        bosses[checkpoint_id] = {
+            "boss_id": record["boss_id"],
+            "hp": number(record["base_hp"]),
+            "atk": number(record["base_damage"]),
+            "speed": number(record["base_speed"]),
+            "attack_interval_seconds": number(record["attack_interval_seconds"]),
+            "telegraph_seconds": number(record["telegraph_seconds"]),
+            "status": record.get("balance_status", record.get("boss_id_status", "PROPOSED")),
+        }
+    minis: Dict[str, Any] = {}
+    for boss_id in (row["boss_id"] for row in simulation["run_schedule"]["mini_boss_checkpoints"]):
+        record = simulation["mini_boss_stats"][boss_id]
+        minis[boss_id] = {
+            "hp": number(record["base_hp"]),
+            "atk": number(record["base_damage"]),
+            "speed": number(record["base_speed"]),
+            "attack_interval_seconds": number(record["attack_interval_seconds"]),
+            "telegraph_seconds": number(record["telegraph_seconds"]),
+            "status": record.get("balance_status", record.get("stat_status", "PROPOSED")),
+        }
+
+    return {
+        "status": "PROPOSED_MODEL_ONLY",
+        "coverage": {
+            "weapons": len(weapons),
+            "passives": len(passives),
+            "synergies": len(synergies),
+            "artifacts": len(artifacts),
+            "ordinary_enemies": len(ordinary),
+            "elite_variants": len(elite),
+            "main_bosses": len(bosses),
+            "mini_bosses": len(minis),
+        },
+        "weapons": weapons,
+        "passives": passives,
+        "synergies": synergies,
+        "artifacts": artifacts,
+        "ordinary_enemies": ordinary,
+        "elite_variants": elite,
+        "main_bosses": bosses,
+        "mini_bosses": minis,
+    }
+
+
 def simulate_legacy(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) -> Dict[str, Any]:
     """Run one deterministic model slice with a paused run clock at every boss.
 
@@ -1312,8 +1447,26 @@ def simulate(model: Dict[str, Any], profile_name: str, hero_id: str, seed: int) 
         policy = simulation["elite_variation_policy"]
         pack_size = integer(policy["pack_size"])
         variant_ids = list(unwrap(policy["variant_ids"]))
-        variant_id = variant_ids[rng.randrange(len(variant_ids))]
-        anchor_enemy = weighted_choice(rng, band.get("composition_weights", weights[band["wave_band_id"]]))
+        overlay_records = policy.get("variant_overrides", {}).get("records", {})
+        # A variant overlays one ordinary family. Select the anchor and
+        # variant as a linked pair so an ink-beetle overlay cannot silently be
+        # applied to a moth or another family.
+        band_weights = band.get("composition_weights", weights[band["wave_band_id"]])
+        allowed_pairs = [
+            (variant_id, str(overlay_records[variant_id]["base_enemy_id"]))
+            for variant_id in variant_ids
+            if variant_id in overlay_records and overlay_records[variant_id].get("base_enemy_id") in band_weights
+        ]
+        if not allowed_pairs:
+            allowed_pairs = [
+                (variant_id, str(overlay_records[variant_id]["base_enemy_id"]))
+                for variant_id in variant_ids
+                if variant_id in overlay_records
+            ]
+        pair_weights = {enemy_id: band_weights.get(enemy_id, 1.0) for _, enemy_id in allowed_pairs}
+        anchor_enemy = weighted_choice(rng, pair_weights)
+        matching_variants = [variant_id for variant_id, enemy_id in allowed_pairs if enemy_id == anchor_enemy]
+        variant_id = matching_variants[rng.randrange(len(matching_variants))]
         elite_pack_states[event_id] = {
             "event_id": event_id,
             "source_checkpoint_id": mini_row["checkpoint_id"],
@@ -1845,6 +1998,7 @@ def run_all(model: Dict[str, Any], seeds: List[int]) -> Dict[str, Any]:
         "architecture_revision": model["architecture_contract"]["source_revision"],
         "seeds": seeds,
         "run_count": len(runs),
+        "content_balance_audit": content_balance_audit(model),
         "runs": runs,
     }
 
@@ -1852,6 +2006,21 @@ def run_all(model: Dict[str, Any], seeds: List[int]) -> Dict[str, Any]:
 def assert_result_shape(model: Dict[str, Any], result: Dict[str, Any]) -> None:
     if result["status"] != "SIMULATED_MODEL_ONLY":
         raise AssertionError("unexpected simulation status")
+    coverage = result.get("content_balance_audit", {}).get("coverage", {})
+    expected_coverage = {
+        "weapons": 10,
+        "passives": 10,
+        "synergies": 10,
+        "artifacts": 10,
+        "ordinary_enemies": 10,
+        "elite_variants": 10,
+        "main_bosses": 6,
+        "mini_bosses": 5,
+    }
+    if coverage != expected_coverage:
+        raise AssertionError(f"full content audit coverage drifted: {coverage}")
+    if not all(row["guard_pass"] for row in result["content_balance_audit"]["synergies"].values()):
+        raise AssertionError("one or more content synergies exceeds the damage-share guard")
     expected_duration = number(model["simulation_model"]["main_run_duration_seconds"])
     expected_bosses = len(main_checkpoints(model))
     expected_minibosses = len(mini_checkpoints(model))

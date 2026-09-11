@@ -1,44 +1,45 @@
-# Balance Combat Model — 30-minute model evidence
+# Balance Combat Model — 30-minute evidence
 
-Status: `PARTIAL / MODEL_ONLY`. All absolute enemy/boss/mini/elite values not
-present in B1 are `PROPOSED` or `PENDING_B1`; they are not canonical runtime
-stats.
+Status: `PARTIAL / MODEL_ONLY`. The JSON contains explicit proposed absolute
+values for every content record; none of the values absent from B1 is presented
+as canonical.
 
-## Model equations
+## Equations and authority
 
 ```text
 post_armor_damage = raw_damage × (1 − damage_reduction_fraction)
 expected_crit = 1 + crit_chance × (crit_multiplier − 1)
 weapon_level_multiplier = 1 + 0.10 × (weapon_level − 1)
 TTK = effective_HP / focused_DPS
+late_stats = proposed_base_stats × proposed_wave_multiplier
 ```
 
-The simulator reads these records from `BALANCE_MODEL.json`. It contains no
-copied B1 tuning constants. The proposed enemy records expose HP, ATK, speed,
-attack interval, contact delay and XP; elite records apply the linked overlay
-formula `base × multiplier` and remain finite event content.
+`balance_simulator.py` reads the single `BALANCE_MODEL.json`; it contains no
+second copy of weapon, enemy, elite, boss or reward tuning.
 
-## Profile risk over five seeds
+## Risk results — five seeds per profile/hero
 
-`min HP` is the lowest simulated player HP; `incoming total` is the mean total
-landed incoming damage; `peak DPS` is the largest per-step incoming rate;
-`max hit` is the largest landed hit.
+`min HP` is the lowest simulated HP; incoming is total landed damage; peak is
+the largest step DPS; max hit is the largest landed event. A death may produce a
+negative final sample because the simulator records the post-hit state.
 
-| Profile / hero | Completed | Min HP | Incoming total | Peak DPS | Max hit |
-|---|---:|---:|---:|---:|---:|
-| fresh / Lin Yue | 5/5 | 19.65 | 45.920 | 49.000 | 12.250 |
-| fresh / Soyeon Han | 5/5 | 41.05 | 35.280 | 49.000 | 12.250 |
-| moderate / Lin Yue | 5/5 | 56.641 | 22.295 | 42.532 | 10.633 |
-| moderate / Soyeon Han | 5/5 | 49.372 | 41.023 | 48.020 | 12.005 |
-| max M1 / Lin Yue | 5/5 | 88.155 | 15.498 | 44.100 | 11.025 |
-| max M1 / Soyeon Han | 5/5 | 96.090 | 23.562 | 50.400 | 12.600 |
+| Profile / hero | Survived | Completed | Min HP mean / min | Incoming mean | Peak mean | Max hit mean / max |
+|---|---:|---:|---:|---:|---:|---:|
+| fresh / Lin Yue | 4/5 | 4/5 | 37.080 / -0.300 | 52.920 | 51.800 | 12.950 / 14.000 |
+| fresh / Soyeon Han | 5/5 | 5/5 | 79.970 / 56.800 | 30.030 | 45.360 | 11.340 / 14.000 |
+| moderate / Lin Yue | 5/5 | 5/5 | 65.010 / 59.042 | 30.390 | 45.276 | 11.319 / 13.720 |
+| moderate / Soyeon Han | 5/5 | 5/5 | 94.099 / 73.039 | 22.501 | 37.593 | 9.398 / 12.005 |
+| max M1 / Lin Yue | 5/5 | 5/5 | 79.524 / 69.255 | 28.476 | 42.840 | 10.710 / 12.600 |
+| max M1 / Soyeon Han | 5/5 | 5/5 | 105.288 / 92.310 | 26.712 | 43.344 | 10.836 / 12.600 |
 
-The B1 single-hit bound is 15% of base HP. The worst model hit is 12.25% for
-the 90-HP profile, so the model bound passes; this is not collision evidence.
+The largest model hit is 14.0 HP, or 15.56% of the 90-HP Lin Yue base. The
+independent acceptance bound is 15%; this is a model watch requiring either a
+hit-rate/telegraph correction or B1 decision, not a hidden status change.
 
 ## Main-boss TTK, seconds
 
-Columns are 05:00 / 10:00 / 15:00 / 20:00 / 25:00 / 30:00.
+Values are deterministic for the fixed build path. Columns are 05:00 / 10:00 /
+15:00 / 20:00 / 25:00 / 30:00.
 
 | Profile / hero | TTK sequence |
 |---|---|
@@ -49,10 +50,10 @@ Columns are 05:00 / 10:00 / 15:00 / 20:00 / 25:00 / 30:00.
 | max M1 / Lin Yue | 46.00 / 42.50 / 41.50 / 65.75 / 54.25 / 58.00 |
 | max M1 / Soyeon Han | 50.00 / 47.00 / 46.75 / 76.75 / 62.75 / 67.25 |
 
-The first three columns are compared with the B1 first-slice target; 20:00–
-30:00 values use the proposed late-main extension and must not be called a
-balance lock. The fresh Soyeon late-main result is above the proposed 60–100s
-window and is an explicit tuning watch, not silently corrected by a multiplier.
+The 05:00–15:00 results sit in the B1 45–80 second first-slice window. The
+20:00–30:00 records are proposed late-run extensions. Fresh Soyeon at 20:00
+and the fresh Lin Yue final result are explicit watch points against the
+proposed late/final targets.
 
 ## Mini-boss TTK, seconds
 
@@ -67,22 +68,32 @@ Columns are 07:30 / 12:30 / 17:30 / 22:30 / 27:30.
 | max M1 / Lin Yue | 31.25 / 28.50 / 26.75 / 25.25 / 22.75 |
 | max M1 / Soyeon Han | 33.75 / 31.50 / 30.25 / 29.75 / 26.50 |
 
-Mini-bosses continue the visible/wave/XP clock in the model. Their numeric
-records are proposed from the short-encounter target because B1 has no absolute
-mini-boss stats.
+Mini numeric records are proposed because B1 does not define them. Their 20–55
+second target is represented in the model and remains pending product/B1 lock.
 
 ## Ordinary and elite TTK
 
-Ordinary target is approximately 0.5–2.5s. Model means are 0.50–1.25s; role
-outlier p95 values reach 5.75s in fresh Lin Yue and 3.75s in fresh Soyeon. Elite
-variant means are generally 3.75–12.00s, with p95 outliers up to 23.25s. The
-elite mean target is proposed at 5–15s, so the outliers remain a balance-watch
-and require runtime/telegraph validation.
+Representative seed `101` outputs from the full ten-content model:
+
+| Profile / hero | Ordinary mean / p95 | Elite-variant mean / p95 |
+|---|---:|---:|
+| fresh / Lin Yue | 1.25 / 5.25 | 9.00 / 15.50 |
+| fresh / Soyeon Han | 0.75 / 4.50 | 3.75 / 4.50 |
+| moderate / Lin Yue | 1.25 / 4.25 | 9.00 / 12.00 |
+| moderate / Soyeon Han | 0.75 / 3.50 | 3.75 / 9.50 |
+| max M1 / Lin Yue | 0.75 / 2.75 | 3.75 / 10.50 |
+| max M1 / Soyeon Han | 0.50 / 2.00 | 4.50 / 7.50 |
+
+Ordinary means meet the 0.5–2.5 target. Elite variants use a proposed 5–15
+second reference; lower outliers on high-damage Soyeon builds and role p95
+values are intentionally exposed as tuning watches.
 
 ## Remaining combat blockers
 
-- B1 does not provide absolute new-family base stats or elite overlays.
-- B1 does not define hit probability, ranged cadence, crit pipeline or exact
-  mini/elite cadence; proposed values are labelled in the model.
-- No runtime collision, telegraph, movement or Android occupancy evidence is
-  available.
+- B1 lacks absolute new-family and late-run stats, exact elite cadence and a
+  hit-probability/crit pipeline.
+- The largest landed-hit sample is slightly over the strict 15% bound in one
+  proposed run; runtime telegraphs and hit-rate evidence are required before
+  changing the number.
+- No Godot collision, telegraph, movement, save/reload or Android performance
+  evidence exists.
