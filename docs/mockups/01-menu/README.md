@@ -1,6 +1,6 @@
 # Stage 01 — Menu
 
-Status: **IN PROGRESS / USER REVIEW**.
+Status: **IN PROGRESS / HOME MASTER APPROVED; INTERNAL MENU SCREENS REMAIN**.
 
 Активное визуальное семейство: `moonveil-menu-soft-tonal-v02`.
 
@@ -53,24 +53,47 @@ Status: **IN PROGRESS / USER REVIEW**.
 - [STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md](./STAGE01_MENU_SYSTEM_REVIEW_PACK_v04.md)
 - [STAGE01_MENU_SYSTEM_PROVENANCE_v04.json](./STAGE01_MENU_SYSTEM_PROVENANCE_v04.json)
 
-v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Пакет состоит из 50 отдельных PNG-файлов в `docs/mockups/01-menu/layers/`, но в текущем GitHub tree бинарное размещение не подтверждено: `PENDING_GITHUB_UPLOAD`. Нужны две отдельные партии: `40` и `10`. До явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
+v04 содержит четыре target-size PNG-экрана, отдельные normal/pressed PNG-кнопки и карточки. Пакет состоит из 50 отдельных PNG-файлов в `docs/mockups/01-menu/layers/`, но в текущем GitHub tree бинарное размещение не подтверждено: `PENDING_GITHUB_UPLOAD`. Исторический план `40` и `10` отменён: размер будущих партий определяется manifest и лимитом чата/транспорта. До явного approval пакет остаётся `USER REVIEW`, не `PRODUCTION`.
 
 
-## Restart Stage 01 — candidate v01 — USER REVIEW
+## Restart Stage 01 — candidate v01 — SUPERSEDED BY v02
 
-Работа по визуальному pipeline начата заново с Stage 01. Текущий hero master для проверки направления:
+Кандидат v01 сохранён как история первого review. После твоего замечания о слогане он заменён точечной редакцией v02.
+
+- candidate ID: `vl-20260911-menu-home-master-v01`;
+- binary commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`;
+- preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
+
+## Revision Stage 01 — candidate v02 — APPROVED GOLDEN
+
+Текущий утверждённый home master:
 
 - route: `UI_ART` + secondary `MOCKUP`;
 - stage path: `docs/mockups/01-menu/`;
 - asset ID: `menu.home`;
 - family ID: `moonveil-menu-soft-tonal-v02`;
-- candidate ID: `vl-20260911-menu-home-master-v01`;
-- status: `USER REVIEW`;
+- candidate ID: `vl-20260911-menu-home-master-v02`;
+- status: `APPROVED GOLDEN`;
 - technical status: `STATIC EXPORT CHECKED`;
-- artistic status: `PENDING CREATIVE DIRECTOR APPROVAL`.
+- artistic status: `APPROVED BY CREATIVE DIRECTOR`.
 
-Preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
+Preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png).
 
-Размер файла проверен как 390×844, PNG, sRGB; GitHub blob SHA: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`. Бинарный commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`. Это единственный текущий GitHub preview-кандидат для approval.
+Правка v02: удалён только текст “ТАМ, ГДЕ ЛУНА ТОНЕТ, ПРОБУЖДАЕТСЯ ИСТИНА.”. Текущий candidate утверждён для визуального направления главного меню. Runtime manifest и production promotion ещё не выполнялись.
 
-Исторические v02/v04-объекты, ранее заявленные во внешнем хранилище, не считаются размещёнными по новому GitHub-правилу. После явного approval этого exact candidate создаётся первая партия Stage 01; её размер определяется manifest и доступным лимитом чата/транспорта. До approval batch не запускается.
+## Scope Stage 01 — внутренняя menu/navigation system
+
+К Stage 01 относятся:
+
+- главный экран;
+- выбор этапа;
+- выбор персонажа;
+- run setup и подтверждение запуска;
+- loading;
+- результаты победы/поражения;
+- настройки;
+- мета-магазин и покупка глобальных пассивных улучшений.
+
+Не путать экран и содержимое: экран магазина — Stage 01, а сами passive assets/data — Stage 07; портреты и боевые ассеты героинь — Stage 03; внутриигровой HUD — Stage 10; внутриигровые предложения оружия/пассивок — Stage 16; artifact UI — Stage 17; synergy info — Stage 19.
+
+После approval home master следующая работа — создавать остальные внутренние экраны Stage 01. Размер любой партии определяется фактическим manifest и лимитом чата/транспорта; 40 — только пример.

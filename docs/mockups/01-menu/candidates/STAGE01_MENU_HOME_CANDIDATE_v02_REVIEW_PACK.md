@@ -1,6 +1,6 @@
 # Stage 01 Menu Home — Candidate v02 Review Pack
 
-Status: **USER REVIEW**
+Status: **APPROVED GOLDEN**
 
 - route: `UI_ART` + `MOCKUP`
 - stage_path: `docs/mockups/01-menu/`
@@ -8,7 +8,7 @@ Status: **USER REVIEW**
 - family_id: `moonveil-menu-soft-tonal-v02`
 - candidate_id: `vl-20260911-menu-home-master-v02`
 - supersedes: `vl-20260911-menu-home-master-v01`
-- artistic_status: `PENDING`
+- artistic_status: `APPROVED BY CREATIVE DIRECTOR / USER ON 2026-09-11`
 - manifest/consumer: not promoted
 
 ## Exact candidate
@@ -23,6 +23,14 @@ Removed only the slogan: “ТАМ, ГДЕ ЛУНА ТОНЕТ, ПРОБУЖДА
 
 The image was edited with the current built-in ImageGen editor using v01 as the edit target. No new composition, scene redesign, button redesign or unrelated retouch was requested.
 
+## Approval record
+
+- decision: `APPROVED`
+- approved_by: Creative Director / Project Owner
+- approved_at: 2026-09-11
+- scope: Stage 01 home-menu visual direction only
+- runtime promotion: `NOT PROMOTED`
+
 ## Evidence
 
 - target preview: 390×844 PNG, sRGB;
@@ -33,8 +41,8 @@ The image was edited with the current built-in ImageGen editor using v01 as the 
 
 ## Review boundary
 
-This is a single-copy edit candidate. It proposes no new UI beyond removal of the specified slogan. It remains `USER REVIEW`, not `APPROVED GOLDEN` or `PRODUCTION`.
+This is the exact approved single-copy edit candidate. It proposes no new UI beyond removal of the specified slogan. It is `APPROVED GOLDEN` for the Stage 01 home-menu visual direction, but is not `PRODUCTION`.
 
 ## Next gate
 
-Approve, revise or reject this exact v02 candidate. If approved, generate the Stage 01 asset batch with an adaptive size and record exact placed and queued/workspace file lists in `docs/mockups/README.md`.
+Approval recorded: the user approved this exact v02 candidate on 2026-09-11. Next, create the remaining Stage 01 internal-menu candidates; use adaptive upload batches and record exact placed/queued/workspace file lists in `docs/mockups/README.md`.

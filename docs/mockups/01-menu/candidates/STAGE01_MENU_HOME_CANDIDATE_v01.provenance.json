@@ -38,6 +38,6 @@
     "Approve, revise or reject the exact home-menu visual direction",
     "After approval, open the first Stage 01 asset batch; its size is determined by the manifest and available chat/transport budget"
   ],
-  "next_action": "Do not review or promote; use v02 as the current approval target",
+  "next_action": "Do not review or promote v01; use v02 as the approved home master",
   "batch_size_policy": "adaptive"
 }

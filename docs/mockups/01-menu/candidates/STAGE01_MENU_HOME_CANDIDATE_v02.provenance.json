@@ -8,7 +8,7 @@
   "family_id": "moonveil-menu-soft-tonal-v02",
   "candidate_id": "vl-20260911-menu-home-master-v02",
   "supersedes_candidate_id": "vl-20260911-menu-home-master-v01",
-  "status": "USER REVIEW",
+  "status": "APPROVED GOLDEN",
   "technical_status": {
     "status": "STATIC EXPORT CHECKED",
     "content_type": "image/png",
@@ -45,12 +45,20 @@
   },
   "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png",
   "github_preview_url": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png",
-  "artistic_status": "PENDING CREATIVE DIRECTOR APPROVAL",
+  "artistic_status": "APPROVED BY CREATIVE DIRECTOR / USER ON 2026-09-11",
   "manifest_consumer": "not promoted; no runtime manifest",
   "open_decisions": [
-    "Approve, revise or reject the exact v02 home-menu visual direction",
-    "After approval, open the first Stage 01 asset batch; its size is determined by the manifest and available chat/transport budget"
+    "Approve the remaining Stage 01 internal menu screens as they are generated",
+    "Keep runtime manifest and production promotion separate from visual approval"
   ],
-  "next_action": "Creative Director reviews the exact v02 GitHub candidate",
-  "batch_size_policy": "adaptive"
+  "next_action": "Create the next Stage 01 internal-menu candidate, beginning with the post-start character-selection screen",
+  "batch_size_policy": "adaptive",
+  "approval": {
+    "decision": "APPROVED",
+    "approved_by": "Creative Director / Project Owner",
+    "approved_at": "2026-09-11",
+    "exact_candidate_id": "vl-20260911-menu-home-master-v02",
+    "scope": "Stage 01 home-menu visual direction only",
+    "runtime_promotion": "NOT PROMOTED"
+  }
 }

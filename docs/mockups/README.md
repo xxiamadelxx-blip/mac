@@ -29,32 +29,61 @@
 
 ### Restart Stage 01 — текущее состояние
 
-Review-кандидат размещён в GitHub:
+Текущий утверждённый hero master:
 
-- `docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png` — 390×844, `USER REVIEW`;
-- commit: `4cf3caeb7f930cef6f17f245e360b6d3fa369571`;
-- blob: `14f5f06742bb9dbffeb06c5cb6ddf9f0aa4943cd`;
-- прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v01.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png).
+- `docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png` — 390×844, `APPROVED GOLDEN`;
+- candidate ID: `vl-20260911-menu-home-master-v02`;
+- commit с бинарным PNG: `ad897f13686865292f88f087fc45a444b5a89ade`;
+- blob: `0d46c417c7d56ce4886df36692c3dd2c675f35a8`;
+- прямой preview: [STAGE01_MENU_HOME_CANDIDATE_v02.png](./01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png).
 
-Пакет Stage 01 пока не открыт к загрузке: его exact manifest и размер первой партии будут определены после approval этого кандидата. Нельзя считать исторические внешние objects v02/v04 размещёнными в GitHub.
+Кандидат v01 сохранён как историческая версия до удаления слогана и не является текущим approval target. v02 утверждён только как визуальный home master; это не означает автоматическое утверждение остальных экранов и не переводит ассет в `PRODUCTION`.
 
-### Handoff-формат для каждой партии
+### Scope Stage 01 — внутренняя menu/navigation system
+
+В Stage 01 относятся все экраны и UI-состояния до, между и сразу после запуска забега:
+
+- главный экран меню;
+- выбор этапа;
+- выбор персонажа;
+- run setup / подтверждение запуска;
+- loading;
+- экран результата победы/поражения;
+- настройки;
+- мета-магазин и экран покупки глобальных пассивных улучшений.
+
+Разделение ответственности:
+
+- визуальный экран магазина относится к Stage 01;
+- сами пассивные способности, их иконки и data-описания относятся к Stage 07;
+- портреты и боевые ассеты героинь относятся к Stage 03;
+- внутриигровой HUD относится к Stage 10;
+- внутриигровые предложения оружия/пассивок относятся к Stage 16;
+- внутриигровой интерфейс артефактов относится к Stage 17;
+- отображение информации о синергиях относится к Stage 19.
+
+Партия следующих Stage 01-ассетов пока не открыта: после утверждения home master следующий набор создаётся по фактическому manifest и загружается адаптивными последовательными партиями. Число 40 не является обязательным.
+
+### Handoff для следующей партии
 
 ```yaml
-package_id: stage01-menu-home-batch-01
+package_id: stage01-menu-internal-screens-next
 stage_path: docs/mockups/01-menu/
 manifest_png_count: null
-batch_size_policy: exact-40-or-final-remainder
+batch_size_policy: adaptive
 status: QUEUED
-placed_files: []
+placed_files:
+  - docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png
 queued_files: []
 workspace_files: []
-github_commit: null
-github_tree_or_contents_evidence: null
-checked_at_utc: null
+github_commit: ad897f13686865292f88f087fc45a444b5a89ade
+github_tree_or_contents_evidence: blob:0d46c417c7d56ce4886df36692c3dd2c675f35a8
+checked_at_utc: 2026-09-11
 ```
 
 ## Активная визуальная итерация
+
+
 
 
 
@@ -62,4 +91,4 @@ checked_at_utc: null
 
 Первое визуальное семейство v01 вынесено из активных каталогов в [`_archive/family-v01/`](./_archive/family-v01/README.md). Архив не является active candidate, golden или production source.
 
-Статус этапов 1–2 — **IN PROGRESS / USER REVIEW**, пока не пройдены художественное утверждение и необходимые runtime/Android-проверки.
+Stage 01 home master — **APPROVED GOLDEN**; вся внутренняя menu/navigation system Stage 01 остаётся **IN PROGRESS** до утверждения остальных экранов и нужных runtime/Android-проверок. Stage 02 остаётся **USER REVIEW**.
