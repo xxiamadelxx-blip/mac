@@ -174,7 +174,7 @@ The five mini-boss entries above define role, signature, player question, counte
 
 Рабочее имя: **Хранительница Лотосового Обряда**.
 
-Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+Статус ID: PROPOSED, REGISTRY_SYNC_PENDING.
 
 ### Роль и skill-check
 
@@ -210,7 +210,7 @@ The five mini-boss entries above define role, signature, player question, counte
 
 Рабочее имя: **Колокольный аскет**.
 
-Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+Статус ID: PROPOSED, REGISTRY_SYNC_PENDING.
 
 ### Роль и skill-check
 
@@ -246,7 +246,7 @@ The five mini-boss entries above define role, signature, player question, counte
 
 Рабочее имя: **Луннокорневой перевозчик**.
 
-Статус ID: PROPOSAL, REGISTRY_SYNC_PENDING.
+Статус ID: PROPOSED, REGISTRY_SYNC_PENDING.
 
 ### Роль и skill-check
 
