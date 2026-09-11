@@ -35,24 +35,24 @@ jobs:
           mkdir -p build/verification
           failed=0
 
-          godot --headless --path . --editor --quit             2>&1 | tee build/verification/godot-import.log
+          godot --headless --path . --editor --quit 2>&1 | tee build/verification/godot-import.log
           status=${PIPESTATUS[0]}
           printf '%s\n' "${status}" > build/verification/godot-import.exit
           if [ "${status}" -ne 0 ]; then
             failed=1
           fi
 
-          godot --headless --path . --script scripts/runtime/r2_runtime_test.gd             2>&1 | tee build/verification/r2-runtime-test.log
+          godot --headless --path . --script scripts/runtime/r2_runtime_test.gd 2>&1 | tee build/verification/r2-runtime-test.log
           status=${PIPESTATUS[0]}
           printf '%s\n' "${status}" > build/verification/r2-runtime-test.exit
           if [ "${status}" -ne 0 ]; then
             failed=1
           fi
-          if ! grep -Eq 'R2_RUNTIME_TEST {.*"ok":true' build/verification/r2-runtime-test.log; then
+          if ! grep -Eq 'R2_RUNTIME_TEST \\{.*"ok":true' build/verification/r2-runtime-test.log; then
             echo "Required R2_RUNTIME_TEST success marker was not found."
             failed=1
           fi
-          if ! grep -Eq 'R2_RUNTIME_TRACE {.*"ok":true' build/verification/r2-runtime-test.log; then
+          if ! grep -Eq 'R2_RUNTIME_TRACE \\{.*"ok":true' build/verification/r2-runtime-test.log; then
             echo "Required R2_RUNTIME_TRACE success marker was not found."
             failed=1
           fi
