@@ -1,0 +1,56 @@
+{
+  "schema_version": "visual-lab.candidate-provenance.v1",
+  "route": "UI_ART",
+  "secondary_route": "MOCKUP",
+  "stage_path": "docs/mockups/01-menu/",
+  "asset_kind": "screen/master/revision",
+  "asset_id": "menu.home",
+  "family_id": "moonveil-menu-soft-tonal-v02",
+  "candidate_id": "vl-20260911-menu-home-master-v02",
+  "supersedes_candidate_id": "vl-20260911-menu-home-master-v01",
+  "status": "USER REVIEW",
+  "technical_status": {
+    "status": "STATIC EXPORT CHECKED",
+    "content_type": "image/png",
+    "dimensions": "390x844",
+    "colorspace": "sRGB",
+    "bytes": 502650,
+    "sha256": "93359ee972c480c3130e82425fd983c868f56e4fc87d6677c0c944ccbebf91ef",
+    "github_blob_sha": "0d46c417c7d56ce4886df36692c3dd2c675f35a8",
+    "binary_commit": "ad897f13686865292f88f087fc45a444b5a89ade",
+    "checks": [
+      "PNG signature and MIME verified locally",
+      "390x844 target-size export verified locally",
+      "GitHub Contents API returned the v02 blob SHA with base64 encoding"
+    ]
+  },
+  "source": {
+    "generator": "built-in ImageGen current image editing tool",
+    "edit_mode": "precise-object-edit",
+    "edit_target_workspace_path": "generated_images/exec-aaed408c-f1e1-45ab-b1d4-34f3e4bb63cc.png",
+    "edited_master_workspace_path": "generated_images/exec-adbb7437-51b1-4a6e-b8cf-8f54aa126505.png",
+    "edited_master_dimensions": "853x1844",
+    "target_preview_workspace_path": "stage01_menu_home_candidate_v02.png",
+    "target_preview_derivation": "mechanical target-size export from edited master; no additional creative changes"
+  },
+  "edit_scope": {
+    "removed_only": "ТАМ, ГДЕ ЛУНА ТОНЕТ, ПРОБУЖДАЕТСЯ ИСТИНА.",
+    "preserved": [
+      "scene and crop",
+      "title and title ornament",
+      "primary and secondary buttons",
+      "settings control",
+      "palette and lighting"
+    ]
+  },
+  "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png",
+  "github_preview_url": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v02.png",
+  "artistic_status": "PENDING CREATIVE DIRECTOR APPROVAL",
+  "manifest_consumer": "not promoted; no runtime manifest",
+  "open_decisions": [
+    "Approve, revise or reject the exact v02 home-menu visual direction",
+    "After approval, open the first Stage 01 asset batch; its size is determined by the manifest and available chat/transport budget"
+  ],
+  "next_action": "Creative Director reviews the exact v02 GitHub candidate",
+  "batch_size_policy": "adaptive"
+}

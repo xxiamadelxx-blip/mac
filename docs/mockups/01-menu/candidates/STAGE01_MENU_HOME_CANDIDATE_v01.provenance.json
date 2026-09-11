@@ -7,7 +7,7 @@
   "asset_id": "menu.home",
   "family_id": "moonveil-menu-soft-tonal-v02",
   "candidate_id": "vl-20260911-menu-home-master-v01",
-  "status": "USER REVIEW",
+  "status": "SUPERSEDED",
   "technical_status": {
     "status": "STATIC EXPORT CHECKED",
     "content_type": "image/png",
@@ -32,12 +32,12 @@
   },
   "github_path": "docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png",
   "github_preview_url": "https://github.com/xxiamadelxx-blip/mac/blob/main/docs/mockups/01-menu/candidates/STAGE01_MENU_HOME_CANDIDATE_v01.png",
-  "artistic_status": "PENDING CREATIVE DIRECTOR APPROVAL",
+  "artistic_status": "SUPERSEDED BY vl-20260911-menu-home-master-v02",
   "manifest_consumer": "not promoted; no runtime manifest",
   "open_decisions": [
     "Approve, revise or reject the exact home-menu visual direction",
     "After approval, open the first Stage 01 asset batch; its size is determined by the manifest and available chat/transport budget"
   ],
-  "next_action": "Creative Director reviews the exact GitHub candidate",
+  "next_action": "Do not review or promote; use v02 as the current approval target",
   "batch_size_policy": "adaptive"
 }
