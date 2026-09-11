@@ -299,7 +299,7 @@ func spawn_wave_fixture() -> Dictionary:
     var composition: Variant = band.get("composition", {}).get("value", [])
     var enemy_id := ""
     if composition is Array and not composition.is_empty():
-        var spawn_index := int(session.stats.get("fixture_spawn_count", 0)) % composition.size()
+        var spawn_index: int = int(session.stats.get("fixture_spawn_count", 0)) % composition.size()
         enemy_id = str(composition[spawn_index])
     elif typeof(composition) == TYPE_STRING:
         var enemy_stats: Dictionary = registry.get_model_field(["simulation_model", "enemy_stats"], {})
