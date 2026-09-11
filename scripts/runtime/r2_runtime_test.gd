@@ -21,6 +21,9 @@ func _init() -> void:
     _require_contract(content_status, "target_main_boss_count", 6)
     _require_contract(content_status, "target_mini_boss_count", 5)
     _require_contract(content_status, "target_duration_seconds", 1800.0)
+    _require_contract(content_status, "available_main_boss_count", 6)
+    _require_contract(content_status, "available_mini_boss_count", 5)
+    _require_contract(content_status, "available_elite_variant_count", 10)
 
     if str(content_status.get("status", "")) != "READY":
         for blocker in content_status.get("blockers", []):
@@ -29,6 +32,7 @@ func _init() -> void:
     _test_wave_admission(coordinator)
     _test_main_boss_freeze_and_duplicate(coordinator)
     _test_mini_boss_missing_is_explicit(coordinator)
+    _test_elite_resolution()
     _finish("BLOCKED" if not blockers.is_empty() else "TESTED")
 
 
@@ -124,6 +128,12 @@ func _test_mini_boss_missing_is_explicit(coordinator: Variant) -> void:
     _check(bool(mini_coordinator.start_run("hero_lin_yue", 303, "r2-mini").get("ok", false)), "Mini-boss run starts")
     var mini_id := str(minis[0].get("boss_id", minis[0].get("mini_boss_id", minis[0].get("id", ""))))
     var mini_started: Dictionary = mini_coordinator.start_mini_boss(mini_id)
+    if not bool(coordinator.registry.is_runtime_record_ready(minis[0])):
+        _check(
+            str(mini_started.get("code", "")) == "MINI_BOSS_CONTENT_PENDING",
+            "Pending mini-boss record is visible but cannot start"
+        )
+        return
     _check(bool(mini_started.get("ok", false)), "Mini boss starts from registry content")
     if not bool(mini_started.get("ok", false)):
         return
@@ -141,6 +151,51 @@ func _test_mini_boss_missing_is_explicit(coordinator: Variant) -> void:
         int(mini_offer.get("created_at_revision", -1))
     )
     _check(bool(mini_claim.get("ok", false)), "Mini-boss chest claim resumes the run")
+
+
+func _test_elite_resolution() -> void:
+    var coordinator: Variant = RunCoordinatorType.new()
+    var boot: Dictionary = coordinator.boot()
+    if not bool(boot.get("ok", false)):
+        return
+    var started: Dictionary = coordinator.start_run("hero_lin_yue", 505, "r2-elite")
+    _check(bool(started.get("ok", false)), "Elite resolver fixture run starts")
+    if not bool(started.get("ok", false)):
+        return
+
+    var first: Dictionary = coordinator.resolve_elite_variant_event()
+    var second: Dictionary = coordinator.resolve_elite_variant_event(
+        str(coordinator.session.current_wave_band_id),
+        coordinator.session.state_revision
+    )
+    policy_trace.append({
+        "policy": "finite_elite_pressure",
+        "first": first,
+        "second": second
+    })
+    if not bool(first.get("ok", false)):
+        _check(
+            str(first.get("code", "")) == "ELITE_VARIANT_CONTENT_PENDING",
+            "Pending elite records remain an explicit resolver blocker"
+        )
+        return
+
+    var first_ids: Array[String] = []
+    var second_ids: Array[String] = []
+    for variant in first.get("variants", []):
+        first_ids.append(str(variant.get("variant_id", "")))
+    for variant in second.get("variants", []):
+        second_ids.append(str(variant.get("variant_id", "")))
+    _check(first_ids == second_ids, "Elite resolution is deterministic for the same seed and revision")
+    _check(first_ids.size() <= 5, "Elite selection stays within the maximum five")
+    _check(
+        not bool(first.get("automatic_artifact_offer", true)),
+        "Elite resolution does not open an artifact offer"
+    )
+    _check(
+        not bool(first.get("persistent_roster_mutation", true)),
+        "Elite resolution does not mutate a permanent roster"
+    )
 
 
 func _require_contract(value: Dictionary, key: String, expected: Variant) -> void:
