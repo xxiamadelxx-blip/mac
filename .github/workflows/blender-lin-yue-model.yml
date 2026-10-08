@@ -23,7 +23,7 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends blender
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends blender python3-numpy
           blender --background --version | head -n 3
       - name: Generate editable 3D source and image previews
         run: blender --background --factory-startup --threads 2 --python-exit-code 1 --python tools/blender_cloud/lin_yue_model.py
