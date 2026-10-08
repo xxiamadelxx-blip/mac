@@ -14,6 +14,9 @@ scene = bpy.context.scene
 scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
 scene.cycles.samples = 8
+# Ubuntu distribution build of Blender 4.0 lacks OpenImageDenoise at runtime.
+# Disable render denoising, otherwise Cycles raises "Build without OpenImageDenoiser".
+bpy.context.view_layer.cycles.use_denoising = False
 scene.render.resolution_x = 256
 scene.render.resolution_y = 256
 scene.render.resolution_percentage = 100
