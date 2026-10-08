@@ -1,0 +1,50 @@
+name: Blender Cloud | Lin Yue editable 3D candidate
+
+on:
+  push:
+    branches:
+      - tooling/blender-cloud-20261009
+    paths:
+      - .github/workflows/blender-lin-yue-model.yml
+      - tools/blender_cloud/lin_yue_model.py
+      - tools/blender_cloud/verify_lin_yue.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-3d:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends blender
+          blender --background --version | head -n 3
+      - name: Generate editable 3D source and image previews
+        run: blender --background --factory-startup --threads 2 --python-exit-code 1 --python tools/blender_cloud/lin_yue_model.py
+      - name: Verify 3D binary artifacts
+        run: python3 tools/blender_cloud/verify_lin_yue.py
+      - name: Commit each 3D candidate file to tooling branch
+        run: |
+          git config user.name "mac-blender-cloud[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/mockups/03-heroes/3d-candidates/lin_yue/
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "art(trial): Lin Yue editable 3D and four renders"
+            git push origin HEAD:tooling/blender-cloud-20261009
+          fi
+      - name: Retain CI evidence temporarily
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lin-yue-3d-candidate
+          path: docs/mockups/03-heroes/3d-candidates/lin_yue/
+          if-no-files-found: warn
+          retention-days: 7
