@@ -1,0 +1,38 @@
+name: Blender Cloud | headless rendering smoke
+
+on:
+  push:
+    branches:
+      - tooling/blender-cloud-20261009
+    paths:
+      - .github/workflows/blender-cloud-smoke.yml
+      - tools/blender_cloud/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install Blender (CPU, headless)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends blender
+          blender --background --factory-startup --version | head -n 4
+      - name: Render technical proof PNG
+        run: blender --background --factory-startup --threads 2 --python-exit-code 1 --python tools/blender_cloud/smoke_scene.py
+      - name: Verify actual image file
+        run: python3 tools/blender_cloud/verify_png.py
+      - name: Upload proof for inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: blender-cloud-smoke-${{ github.run_id }}
+          path: tools/blender_cloud/output/
+          if-no-files-found: warn
+          retention-days: 7
