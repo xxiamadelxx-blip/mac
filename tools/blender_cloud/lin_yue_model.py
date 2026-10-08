@@ -242,7 +242,7 @@ stroke("Fan painted lunar crest",[(cx-.07,cy-.03,cz+.30),(cx,cy-.03,cz+.35),
 # Studio, saved inside editable blend but excluded from game GLB
 group="Studio"
 scene=bpy.context.scene
-world=scene.world;world.use_nodes=True
+world=bpy.data.worlds.new("Moonveil Studio World");scene.world=world;world.use_nodes=True
 world.node_tree.nodes["Background"].inputs["Color"].default_value=(.11,.16,.16,1)
 world.node_tree.nodes["Background"].inputs["Strength"].default_value=.65
 for name,loc,power,size in [
