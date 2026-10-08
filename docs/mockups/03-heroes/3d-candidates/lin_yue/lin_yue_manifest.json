@@ -1,0 +1,59 @@
+{
+  "candidate_id": "vl-20261009-lin-yue-3d-proposal-v01",
+  "asset_id": "hero_lin_yue_3d_concept",
+  "family_id": "moonveil-jade-witch-3d",
+  "route": "SPRITE",
+  "status": "CANDIDATE",
+  "technical_status": "AWAITING_ACTIONS_VERIFICATION",
+  "artistic_status": "PENDING_USER_REVIEW",
+  "production_approval": false,
+  "identity_fidelity": "UNVERIFIED: missing full-body 2D source in live GitHub main",
+  "source": "GAME_MANIFEST.md section 5 (pale jade dress, sleeves, talismans, silver moon jewelry, lunar fan)",
+  "editable_source": "lin_yue_editable.blend",
+  "portable_mesh": "lin_yue_portable.glb",
+  "blender_version": "4.0.2",
+  "mesh_objects": 47,
+  "vertices": 21166,
+  "renders": [
+    "lin_yue_front.png",
+    "lin_yue_three_quarter.png",
+    "lin_yue_side.png",
+    "lin_yue_back.png"
+  ],
+  "render_dimensions": [
+    640,
+    760
+  ],
+  "files": [
+    {
+      "path": "lin_yue_back.png",
+      "size_bytes": 430933,
+      "sha256": "94db91cb75375619213f1c25ace7c23ee014cbcf75926661af46b8433e7e46d9"
+    },
+    {
+      "path": "lin_yue_editable.blend",
+      "size_bytes": 3260172,
+      "sha256": "7ed5b6ba305c1fa75e302d670324359edfd9e679b67b74ea31711339881a24ee"
+    },
+    {
+      "path": "lin_yue_front.png",
+      "size_bytes": 487148,
+      "sha256": "827b0e09ab521771d6d54029367122ecfecdc8d7396dadf219693aee16da4591"
+    },
+    {
+      "path": "lin_yue_portable.glb",
+      "size_bytes": 1197172,
+      "sha256": "a0cee94e0ee72bb54fabefb2a8fcc1cfe672f5c5d1655283921aca8eb2e432ae"
+    },
+    {
+      "path": "lin_yue_side.png",
+      "size_bytes": 373645,
+      "sha256": "74c703783b4e8c80ac4d303729fc56682f015e3424ce28604785632606aacb91"
+    },
+    {
+      "path": "lin_yue_three_quarter.png",
+      "size_bytes": 472243,
+      "sha256": "f3ed73fa997724415e8c6be09436f35d8c6a2bfb91a7827053fb3c98212aebd9"
+    }
+  ]
+}
